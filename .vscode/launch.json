@@ -1,0 +1,14 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "AR_Chemistry_FE (Chrome)",
+            "request": "launch",
+            "type": "dart",
+            "args": [
+                "--web-port",
+                "61562"
+            ]
+        }
+    ]
+}
