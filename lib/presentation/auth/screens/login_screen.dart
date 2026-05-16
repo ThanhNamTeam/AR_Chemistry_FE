@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../domain/models/account_setup_model.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../../shared/widgets/custom_text_field.dart';
 import '../../../routes/app_routes.dart';
@@ -14,19 +15,11 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin {
   bool _showSignUp = false;
-  bool _signUpSuccess = false;
 
   // Login
   final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
   final _loginKey = GlobalKey<FormState>();
-
-  // Sign up
-  final _suNameCtrl = TextEditingController();
-  final _suEmailCtrl = TextEditingController();
-  final _suPassCtrl = TextEditingController();
-  final _suConfirmCtrl = TextEditingController();
-  final _signUpKey = GlobalKey<FormState>();
 
   late AnimationController _bgCtrl;
   late Animation<double> _bgPulse;
@@ -46,10 +39,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     _bgCtrl.dispose();
     _emailCtrl.dispose();
     _passCtrl.dispose();
-    _suNameCtrl.dispose();
-    _suEmailCtrl.dispose();
-    _suPassCtrl.dispose();
-    _suConfirmCtrl.dispose();
     super.dispose();
   }
 
@@ -60,33 +49,23 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
   }
 
   void _loginGoogle() {
-    context.read<AppState>().loginWithGoogle();
-    Navigator.pushReplacementNamed(context, AppRoutes.home);
+    Navigator.pushNamed(
+      context,
+      AppRoutes.completeProfile,
+      arguments: const AccountSetupRouteArgs(
+        source: AccountSetupSource.google,
+        prefilledEmail: 'trannam@gmail.com',
+        prefilledFullName: 'Trần Thanh Nam',
+      ),
+    );
   }
 
-  void _register() {
-    if (!_signUpKey.currentState!.validate()) return;
-    if (_suPassCtrl.text != _suConfirmCtrl.text) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Passwords do not match!'),
-          backgroundColor: AppColors.error,
-        ),
-      );
-      return;
-    }
-    context.read<AppState>().register(
-        _suNameCtrl.text, _suEmailCtrl.text, _suPassCtrl.text);
-    setState(() => _signUpSuccess = true);
-    Future.delayed(const Duration(seconds: 3), () {
-      if (mounted) {
-        setState(() {
-          _showSignUp = false;
-          _signUpSuccess = false;
-          _emailCtrl.text = _suEmailCtrl.text;
-        });
-      }
-    });
+  void _openRegistration() {
+    Navigator.pushNamed(
+      context,
+      AppRoutes.completeProfile,
+      arguments: AccountSetupRouteArgs.registration(),
+    );
   }
 
   @override
@@ -280,28 +259,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
               ),
             ),
           ),
-          const SizedBox(height: 10),
-
-          // Facebook button
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(vertical: 14),
-            decoration: BoxDecoration(
-              color: const Color(0xFF1877F2),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.facebook, color: Colors.white, size: 20),
-                SizedBox(width: 10),
-                Text('Continue with Facebook',
-                    style: TextStyle(
-                        fontSize: 14, fontWeight: FontWeight.w500,
-                        color: Colors.white, fontFamily: 'Inter')),
-              ],
-            ),
-          ),
           const SizedBox(height: 24),
 
           // Sign up link
@@ -324,50 +281,11 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
   }
 
   Widget _buildSignUp() {
-    if (_signUpSuccess) {
-      return Center(
-        child: Container(
-          margin: const EdgeInsets.all(32),
-          padding: const EdgeInsets.all(32),
-          decoration: BoxDecoration(
-            color: AppColors.cardBg.withOpacity(0.5),
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: AppColors.primary.withOpacity(0.3)),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 64, height: 64,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.success.withOpacity(0.2),
-                  border: Border.all(
-                      color: AppColors.success.withOpacity(0.5)),
-                ),
-                child: const Icon(Icons.check, color: AppColors.success, size: 32),
-              ),
-              const SizedBox(height: 20),
-              const Text('Sign Up Successful!',
-                  style: TextStyle(
-                      fontSize: 22, fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary, fontFamily: 'Inter')),
-              const SizedBox(height: 10),
-              const Text('Redirecting to login page...',
-                  style: TextStyle(
-                      color: AppColors.textCyan, fontFamily: 'Inter')),
-            ],
-          ),
-        ),
-      );
-    }
-
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(
         children: [
           const SizedBox(height: 20),
-          // Header with back button
           Stack(
             alignment: Alignment.center,
             children: [
@@ -405,11 +323,13 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                   fontSize: 22, fontWeight: FontWeight.w700,
                   color: AppColors.textPrimary, fontFamily: 'Inter')),
           const SizedBox(height: 6),
-          const Text('Join Chemistry AR today',
-              style: TextStyle(
-                  fontSize: 13, color: AppColors.textCyan, fontFamily: 'Inter')),
+          const Text(
+            'Set your profile, password, and role on the next screen.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontSize: 13, color: AppColors.textCyan, fontFamily: 'Inter'),
+          ),
           const SizedBox(height: 28),
-
           Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
@@ -422,53 +342,11 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                     color: AppColors.primary.withOpacity(0.1), blurRadius: 30),
               ],
             ),
-            child: Form(
-              key: _signUpKey,
-              child: Column(
-                children: [
-                  CustomTextField(
-                    label: 'Full Name',
-                    hint: 'Enter your full name',
-                    controller: _suNameCtrl,
-                    prefixIcon: Icons.person_outline,
-                    validator: (v) =>
-                        v == null || v.isEmpty ? 'Name is required' : null,
-                  ),
-                  const SizedBox(height: 16),
-                  CustomTextField(
-                    label: 'Email',
-                    hint: 'Enter your email',
-                    controller: _suEmailCtrl,
-                    prefixIcon: Icons.mail_outline,
-                    keyboardType: TextInputType.emailAddress,
-                    validator: (v) =>
-                        v == null || v.isEmpty ? 'Email is required' : null,
-                  ),
-                  const SizedBox(height: 16),
-                  CustomTextField(
-                    label: 'Password',
-                    hint: 'Create a password',
-                    controller: _suPassCtrl,
-                    prefixIcon: Icons.lock_outline,
-                    isPassword: true,
-                    validator: (v) =>
-                        v == null || v.length < 6 ? 'Min 6 characters' : null,
-                  ),
-                  const SizedBox(height: 16),
-                  CustomTextField(
-                    label: 'Confirm Password',
-                    hint: 'Confirm your password',
-                    controller: _suConfirmCtrl,
-                    prefixIcon: Icons.lock_outline,
-                    isPassword: true,
-                    validator: (v) =>
-                        v == null || v.isEmpty ? 'Please confirm password' : null,
-                  ),
-                  const SizedBox(height: 24),
-                  _gradientButton('Sign Up', _register,
-                      gradient: AppColors.primaryGradient),
-                ],
-              ),
+            child: Column(
+              children: [
+                _gradientButton('Continue', _openRegistration,
+                    gradient: AppColors.primaryGradient),
+              ],
             ),
           ),
           const SizedBox(height: 20),

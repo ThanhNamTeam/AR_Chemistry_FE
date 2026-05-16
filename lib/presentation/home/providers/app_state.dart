@@ -1,10 +1,15 @@
 import 'package:flutter/foundation.dart';
+import '../../../domain/models/account_setup_model.dart';
 import '../../../domain/models/chemical_card_model.dart';
 
 class AppState extends ChangeNotifier {
   // Auth state
   String? _userName;
   String? _userEmail;
+  UserRole? _userRole;
+  String? _schoolName;
+  String? _certificateUrl;
+  String? _experienceYears;
   bool _isLoggedIn = false;
   int _knowledgePoints = 300;
 
@@ -16,6 +21,10 @@ class AppState extends ChangeNotifier {
   // Getters
   String? get userName => _userName;
   String? get userEmail => _userEmail;
+  UserRole? get userRole => _userRole;
+  String? get schoolName => _schoolName;
+  String? get certificateUrl => _certificateUrl;
+  String? get experienceYears => _experienceYears;
   bool get isLoggedIn => _isLoggedIn;
   int get knowledgePoints => _knowledgePoints;
   List<ChemicalCardModel> get cards => List.unmodifiable(_cards);
@@ -31,13 +40,10 @@ class AppState extends ChangeNotifier {
     _isLoggedIn = true;
     _userName = 'Trần Thanh Nam';
     _userEmail = email;
-    notifyListeners();
-  }
-
-  void loginWithGoogle() {
-    _isLoggedIn = true;
-    _userName = 'Trần Thanh Nam';
-    _userEmail = 'trannam@gmail.com';
+    _userRole = UserRole.student;
+    _schoolName = null;
+    _certificateUrl = null;
+    _experienceYears = null;
     notifyListeners();
   }
 
@@ -45,13 +51,27 @@ class AppState extends ChangeNotifier {
     _isLoggedIn = false;
     _userName = null;
     _userEmail = null;
+    _userRole = null;
+    _schoolName = null;
+    _certificateUrl = null;
+    _experienceYears = null;
     notifyListeners();
   }
 
-  void register(String fullName, String email, String password) {
+  void completeAccountSetup(AccountSetupData data) {
     _isLoggedIn = true;
-    _userName = fullName;
-    _userEmail = email;
+    _userName = data.fullName;
+    _userEmail = data.email;
+    _userRole = data.role;
+    if (data.role == UserRole.teacher) {
+      _schoolName = data.schoolName;
+      _certificateUrl = data.certificateUrl;
+      _experienceYears = data.experience;
+    } else {
+      _schoolName = null;
+      _certificateUrl = null;
+      _experienceYears = null;
+    }
     notifyListeners();
   }
 

@@ -6,9 +6,11 @@ import 'presentation/home/providers/app_state.dart';
 import 'presentation/home/providers/home_provider.dart';
 import 'routes/app_routes.dart';
 
+import 'domain/models/account_setup_model.dart';
 // Screens
 import 'presentation/auth/screens/onboarding_screen.dart';
 import 'presentation/auth/screens/login_screen.dart';
+import 'presentation/auth/screens/complete_profile_screen.dart';
 import 'presentation/home/screens/home_screen.dart';
 import 'presentation/home/screens/profile_screen.dart';
 import 'presentation/inventory/screens/library_screen.dart';
@@ -86,6 +88,13 @@ class ARChemistryApp extends StatelessWidget {
     return {
       AppRoutes.onboarding: (_) => const OnboardingScreen(),
       AppRoutes.login: (_) => const LoginScreen(),
+      AppRoutes.completeProfile: (context) {
+        final args = ModalRoute.of(context)?.settings.arguments;
+        final setupArgs = args is AccountSetupRouteArgs
+            ? args
+            : AccountSetupRouteArgs.registration();
+        return CompleteProfileScreen(args: setupArgs);
+      },
       AppRoutes.home: (_) => const HomeScreen(),
       AppRoutes.profile: (_) => const ProfileScreen(),
       AppRoutes.library: (_) => const LibraryScreen(),
