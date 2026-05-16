@@ -5,6 +5,8 @@ import '../../../shared/widgets/knowledge_points_badge.dart';
 import '../../../shared/widgets/chemical_card_widget.dart';
 import '../../../routes/app_routes.dart';
 import '../../home/providers/app_state.dart';
+import '../../home/providers/theme_provider.dart';
+import '../../../domain/models/bundle_price_quote.dart';
 import '../../../domain/models/chemical_card_model.dart';
 
 class ShopScreen extends StatefulWidget {
@@ -23,7 +25,7 @@ class _ShopScreenState extends State<ShopScreen> {
   void _showToast(String msg, {bool isError = false}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(msg, style: const TextStyle(fontFamily: 'Inter')),
+        content: Text(msg, style: TextStyle(fontFamily: 'Inter')),
         backgroundColor: isError ? AppColors.error : AppColors.secondary,
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
@@ -32,15 +34,20 @@ class _ShopScreenState extends State<ShopScreen> {
     );
   }
 
-  void _buyWithPoints(AppState state, String id, int price, String type) {
-    if (state.knowledgePoints >= price) {
-      if (type == 'card') {
-        state.purchaseCard(id);
-        _showToast('Card purchased! Check your bag.');
-      } else {
-        state.purchaseBundle(id);
-        _showToast('Bundle added to your bag!');
-      }
+  Future<void> _buyWithPoints(
+      AppState state, String id, int price, String type) async {
+    if (state.knowledgePoints < price) {
+      _showToast('Not enough Knowledge Points', isError: true);
+      return;
+    }
+    final ok = type == 'card'
+        ? await state.purchaseCard(id)
+        : await state.purchaseBundle(id);
+    if (!mounted) return;
+    if (ok) {
+      _showToast(type == 'card'
+          ? 'Card purchased! Check your bag.'
+          : 'Bundle added to your bag!');
     } else {
       _showToast('Not enough Knowledge Points', isError: true);
     }
@@ -55,28 +62,29 @@ class _ShopScreenState extends State<ShopScreen> {
     });
   }
 
-  void _confirmQRPayment(AppState state) {
-    if (_selectedId != null) {
-      if (_selectedType == 'card') {
-        state.purchaseCard(_selectedId!);
-      } else {
-        state.purchaseBundle(_selectedId!);
-      }
-      setState(() => _showQRModal = false);
-      Navigator.pushNamed(context, AppRoutes.paymentSuccess);
+  Future<void> _confirmQRPayment(AppState state) async {
+    if (_selectedId == null) return;
+    if (_selectedType == 'card') {
+      await state.purchaseCard(_selectedId!, deductPoints: false);
+    } else {
+      await state.purchaseBundle(_selectedId!, deductPoints: false);
     }
+    if (!mounted) return;
+    setState(() => _showQRModal = false);
+    Navigator.pushNamed(context, AppRoutes.paymentSuccess);
   }
 
   @override
   Widget build(BuildContext context) {
+    context.watch<ThemeProvider>();
     final state = context.watch<AppState>();
-    final locked = state.lockedCards;
+    final catalog = state.shopCatalogCards;
     final bundles = ChemicalData.bundles;
 
     return Scaffold(
       backgroundColor: AppColors.backgroundDark,
       body: Container(
-        decoration: const BoxDecoration(gradient: AppColors.backgroundGradient),
+        decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
         child: SafeArea(
           child: Stack(
             children: [
@@ -97,12 +105,12 @@ class _ShopScreenState extends State<ShopScreen> {
                               border: Border.all(
                                   color: AppColors.primary.withOpacity(0.3)),
                             ),
-                            child: const Icon(Icons.arrow_back,
+                            child: Icon(Icons.arrow_back,
                                 color: AppColors.primary, size: 20),
                           ),
                         ),
                         const SizedBox(width: 14),
-                        const Expanded(
+                        Expanded(
                           child: Text('Shop',
                               style: TextStyle(
                                   fontSize: 22,
@@ -122,7 +130,7 @@ class _ShopScreenState extends State<ShopScreen> {
                                   border: Border.all(
                                       color: AppColors.primary.withOpacity(0.3)),
                                 ),
-                                child: const Icon(Icons.shopping_cart_outlined,
+                                child: Icon(Icons.shopping_cart_outlined,
                                     color: AppColors.primary, size: 20),
                               ),
                               if (state.cart.isNotEmpty)
@@ -130,12 +138,12 @@ class _ShopScreenState extends State<ShopScreen> {
                                   top: 2, right: 2,
                                   child: Container(
                                     width: 16, height: 16,
-                                    decoration: const BoxDecoration(
+                                    decoration: BoxDecoration(
                                         color: AppColors.error,
                                         shape: BoxShape.circle),
                                     child: Center(
                                       child: Text('${state.cart.length}',
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 10,
                                               fontWeight: FontWeight.w700)),
@@ -160,10 +168,10 @@ class _ShopScreenState extends State<ShopScreen> {
                           // Bundle section
                           Row(
                             children: [
-                              const Icon(Icons.inventory_2_outlined,
+                              Icon(Icons.inventory_2_outlined,
                                   color: AppColors.primary, size: 20),
                               const SizedBox(width: 8),
-                              const Text('Bundle Packs',
+                              Text('Bundle Packs',
                                   style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.w700,
@@ -179,7 +187,7 @@ class _ShopScreenState extends State<ShopScreen> {
                                   border: Border.all(
                                       color: AppColors.secondary.withOpacity(0.4)),
                                 ),
-                                child: const Text('Save 20%',
+                                child: Text('Up to 20% off',
                                     style: TextStyle(
                                         fontSize: 11,
                                         color: AppColors.secondaryLight,
@@ -189,20 +197,39 @@ class _ShopScreenState extends State<ShopScreen> {
                             ],
                           ),
                           const SizedBox(height: 14),
-                          ...bundles.map((b) => Padding(
-                                padding: const EdgeInsets.only(bottom: 16),
-                                child: _BundleCard(
-                                  bundle: b,
-                                  allCards: state.cards,
-                                  onBuyPoints: () => _buyWithPoints(
-                                      state, b.id, b.discountedPrice, 'bundle'),
-                                  onBuyBank: () =>
-                                      _openQR(b.id, b.discountedPrice, 'bundle'),
-                                ),
-                              )),
+                          ...bundles.map((b) {
+                            final quote = state.getBundleQuote(b.id);
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 16),
+                              child: _BundleCard(
+                                bundle: b,
+                                quote: quote,
+                                allCards: state.cards,
+                                isOwned: state.isCardOwned,
+                                onBuyPoints: quote.canPurchase
+                                    ? () => _buyWithPoints(
+                                        state, b.id, quote.totalPrice, 'bundle')
+                                    : null,
+                                onBuyBank: quote.canPurchase
+                                    ? () => _openQR(
+                                        b.id, quote.totalPrice, 'bundle')
+                                    : null,
+                                onAddToCart: quote.canPurchase &&
+                                        !state.isBundleInCart(b.id)
+                                    ? () async {
+                                        final ok =
+                                            await state.addBundleToCart(b.id);
+                                        if (ok) {
+                                          _showToast('Bundle added to cart!');
+                                        }
+                                      }
+                                    : null,
+                              ),
+                            );
+                          }),
 
                           const SizedBox(height: 8),
-                          const Text('Single Cards',
+                          Text('Single Cards',
                               style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w700,
@@ -210,44 +237,44 @@ class _ShopScreenState extends State<ShopScreen> {
                                   fontFamily: 'Inter')),
                           const SizedBox(height: 14),
 
-                          if (locked.isEmpty)
-                            const Center(
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(vertical: 32),
-                                child: Text("You've unlocked all cards! 🎉",
-                                    style: TextStyle(
-                                        color: AppColors.textSecondary,
-                                        fontFamily: 'Inter')),
-                              ),
-                            )
-                          else
-                            GridView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 12,
-                                mainAxisSpacing: 12,
-                                childAspectRatio: 0.7,
-                              ),
-                              itemCount: locked.length,
-                              itemBuilder: (ctx, i) {
-                                final card = locked[i];
-                                return ChemicalCardWidget(
-                                  card: card,
-                                  showBuyButtons: true,
-                                  onBuyWithPoints: () => _buyWithPoints(
-                                      state, card.id, card.price, 'card'),
-                                  onBuyWithBank: () =>
-                                      _openQR(card.id, card.price, 'card'),
-                                  onAddToCart: () {
-                                    state.addToCart(card.id);
-                                    _showToast('Added to cart!');
-                                  },
-                                );
-                              },
+                          GridView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 12,
+                              mainAxisSpacing: 12,
+                              childAspectRatio: 0.58,
                             ),
+                            itemCount: catalog.length,
+                            itemBuilder: (ctx, i) {
+                              final card = catalog[i];
+                              final owned = state.isCardOwned(card.id);
+                              return ChemicalCardWidget(
+                                card: card,
+                                ownedInShop: owned,
+                                showBuyButtons: !owned,
+                                onBuyWithPoints: owned
+                                    ? null
+                                    : () => _buyWithPoints(
+                                        state, card.id, card.price, 'card'),
+                                onBuyWithBank: owned
+                                    ? null
+                                    : () => _openQR(
+                                        card.id, card.price, 'card'),
+                                onAddToCart: owned
+                                    ? null
+                                    : () async {
+                                        final ok = await state
+                                            .addCardToCart(card.id);
+                                        if (ok) {
+                                          _showToast('Card added to cart!');
+                                        }
+                                      },
+                              );
+                            },
+                          ),
                         ],
                       ),
                     ),
@@ -272,23 +299,34 @@ class _ShopScreenState extends State<ShopScreen> {
 
 class _BundleCard extends StatelessWidget {
   final BundleModel bundle;
+  final BundlePriceQuote quote;
   final List<ChemicalCardModel> allCards;
-  final VoidCallback onBuyPoints;
-  final VoidCallback onBuyBank;
+  final bool Function(String id) isOwned;
+  final VoidCallback? onBuyPoints;
+  final VoidCallback? onBuyBank;
+  final VoidCallback? onAddToCart;
 
   const _BundleCard({
     required this.bundle,
+    required this.quote,
     required this.allCards,
-    required this.onBuyPoints,
-    required this.onBuyBank,
+    required this.isOwned,
+    this.onBuyPoints,
+    this.onBuyBank,
+    this.onAddToCart,
   });
 
   @override
   Widget build(BuildContext context) {
-    final cards =
-        bundle.cardIds.map((id) => allCards.firstWhere((c) => c.id == id, orElse: () => allCards.first)).toList();
+    final cards = bundle.cardIds
+        .map((id) => allCards.firstWhere((c) => c.id == id,
+            orElse: () => allCards.first))
+        .toList();
+    final canBuy = quote.canPurchase;
 
-    return Container(
+    return Opacity(
+      opacity: canBuy ? 1 : 0.5,
+      child: Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: LinearGradient(colors: [
@@ -313,14 +351,14 @@ class _BundleCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(bundle.name,
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.w700,
                             color: AppColors.textPrimary,
                             fontFamily: 'Inter')),
                     const SizedBox(height: 4),
                     Text('${bundle.cardIds.length} cards included',
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontSize: 12,
                             color: AppColors.textSecondary,
                             fontFamily: 'Inter')),
@@ -330,64 +368,103 @@ class _BundleCard extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text('${bundle.originalPrice} KP',
-                      style: TextStyle(
-                          fontSize: 12,
-                          color: AppColors.textSecondary.withOpacity(0.6),
-                          decoration: TextDecoration.lineThrough,
-                          fontFamily: 'Inter')),
-                  Text('${bundle.discountedPrice} KP',
-                      style: const TextStyle(
-                          fontSize: 22,
+                  if (quote.hasSale) ...[
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        gradient: AppColors.amberGradient,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        quote.saleLabel,
+                        style: const TextStyle(
+                          fontSize: 11,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.secondaryLight,
-                          fontFamily: 'Inter')),
+                          color: Colors.white,
+                          fontFamily: 'Inter',
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      '${quote.compareAtPrice} KP',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textSecondary.withOpacity(0.6),
+                        decoration: TextDecoration.lineThrough,
+                        fontFamily: 'Inter',
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                  ],
+                  Text(
+                    canBuy ? '${quote.totalPrice} KP' : 'Owned',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.secondaryLight,
+                      fontFamily: 'Inter',
+                    ),
+                  ),
                 ],
               ),
             ],
           ),
           const SizedBox(height: 14),
           Row(
-            children: cards.map((card) => Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                decoration: BoxDecoration(
-                  color: card.color.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: card.color.withOpacity(0.4)),
+            children: cards.map((card) {
+              final owned = isOwned(card.id);
+              return Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: Opacity(
+                  opacity: owned ? 0.4 : 1,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: card.color.withOpacity(owned ? 0.05 : 0.1),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                          color: card.color.withOpacity(owned ? 0.2 : 0.4)),
+                    ),
+                    child: Column(
+                      children: [
+                        Text(card.symbol,
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w900,
+                                color: owned ? Colors.white24 : card.color,
+                                fontFamily: 'Inter')),
+                        Text(
+                            owned ? 'Owned' : card.name,
+                            style: TextStyle(
+                                fontSize: 10,
+                                color: owned
+                                    ? AppColors.textSecondary
+                                    : AppColors.textSecondary,
+                                fontFamily: 'Inter')),
+                      ],
+                    ),
+                  ),
                 ),
-                child: Column(
-                  children: [
-                    Text(card.symbol,
-                        style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w900,
-                            color: card.color,
-                            fontFamily: 'Inter')),
-                    Text(card.name,
-                        style: const TextStyle(
-                            fontSize: 10,
-                            color: AppColors.textSecondary,
-                            fontFamily: 'Inter')),
-                  ],
-                ),
-              ),
-            )).toList(),
+              );
+            }).toList(),
           ),
           const SizedBox(height: 14),
-          Row(
-            children: [
-              Expanded(
-                child: GestureDetector(
-                  onTap: onBuyPoints,
+          if (canBuy) ...[
+            Row(
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: onBuyPoints,
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     decoration: BoxDecoration(
                       gradient: AppColors.amberGradient,
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Row(
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.auto_awesome, color: Colors.white, size: 16),
@@ -403,36 +480,66 @@ class _BundleCard extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: GestureDetector(
-                  onTap: onBuyBank,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    decoration: BoxDecoration(
-                      gradient: AppColors.primaryGradient,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.credit_card, color: Colors.white, size: 16),
-                        SizedBox(width: 6),
-                        Text('Pay with Bank',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 13,
-                                fontFamily: 'Inter')),
-                      ],
+                const SizedBox(width: 10),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: onBuyBank,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        gradient: AppColors.primaryGradient,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.credit_card,
+                              color: Colors.white, size: 16),
+                          SizedBox(width: 6),
+                          Text('Pay with Bank',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 13,
+                                  fontFamily: 'Inter')),
+                        ],
+                      ),
                     ),
                   ),
                 ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            GestureDetector(
+              onTap: onAddToCart,
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppColors.primary.withOpacity(0.35)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.add_shopping_cart,
+                        color: AppColors.primaryLight, size: 18),
+                    SizedBox(width: 8),
+                    Text('Add Bundle to Cart',
+                        style: TextStyle(
+                            color: AppColors.primaryLight,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 13,
+                            fontFamily: 'Inter')),
+                  ],
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
         ],
       ),
+    ),
     );
   }
 }
@@ -463,7 +570,7 @@ class _QRModal extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('VNPay Payment',
+              Text('VNPay Payment',
                   style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
@@ -478,11 +585,11 @@ class _QRModal extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: Colors.grey.shade300, width: 2),
                 ),
-                child: const Icon(Icons.qr_code,
+                child: Icon(Icons.qr_code,
                     size: 120, color: Colors.black54),
               ),
               const SizedBox(height: 8),
-              const Text('Scan QR code to pay',
+              Text('Scan QR code to pay',
                   style: TextStyle(
                       fontSize: 12,
                       color: Colors.black54,
@@ -517,7 +624,7 @@ class _QRModal extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
                   ),
-                  child: const Text('Confirm Payment',
+                  child: Text('Confirm Payment',
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
@@ -536,7 +643,7 @@ class _QRModal extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
                   ),
-                  child: const Text('Cancel',
+                  child: Text('Cancel',
                       style: TextStyle(
                           color: Colors.black87,
                           fontWeight: FontWeight.w600,
@@ -562,10 +669,10 @@ class _InfoRow extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(label,
-            style: const TextStyle(
+            style: TextStyle(
                 fontSize: 12, color: Colors.black54, fontFamily: 'Inter')),
         Text(value,
-            style: const TextStyle(
+            style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
                 color: Colors.black87,

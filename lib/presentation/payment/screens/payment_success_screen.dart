@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../shared/styles/app_colors.dart';
+import '../../../routes/app_navigation.dart';
 import '../../../routes/app_routes.dart';
 
 class PaymentSuccessScreen extends StatefulWidget {
@@ -23,6 +24,11 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
     _scale = CurvedAnimation(parent: _ctrl, curve: Curves.elasticOut);
     _fade = CurvedAnimation(parent: _ctrl, curve: Curves.easeIn);
     _ctrl.forward();
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted) {
+        AppNavigation.openMyBag(context);
+      }
+    });
   }
 
   @override
@@ -36,7 +42,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
     return Scaffold(
       backgroundColor: AppColors.backgroundDark,
       body: Container(
-        decoration: const BoxDecoration(gradient: AppColors.backgroundGradient),
+        decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(32),
@@ -63,7 +69,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
                             blurRadius: 30)
                       ],
                     ),
-                    child: const Icon(Icons.check_circle_outline,
+                    child: Icon(Icons.check_circle_outline,
                         color: AppColors.success, size: 56),
                   ),
                 ),
@@ -72,7 +78,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
                   opacity: _fade,
                   child: Column(
                     children: [
-                      const Text('Payment Successful!',
+                      Text('Payment Successful!',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontSize: 26,
@@ -80,7 +86,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
                               color: AppColors.textPrimary,
                               fontFamily: 'Inter')),
                       const SizedBox(height: 12),
-                      const Text(
+                      Text(
                           'Your chemical cards have been added to your collection. Start experimenting!',
                           textAlign: TextAlign.center,
                           style: TextStyle(
@@ -105,7 +111,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
                                   offset: const Offset(0, 6))
                             ],
                           ),
-                          child: const Row(
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(Icons.home_outlined,
@@ -123,7 +129,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
                       ),
                       const SizedBox(height: 14),
                       GestureDetector(
-                        onTap: () => Navigator.pushNamed(context, AppRoutes.myBag),
+                        onTap: () => AppNavigation.openMyBag(context),
                         child: Container(
                           width: double.infinity,
                           padding: const EdgeInsets.symmetric(vertical: 16),
@@ -133,13 +139,13 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
                             border: Border.all(
                                 color: AppColors.primary.withOpacity(0.3)),
                           ),
-                          child: const Row(
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(Icons.shopping_bag_outlined,
                                   color: AppColors.primary, size: 20),
                               SizedBox(width: 10),
-                              Text('View My Bag',
+                              Text('Đi đến túi ngay',
                                   style: TextStyle(
                                       color: AppColors.textPrimary,
                                       fontSize: 16,

@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 
 import 'presentation/home/providers/app_state.dart';
 import 'presentation/home/providers/home_provider.dart';
+import 'presentation/home/providers/theme_provider.dart';
+import 'shared/styles/app_colors.dart';
 import 'routes/app_routes.dart';
 
 import 'domain/models/account_setup_model.dart';
@@ -19,10 +21,16 @@ import 'presentation/ar_view/screens/scan_screen.dart';
 import 'presentation/ar_view/screens/result_screen.dart';
 import 'presentation/payment/screens/shop_screen.dart';
 import 'presentation/payment/screens/cart_screen.dart';
+import 'presentation/payment/screens/payment_page.dart';
 import 'presentation/payment/screens/payment_success_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  AppColors.applyTheme(
+    primaryColor: const Color(0xFF06B6D4),
+    accentColor: const Color(0xFF3B82F6),
+    light: false,
+  );
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -34,8 +42,15 @@ void main() {
   runApp(const ARChemistryApp());
 }
 
-class ARChemistryApp extends StatelessWidget {
+class ARChemistryApp extends StatefulWidget {
   const ARChemistryApp({super.key});
+
+  @override
+  State<ARChemistryApp> createState() => _ARChemistryAppState();
+}
+
+class _ARChemistryAppState extends State<ARChemistryApp> {
+  final _navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   Widget build(BuildContext context) {
@@ -43,42 +58,19 @@ class ARChemistryApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AppState()),
         ChangeNotifierProvider(create: (_) => HomeProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()..loadTheme()),
       ],
-      child: MaterialApp(
-        title: 'AR Chemistry Lab',
-        debugShowCheckedModeBanner: false,
-        theme: _buildTheme(),
-        initialRoute: AppRoutes.onboarding,
-        routes: _buildRoutes(),
-        onGenerateRoute: _onGenerateRoute,
-      ),
-    );
-  }
-
-  ThemeData _buildTheme() {
-    return ThemeData(
-      useMaterial3: true,
-      fontFamily: 'Inter',
-      colorScheme: const ColorScheme.dark(
-        primary: Color(0xFF06B6D4),
-        secondary: Color(0xFF10B981),
-        surface: Color(0xFF0F172A),
-        background: Color(0xFF020817),
-      ),
-      scaffoldBackgroundColor: const Color(0xFF020817),
-      appBarTheme: const AppBarTheme(
-        backgroundColor: Color(0xFF020817),
-        foregroundColor: Colors.white,
-        elevation: 0,
-        systemOverlayStyle: SystemUiOverlayStyle.light,
-      ),
-      textTheme: const TextTheme(
-        bodyMedium: TextStyle(fontFamily: 'Inter', color: Colors.white),
-      ),
-      pageTransitionsTheme: const PageTransitionsTheme(
-        builders: {
-          TargetPlatform.android: CupertinoPageTransitionsBuilder(),
-          TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, _) {
+          return MaterialApp(
+            navigatorKey: _navigatorKey,
+            title: 'AR Chemistry Lab',
+            debugShowCheckedModeBanner: false,
+            theme: themeProvider.buildThemeData(),
+            initialRoute: AppRoutes.onboarding,
+            routes: _buildRoutes(),
+            onGenerateRoute: _onGenerateRoute,
+          );
         },
       ),
     );
@@ -102,6 +94,7 @@ class ARChemistryApp extends StatelessWidget {
       AppRoutes.scan: (_) => const ScanScreen(),
       AppRoutes.shop: (_) => const ShopScreen(),
       AppRoutes.cart: (_) => const CartScreen(),
+      AppRoutes.payment: (_) => const PaymentPage(),
       AppRoutes.paymentSuccess: (_) => const PaymentSuccessScreen(),
     };
   }

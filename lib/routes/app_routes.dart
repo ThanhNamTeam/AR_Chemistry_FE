@@ -8,6 +8,7 @@ class AppRoutes {
   static const String result = '/result';
   static const String shop = '/shop';
   static const String cart = '/cart';
+  static const String payment = '/payment';
   static const String myBag = '/my-bag';
   static const String profile = '/profile';
   static const String paymentSuccess = '/payment-success';

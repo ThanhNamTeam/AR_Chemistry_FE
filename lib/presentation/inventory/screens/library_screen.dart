@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../shared/styles/app_colors.dart';
+import '../../../routes/app_routes.dart';
 import '../../../shared/widgets/chemical_card_widget.dart';
 import '../../home/providers/app_state.dart';
 
@@ -34,7 +35,7 @@ class _LibraryScreenState extends State<LibraryScreen>
     return Scaffold(
       backgroundColor: AppColors.backgroundDark,
       body: Container(
-        decoration: const BoxDecoration(gradient: AppColors.backgroundGradient),
+        decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
         child: SafeArea(
           child: Column(
             children: [
@@ -53,12 +54,12 @@ class _LibraryScreenState extends State<LibraryScreen>
                           border: Border.all(
                               color: AppColors.primary.withOpacity(0.3)),
                         ),
-                        child: const Icon(Icons.arrow_back,
+                        child: Icon(Icons.arrow_back,
                             color: AppColors.primary, size: 20),
                       ),
                     ),
                     const SizedBox(width: 14),
-                    const Text('My Library',
+                    Text('My Library',
                         style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.w700,
@@ -76,7 +77,7 @@ class _LibraryScreenState extends State<LibraryScreen>
                       ),
                       child: Text(
                         '${state.unlockedCards.length}/${state.cards.length}',
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontSize: 13,
                             color: AppColors.textCyan,
                             fontWeight: FontWeight.w600,
@@ -105,7 +106,7 @@ class _LibraryScreenState extends State<LibraryScreen>
                     borderRadius: BorderRadius.circular(10),
                   ),
                   dividerColor: Colors.transparent,
-                  labelStyle: const TextStyle(
+                  labelStyle: TextStyle(
                       fontFamily: 'Inter',
                       fontWeight: FontWeight.w600,
                       fontSize: 13),
@@ -137,7 +138,7 @@ class _LibraryScreenState extends State<LibraryScreen>
 
   Widget _buildGrid(List cards) {
     if (cards.isEmpty) {
-      return const Center(
+      return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -169,7 +170,15 @@ class _LibraryScreenState extends State<LibraryScreen>
         childAspectRatio: 0.75,
       ),
       itemCount: cards.length,
-      itemBuilder: (ctx, i) => ChemicalCardWidget(card: cards[i]),
+      itemBuilder: (ctx, i) {
+        final card = cards[i];
+        return ChemicalCardWidget(
+          card: card,
+          onTap: card.isUnlocked
+              ? null
+              : () => Navigator.pushNamed(context, AppRoutes.shop),
+        );
+      },
     );
   }
 }

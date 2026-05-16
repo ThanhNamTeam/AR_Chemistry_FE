@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/account_setup_model.dart';
+import '../../../domain/models/login_route_args.dart';
 import '../../../routes/app_routes.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../../shared/widgets/custom_text_field.dart';
@@ -22,8 +23,6 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
   final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
   final _confirmCtrl = TextEditingController();
-
-  UserRole _role = UserRole.student;
 
   @override
   void initState() {
@@ -47,6 +46,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
+    final isGoogle = widget.args.source == AccountSetupSource.google;
     if (_passCtrl.text != _confirmCtrl.text) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -57,168 +57,35 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
       return;
     }
 
-    if (_role == UserRole.teacher) {
-      final teacher = await _showTeacherProfileDialog();
-      if (!mounted || teacher == null) return;
-      context.read<AppState>().completeAccountSetup(AccountSetupData(
-            fullName: _nameCtrl.text.trim(),
-            email: _emailCtrl.text.trim(),
-            password: _passCtrl.text,
-            role: _role,
-            schoolName: teacher.schoolName,
-            certificateUrl: teacher.certificateUrl,
-            experience: teacher.experience,
-          ));
-    } else {
-      context.read<AppState>().completeAccountSetup(AccountSetupData(
-            fullName: _nameCtrl.text.trim(),
-            email: _emailCtrl.text.trim(),
-            password: _passCtrl.text,
-            role: _role,
-          ));
+    final data = AccountSetupData(
+      fullName: _nameCtrl.text.trim(),
+      email: _emailCtrl.text.trim(),
+      password: _passCtrl.text,
+    );
+    final state = context.read<AppState>();
+
+    if (isGoogle) {
+      final result = await state.completeGoogleAccountSetup(data);
+      if (!mounted) return;
+      final welcome = result.isFirstLogin
+          ? 'Đăng nhập thành công! Chào mừng ${result.fullName} đến với ${AppState.appDisplayName}!'
+          : 'Chào mừng bạn trở lại, ${result.fullName}!';
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        AppRoutes.home,
+        (_) => false,
+        arguments: HomeRouteArgs(welcomeMessage: welcome),
+      );
+      return;
     }
 
+    await state.registerAccount(data);
     if (!mounted) return;
-    Navigator.pushNamedAndRemoveUntil(context, AppRoutes.home, (_) => false);
-  }
-
-  Future<_TeacherFormResult?> _showTeacherProfileDialog() async {
-    final schoolCtrl = TextEditingController();
-    final certCtrl = TextEditingController();
-    final expCtrl = TextEditingController();
-    final dialogFormKey = GlobalKey<FormState>();
-
-    final result = await showDialog<_TeacherFormResult>(
-      context: context,
-      barrierDismissible: false,
-      builder: (ctx) {
-        return AlertDialog(
-          backgroundColor: AppColors.cardBg,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-            side: BorderSide(color: AppColors.primary.withOpacity(0.35)),
-          ),
-          title: const Text(
-            'Teacher profile',
-            style: TextStyle(
-              color: AppColors.textPrimary,
-              fontWeight: FontWeight.w700,
-              fontFamily: 'Inter',
-            ),
-          ),
-          content: SingleChildScrollView(
-            child: Form(
-              key: dialogFormKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  CustomTextField(
-                    label: 'School name',
-                    hint: 'Your school or institution',
-                    controller: schoolCtrl,
-                    prefixIcon: Icons.school_outlined,
-                    validator: (v) =>
-                        v == null || v.trim().isEmpty ? 'Required' : null,
-                  ),
-                  const SizedBox(height: 16),
-                  CustomTextField(
-                    label: 'Certificate (URL)',
-                    hint: 'Link to your teaching certificate',
-                    controller: certCtrl,
-                    prefixIcon: Icons.description_outlined,
-                    keyboardType: TextInputType.url,
-                    validator: (v) =>
-                        v == null || v.trim().isEmpty ? 'Required' : null,
-                  ),
-                  const SizedBox(height: 16),
-                  CustomTextField(
-                    label: 'Teaching experience',
-                    hint: 'Years of experience (e.g. 5)',
-                    controller: expCtrl,
-                    prefixIcon: Icons.work_outline,
-                    validator: (v) =>
-                        v == null || v.trim().isEmpty ? 'Required' : null,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: const Text('Cancel',
-                  style: TextStyle(color: AppColors.textSecondary)),
-            ),
-            TextButton(
-              onPressed: () {
-                if (!dialogFormKey.currentState!.validate()) return;
-                Navigator.pop(
-                  ctx,
-                  _TeacherFormResult(
-                    schoolName: schoolCtrl.text.trim(),
-                    certificateUrl: certCtrl.text.trim(),
-                    experience: expCtrl.text.trim(),
-                  ),
-                );
-              },
-              child: const Text('Save',
-                  style: TextStyle(color: AppColors.primaryLight)),
-            ),
-          ],
-        );
-      },
-    );
-
-    schoolCtrl.dispose();
-    certCtrl.dispose();
-    expCtrl.dispose();
-
-    return result;
-  }
-
-  Widget _roleChip({
-    required UserRole value,
-    required String label,
-    required IconData icon,
-  }) {
-    final selected = _role == value;
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => setState(() => _role = value),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
-          padding: const EdgeInsets.symmetric(vertical: 14),
-          decoration: BoxDecoration(
-            gradient: selected ? AppColors.primaryGradient : null,
-            color: selected ? null : AppColors.cardBg.withOpacity(0.5),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: selected
-                  ? Colors.transparent
-                  : AppColors.primary.withOpacity(0.35),
-              width: 1.5,
-            ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon,
-                  size: 20,
-                  color: selected ? Colors.white : AppColors.textCyan),
-              const SizedBox(width: 8),
-              Text(
-                label,
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontFamily: 'Inter',
-                  color: selected ? Colors.white : AppColors.textPrimary,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      AppRoutes.login,
+      (_) => false,
+      arguments: const LoginRouteArgs(registrationSuccess: true),
     );
   }
 
@@ -229,7 +96,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
     return Scaffold(
       backgroundColor: AppColors.backgroundDark,
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
               AppColors.backgroundDark,
@@ -258,7 +125,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                           border: Border.all(
                               color: AppColors.primary.withOpacity(0.5)),
                         ),
-                        child: const Icon(Icons.arrow_back,
+                        child: Icon(Icons.arrow_back,
                             color: AppColors.primary, size: 20),
                       ),
                     ),
@@ -267,7 +134,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                 const SizedBox(height: 16),
                 Text(
                   isGoogle ? 'Complete your account' : 'Create your account',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.w700,
                     color: AppColors.textPrimary,
@@ -277,9 +144,9 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                 const SizedBox(height: 8),
                 Text(
                   isGoogle
-                      ? 'Your Google email is confirmed. Set a password and choose your role.'
-                      : 'Enter your details, set a password, and choose your role.',
-                  style: const TextStyle(
+                      ? 'Your Google email is confirmed. Set a password to finish.'
+                      : 'Enter your details and set a password.',
+                  style: TextStyle(
                     fontSize: 13,
                     color: AppColors.textCyan,
                     fontFamily: 'Inter',
@@ -346,43 +213,6 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                               v == null || v.isEmpty ? 'Required' : null,
                         ),
                         const SizedBox(height: 24),
-                        const Text(
-                          'Role',
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
-                            color: AppColors.textCyan,
-                            fontFamily: 'Inter',
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Row(
-                          children: [
-                            _roleChip(
-                              value: UserRole.student,
-                              label: 'Student',
-                              icon: Icons.school_outlined,
-                            ),
-                            const SizedBox(width: 12),
-                            _roleChip(
-                              value: UserRole.teacher,
-                              label: 'Teacher',
-                              icon: Icons.person_pin_outlined,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          _role == UserRole.teacher
-                              ? 'Teachers will be asked for school, certificate link, and experience.'
-                              : '',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: AppColors.textSecondary.withOpacity(0.9),
-                            fontFamily: 'Inter',
-                          ),
-                        ),
-                        const SizedBox(height: 20),
                         GestureDetector(
                           onTap: _submit,
                           child: Container(
@@ -402,7 +232,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                             child: Text(
                               isGoogle ? 'Save & continue' : 'Sign up',
                               textAlign: TextAlign.center,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
@@ -422,16 +252,4 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
       ),
     );
   }
-}
-
-class _TeacherFormResult {
-  final String schoolName;
-  final String certificateUrl;
-  final String experience;
-
-  _TeacherFormResult({
-    required this.schoolName,
-    required this.certificateUrl,
-    required this.experience,
-  });
 }

@@ -17,6 +17,7 @@ class _ScanScreenState extends State<ScanScreen> with TickerProviderStateMixin {
   late AnimationController _scanCtrl;
   late Animation<double> _scanAnim;
   late AnimationController _pulseCtrl;
+  bool _scanning = false;
 
   @override
   void initState() {
@@ -42,28 +43,40 @@ class _ScanScreenState extends State<ScanScreen> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  void _simulateScan(AppState state) {
-    final unlockedCards = state.unlockedCards;
-    if (unlockedCards.isEmpty) return;
-    final available = unlockedCards
-        .where((c) => !state.scannedCards.contains(c.id))
-        .toList();
-    if (available.isEmpty) {
-      if (state.scannedCards.length >= 2) {
-        _goToResult(state);
-      }
+  void _toast(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(msg, style: TextStyle(fontFamily: 'Inter')),
+        backgroundColor: AppColors.secondary,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  Future<void> _simulateScan(AppState state) async {
+    if (state.unlockedCards.length < 2) {
+      _toast('You need at least 2 unlocked cards to experiment');
       return;
     }
+    if (_scanning) return;
+
+    final available = state.unlockedCards
+        .where((c) => !state.scannedCards.contains(c.id))
+        .toList();
+    if (available.isEmpty) return;
+
+    setState(() => _scanning = true);
+    await Future.delayed(const Duration(milliseconds: 1500));
+    if (!mounted) return;
+
     final card = available.first;
     state.addScannedCard(card.id);
-    if (state.scannedCards.length >= 2) {
-      Future.delayed(const Duration(milliseconds: 600), () {
-        if (mounted) _goToResult(state);
-      });
-    }
+    setState(() => _scanning = false);
+    _toast('Scanned: ${card.symbol} - ${card.name}');
   }
 
   void _goToResult(AppState state) {
+    if (state.scannedCards.length < 2) return;
     Navigator.pushNamed(
       context,
       AppRoutes.result,
@@ -83,7 +96,7 @@ class _ScanScreenState extends State<ScanScreen> with TickerProviderStateMixin {
     return Scaffold(
       backgroundColor: AppColors.backgroundDark,
       body: Container(
-        decoration: const BoxDecoration(gradient: AppColors.backgroundGradient),
+        decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
         child: SafeArea(
           child: Column(
             children: [
@@ -106,7 +119,7 @@ class _ScanScreenState extends State<ScanScreen> with TickerProviderStateMixin {
                             color: AppColors.primary.withOpacity(0.3),
                           ),
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.arrow_back,
                           color: AppColors.primary,
                           size: 20,
@@ -114,7 +127,7 @@ class _ScanScreenState extends State<ScanScreen> with TickerProviderStateMixin {
                       ),
                     ),
                     const SizedBox(width: 14),
-                    const Expanded(
+                    Expanded(
                       child: Text(
                         'AR Scanner',
                         style: TextStyle(
@@ -217,7 +230,7 @@ class _ScanScreenState extends State<ScanScreen> with TickerProviderStateMixin {
                                                   .withOpacity(0.4),
                                             ),
                                           ),
-                                          child: const Icon(
+                                          child: Icon(
                                             Icons.qr_code_scanner,
                                             color: AppColors.primary,
                                             size: 40,
@@ -225,7 +238,7 @@ class _ScanScreenState extends State<ScanScreen> with TickerProviderStateMixin {
                                         ),
                                       ),
                                       const SizedBox(height: 16),
-                                      const Text(
+                                      Text(
                                         'Point camera at a\nchemical card',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
@@ -247,7 +260,7 @@ class _ScanScreenState extends State<ScanScreen> with TickerProviderStateMixin {
 
                       // Scanned cards row
                       if (scanned.isNotEmpty) ...[
-                        const Align(
+                        Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
                             'Scanned Cards',
@@ -284,7 +297,7 @@ class _ScanScreenState extends State<ScanScreen> with TickerProviderStateMixin {
                                     ),
                                     color: AppColors.cardBg.withOpacity(0.3),
                                   ),
-                                  child: const Icon(
+                                  child: Icon(
                                     Icons.add,
                                     color: AppColors.textSecondary,
                                     size: 24,
@@ -296,55 +309,97 @@ class _ScanScreenState extends State<ScanScreen> with TickerProviderStateMixin {
                         const SizedBox(height: 16),
                       ],
 
-                      // Simulate scan button
-                      GestureDetector(
-                        onTap: () => _simulateScan(state),
-                        child: Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(vertical: 18),
-                          decoration: BoxDecoration(
-                            gradient: AppColors.cyanEmeraldGradient,
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppColors.primary.withOpacity(0.35),
-                                blurRadius: 20,
-                                offset: const Offset(0, 6),
-                              ),
-                            ],
+                      if (state.unlockedCards.length < 2)
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 12),
+                          child: Text(
+                            'Unlock at least 2 cards in your library to run experiments',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: AppColors.error,
+                              fontSize: 12,
+                              fontFamily: 'Inter',
+                            ),
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(
-                                Icons.document_scanner,
-                                color: Colors.white,
-                                size: 22,
-                              ),
-                              const SizedBox(width: 10),
-                              Text(
-                                scanned.isEmpty
-                                    ? 'Simulate Scan (Card 1)'
-                                    : scanned.length == 1
-                                    ? 'Simulate Scan (Card 2)'
-                                    : 'View Result',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  fontFamily: 'Inter',
+                        ),
+                      GestureDetector(
+                        onTap: _scanning ? null : () => _simulateScan(state),
+                        child: Opacity(
+                          opacity: _scanning ? 0.6 : 1,
+                          child: Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(vertical: 18),
+                            decoration: BoxDecoration(
+                              gradient: AppColors.cyanEmeraldGradient,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                if (_scanning)
+                                  const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                else
+                                  Icon(Icons.document_scanner,
+                                      color: Colors.white, size: 22),
+                                const SizedBox(width: 10),
+                                Text(
+                                  _scanning
+                                      ? 'Scanning...'
+                                      : scanned.isEmpty
+                                          ? 'Scan Card 1'
+                                          : scanned.length == 1
+                                              ? 'Scan Card 2'
+                                              : 'Scan again',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: 'Inter',
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
                       const SizedBox(height: 12),
-                      if (scanned.isNotEmpty)
+                      if (scanned.length >= 2)
+                        GestureDetector(
+                          onTap: () => _goToResult(state),
+                          child: Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            decoration: BoxDecoration(
+                              color: AppColors.secondary.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                  color: AppColors.secondary.withOpacity(0.5)),
+                            ),
+                            child: Text(
+                              'Run Experiment',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: AppColors.secondaryLight,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                                fontFamily: 'Inter',
+                              ),
+                            ),
+                          ),
+                        ),
+                      if (scanned.isNotEmpty) ...[
+                        const SizedBox(height: 10),
                         GestureDetector(
                           onTap: state.clearScannedCards,
-                          child: const Text(
-                            'Clear',
+                          child: Text(
+                            'Reset',
                             style: TextStyle(
                               color: AppColors.textSecondary,
                               fontFamily: 'Inter',
@@ -352,6 +407,7 @@ class _ScanScreenState extends State<ScanScreen> with TickerProviderStateMixin {
                             ),
                           ),
                         ),
+                      ],
                     ],
                   ),
                 ),
@@ -366,7 +422,7 @@ class _ScanScreenState extends State<ScanScreen> with TickerProviderStateMixin {
   List<Widget> _buildCorners() {
     const size = 24.0;
     const stroke = 3.0;
-    const color = AppColors.primary;
+    final color = AppColors.primary;
     return [
       Positioned(
         top: 20,

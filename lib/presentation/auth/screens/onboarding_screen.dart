@@ -16,7 +16,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   late AnimationController _pulseCtrl;
   late Animation<double> _pulse;
 
-  static const _slides = [
+  static final _slides = [
     (Icons.qr_code_scanner, 'Scan Chemical Cards',
         'Use AR technology to scan physical chemistry cards and bring molecules to life in 3D',
         AppColors.primary),
@@ -59,7 +59,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     return Scaffold(
       backgroundColor: AppColors.backgroundDark,
       body: Container(
-        decoration: const BoxDecoration(gradient: AppColors.backgroundGradient),
+        decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
         child: SafeArea(
           child: Stack(
             children: [
@@ -105,7 +105,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                     child: TextButton(
                       onPressed: () => Navigator.pushReplacementNamed(
                           context, AppRoutes.login),
-                      child: const Text('Skip',
+                      child: Text('Skip',
                           style: TextStyle(
                               color: AppColors.primaryLight,
                               fontFamily: 'Inter',
@@ -153,7 +153,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                                     AppColors.cyanEmeraldGradient.createShader(b),
                                 child: Text(s.$2,
                                     textAlign: TextAlign.center,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                         fontSize: 26,
                                         fontWeight: FontWeight.w700,
                                         color: Colors.white,
@@ -163,7 +163,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                               const SizedBox(height: 20),
                               Text(s.$3,
                                   textAlign: TextAlign.center,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                       fontSize: 15,
                                       color: AppColors.textSecondary,
                                       fontFamily: 'Inter',
@@ -229,14 +229,14 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                                   _current < _slides.length - 1
                                       ? 'Next'
                                       : 'Get Started',
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600,
                                       fontFamily: 'Inter'),
                                 ),
                                 const SizedBox(width: 8),
-                                const Icon(Icons.chevron_right,
+                                Icon(Icons.chevron_right,
                                     color: Colors.white, size: 20),
                               ],
                             ),

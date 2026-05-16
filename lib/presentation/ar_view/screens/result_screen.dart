@@ -20,6 +20,7 @@ class _ResultScreenState extends State<ResultScreen>
   late Animation<double> _fadeAnim;
   late Animation<Offset> _slideAnim;
   bool _pointsAdded = false;
+  bool _showResult = false;
 
   @override
   void initState() {
@@ -33,8 +34,11 @@ class _ResultScreenState extends State<ResultScreen>
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _revealCtrl, curve: Curves.easeOut));
 
-    Future.delayed(const Duration(milliseconds: 300), () {
-      if (mounted) _revealCtrl.forward();
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted) {
+        setState(() => _showResult = true);
+        _revealCtrl.forward();
+      }
     });
   }
 
@@ -63,10 +67,10 @@ class _ResultScreenState extends State<ResultScreen>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.error_outline,
+              Icon(Icons.error_outline,
                   color: AppColors.textSecondary, size: 56),
               const SizedBox(height: 16),
-              const Text('No experiment data found',
+              Text('No experiment data found',
                   style: TextStyle(
                       color: AppColors.textPrimary,
                       fontSize: 16,
@@ -85,10 +89,9 @@ class _ResultScreenState extends State<ResultScreen>
 
     final reaction = ChemicalData.getReaction(card1.symbol, card2.symbol);
 
-    // Add points once
     if (!_pointsAdded) {
       _pointsAdded = true;
-      Future.delayed(const Duration(milliseconds: 1200), () {
+      Future.delayed(const Duration(milliseconds: 2000), () {
         if (mounted) {
           state.addKnowledgePoints(reaction.points);
           state.clearScannedCards();
@@ -96,10 +99,19 @@ class _ResultScreenState extends State<ResultScreen>
       });
     }
 
+    if (!_showResult) {
+      return Scaffold(
+        backgroundColor: AppColors.backgroundDark,
+        body: Center(
+          child: CircularProgressIndicator(color: AppColors.primary),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: AppColors.backgroundDark,
       body: Container(
-        decoration: const BoxDecoration(gradient: AppColors.backgroundGradient),
+        decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
         child: Stack(
           children: [
             // BG blobs
@@ -132,7 +144,7 @@ class _ResultScreenState extends State<ResultScreen>
                     padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
                     child: Row(
                       children: [
-                        const Expanded(
+                        Expanded(
                           child: Text('Experiment Result',
                               style: TextStyle(
                                   fontSize: 22,
@@ -205,7 +217,7 @@ class _ResultScreenState extends State<ResultScreen>
                                       border: Border.all(
                                           color: AppColors.primary.withOpacity(0.3)),
                                     ),
-                                    child: const Row(
+                                    child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
@@ -244,7 +256,7 @@ class _ResultScreenState extends State<ResultScreen>
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         _CardChip(card: c1),
-        const Padding(
+        Padding(
           padding: EdgeInsets.symmetric(horizontal: 10),
           child: Text('+',
               style: TextStyle(
@@ -253,7 +265,7 @@ class _ResultScreenState extends State<ResultScreen>
                   color: AppColors.primaryLight)),
         ),
         _CardChip(card: c2),
-        const Padding(
+        Padding(
           padding: EdgeInsets.symmetric(horizontal: 10),
           child: Icon(Icons.arrow_forward,
               color: AppColors.secondary, size: 28),
@@ -275,7 +287,7 @@ class _ResultScreenState extends State<ResultScreen>
           ),
           child: Text(
             '${c1.symbol}${c2.symbol}',
-            style: const TextStyle(
+            style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w900,
                 color: AppColors.secondaryLight,
@@ -304,7 +316,7 @@ class _ResultScreenState extends State<ResultScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(reaction.name,
-              style: const TextStyle(
+              style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w700,
                   color: AppColors.textPrimary,
@@ -321,7 +333,7 @@ class _ResultScreenState extends State<ResultScreen>
             ),
             child: Text(reaction.equation,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                     fontFamily: 'monospace',
                     fontSize: 18,
                     color: AppColors.secondaryLight,
@@ -329,7 +341,7 @@ class _ResultScreenState extends State<ResultScreen>
           ),
           const SizedBox(height: 14),
           Text(reaction.description,
-              style: const TextStyle(
+              style: TextStyle(
                   color: AppColors.textSecondary,
                   fontSize: 13,
                   height: 1.6,
@@ -353,20 +365,20 @@ class _ResultScreenState extends State<ResultScreen>
       ),
       child: Column(
         children: [
-          const Text('Knowledge Points Earned',
+          Text('Knowledge Points Earned',
               style: TextStyle(
                   color: AppColors.textAmber,
                   fontSize: 13,
                   fontFamily: 'Inter')),
           const SizedBox(height: 8),
           Text('+$points',
-              style: const TextStyle(
+              style: TextStyle(
                   fontSize: 48,
                   fontWeight: FontWeight.w900,
                   color: AppColors.amberLight,
                   fontFamily: 'Inter')),
           const SizedBox(height: 6),
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(Icons.auto_awesome, color: AppColors.amber, size: 16),
@@ -434,7 +446,7 @@ class _PrimaryButton extends StatelessWidget {
         ),
         child: Text(label,
             textAlign: TextAlign.center,
-            style: const TextStyle(
+            style: TextStyle(
                 color: Colors.white,
                 fontSize: 15,
                 fontWeight: FontWeight.w700,

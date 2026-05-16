@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../domain/models/account_setup_model.dart';
+import '../../../domain/models/login_route_args.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../../shared/widgets/custom_text_field.dart';
 import '../../../routes/app_routes.dart';
@@ -23,6 +24,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
 
   late AnimationController _bgCtrl;
   late Animation<double> _bgPulse;
+  bool _registrationMessageShown = false;
 
   @override
   void initState() {
@@ -32,6 +34,36 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
       ..repeat(reverse: true);
     _bgPulse = Tween<double>(begin: 0.8, end: 1.0)
         .animate(CurvedAnimation(parent: _bgCtrl, curve: Curves.easeInOut));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _restoreSession();
+      _showRegistrationSuccessMessage();
+    });
+  }
+
+  void _showRegistrationSuccessMessage() {
+    if (_registrationMessageShown || !mounted) return;
+    final args = ModalRoute.of(context)?.settings.arguments;
+    if (args is! LoginRouteArgs || !args.registrationSuccess) return;
+    _registrationMessageShown = true;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'Đăng ký thành công! Vui lòng đăng nhập.',
+          style: TextStyle(fontFamily: 'Inter'),
+        ),
+        backgroundColor: AppColors.success,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+    );
+  }
+
+  Future<void> _restoreSession() async {
+    final state = context.read<AppState>();
+    if (!state.initialized) await state.initialize();
+    if (mounted && state.isLoggedIn) {
+      Navigator.pushReplacementNamed(context, AppRoutes.home);
+    }
   }
 
   @override
@@ -42,10 +74,33 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     super.dispose();
   }
 
-  void _login() {
+  Future<void> _login() async {
     if (!_loginKey.currentState!.validate()) return;
-    context.read<AppState>().login(_emailCtrl.text, _passCtrl.text);
-    Navigator.pushReplacementNamed(context, AppRoutes.home);
+    final state = context.read<AppState>();
+    if (!state.initialized) await state.initialize();
+    final response = await state.login(
+      _emailCtrl.text.trim(),
+      _passCtrl.text,
+    );
+    if (!mounted) return;
+    if (response.error != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(response.error!),
+          backgroundColor: AppColors.error,
+        ),
+      );
+      return;
+    }
+    final result = response.result!;
+    final welcome = result.isFirstLogin
+        ? 'Đăng nhập thành công! Chào mừng ${result.fullName} đến với ${AppState.appDisplayName}!'
+        : 'Chào mừng bạn trở lại, ${result.fullName}!';
+    Navigator.pushReplacementNamed(
+      context,
+      AppRoutes.home,
+      arguments: HomeRouteArgs(welcomeMessage: welcome),
+    );
   }
 
   void _loginGoogle() {
@@ -73,7 +128,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     return Scaffold(
       backgroundColor: AppColors.backgroundDark,
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
               AppColors.backgroundDark,
@@ -154,22 +209,22 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
             ),
             child: Container(
               width: 72, height: 72,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: AppColors.primaryGradient,
               ),
-              child: const Center(
+              child: Center(
                 child: Text('⚗️', style: TextStyle(fontSize: 32)),
               ),
             ),
           ),
           const SizedBox(height: 20),
-          const Text('Chemistry AR',
+          Text('Chemistry AR',
               style: TextStyle(
                   fontSize: 24, fontWeight: FontWeight.w700,
                   color: AppColors.textPrimary, fontFamily: 'Inter')),
           const SizedBox(height: 6),
-          const Text('Learn chemistry with augmented reality',
+          Text('Learn chemistry with augmented reality',
               style: TextStyle(
                   fontSize: 13, color: AppColors.textCyan, fontFamily: 'Inter')),
           const SizedBox(height: 36),
@@ -223,7 +278,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
           // Divider
           Row(children: [
             Expanded(child: Divider(color: AppColors.textSecondary.withOpacity(0.3))),
-            const Padding(
+            Padding(
               padding: EdgeInsets.symmetric(horizontal: 12),
               child: Text('Or continue with',
                   style: TextStyle(
@@ -244,7 +299,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: Colors.grey.shade300),
               ),
-              child: const Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text('G', style: TextStyle(
@@ -263,12 +318,12 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
 
           // Sign up link
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            const Text("Don't have an account? ",
+            Text("Don't have an account? ",
                 style: TextStyle(
                     color: AppColors.textSecondary, fontSize: 13, fontFamily: 'Inter')),
             GestureDetector(
               onTap: () => setState(() => _showSignUp = true),
-              child: const Text('Sign Up',
+              child: Text('Sign Up',
                   style: TextStyle(
                       color: AppColors.primaryLight, fontWeight: FontWeight.w600,
                       fontSize: 13, fontFamily: 'Inter')),
@@ -301,30 +356,30 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                       border: Border.all(
                           color: AppColors.primary.withOpacity(0.5)),
                     ),
-                    child: const Icon(Icons.arrow_back,
+                    child: Icon(Icons.arrow_back,
                         color: AppColors.primary, size: 20),
                   ),
                 ),
               ),
               Container(
                 width: 56, height: 56,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: AppColors.primaryGradient,
                 ),
-                child: const Center(
+                child: Center(
                     child: Text('⚗️', style: TextStyle(fontSize: 24))),
               ),
             ],
           ),
           const SizedBox(height: 16),
-          const Text('Create Account',
+          Text('Create Account',
               style: TextStyle(
                   fontSize: 22, fontWeight: FontWeight.w700,
                   color: AppColors.textPrimary, fontFamily: 'Inter')),
           const SizedBox(height: 6),
-          const Text(
-            'Set your profile, password, and role on the next screen.',
+          Text(
+            'Set your profile and password on the next screen.',
             textAlign: TextAlign.center,
             style: TextStyle(
                 fontSize: 13, color: AppColors.textCyan, fontFamily: 'Inter'),
@@ -351,12 +406,12 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
           ),
           const SizedBox(height: 20),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            const Text('Already have an account? ',
+            Text('Already have an account? ',
                 style: TextStyle(
                     color: AppColors.textSecondary, fontSize: 13, fontFamily: 'Inter')),
             GestureDetector(
               onTap: () => setState(() => _showSignUp = false),
-              child: const Text('Login',
+              child: Text('Login',
                   style: TextStyle(
                       color: AppColors.primaryLight, fontWeight: FontWeight.w600,
                       fontSize: 13, fontFamily: 'Inter')),
@@ -388,7 +443,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
         ),
         child: Text(label,
             textAlign: TextAlign.center,
-            style: const TextStyle(
+            style: TextStyle(
                 color: Colors.white, fontSize: 16,
                 fontWeight: FontWeight.w600, fontFamily: 'Inter')),
       ),

@@ -63,7 +63,7 @@ class LoginForm extends StatelessWidget {
               child: Text(
                 submitLabel,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white,
                   fontSize: 16,
                   fontWeight: FontWeight.w600,

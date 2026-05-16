@@ -4,6 +4,7 @@ import '../../../shared/styles/app_colors.dart';
 import '../../../shared/widgets/knowledge_points_badge.dart';
 import '../../../routes/app_routes.dart';
 import '../../home/providers/app_state.dart';
+import '../../home/providers/theme_provider.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -11,11 +12,12 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<AppState>();
+    final themeProvider = context.watch<ThemeProvider>();
 
     return Scaffold(
       backgroundColor: AppColors.backgroundDark,
       body: Container(
-        decoration: const BoxDecoration(gradient: AppColors.backgroundGradient),
+        decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
         child: SafeArea(
           child: SingleChildScrollView(
             child: Column(
@@ -35,12 +37,12 @@ class ProfileScreen extends StatelessWidget {
                             border: Border.all(
                                 color: AppColors.primary.withOpacity(0.3)),
                           ),
-                          child: const Icon(Icons.arrow_back,
+                          child: Icon(Icons.arrow_back,
                               color: AppColors.primary, size: 20),
                         ),
                       ),
                       const SizedBox(width: 14),
-                      const Text('Profile',
+                      Text('Profile',
                           style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.w700,
@@ -85,7 +87,7 @@ class ProfileScreen extends StatelessWidget {
                         child: Center(
                           child: Text(
                             (state.userName ?? 'S').substring(0, 1).toUpperCase(),
-                            style: const TextStyle(
+                            style: TextStyle(
                                 fontSize: 32,
                                 fontWeight: FontWeight.w700,
                                 color: Colors.white,
@@ -95,14 +97,14 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       Text(state.userName ?? 'Student',
-                          style: const TextStyle(
+                          style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.w700,
                               color: AppColors.textPrimary,
                               fontFamily: 'Inter')),
                       const SizedBox(height: 4),
                       Text(state.userEmail ?? '',
-                          style: const TextStyle(
+                          style: TextStyle(
                               fontSize: 13,
                               color: AppColors.textSecondary,
                               fontFamily: 'Inter')),
@@ -116,27 +118,129 @@ class ProfileScreen extends StatelessWidget {
                 // Stats row
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
+                  child: Column(
                     children: [
-                      _StatCard(
-                        icon: Icons.menu_book_outlined,
-                        label: 'Cards',
-                        value: '${state.unlockedCards.length}',
-                        color: AppColors.primary,
+                      Row(
+                        children: [
+                          _StatCard(
+                            icon: Icons.menu_book_outlined,
+                            label: 'Cards Unlocked',
+                            value: '${state.unlockedCount}/${state.totalCards}',
+                            color: AppColors.primary,
+                          ),
+                          const SizedBox(width: 12),
+                          _StatCard(
+                            icon: Icons.science_outlined,
+                            label: 'Experiments',
+                            value: '${state.experimentsCount}',
+                            color: AppColors.secondary,
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 12),
-                      _StatCard(
-                        icon: Icons.science_outlined,
-                        label: 'Elements',
-                        value: '${state.cards.length}',
-                        color: AppColors.secondary,
+                      const SizedBox(height: 14),
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: AppColors.cardBg.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                              color: AppColors.primary.withOpacity(0.2)),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('Library Progress',
+                                    style: TextStyle(
+                                        color: AppColors.textSecondary,
+                                        fontSize: 12,
+                                        fontFamily: 'Inter')),
+                                Text(
+                                    '${(state.libraryProgress * 100).round()}%',
+                                    style: TextStyle(
+                                        color: AppColors.primaryLight,
+                                        fontWeight: FontWeight.w700,
+                                        fontFamily: 'Inter')),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: LinearProgressIndicator(
+                                value: state.libraryProgress,
+                                minHeight: 8,
+                                backgroundColor:
+                                    AppColors.primary.withOpacity(0.15),
+                                color: AppColors.primary,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                      const SizedBox(width: 12),
-                      _StatCard(
-                        icon: Icons.auto_awesome,
-                        label: 'KP',
-                        value: '${state.knowledgePoints}',
-                        color: AppColors.amber,
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                // Theme selector
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('App Theme',
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.textPrimary,
+                              fontFamily: 'Inter')),
+                      const SizedBox(height: 12),
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: ThemeProvider.options.map((option) {
+                          final selected =
+                              themeProvider.theme == option.key;
+                          return GestureDetector(
+                            onTap: () => themeProvider.setTheme(option.key),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 8),
+                              decoration: BoxDecoration(
+                                gradient: selected
+                                    ? LinearGradient(
+                                        colors: [
+                                          option.primary,
+                                          option.accent,
+                                        ],
+                                      )
+                                    : null,
+                                color: selected
+                                    ? null
+                                    : AppColors.cardBg.withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                  color: selected
+                                      ? Colors.transparent
+                                      : AppColors.primary.withOpacity(0.3),
+                                ),
+                              ),
+                              child: Text(
+                                option.name,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: selected
+                                      ? Colors.white
+                                      : AppColors.textSecondary,
+                                  fontFamily: 'Inter',
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
                       ),
                     ],
                   ),
@@ -187,10 +291,12 @@ class ProfileScreen extends StatelessWidget {
 
                       // Logout
                       GestureDetector(
-                        onTap: () {
-                          state.logout();
-                          Navigator.pushNamedAndRemoveUntil(
-                              context, AppRoutes.login, (r) => false);
+                        onTap: () async {
+                          await state.logout();
+                          if (context.mounted) {
+                            Navigator.pushNamedAndRemoveUntil(
+                                context, AppRoutes.login, (r) => false);
+                          }
                         },
                         child: Container(
                           width: double.infinity,
@@ -201,7 +307,7 @@ class ProfileScreen extends StatelessWidget {
                             border: Border.all(
                                 color: AppColors.error.withOpacity(0.4)),
                           ),
-                          child: const Row(
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(Icons.logout, color: AppColors.error, size: 20),
@@ -264,7 +370,7 @@ class _StatCard extends StatelessWidget {
                     fontFamily: 'Inter')),
             const SizedBox(height: 4),
             Text(label,
-                style: const TextStyle(
+                style: TextStyle(
                     fontSize: 11,
                     color: AppColors.textSecondary,
                     fontFamily: 'Inter')),
@@ -317,21 +423,21 @@ class _MenuItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(label,
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
                           color: AppColors.textPrimary,
                           fontFamily: 'Inter')),
                   const SizedBox(height: 2),
                   Text(subtitle,
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontSize: 12,
                           color: AppColors.textSecondary,
                           fontFamily: 'Inter')),
                 ],
               ),
             ),
-            const Icon(Icons.chevron_right,
+            Icon(Icons.chevron_right,
                 color: AppColors.textSecondary, size: 20),
           ],
         ),

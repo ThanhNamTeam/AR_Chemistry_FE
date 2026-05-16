@@ -14,7 +14,7 @@ class ARScreen extends StatelessWidget {
         children: [
           // Camera placeholder
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [Colors.black, Color(0xFF0C1A33)],
                 begin: Alignment.topCenter,
@@ -34,18 +34,18 @@ class ARScreen extends StatelessWidget {
                     border: Border.all(
                         color: AppColors.primary.withOpacity(0.5), width: 2),
                   ),
-                  child: const Icon(Icons.view_in_ar,
+                  child: Icon(Icons.view_in_ar,
                       color: AppColors.primary, size: 56),
                 ),
                 const SizedBox(height: 24),
-                const Text('AR Camera',
+                Text('AR Camera',
                     style: TextStyle(
                         color: AppColors.textPrimary,
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
                         fontFamily: 'Inter')),
                 const SizedBox(height: 8),
-                const Text('ARCore/ARKit integration ready',
+                Text('ARCore/ARKit integration ready',
                     style: TextStyle(
                         color: AppColors.textSecondary,
                         fontSize: 13,
@@ -67,7 +67,7 @@ class ARScreen extends StatelessWidget {
                     border: Border.all(
                         color: AppColors.primary.withOpacity(0.4)),
                   ),
-                  child: const Icon(Icons.arrow_back,
+                  child: Icon(Icons.arrow_back,
                       color: AppColors.primary, size: 20),
                 ),
               ),

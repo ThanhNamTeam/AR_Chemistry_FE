@@ -11,7 +11,7 @@ class KnowledgePointsBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           colors: [Color(0x33F59E0B), Color(0x33EA580C)],
         ),
         borderRadius: BorderRadius.circular(999),
@@ -20,18 +20,18 @@ class KnowledgePointsBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.auto_awesome, color: AppColors.amberLight, size: 16),
+          Icon(Icons.auto_awesome, color: AppColors.amberLight, size: 16),
           const SizedBox(width: 6),
           Text(
             '$points',
-            style: const TextStyle(
+            style: TextStyle(
               color: AppColors.amberLight,
               fontWeight: FontWeight.w700,
               fontSize: 14,
             ),
           ),
           const SizedBox(width: 4),
-          const Text(
+          Text(
             'KP',
             style: TextStyle(
               color: Color(0xFFFDE68A),

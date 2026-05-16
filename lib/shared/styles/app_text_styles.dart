@@ -5,7 +5,7 @@ class AppTextStyles {
   static const String _fontFamily = 'Inter';
 
   // Headings
-  static const TextStyle h1 = TextStyle(
+  static final TextStyle h1 = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 28,
     fontWeight: FontWeight.w700,
@@ -13,21 +13,21 @@ class AppTextStyles {
     letterSpacing: -0.5,
   );
 
-  static const TextStyle h2 = TextStyle(
+  static final TextStyle h2 = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 24,
     fontWeight: FontWeight.w700,
     color: AppColors.textPrimary,
   );
 
-  static const TextStyle h3 = TextStyle(
+  static final TextStyle h3 = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 20,
     fontWeight: FontWeight.w600,
     color: AppColors.textPrimary,
   );
 
-  static const TextStyle h4 = TextStyle(
+  static final TextStyle h4 = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 18,
     fontWeight: FontWeight.w600,
@@ -35,7 +35,7 @@ class AppTextStyles {
   );
 
   // Body
-  static const TextStyle bodyLarge = TextStyle(
+  static final TextStyle bodyLarge = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 16,
     fontWeight: FontWeight.w400,
@@ -43,7 +43,7 @@ class AppTextStyles {
     height: 1.6,
   );
 
-  static const TextStyle bodyMedium = TextStyle(
+  static final TextStyle bodyMedium = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 14,
     fontWeight: FontWeight.w400,
@@ -51,7 +51,7 @@ class AppTextStyles {
     height: 1.5,
   );
 
-  static const TextStyle bodySmall = TextStyle(
+  static final TextStyle bodySmall = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 12,
     fontWeight: FontWeight.w400,
@@ -59,21 +59,21 @@ class AppTextStyles {
   );
 
   // Labels
-  static const TextStyle labelLarge = TextStyle(
+  static final TextStyle labelLarge = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 16,
     fontWeight: FontWeight.w600,
     color: AppColors.textPrimary,
   );
 
-  static const TextStyle labelMedium = TextStyle(
+  static final TextStyle labelMedium = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 14,
     fontWeight: FontWeight.w500,
     color: AppColors.textPrimary,
   );
 
-  static const TextStyle labelSmall = TextStyle(
+  static final TextStyle labelSmall = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 12,
     fontWeight: FontWeight.w500,
@@ -81,14 +81,14 @@ class AppTextStyles {
   );
 
   // Cyan accent texts
-  static const TextStyle cyanLabel = TextStyle(
+  static final TextStyle cyanLabel = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 14,
     fontWeight: FontWeight.w500,
     color: AppColors.textCyan,
   );
 
-  static const TextStyle cyanBody = TextStyle(
+  static final TextStyle cyanBody = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 12,
     fontWeight: FontWeight.w400,
@@ -96,7 +96,7 @@ class AppTextStyles {
   );
 
   // Amber accent (KP points)
-  static const TextStyle amberBold = TextStyle(
+  static final TextStyle amberBold = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 16,
     fontWeight: FontWeight.w700,
@@ -104,14 +104,14 @@ class AppTextStyles {
   );
 
   // Chemical element symbol
-  static const TextStyle elementSymbol = TextStyle(
+  static final TextStyle elementSymbol = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 32,
     fontWeight: FontWeight.w900,
     color: AppColors.textPrimary,
   );
 
-  static const TextStyle elementSymbolLarge = TextStyle(
+  static final TextStyle elementSymbolLarge = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 48,
     fontWeight: FontWeight.w900,
@@ -119,7 +119,7 @@ class AppTextStyles {
   );
 
   // Mono / equation
-  static const TextStyle equation = TextStyle(
+  static final TextStyle equation = TextStyle(
     fontFamily: 'monospace',
     fontSize: 20,
     fontWeight: FontWeight.w500,
@@ -128,7 +128,7 @@ class AppTextStyles {
   );
 
   // Button text
-  static const TextStyle button = TextStyle(
+  static final TextStyle button = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 16,
     fontWeight: FontWeight.w600,
@@ -136,7 +136,7 @@ class AppTextStyles {
     letterSpacing: 0.3,
   );
 
-  static const TextStyle buttonSmall = TextStyle(
+  static final TextStyle buttonSmall = TextStyle(
     fontFamily: _fontFamily,
     fontSize: 14,
     fontWeight: FontWeight.w600,

@@ -37,6 +37,7 @@ dependencies:
   dio: ^5.4.0            # Để gọi API đến Java BE
   provider: ^6.1.1       # Để quản lý trạng thái (State Management) cho các Folder presentation
   google_fonts: ^6.2.1   # Font Inter cho UI
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:
