@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+import '../../../core/storage/avatar_storage_service.dart';
 import '../../../core/storage/local_storage_service.dart';
 import '../../../domain/models/account_setup_model.dart';
 import '../../../domain/models/bundle_price_quote.dart';
@@ -21,6 +22,7 @@ class AppState extends ChangeNotifier {
   // Auth state
   String? _userName;
   String? _userEmail;
+  String? _userPhone;
   String? _userAvatar;
   bool _isLoggedIn = false;
   int _knowledgePoints = defaultKnowledgePoints;
@@ -46,6 +48,24 @@ class AppState extends ChangeNotifier {
 
   String? get userName => _userName;
   String? get userEmail => _userEmail;
+
+  /// Full name if set in profile; otherwise the part before @ in email.
+  String get displayName {
+    if (_userName != null && _userName!.trim().isNotEmpty) {
+      return _userName!.trim();
+    }
+    final email = _userEmail;
+    if (email == null || email.isEmpty) return 'Student';
+    final at = email.indexOf('@');
+    return at > 0 ? email.substring(0, at) : email;
+  }
+
+  static String displayNameFromEmail(String email, {String? fullName}) {
+    if (fullName != null && fullName.trim().isNotEmpty) return fullName.trim();
+    final at = email.indexOf('@');
+    return at > 0 ? email.substring(0, at) : email;
+  }
+  String? get userPhone => _userPhone;
   String? get userAvatar => _userAvatar;
   bool get isLoggedIn => _isLoggedIn;
   int get knowledgePoints => _knowledgePoints;
@@ -75,9 +95,8 @@ class AppState extends ChangeNotifier {
       final email = user['email'] as String?;
       if (email != null) {
         _isLoggedIn = true;
-        _userName = user['name'] as String?;
         _userEmail = email;
-        _userAvatar = user['avatar'] as String?;
+        await _loadUserProfileFields(email, sessionUser: user);
         await _loadShopStateForUser(email);
       } else {
         await _resetShopStateInMemory();
@@ -125,11 +144,43 @@ class AppState extends ChangeNotifier {
       ..addAll(cartRaw.map(CartItem.fromJson));
   }
 
+  Future<void> _loadUserProfileFields(
+    String email, {
+    Map<String, dynamic>? sessionUser,
+  }) async {
+    final registered = await _storage.getRegisteredUserByEmail(email);
+    final storedName = registered?['fullname'] as String? ??
+        sessionUser?['name'] as String?;
+    _userName =
+        storedName != null && storedName.trim().isNotEmpty ? storedName.trim() : null;
+    _userPhone = registered?['phone'] as String?;
+    final avatarPath =
+        sessionUser?['avatar'] as String? ?? registered?['avatar'] as String?;
+    _userAvatar =
+        AvatarStorageService.avatarFileExists(avatarPath) ? avatarPath : null;
+  }
+
   Future<void> _persistAuth() async {
     if (!_isLoggedIn || _userEmail == null) return;
     await _storage.setUser({
       'name': _userName,
       'email': _userEmail,
+      if (_userPhone != null && _userPhone!.isNotEmpty) 'phone': _userPhone,
+      if (_userAvatar != null) 'avatar': _userAvatar,
+    });
+  }
+
+  Future<void> _persistRegisteredUser({String? passwordOverride}) async {
+    final email = _userEmail;
+    if (email == null) return;
+    final existing = await _storage.getRegisteredUserByEmail(email);
+    if (existing == null) return;
+
+    await _storage.setRegisteredUser({
+      'fullname': _userName ?? existing['fullname'],
+      'email': email,
+      'password': passwordOverride ?? existing['password'],
+      'phone': _userPhone ?? existing['phone'] ?? '',
       if (_userAvatar != null) 'avatar': _userAvatar,
     });
   }
@@ -173,21 +224,27 @@ class AppState extends ChangeNotifier {
         result: null,
       );
     }
-    if (registered['password'] != password) {
+    final storedPassword = registered['password'] as String? ?? '';
+    if (storedPassword.isEmpty) {
+      _isLoading = false;
+      notifyListeners();
+      return (
+        error: 'Tài khoản Google. Vui lòng đăng nhập bằng Google.',
+        result: null,
+      );
+    }
+    if (storedPassword != password) {
       _isLoading = false;
       notifyListeners();
       return (error: 'Invalid email or password', result: null);
     }
 
-    final fullName =
-        registered['fullname'] as String? ?? normalizedEmail.split('@').first;
     final isFirstLogin =
         !await _storage.getUserHasLoggedInBefore(normalizedEmail);
 
     _isLoggedIn = true;
-    _userName = fullName;
     _userEmail = normalizedEmail;
-    _userAvatar = null;
+    await _loadUserProfileFields(normalizedEmail);
 
     await _loadShopStateForUser(normalizedEmail);
 
@@ -200,89 +257,152 @@ class AppState extends ChangeNotifier {
     notifyListeners();
     return (
       error: null,
-      result: LoginResult(isFirstLogin: isFirstLogin, fullName: fullName),
+      result: LoginResult(
+        isFirstLogin: isFirstLogin,
+        displayName: displayName,
+      ),
     );
   }
 
-  Future<void> loginWithGoogle({
+  /// Mock Google sign-in — goes straight to Home with Google profile data.
+  Future<LoginResult> signInWithGoogle({
     required String name,
     required String email,
     String? avatar,
   }) async {
+    final normalizedEmail = email.trim();
+    final existing =
+        await _storage.getRegisteredUserByEmail(normalizedEmail);
+    final isFirstLogin =
+        !await _storage.getUserHasLoggedInBefore(normalizedEmail);
+
+    if (existing == null) {
+      await _storage.setRegisteredUser({
+        'fullname': name,
+        'email': normalizedEmail,
+        'password': '',
+        'phone': '',
+        'isGoogle': true,
+      });
+      await _storage.initNewUserShopData(normalizedEmail);
+    } else {
+      await _storage.setRegisteredUser({
+        'fullname': name,
+        'email': normalizedEmail,
+        'password': existing['password'] ?? '',
+        'phone': existing['phone'] ?? '',
+        'isGoogle': true,
+        if (existing['avatar'] != null) 'avatar': existing['avatar'],
+      });
+    }
+
     _isLoggedIn = true;
     _userName = name;
-    _userEmail = email.trim();
+    _userEmail = normalizedEmail;
     _userAvatar = avatar;
 
-    final hasData =
-        await _storage.getUserKnowledgePoints(_userEmail!) != null;
-    if (!hasData) {
-      await _storage.initNewUserShopData(_userEmail!);
-    }
-    await _loadShopStateForUser(_userEmail!);
+    await _loadShopStateForUser(normalizedEmail);
 
     final token = 'google_token_${DateTime.now().millisecondsSinceEpoch}';
     await _storage.setAuthToken(token);
     await _persistAuth();
-    await _storage.setUserHasLoggedInBefore(_userEmail!, true);
+    await _storage.setUserHasLoggedInBefore(normalizedEmail, true);
     notifyListeners();
+
+    return LoginResult(isFirstLogin: isFirstLogin, displayName: name);
   }
 
   Future<void> logout() async {
     _isLoggedIn = false;
     _userName = null;
     _userEmail = null;
+    _userPhone = null;
     _userAvatar = null;
     await _storage.clearAuth();
     await _resetShopStateInMemory();
     notifyListeners();
   }
 
+  Future<String?> updateProfile({
+    required String fullName,
+    required String phone,
+    String? password,
+    String? confirmPassword,
+  }) async {
+    if (!_isLoggedIn || _userEmail == null) {
+      return 'Bạn cần đăng nhập để cập nhật.';
+    }
+    if (fullName.trim().isEmpty) {
+      return 'Họ tên không được để trống.';
+    }
+    if (phone.trim().isEmpty) {
+      return 'Số điện thoại không được để trống.';
+    }
+
+    final wantsPasswordChange = password != null && password.isNotEmpty;
+    if (wantsPasswordChange) {
+      if (password.length < 6) {
+        return 'Mật khẩu tối thiểu 6 ký tự.';
+      }
+      if (password != confirmPassword) {
+        return 'Mật khẩu xác nhận không khớp.';
+      }
+    }
+
+    _userName = fullName.trim();
+    _userPhone = phone.trim();
+    await _persistRegisteredUser(
+      passwordOverride: wantsPasswordChange ? password : null,
+    );
+    await _persistAuth();
+    notifyListeners();
+    return null;
+  }
+
+  Future<String?> updateAvatarFromPath(String pickedPath) async {
+    if (!_isLoggedIn || _userEmail == null) {
+      return 'Bạn cần đăng nhập để cập nhật ảnh.';
+    }
+    try {
+      final saved = await AvatarStorageService.saveAvatar(
+        pickedPath,
+        _userEmail!,
+      );
+      _userAvatar = saved;
+      await _persistRegisteredUser();
+      await _persistAuth();
+      notifyListeners();
+      return null;
+    } catch (_) {
+      return 'Không thể lưu ảnh đại diện. Vui lòng thử lại.';
+    }
+  }
+
   /// Saves account credentials only — user must log in on the login screen.
-  Future<void> registerAccount(AccountSetupData data) async {
+  Future<String?> registerAccount(AccountSetupData data) async {
+    final email = data.email.trim();
+    final existing = await _storage.getRegisteredUserByEmail(email);
+    if (existing != null) {
+      return 'Email này đã được đăng ký.';
+    }
+
     await _storage.setRegisteredUser({
-      'fullname': data.fullName,
-      'email': data.email,
+      'fullname': data.fullName?.trim() ?? '',
+      'email': email,
       'password': data.password,
+      'phone': '',
     });
-    await _storage.initNewUserShopData(data.email);
+    await _storage.initNewUserShopData(email);
 
     _isLoggedIn = false;
     _userName = null;
     _userEmail = null;
+    _userPhone = null;
     _userAvatar = null;
     await _storage.clearAuth();
     await _resetShopStateInMemory();
     notifyListeners();
-  }
-
-  /// Google sign-up: profile saved and user is signed in.
-  Future<LoginResult> completeGoogleAccountSetup(AccountSetupData data) async {
-    await _storage.setRegisteredUser({
-      'fullname': data.fullName,
-      'email': data.email,
-      'password': data.password,
-    });
-
-    final isFirstLogin =
-        !await _storage.getUserHasLoggedInBefore(data.email);
-    if (isFirstLogin) {
-      await _storage.initNewUserShopData(data.email);
-    }
-
-    _isLoggedIn = true;
-    _userName = data.fullName;
-    _userEmail = data.email.trim();
-
-    await _loadShopStateForUser(_userEmail!);
-
-    final token = 'google_token_${DateTime.now().millisecondsSinceEpoch}';
-    await _storage.setAuthToken(token);
-    await _persistAuth();
-    await _storage.setUserHasLoggedInBefore(_userEmail!, true);
-    notifyListeners();
-
-    return LoginResult(isFirstLogin: isFirstLogin, fullName: data.fullName);
+    return null;
   }
 
   // ── Knowledge Points ────────────────────────────────────────────────

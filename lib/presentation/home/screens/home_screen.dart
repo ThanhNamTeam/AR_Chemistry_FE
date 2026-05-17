@@ -104,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  state.userName ?? 'Student',
+                  state.displayName,
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.w700,
@@ -358,6 +358,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       (Icons.menu_book_outlined, 'Library', AppRoutes.library),
       (Icons.store_outlined, 'Shop', AppRoutes.shop),
       (Icons.shopping_cart_outlined, 'Cart', AppRoutes.cart),
+      (Icons.quiz_outlined, 'Quiz', AppRoutes.quiz),
       (Icons.shopping_bag_outlined, 'My Bag', AppRoutes.myBag),
     ];
 
@@ -383,10 +384,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     Text(
                       item.$2,
                       style: TextStyle(
-                        fontSize: 11,
+                        fontSize: 10,
                         color: AppColors.textSecondary,
                         fontFamily: 'Inter',
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),

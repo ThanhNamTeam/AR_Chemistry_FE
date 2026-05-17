@@ -57,10 +57,16 @@ class LocalStorageService {
     final prefs = await SharedPreferences.getInstance();
     final email = _normalizeEmail(data['email'] as String);
     final all = await _getRegisteredUsersMap(prefs);
+    final previous = all[email];
     all[email] = {
-      'fullname': data['fullname'],
+      'fullname': data['fullname'] ?? previous?['fullname'],
       'email': data['email'],
-      'password': data['password'],
+      'password': data['password'] ?? previous?['password'],
+      'phone': data['phone'] ?? previous?['phone'] ?? '',
+      if (data['avatar'] != null)
+        'avatar': data['avatar']
+      else if (previous?['avatar'] != null)
+        'avatar': previous!['avatar'],
     };
     await prefs.setString(registeredUsersKey, jsonEncode(all));
     // Legacy single-user key (migrate away).

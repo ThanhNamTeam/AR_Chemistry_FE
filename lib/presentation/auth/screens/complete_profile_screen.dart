@@ -8,36 +8,23 @@ import '../../../shared/styles/app_colors.dart';
 import '../../../shared/widgets/custom_text_field.dart';
 import '../../home/providers/app_state.dart';
 
-class CompleteProfileScreen extends StatefulWidget {
-  final AccountSetupRouteArgs args;
-
-  const CompleteProfileScreen({super.key, required this.args});
+/// Email + password registration (no full name — add later in Profile).
+class RegistrationScreen extends StatefulWidget {
+  const RegistrationScreen({super.key});
 
   @override
-  State<CompleteProfileScreen> createState() => _CompleteProfileScreenState();
+  State<RegistrationScreen> createState() => _RegistrationScreenState();
 }
 
-class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
+class _RegistrationScreenState extends State<RegistrationScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _nameCtrl = TextEditingController();
   final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
   final _confirmCtrl = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    if (widget.args.prefilledFullName != null) {
-      _nameCtrl.text = widget.args.prefilledFullName!;
-    }
-    if (widget.args.prefilledEmail != null) {
-      _emailCtrl.text = widget.args.prefilledEmail!;
-    }
-  }
+  bool _submitting = false;
 
   @override
   void dispose() {
-    _nameCtrl.dispose();
     _emailCtrl.dispose();
     _passCtrl.dispose();
     _confirmCtrl.dispose();
@@ -46,41 +33,33 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
-    final isGoogle = widget.args.source == AccountSetupSource.google;
     if (_passCtrl.text != _confirmCtrl.text) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Passwords do not match'),
+          content: Text('Mật khẩu xác nhận không khớp'),
           backgroundColor: AppColors.error,
         ),
       );
       return;
     }
 
-    final data = AccountSetupData(
-      fullName: _nameCtrl.text.trim(),
-      email: _emailCtrl.text.trim(),
-      password: _passCtrl.text,
-    );
-    final state = context.read<AppState>();
+    setState(() => _submitting = true);
+    final error = await context.read<AppState>().registerAccount(
+          AccountSetupData(
+            email: _emailCtrl.text.trim(),
+            password: _passCtrl.text,
+          ),
+        );
+    if (!mounted) return;
+    setState(() => _submitting = false);
 
-    if (isGoogle) {
-      final result = await state.completeGoogleAccountSetup(data);
-      if (!mounted) return;
-      final welcome = result.isFirstLogin
-          ? 'Đăng nhập thành công! Chào mừng ${result.fullName} đến với ${AppState.appDisplayName}!'
-          : 'Chào mừng bạn trở lại, ${result.fullName}!';
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        AppRoutes.home,
-        (_) => false,
-        arguments: HomeRouteArgs(welcomeMessage: welcome),
+    if (error != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(error), backgroundColor: AppColors.error),
       );
       return;
     }
 
-    await state.registerAccount(data);
-    if (!mounted) return;
     Navigator.pushNamedAndRemoveUntil(
       context,
       AppRoutes.login,
@@ -91,8 +70,6 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isGoogle = widget.args.source == AccountSetupSource.google;
-
     return Scaffold(
       backgroundColor: AppColors.backgroundDark,
       body: Container(
@@ -133,7 +110,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  isGoogle ? 'Complete your account' : 'Create your account',
+                  'Đăng ký tài khoản',
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.w700,
@@ -143,9 +120,7 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  isGoogle
-                      ? 'Your Google email is confirmed. Set a password to finish.'
-                      : 'Enter your details and set a password.',
+                  'Nhập email và mật khẩu. Họ tên có thể thêm sau trong Profile.',
                   style: TextStyle(
                     fontSize: 13,
                     color: AppColors.textCyan,
@@ -172,49 +147,43 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         CustomTextField(
-                          label: 'Full name',
-                          hint: 'Your full name',
-                          controller: _nameCtrl,
-                          prefixIcon: Icons.person_outline,
-                          validator: (v) => v == null || v.trim().isEmpty
-                              ? 'Name is required'
-                              : null,
-                        ),
-                        const SizedBox(height: 16),
-                        CustomTextField(
                           label: 'Email',
-                          hint: 'Your email address',
+                          hint: 'your@email.com',
                           controller: _emailCtrl,
                           prefixIcon: Icons.mail_outline,
                           keyboardType: TextInputType.emailAddress,
-                          readOnly: widget.args.lockEmail,
-                          validator: (v) =>
-                              v == null || v.trim().isEmpty ? 'Required' : null,
+                          validator: (v) {
+                            if (v == null || v.trim().isEmpty) {
+                              return 'Bắt buộc';
+                            }
+                            if (!v.contains('@')) return 'Email không hợp lệ';
+                            return null;
+                          },
                         ),
                         const SizedBox(height: 16),
                         CustomTextField(
-                          label: 'Password',
-                          hint: 'Choose a password',
+                          label: 'Mật khẩu',
+                          hint: 'Tối thiểu 6 ký tự',
                           controller: _passCtrl,
                           prefixIcon: Icons.lock_outline,
                           isPassword: true,
                           validator: (v) => v == null || v.length < 6
-                              ? 'Min 6 characters'
+                              ? 'Tối thiểu 6 ký tự'
                               : null,
                         ),
                         const SizedBox(height: 16),
                         CustomTextField(
-                          label: 'Confirm password',
-                          hint: 'Re-enter password',
+                          label: 'Xác nhận mật khẩu',
+                          hint: 'Nhập lại mật khẩu',
                           controller: _confirmCtrl,
                           prefixIcon: Icons.lock_outline,
                           isPassword: true,
                           validator: (v) =>
-                              v == null || v.isEmpty ? 'Required' : null,
+                              v == null || v.isEmpty ? 'Bắt buộc' : null,
                         ),
                         const SizedBox(height: 24),
                         GestureDetector(
-                          onTap: _submit,
+                          onTap: _submitting ? null : _submit,
                           child: Container(
                             width: double.infinity,
                             padding: const EdgeInsets.symmetric(vertical: 16),
@@ -229,15 +198,25 @@ class _CompleteProfileScreenState extends State<CompleteProfileScreen> {
                                 )
                               ],
                             ),
-                            child: Text(
-                              isGoogle ? 'Save & continue' : 'Sign up',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                fontFamily: 'Inter',
-                              ),
+                            child: Center(
+                              child: _submitting
+                                  ? const SizedBox(
+                                      width: 22,
+                                      height: 22,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : const Text(
+                                      'Sign up',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        fontFamily: 'Inter',
+                                      ),
+                                    ),
                             ),
                           ),
                         ),

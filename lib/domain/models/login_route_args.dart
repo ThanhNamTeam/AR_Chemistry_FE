@@ -12,10 +12,10 @@ class HomeRouteArgs {
 
 class LoginResult {
   final bool isFirstLogin;
-  final String fullName;
+  final String displayName;
 
   const LoginResult({
     required this.isFirstLogin,
-    required this.fullName,
+    required this.displayName,
   });
 }

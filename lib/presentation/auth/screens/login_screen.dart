@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../domain/models/account_setup_model.dart';
 import '../../../domain/models/login_route_args.dart';
+import '../../../domain/models/user_role.dart';
 import '../../../shared/styles/app_colors.dart';
+import '../providers/role_session_provider.dart';
 import '../../../shared/widgets/custom_text_field.dart';
 import '../../../routes/app_routes.dart';
 import '../../home/providers/app_state.dart';
@@ -15,9 +16,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin {
-  bool _showSignUp = false;
-
-  // Login
   final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
   final _loginKey = GlobalKey<FormState>();
@@ -25,6 +23,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
   late AnimationController _bgCtrl;
   late Animation<double> _bgPulse;
   bool _registrationMessageShown = false;
+  bool _googleLoading = false;
 
   @override
   void initState() {
@@ -59,6 +58,17 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
   }
 
   Future<void> _restoreSession() async {
+    final roleSession = context.read<RoleSessionProvider>();
+    await roleSession.loadSession();
+    if (!mounted) return;
+    if (roleSession.isStaff) {
+      Navigator.pushReplacementNamed(context, AppRoutes.staffHome);
+      return;
+    }
+    if (roleSession.isAdmin) {
+      Navigator.pushReplacementNamed(context, AppRoutes.adminHome);
+      return;
+    }
     final state = context.read<AppState>();
     if (!state.initialized) await state.initialize();
     if (mounted && state.isLoggedIn) {
@@ -76,6 +86,21 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
 
   Future<void> _login() async {
     if (!_loginKey.currentState!.validate()) return;
+
+    final role = await context.read<RoleSessionProvider>().tryRoleLogin(
+          _emailCtrl.text.trim(),
+          _passCtrl.text,
+        );
+    if (!mounted) return;
+    if (role == UserRole.staff) {
+      Navigator.pushReplacementNamed(context, AppRoutes.staffHome);
+      return;
+    }
+    if (role == UserRole.admin) {
+      Navigator.pushReplacementNamed(context, AppRoutes.adminHome);
+      return;
+    }
+
     final state = context.read<AppState>();
     if (!state.initialized) await state.initialize();
     final response = await state.login(
@@ -94,8 +119,8 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     }
     final result = response.result!;
     final welcome = result.isFirstLogin
-        ? 'Đăng nhập thành công! Chào mừng ${result.fullName} đến với ${AppState.appDisplayName}!'
-        : 'Chào mừng bạn trở lại, ${result.fullName}!';
+        ? 'Đăng nhập thành công! Chào mừng ${result.displayName} đến với ${AppState.appDisplayName}!'
+        : 'Chào mừng bạn trở lại, ${result.displayName}!';
     Navigator.pushReplacementNamed(
       context,
       AppRoutes.home,
@@ -103,24 +128,39 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     );
   }
 
-  void _loginGoogle() {
-    Navigator.pushNamed(
+  Future<void> _loginGoogle() async {
+    if (_googleLoading) return;
+    setState(() => _googleLoading = true);
+
+    final state = context.read<AppState>();
+    if (!state.initialized) await state.initialize();
+
+    // Mock Google account data (replace with real Google Sign-In later).
+    const googleName = 'Trần Thanh Nam';
+    const googleEmail = 'trannam@gmail.com';
+
+    final result = await state.signInWithGoogle(
+      name: googleName,
+      email: googleEmail,
+    );
+
+    if (!mounted) return;
+    setState(() => _googleLoading = false);
+
+    final welcome = result.isFirstLogin
+        ? 'Đăng nhập thành công! Chào mừng ${result.displayName} đến với ${AppState.appDisplayName}!'
+        : 'Chào mừng bạn trở lại, ${result.displayName}!';
+
+    Navigator.pushNamedAndRemoveUntil(
       context,
-      AppRoutes.completeProfile,
-      arguments: const AccountSetupRouteArgs(
-        source: AccountSetupSource.google,
-        prefilledEmail: 'trannam@gmail.com',
-        prefilledFullName: 'Trần Thanh Nam',
-      ),
+      AppRoutes.home,
+      (_) => false,
+      arguments: HomeRouteArgs(welcomeMessage: welcome),
     );
   }
 
   void _openRegistration() {
-    Navigator.pushNamed(
-      context,
-      AppRoutes.completeProfile,
-      arguments: AccountSetupRouteArgs.registration(),
-    );
+    Navigator.pushNamed(context, AppRoutes.completeProfile);
   }
 
   @override
@@ -142,9 +182,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
         child: Stack(
           children: [
             _buildBgBlobs(),
-            SafeArea(
-              child: _showSignUp ? _buildSignUp() : _buildLogin(),
-            ),
+            SafeArea(child: _buildLogin()),
           ],
         ),
       ),
@@ -158,11 +196,13 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
         builder: (_, __) => Stack(
           children: [
             Positioned(
-              top: 60, left: -50,
+              top: 60,
+              left: -50,
               child: Transform.scale(
                 scale: _bgPulse.value,
                 child: Container(
-                  width: 250, height: 250,
+                  width: 250,
+                  height: 250,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: AppColors.primary.withOpacity(0.05),
@@ -171,11 +211,13 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
               ),
             ),
             Positioned(
-              bottom: 60, right: -60,
+              bottom: 60,
+              right: -60,
               child: Transform.scale(
                 scale: 1.1 - 0.1 * _bgPulse.value,
                 child: Container(
-                  width: 300, height: 300,
+                  width: 300,
+                  height: 300,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: AppColors.accent.withOpacity(0.05),
@@ -195,20 +237,20 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
       child: Column(
         children: [
           const SizedBox(height: 40),
-          // Logo
           Container(
             padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
-                color: AppColors.primary.withOpacity(0.5), width: 1.5),
+                  color: AppColors.primary.withOpacity(0.5), width: 1.5),
               gradient: LinearGradient(colors: [
                 AppColors.primary.withOpacity(0.2),
                 AppColors.accent.withOpacity(0.2),
               ]),
             ),
             child: Container(
-              width: 72, height: 72,
+              width: 72,
+              height: 72,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: AppColors.primaryGradient,
@@ -221,15 +263,17 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
           const SizedBox(height: 20),
           Text('Chemistry AR',
               style: TextStyle(
-                  fontSize: 24, fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary, fontFamily: 'Inter')),
+                  fontSize: 24,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimary,
+                  fontFamily: 'Inter')),
           const SizedBox(height: 6),
           Text('Learn chemistry with augmented reality',
               style: TextStyle(
-                  fontSize: 13, color: AppColors.textCyan, fontFamily: 'Inter')),
+                  fontSize: 13,
+                  color: AppColors.textCyan,
+                  fontFamily: 'Inter')),
           const SizedBox(height: 36),
-
-          // Form card
           Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
@@ -274,23 +318,25 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
             ),
           ),
           const SizedBox(height: 20),
-
-          // Divider
           Row(children: [
-            Expanded(child: Divider(color: AppColors.textSecondary.withOpacity(0.3))),
+            Expanded(
+                child: Divider(
+                    color: AppColors.textSecondary.withOpacity(0.3))),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 12),
               child: Text('Or continue with',
                   style: TextStyle(
-                      fontSize: 12, color: AppColors.textSecondary, fontFamily: 'Inter')),
+                      fontSize: 12,
+                      color: AppColors.textSecondary,
+                      fontFamily: 'Inter')),
             ),
-            Expanded(child: Divider(color: AppColors.textSecondary.withOpacity(0.3))),
+            Expanded(
+                child: Divider(
+                    color: AppColors.textSecondary.withOpacity(0.3))),
           ]),
           const SizedBox(height: 16),
-
-          // Google button
           GestureDetector(
-            onTap: _loginGoogle,
+            onTap: _googleLoading ? null : _loginGoogle,
             child: Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 14),
@@ -299,122 +345,48 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: Colors.grey.shade300),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('G', style: TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.w700,
-                      color: Color(0xFF4285F4))),
-                  SizedBox(width: 10),
-                  Text('Continue with Google',
-                      style: TextStyle(
-                          fontSize: 14, fontWeight: FontWeight.w500,
-                          color: Colors.black87, fontFamily: 'Inter')),
-                ],
-              ),
+              child: _googleLoading
+                  ? const Center(
+                      child: SizedBox(
+                        width: 22,
+                        height: 22,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                    )
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('G',
+                            style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFF4285F4))),
+                        SizedBox(width: 10),
+                        Text('Continue with Google',
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black87,
+                                fontFamily: 'Inter')),
+                      ],
+                    ),
             ),
           ),
           const SizedBox(height: 24),
-
-          // Sign up link
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Text("Don't have an account? ",
                 style: TextStyle(
-                    color: AppColors.textSecondary, fontSize: 13, fontFamily: 'Inter')),
+                    color: AppColors.textSecondary,
+                    fontSize: 13,
+                    fontFamily: 'Inter')),
             GestureDetector(
-              onTap: () => setState(() => _showSignUp = true),
+              onTap: _openRegistration,
               child: Text('Sign Up',
                   style: TextStyle(
-                      color: AppColors.primaryLight, fontWeight: FontWeight.w600,
-                      fontSize: 13, fontFamily: 'Inter')),
-            ),
-          ]),
-          const SizedBox(height: 24),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSignUp() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        children: [
-          const SizedBox(height: 20),
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: GestureDetector(
-                  onTap: () => setState(() => _showSignUp = false),
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                          color: AppColors.primary.withOpacity(0.5)),
-                    ),
-                    child: Icon(Icons.arrow_back,
-                        color: AppColors.primary, size: 20),
-                  ),
-                ),
-              ),
-              Container(
-                width: 56, height: 56,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: AppColors.primaryGradient,
-                ),
-                child: Center(
-                    child: Text('⚗️', style: TextStyle(fontSize: 24))),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Text('Create Account',
-              style: TextStyle(
-                  fontSize: 22, fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary, fontFamily: 'Inter')),
-          const SizedBox(height: 6),
-          Text(
-            'Set your profile and password on the next screen.',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                fontSize: 13, color: AppColors.textCyan, fontFamily: 'Inter'),
-          ),
-          const SizedBox(height: 28),
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: AppColors.cardBg.withOpacity(0.5),
-              borderRadius: BorderRadius.circular(24),
-              border: Border.all(
-                  color: AppColors.primary.withOpacity(0.3), width: 1.5),
-              boxShadow: [
-                BoxShadow(
-                    color: AppColors.primary.withOpacity(0.1), blurRadius: 30),
-              ],
-            ),
-            child: Column(
-              children: [
-                _gradientButton('Continue', _openRegistration,
-                    gradient: AppColors.primaryGradient),
-              ],
-            ),
-          ),
-          const SizedBox(height: 20),
-          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Text('Already have an account? ',
-                style: TextStyle(
-                    color: AppColors.textSecondary, fontSize: 13, fontFamily: 'Inter')),
-            GestureDetector(
-              onTap: () => setState(() => _showSignUp = false),
-              child: Text('Login',
-                  style: TextStyle(
-                      color: AppColors.primaryLight, fontWeight: FontWeight.w600,
-                      fontSize: 13, fontFamily: 'Inter')),
+                      color: AppColors.primaryLight,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 13,
+                      fontFamily: 'Inter')),
             ),
           ]),
           const SizedBox(height: 24),
@@ -444,8 +416,10 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
         child: Text(label,
             textAlign: TextAlign.center,
             style: TextStyle(
-                color: Colors.white, fontSize: 16,
-                fontWeight: FontWeight.w600, fontFamily: 'Inter')),
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                fontFamily: 'Inter')),
       ),
     );
   }
