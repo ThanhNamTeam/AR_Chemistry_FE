@@ -2,13 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import 'presentation/admin/providers/admin_provider.dart';
+import 'presentation/admin/screens/admin_home_screen.dart';
+import 'presentation/auth/providers/role_session_provider.dart';
 import 'presentation/home/providers/app_state.dart';
 import 'presentation/home/providers/home_provider.dart';
 import 'presentation/home/providers/theme_provider.dart';
+import 'presentation/staff/providers/staff_provider.dart';
+import 'presentation/staff/screens/staff_home_screen.dart';
+import 'presentation/shared/screens/portal_profile_screen.dart';
 import 'shared/styles/app_colors.dart';
 import 'routes/app_routes.dart';
 
-import 'domain/models/account_setup_model.dart';
 // Screens
 import 'presentation/auth/screens/onboarding_screen.dart';
 import 'presentation/auth/screens/login_screen.dart';
@@ -23,6 +28,8 @@ import 'presentation/payment/screens/shop_screen.dart';
 import 'presentation/payment/screens/cart_screen.dart';
 import 'presentation/payment/screens/payment_page.dart';
 import 'presentation/payment/screens/payment_success_screen.dart';
+import 'presentation/quiz/screens/quiz_screen.dart';
+import 'presentation/feedback/screens/feedback_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -59,6 +66,9 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
         ChangeNotifierProvider(create: (_) => AppState()),
         ChangeNotifierProvider(create: (_) => HomeProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()..loadTheme()),
+        ChangeNotifierProvider(create: (_) => RoleSessionProvider()),
+        ChangeNotifierProvider(create: (_) => StaffProvider()),
+        ChangeNotifierProvider(create: (_) => AdminProvider()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, _) {
@@ -80,22 +90,21 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
     return {
       AppRoutes.onboarding: (_) => const OnboardingScreen(),
       AppRoutes.login: (_) => const LoginScreen(),
-      AppRoutes.completeProfile: (context) {
-        final args = ModalRoute.of(context)?.settings.arguments;
-        final setupArgs = args is AccountSetupRouteArgs
-            ? args
-            : AccountSetupRouteArgs.registration();
-        return CompleteProfileScreen(args: setupArgs);
-      },
+      AppRoutes.completeProfile: (_) => const RegistrationScreen(),
       AppRoutes.home: (_) => const HomeScreen(),
       AppRoutes.profile: (_) => const ProfileScreen(),
+      AppRoutes.feedback: (_) => const FeedbackScreen(),
       AppRoutes.library: (_) => const LibraryScreen(),
+      AppRoutes.quiz: (_) => const QuizScreen(),
       AppRoutes.myBag: (_) => const MyBagScreen(),
       AppRoutes.scan: (_) => const ScanScreen(),
       AppRoutes.shop: (_) => const ShopScreen(),
       AppRoutes.cart: (_) => const CartScreen(),
       AppRoutes.payment: (_) => const PaymentPage(),
       AppRoutes.paymentSuccess: (_) => const PaymentSuccessScreen(),
+      AppRoutes.staffHome: (_) => const StaffHomeScreen(),
+      AppRoutes.adminHome: (_) => const AdminHomeScreen(),
+      AppRoutes.portalProfile: (_) => const PortalProfileScreen(),
     };
   }
 

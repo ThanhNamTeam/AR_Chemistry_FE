@@ -5,28 +5,28 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/storage/avatar_storage_service.dart';
-import '../../../shared/styles/app_colors.dart';
-import '../../../shared/widgets/knowledge_points_badge.dart';
 import '../../../routes/app_routes.dart';
-import '../../home/providers/app_state.dart';
+import '../../../shared/styles/app_colors.dart';
+import '../../auth/providers/role_session_provider.dart';
 import '../../home/providers/theme_provider.dart';
-import '../widgets/profile_update_sheet.dart';
+import '../../staff/providers/staff_provider.dart';
+import '../../admin/providers/admin_provider.dart';
+import '../widgets/portal_profile_update_sheet.dart';
 
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+class PortalProfileScreen extends StatefulWidget {
+  const PortalProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  State<PortalProfileScreen> createState() => _PortalProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _PortalProfileScreenState extends State<PortalProfileScreen> {
   final ImagePicker _imagePicker = ImagePicker();
   bool _pickingAvatar = false;
 
   Future<void> _pickAvatar() async {
     if (_pickingAvatar) return;
     setState(() => _pickingAvatar = true);
-
     try {
       final file = await _imagePicker.pickImage(
         source: ImageSource.gallery,
@@ -37,40 +37,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if (file == null || !mounted) return;
 
       final error = await context
-          .read<AppState>()
+          .read<RoleSessionProvider>()
           .updateAvatarFromPath(file.path);
       if (!mounted) return;
 
       if (error != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(error, style: const TextStyle(fontFamily: 'Inter')),
+            content: Text(error),
             backgroundColor: AppColors.error,
           ),
         );
         return;
       }
-
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text(
-            'Cập nhật ảnh đại diện thành công!',
-            style: TextStyle(fontFamily: 'Inter'),
-          ),
+        const SnackBar(
+          content: Text('Cập nhật ảnh đại diện thành công!'),
           backgroundColor: AppColors.success,
-          behavior: SnackBarBehavior.floating,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
       );
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text(
-              'Không thể mở thư viện ảnh.',
-              style: TextStyle(fontFamily: 'Inter'),
-            ),
+            content: Text('Không thể mở thư viện ảnh.'),
             backgroundColor: AppColors.error,
           ),
         );
@@ -80,13 +70,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  Future<void> _logout() async {
+    await context.read<RoleSessionProvider>().logout();
+    if (!mounted) return;
+    Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (_) => false);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final state = context.watch<AppState>();
+    final session = context.watch<RoleSessionProvider>();
     final themeProvider = context.watch<ThemeProvider>();
-    final avatarPath = state.userAvatar;
-    final hasAvatar =
-        AvatarStorageService.avatarFileExists(avatarPath);
+    final isStaff = session.isStaff;
+    final avatarPath = session.userAvatar;
+    final hasAvatar = AvatarStorageService.avatarFileExists(avatarPath);
 
     return Scaffold(
       backgroundColor: AppColors.backgroundDark,
@@ -108,23 +104,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             color: AppColors.primary.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                                color: AppColors.primary.withOpacity(0.3)),
+                              color: AppColors.primary.withOpacity(0.3),
+                            ),
                           ),
-                          child: Icon(Icons.arrow_back,
-                              color: AppColors.primary, size: 20),
+                          child: Icon(
+                            Icons.arrow_back,
+                            color: AppColors.primary,
+                            size: 20,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 14),
-                      Text('Profile',
-                          style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.textPrimary,
-                              fontFamily: 'Inter')),
+                      Text(
+                        'Profile',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textPrimary,
+                          fontFamily: 'Inter',
+                        ),
+                      ),
                     ],
                   ),
                 ),
-
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 20),
                   padding: const EdgeInsets.all(24),
@@ -135,12 +137,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ]),
                     borderRadius: BorderRadius.circular(24),
                     border: Border.all(
-                        color: AppColors.primary.withOpacity(0.3), width: 1.5),
-                    boxShadow: [
-                      BoxShadow(
-                          color: AppColors.primary.withOpacity(0.1),
-                          blurRadius: 20),
-                    ],
+                      color: AppColors.primary.withOpacity(0.3),
+                      width: 1.5,
+                    ),
                   ),
                   child: Column(
                     children: [
@@ -163,39 +162,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         fit: BoxFit.cover,
                                       )
                                     : null,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: AppColors.primary.withOpacity(0.4),
-                                    blurRadius: 20,
-                                  ),
-                                ],
                               ),
                               child: hasAvatar
                                   ? null
                                   : Center(
                                       child: Text(
-                                        state.displayName
+                                        session.displayName
                                             .substring(0, 1)
                                             .toUpperCase(),
                                         style: const TextStyle(
                                           fontSize: 32,
                                           fontWeight: FontWeight.w700,
                                           color: Colors.white,
-                                          fontFamily: 'Inter',
                                         ),
                                       ),
                                     ),
                             ),
-                            if (_pickingAvatar)
-                              const SizedBox(
-                                width: 80,
-                                height: 80,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: Colors.white,
-                                ),
-                              )
-                            else
+                            if (!_pickingAvatar)
                               Positioned(
                                 right: 0,
                                 bottom: 0,
@@ -224,38 +207,72 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         'Chạm ảnh để đổi avatar',
                         style: TextStyle(
                           fontSize: 11,
-                          color: AppColors.textSecondary.withOpacity(0.9),
+                          color: AppColors.textSecondary,
                           fontFamily: 'Inter',
                         ),
                       ),
                       const SizedBox(height: 12),
-                      Text(state.displayName,
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withOpacity(0.15),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: AppColors.primary.withOpacity(0.4),
+                          ),
+                        ),
+                        child: Text(
+                          session.roleLabel,
                           style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.textPrimary,
-                              fontFamily: 'Inter')),
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.primaryLight,
+                            fontFamily: 'Inter',
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        session.displayName,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textPrimary,
+                          fontFamily: 'Inter',
+                        ),
+                      ),
                       const SizedBox(height: 4),
-                      Text(state.userEmail ?? '',
-                          style: TextStyle(
-                              fontSize: 13,
-                              color: AppColors.textSecondary,
-                              fontFamily: 'Inter')),
-                      if (state.userPhone != null &&
-                          state.userPhone!.isNotEmpty) ...[
+                      Text(
+                        session.email ?? '',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: AppColors.textSecondary,
+                          fontFamily: 'Inter',
+                        ),
+                      ),
+                      if (session.userPhone != null &&
+                          session.userPhone!.isNotEmpty) ...[
                         const SizedBox(height: 4),
-                        Text(state.userPhone!,
-                            style: TextStyle(
-                                fontSize: 12,
-                                color: AppColors.textCyan,
-                                fontFamily: 'Inter')),
+                        Text(
+                          session.userPhone!,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppColors.textCyan,
+                            fontFamily: 'Inter',
+                          ),
+                        ),
                       ],
                       const SizedBox(height: 14),
                       GestureDetector(
-                        onTap: () => ProfileUpdateSheet.show(context),
+                        onTap: () => PortalProfileUpdateSheet.show(context),
                         child: Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 18, vertical: 10),
+                            horizontal: 18,
+                            vertical: 10,
+                          ),
                           decoration: BoxDecoration(
                             color: AppColors.primary.withOpacity(0.12),
                             borderRadius: BorderRadius.circular(24),
@@ -266,8 +283,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.edit_outlined,
-                                  size: 16, color: AppColors.primaryLight),
+                              Icon(
+                                Icons.edit_outlined,
+                                size: 16,
+                                color: AppColors.primaryLight,
+                              ),
                               const SizedBox(width: 8),
                               Text(
                                 'Cập nhật thông tin',
@@ -282,104 +302,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 16),
-                      KnowledgePointsBadge(points: state.knowledgePoints),
                     ],
                   ),
                 ),
                 const SizedBox(height: 24),
-
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          _StatCard(
-                            icon: Icons.menu_book_outlined,
-                            label: 'Cards Unlocked',
-                            value: '${state.unlockedCount}/${state.totalCards}',
-                            color: AppColors.primary,
-                          ),
-                          const SizedBox(width: 12),
-                          _StatCard(
-                            icon: Icons.science_outlined,
-                            label: 'Experiments',
-                            value: '${state.experimentsCount}',
-                            color: AppColors.secondary,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 14),
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: AppColors.cardBg.withOpacity(0.5),
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                              color: AppColors.primary.withOpacity(0.2)),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text('Library Progress',
-                                    style: TextStyle(
-                                        color: AppColors.textSecondary,
-                                        fontSize: 12,
-                                        fontFamily: 'Inter')),
-                                Text(
-                                    '${(state.libraryProgress * 100).round()}%',
-                                    style: TextStyle(
-                                        color: AppColors.primaryLight,
-                                        fontWeight: FontWeight.w700,
-                                        fontFamily: 'Inter')),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: LinearProgressIndicator(
-                                value: state.libraryProgress,
-                                minHeight: 8,
-                                backgroundColor:
-                                    AppColors.primary.withOpacity(0.15),
-                                color: AppColors.primary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                if (isStaff) _buildStaffSummary(context),
+                if (session.isAdmin) _buildAdminSummary(context),
                 const SizedBox(height: 24),
-
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('App Theme',
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.textPrimary,
-                              fontFamily: 'Inter')),
+                      Text(
+                        'App Theme',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textPrimary,
+                          fontFamily: 'Inter',
+                        ),
+                      ),
                       const SizedBox(height: 12),
                       Wrap(
                         spacing: 8,
                         runSpacing: 8,
                         children: ThemeProvider.options.map((option) {
-                          final selected =
-                              themeProvider.theme == option.key;
+                          final selected = themeProvider.theme == option.key;
                           return GestureDetector(
                             onTap: () => themeProvider.setTheme(option.key),
                             child: Container(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 8),
+                                horizontal: 12,
+                                vertical: 8,
+                              ),
                               decoration: BoxDecoration(
                                 gradient: selected
                                     ? LinearGradient(
@@ -418,64 +374,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 const SizedBox(height: 24),
-
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     children: [
-                      _MenuItem(
-                        icon: Icons.menu_book_outlined,
-                        label: 'My Library',
-                        subtitle: '${state.unlockedCards.length} cards unlocked',
-                        color: AppColors.primary,
-                        onTap: () =>
-                            Navigator.pushNamed(context, AppRoutes.library),
-                      ),
-                      const SizedBox(height: 10),
-                      _MenuItem(
-                        icon: Icons.shopping_bag_outlined,
-                        label: 'My Bag',
-                        subtitle: 'View your purchased cards',
-                        color: AppColors.secondary,
-                        onTap: () =>
-                            Navigator.pushNamed(context, AppRoutes.myBag),
-                      ),
-                      const SizedBox(height: 10),
-                      _MenuItem(
-                        icon: Icons.store_outlined,
-                        label: 'Shop',
-                        subtitle: 'Buy new chemical cards',
-                        color: AppColors.accent,
-                        onTap: () =>
-                            Navigator.pushNamed(context, AppRoutes.shop),
-                      ),
-                      const SizedBox(height: 10),
-                      _MenuItem(
-                        icon: Icons.qr_code_scanner,
-                        label: 'AR Scanner',
-                        subtitle: 'Scan your chemical cards',
-                        color: AppColors.accentLight,
-                        onTap: () =>
-                            Navigator.pushNamed(context, AppRoutes.scan),
-                      ),
-                      const SizedBox(height: 10),
-                      _MenuItem(
-                        icon: Icons.feedback_outlined,
-                        label: 'Feedback',
-                        subtitle: 'Báo lỗi hoặc chia sẻ trải nghiệm',
-                        color: AppColors.amber,
-                        onTap: () =>
-                            Navigator.pushNamed(context, AppRoutes.feedback),
-                      ),
+                      if (isStaff) ...[
+                        _PortalMenuItem(
+                          icon: Icons.feedback_outlined,
+                          label: 'Quản lý Feedback',
+                          subtitle: 'Xem và phản hồi người dùng',
+                          color: AppColors.amber,
+                          onTap: () => Navigator.pop(context),
+                        ),
+                        const SizedBox(height: 10),
+                        _PortalMenuItem(
+                          icon: Icons.quiz_outlined,
+                          label: 'Quiz pipeline',
+                          subtitle: 'Upload tài liệu & duyệt quiz',
+                          color: AppColors.secondary,
+                          onTap: () => Navigator.pop(context),
+                        ),
+                      ] else ...[
+                        _PortalMenuItem(
+                          icon: Icons.dashboard_outlined,
+                          label: 'Bảng điều khiển',
+                          subtitle: 'Thống kê & doanh thu hệ thống',
+                          color: AppColors.primary,
+                          onTap: () => Navigator.pop(context),
+                        ),
+                        const SizedBox(height: 10),
+                        _PortalMenuItem(
+                          icon: Icons.science_outlined,
+                          label: 'Quản lý chất & combo',
+                          subtitle: 'Shop, phản ứng, top sales',
+                          color: AppColors.accent,
+                          onTap: () => Navigator.pop(context),
+                        ),
+                      ],
                       const SizedBox(height: 24),
                       GestureDetector(
-                        onTap: () async {
-                          await state.logout();
-                          if (context.mounted) {
-                            Navigator.pushNamedAndRemoveUntil(
-                                context, AppRoutes.login, (r) => false);
-                          }
-                        },
+                        onTap: _logout,
                         child: Container(
                           width: double.infinity,
                           padding: const EdgeInsets.symmetric(vertical: 16),
@@ -483,7 +421,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             color: AppColors.error.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(
-                                color: AppColors.error.withOpacity(0.4)),
+                              color: AppColors.error.withOpacity(0.4),
+                            ),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -491,12 +430,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               Icon(Icons.logout,
                                   color: AppColors.error, size: 20),
                               const SizedBox(width: 10),
-                              Text('Logout',
-                                  style: TextStyle(
-                                      color: AppColors.error,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w600,
-                                      fontFamily: 'Inter')),
+                              Text(
+                                'Logout',
+                                style: TextStyle(
+                                  color: AppColors.error,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  fontFamily: 'Inter',
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -512,47 +454,75 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
-}
 
-class _StatCard extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String value;
-  final Color color;
+  Widget _buildStaffSummary(BuildContext context) {
+    final staff = context.watch<StaffProvider>();
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        children: [
+          _miniStat(
+            'Feedback',
+            '${staff.feedbacks.length}',
+            AppColors.amber,
+          ),
+          const SizedBox(width: 10),
+          _miniStat(
+            'Quiz chờ duyệt',
+            '${staff.pendingQuizzes.length}',
+            AppColors.secondary,
+          ),
+        ],
+      ),
+    );
+  }
 
-  const _StatCard({
-    required this.icon,
-    required this.label,
-    required this.value,
-    required this.color,
-  });
+  Widget _buildAdminSummary(BuildContext context) {
+    final admin = context.watch<AdminProvider>();
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        children: [
+          _miniStat('Users', '${admin.totalUsers}', AppColors.primary),
+          const SizedBox(width: 10),
+          _miniStat(
+            'Chất',
+            '${admin.catalogCards.length}',
+            AppColors.accent,
+          ),
+        ],
+      ),
+    );
+  }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _miniStat(String label, String value, Color color) {
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        padding: const EdgeInsets.symmetric(vertical: 14),
         decoration: BoxDecoration(
           color: color.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.withOpacity(0.3)),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: color.withOpacity(0.35)),
         ),
         child: Column(
           children: [
-            Icon(icon, color: color, size: 24),
-            const SizedBox(height: 8),
-            Text(value,
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    color: color,
-                    fontFamily: 'Inter')),
-            const SizedBox(height: 4),
-            Text(label,
-                style: TextStyle(
-                    fontSize: 11,
-                    color: AppColors.textSecondary,
-                    fontFamily: 'Inter')),
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: color,
+                fontFamily: 'Inter',
+              ),
+            ),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 11,
+                color: AppColors.textSecondary,
+                fontFamily: 'Inter',
+              ),
+            ),
           ],
         ),
       ),
@@ -560,14 +530,14 @@ class _StatCard extends StatelessWidget {
   }
 }
 
-class _MenuItem extends StatelessWidget {
+class _PortalMenuItem extends StatelessWidget {
   final IconData icon;
   final String label;
   final String subtitle;
   final Color color;
   final VoidCallback onTap;
 
-  const _MenuItem({
+  const _PortalMenuItem({
     required this.icon,
     required this.label,
     required this.subtitle,
@@ -602,18 +572,23 @@ class _MenuItem extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(label,
-                      style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimary,
-                          fontFamily: 'Inter')),
-                  const SizedBox(height: 2),
-                  Text(subtitle,
-                      style: TextStyle(
-                          fontSize: 12,
-                          color: AppColors.textSecondary,
-                          fontFamily: 'Inter')),
+                  Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textPrimary,
+                      fontFamily: 'Inter',
+                    ),
+                  ),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: AppColors.textSecondary,
+                      fontFamily: 'Inter',
+                    ),
+                  ),
                 ],
               ),
             ),

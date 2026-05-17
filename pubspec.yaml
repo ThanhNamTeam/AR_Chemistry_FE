@@ -38,6 +38,10 @@ dependencies:
   provider: ^6.1.1       # Để quản lý trạng thái (State Management) cho các Folder presentation
   google_fonts: ^6.2.1   # Font Inter cho UI
   shared_preferences: ^2.2.2
+  image_picker: ^1.2.2
+  path_provider: ^2.1.5
+  fl_chart: ^1.2.0
+  file_picker: ^11.0.2
 
 dev_dependencies:
   flutter_test:
