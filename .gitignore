@@ -45,3 +45,31 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Unity Library Artifacts
+**/unityLibrary/build/
+**/unityLibrary/.cxx/
+**/unityLibrary/.gradle/
+**/android/.gradle/
+**/android/unityLibrary/build/
+
+# Unity Project Artifacts (if UNITY folder is in repo)
+**/UNITY/Library/
+**/UNITY/Temp/
+**/UNITY/Logs/
+**/UNITY/UserSettings/
+**/UNITY/Obj/
+**/UNITY/Build/
+**/UNITY/build/
+**/*.csproj
+**/*.sln
+**/*.unitypackage
+**/*.userprefs
+
+# Huge Unity Assets (exceeding 100MB GitHub limit)
+**/unityLibrary/src/main/assets/bin/Data/*.unity3d
+**/unityLibrary/src/main/assets/bin/Data/*.resource
+**/unityLibrary/src/main/assets/bin/Data/*.resS
+**/*.unity3d
+**/*.resource
+**/*.resS
