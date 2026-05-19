@@ -79,7 +79,7 @@ class _LibraryScreenState extends State<LibraryScreen>
                         '${state.unlockedCards.length}/${state.cards.length}',
                         style: TextStyle(
                             fontSize: 13,
-                            color: AppColors.textCyan,
+                            color: AppColors.subtitleAccent,
                             fontWeight: FontWeight.w600,
                             fontFamily: 'Inter'),
                       ),
@@ -94,7 +94,7 @@ class _LibraryScreenState extends State<LibraryScreen>
                 margin: const EdgeInsets.symmetric(horizontal: 20),
                 height: 44,
                 decoration: BoxDecoration(
-                  color: AppColors.cardBg.withOpacity(0.5),
+                  color: AppColors.cardSurface,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                       color: AppColors.primary.withOpacity(0.2)),

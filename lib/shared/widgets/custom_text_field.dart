@@ -46,7 +46,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w500,
-            color: AppColors.textCyan,
+            color: AppColors.isLight ? AppColors.textPrimary : AppColors.textCyan,
             fontFamily: 'Inter',
           ),
         ),
@@ -86,7 +86,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                   )
                 : null,
             filled: true,
-            fillColor: AppColors.cardBg.withOpacity(0.5),
+            fillColor: AppColors.cardSurfaceMuted,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(

@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../core/l10n/locale_provider.dart';
+import '../../../core/portal/portal_scope.dart';
+import '../../../domain/models/app_portal.dart';
 import '../../../domain/models/login_route_args.dart';
 import '../../../domain/models/user_role.dart';
+import '../../home/providers/theme_provider.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../providers/role_session_provider.dart';
 import '../../../shared/widgets/custom_text_field.dart';
 import '../../../routes/app_routes.dart';
 import '../../home/providers/app_state.dart';
+import '../widgets/auth_appearance_sheet.dart';
+import '../../../core/l10n/app_localizations.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -33,8 +39,10 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
       ..repeat(reverse: true);
     _bgPulse = Tween<double>(begin: 0.8, end: 1.0)
         .animate(CurvedAnimation(parent: _bgCtrl, curve: Curves.easeInOut));
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _restoreSession();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await activatePortal(context, AppPortal.auth);
+      if (!mounted) return;
+      await _restoreSession();
       _showRegistrationSuccessMessage();
     });
   }
@@ -47,8 +55,8 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          'Đăng ký thành công! Vui lòng đăng nhập.',
-          style: TextStyle(fontFamily: 'Inter'),
+          AppLocalizations.of(context).registrationSuccessLogin,
+          style: const TextStyle(fontFamily: 'Inter'),
         ),
         backgroundColor: AppColors.success,
         behavior: SnackBarBehavior.floating,
@@ -62,16 +70,22 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     await roleSession.loadSession();
     if (!mounted) return;
     if (roleSession.isStaff) {
+      await activatePortal(context, AppPortal.staff);
+      if (!mounted) return;
       Navigator.pushReplacementNamed(context, AppRoutes.staffHome);
       return;
     }
     if (roleSession.isAdmin) {
+      await activatePortal(context, AppPortal.admin);
+      if (!mounted) return;
       Navigator.pushReplacementNamed(context, AppRoutes.adminHome);
       return;
     }
     final state = context.read<AppState>();
     if (!state.initialized) await state.initialize();
     if (mounted && state.isLoggedIn) {
+      await activatePortal(context, AppPortal.user);
+      if (!mounted) return;
       Navigator.pushReplacementNamed(context, AppRoutes.home);
     }
   }
@@ -93,10 +107,14 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
         );
     if (!mounted) return;
     if (role == UserRole.staff) {
+      await activatePortal(context, AppPortal.staff);
+      if (!mounted) return;
       Navigator.pushReplacementNamed(context, AppRoutes.staffHome);
       return;
     }
     if (role == UserRole.admin) {
+      await activatePortal(context, AppPortal.admin);
+      if (!mounted) return;
       Navigator.pushReplacementNamed(context, AppRoutes.adminHome);
       return;
     }
@@ -117,6 +135,9 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
       );
       return;
     }
+    await activatePortal(context, AppPortal.user);
+    if (!mounted) return;
+
     final result = response.result!;
     final welcome = result.isFirstLogin
         ? 'Đăng nhập thành công! Chào mừng ${result.displayName} đến với ${AppState.appDisplayName}!'
@@ -147,6 +168,9 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     if (!mounted) return;
     setState(() => _googleLoading = false);
 
+    await activatePortal(context, AppPortal.user);
+    if (!mounted) return;
+
     final welcome = result.isFirstLogin
         ? 'Đăng nhập thành công! Chào mừng ${result.displayName} đến với ${AppState.appDisplayName}!'
         : 'Chào mừng bạn trở lại, ${result.displayName}!';
@@ -165,20 +189,12 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
+    context.watch<LocaleProvider>();
+    context.watch<ThemeProvider>();
     return Scaffold(
       backgroundColor: AppColors.backgroundDark,
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              AppColors.backgroundDark,
-              AppColors.backgroundBlue,
-              AppColors.backgroundDark,
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+        decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
         child: Stack(
           children: [
             _buildBgBlobs(),
@@ -232,11 +248,16 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
   }
 
   Widget _buildLogin() {
+    final l10n = AppLocalizations.of(context);
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(
         children: [
-          const SizedBox(height: 40),
+          Align(
+            alignment: Alignment.centerRight,
+            child: const AuthSettingsButton(),
+          ),
+          const SizedBox(height: 16),
           Container(
             padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
@@ -255,29 +276,29 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                 shape: BoxShape.circle,
                 gradient: AppColors.primaryGradient,
               ),
-              child: Center(
-                child: Text('⚗️', style: TextStyle(fontSize: 32)),
+              child: const Center(
+                child: Icon(Icons.science, size: 32, color: Colors.white),
               ),
             ),
           ),
           const SizedBox(height: 20),
-          Text('Chemistry AR',
+          Text(l10n.appName,
               style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w700,
                   color: AppColors.textPrimary,
                   fontFamily: 'Inter')),
           const SizedBox(height: 6),
-          Text('Learn chemistry with augmented reality',
+          Text(l10n.appTagline,
               style: TextStyle(
                   fontSize: 13,
-                  color: AppColors.textCyan,
+                  color: AppColors.subtitleAccent,
                   fontFamily: 'Inter')),
           const SizedBox(height: 36),
           Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: AppColors.cardBg.withOpacity(0.5),
+              color: AppColors.cardSurface,
               borderRadius: BorderRadius.circular(24),
               border: Border.all(
                   color: AppColors.primary.withOpacity(0.3), width: 1.5),
@@ -292,26 +313,28 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
               child: Column(
                 children: [
                   CustomTextField(
-                    label: 'Email',
-                    hint: 'Enter your email',
+                    label: l10n.emailLabel,
+                    hint: l10n.emailHint,
                     controller: _emailCtrl,
                     prefixIcon: Icons.mail_outline,
                     keyboardType: TextInputType.emailAddress,
-                    validator: (v) =>
-                        v == null || v.isEmpty ? 'Email is required' : null,
+                    validator: (v) => v == null || v.isEmpty
+                        ? l10n.emailRequired
+                        : null,
                   ),
                   const SizedBox(height: 16),
                   CustomTextField(
-                    label: 'Password',
-                    hint: 'Enter your password',
+                    label: l10n.passwordLabel,
+                    hint: l10n.passwordHint,
                     controller: _passCtrl,
                     prefixIcon: Icons.lock_outline,
                     isPassword: true,
-                    validator: (v) =>
-                        v == null || v.isEmpty ? 'Password is required' : null,
+                    validator: (v) => v == null || v.isEmpty
+                        ? l10n.passwordRequired
+                        : null,
                   ),
                   const SizedBox(height: 24),
-                  _gradientButton('Login', _login,
+                  _gradientButton(l10n.loginButton, _login,
                       gradient: AppColors.primaryGradient),
                 ],
               ),
@@ -324,7 +347,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                     color: AppColors.textSecondary.withOpacity(0.3))),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 12),
-              child: Text('Or continue with',
+              child: Text(l10n.orContinueWith,
                   style: TextStyle(
                       fontSize: 12,
                       color: AppColors.textSecondary,
@@ -362,7 +385,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                                 fontWeight: FontWeight.w700,
                                 color: Color(0xFF4285F4))),
                         SizedBox(width: 10),
-                        Text('Continue with Google',
+                        Text(l10n.continueWithGoogle,
                             style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
@@ -374,16 +397,16 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
           ),
           const SizedBox(height: 24),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Text("Don't have an account? ",
+            Text(l10n.noAccount,
                 style: TextStyle(
                     color: AppColors.textSecondary,
                     fontSize: 13,
                     fontFamily: 'Inter')),
             GestureDetector(
               onTap: _openRegistration,
-              child: Text('Sign Up',
+              child: Text(l10n.signUp,
                   style: TextStyle(
-                      color: AppColors.primaryLight,
+                      color: AppColors.accentText,
                       fontWeight: FontWeight.w600,
                       fontSize: 13,
                       fontFamily: 'Inter')),
