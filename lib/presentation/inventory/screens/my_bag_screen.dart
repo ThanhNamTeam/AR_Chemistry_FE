@@ -80,7 +80,7 @@ class MyBagScreen extends StatelessWidget {
                       child: Text('${pending.length} pending',
                           style: TextStyle(
                               fontSize: 12,
-                              color: AppColors.secondaryLight,
+                              color: AppColors.emphasisPositive,
                               fontWeight: FontWeight.w600,
                               fontFamily: 'Inter')),
                     ),
@@ -184,7 +184,7 @@ class _BagItemCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.cardBg.withOpacity(0.5),
+        color: AppColors.cardSurface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.primary.withOpacity(0.25)),
       ),

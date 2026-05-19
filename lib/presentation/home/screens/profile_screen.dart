@@ -4,11 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/l10n/app_localizations.dart';
+import '../../../core/l10n/locale_provider.dart';
 import '../../../core/storage/avatar_storage_service.dart';
+import '../../../domain/models/app_portal.dart';
 import '../../../shared/styles/app_colors.dart';
+import '../../shared/widgets/profile_language_section.dart';
+import '../../shared/widgets/profile_theme_section.dart';
 import '../../../shared/widgets/knowledge_points_badge.dart';
 import '../../../routes/app_routes.dart';
 import '../../home/providers/app_state.dart';
+import '../../../core/portal/portal_scope.dart';
 import '../../home/providers/theme_provider.dart';
 import '../widgets/profile_update_sheet.dart';
 
@@ -51,11 +57,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         return;
       }
 
+      final l10n = AppLocalizations.of(context);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text(
-            'Cập nhật ảnh đại diện thành công!',
-            style: TextStyle(fontFamily: 'Inter'),
+          content: Text(
+            l10n.avatarUpdated,
+            style: const TextStyle(fontFamily: 'Inter'),
           ),
           backgroundColor: AppColors.success,
           behavior: SnackBarBehavior.floating,
@@ -65,11 +72,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
     } catch (_) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text(
-              'Không thể mở thư viện ảnh.',
-              style: TextStyle(fontFamily: 'Inter'),
+              l10n.cannotOpenGallery,
+              style: const TextStyle(fontFamily: 'Inter'),
             ),
             backgroundColor: AppColors.error,
           ),
@@ -82,8 +90,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    context.watch<LocaleProvider>();
+    context.watch<ThemeProvider>();
     final state = context.watch<AppState>();
-    final themeProvider = context.watch<ThemeProvider>();
     final avatarPath = state.userAvatar;
     final hasAvatar =
         AvatarStorageService.avatarFileExists(avatarPath);
@@ -115,7 +125,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                       const SizedBox(width: 14),
-                      Text('Profile',
+                      Text(l10n.profile,
                           style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.w700,
@@ -221,7 +231,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Chạm ảnh để đổi avatar',
+                        l10n.tapAvatarHint,
                         style: TextStyle(
                           fontSize: 11,
                           color: AppColors.textSecondary.withOpacity(0.9),
@@ -247,7 +257,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Text(state.userPhone!,
                             style: TextStyle(
                                 fontSize: 12,
-                                color: AppColors.textCyan,
+                                color: AppColors.subtitleAccent,
                                 fontFamily: 'Inter')),
                       ],
                       const SizedBox(height: 14),
@@ -267,14 +277,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(Icons.edit_outlined,
-                                  size: 16, color: AppColors.primaryLight),
+                                  size: 16, color: AppColors.accentText),
                               const SizedBox(width: 8),
                               Text(
-                                'Cập nhật thông tin',
+                                l10n.updateProfile,
                                 style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
-                                  color: AppColors.primaryLight,
+                                  color: AppColors.accentText,
                                   fontFamily: 'Inter',
                                 ),
                               ),
@@ -297,14 +307,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         children: [
                           _StatCard(
                             icon: Icons.menu_book_outlined,
-                            label: 'Cards Unlocked',
+                            label: l10n.cardsUnlocked,
                             value: '${state.unlockedCount}/${state.totalCards}',
                             color: AppColors.primary,
                           ),
                           const SizedBox(width: 12),
                           _StatCard(
                             icon: Icons.science_outlined,
-                            label: 'Experiments',
+                            label: l10n.experiments,
                             value: '${state.experimentsCount}',
                             color: AppColors.secondary,
                           ),
@@ -314,7 +324,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: AppColors.cardBg.withOpacity(0.5),
+                          color: AppColors.cardSurface,
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
                               color: AppColors.primary.withOpacity(0.2)),
@@ -325,7 +335,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('Library Progress',
+                                Text(l10n.libraryProgress,
                                     style: TextStyle(
                                         color: AppColors.textSecondary,
                                         fontSize: 12,
@@ -333,7 +343,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 Text(
                                     '${(state.libraryProgress * 100).round()}%',
                                     style: TextStyle(
-                                        color: AppColors.primaryLight,
+                                        color: AppColors.accentText,
                                         fontWeight: FontWeight.w700,
                                         fontFamily: 'Inter')),
                               ],
@@ -356,67 +366,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 const SizedBox(height: 24),
-
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('App Theme',
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.textPrimary,
-                              fontFamily: 'Inter')),
-                      const SizedBox(height: 12),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: ThemeProvider.options.map((option) {
-                          final selected =
-                              themeProvider.theme == option.key;
-                          return GestureDetector(
-                            onTap: () => themeProvider.setTheme(option.key),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 8),
-                              decoration: BoxDecoration(
-                                gradient: selected
-                                    ? LinearGradient(
-                                        colors: [
-                                          option.primary,
-                                          option.accent,
-                                        ],
-                                      )
-                                    : null,
-                                color: selected
-                                    ? null
-                                    : AppColors.cardBg.withOpacity(0.5),
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                  color: selected
-                                      ? Colors.transparent
-                                      : AppColors.primary.withOpacity(0.3),
-                                ),
-                              ),
-                              child: Text(
-                                option.name,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                  color: selected
-                                      ? Colors.white
-                                      : AppColors.textSecondary,
-                                  fontFamily: 'Inter',
-                                ),
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ],
-                  ),
-                ),
+                const ProfileLanguageSection(portal: AppPortal.user),
+                const SizedBox(height: 24),
+                const ProfileThemeSection(portal: AppPortal.user),
                 const SizedBox(height: 24),
 
                 Padding(
@@ -425,8 +377,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       _MenuItem(
                         icon: Icons.menu_book_outlined,
-                        label: 'My Library',
-                        subtitle: '${state.unlockedCards.length} cards unlocked',
+                        label: l10n.myLibrary,
+                        subtitle: l10n.cardsUnlockedSubtitle(
+                            state.unlockedCards.length),
                         color: AppColors.primary,
                         onTap: () =>
                             Navigator.pushNamed(context, AppRoutes.library),
@@ -434,8 +387,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       const SizedBox(height: 10),
                       _MenuItem(
                         icon: Icons.shopping_bag_outlined,
-                        label: 'My Bag',
-                        subtitle: 'View your purchased cards',
+                        label: l10n.myBag,
+                        subtitle: l10n.myBagSubtitle,
                         color: AppColors.secondary,
                         onTap: () =>
                             Navigator.pushNamed(context, AppRoutes.myBag),
@@ -443,8 +396,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       const SizedBox(height: 10),
                       _MenuItem(
                         icon: Icons.store_outlined,
-                        label: 'Shop',
-                        subtitle: 'Buy new chemical cards',
+                        label: l10n.shop,
+                        subtitle: l10n.shopSubtitle,
                         color: AppColors.accent,
                         onTap: () =>
                             Navigator.pushNamed(context, AppRoutes.shop),
@@ -452,8 +405,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       const SizedBox(height: 10),
                       _MenuItem(
                         icon: Icons.qr_code_scanner,
-                        label: 'AR Scanner',
-                        subtitle: 'Scan your chemical cards',
+                        label: l10n.arScanner,
+                        subtitle: l10n.arScannerSubtitle,
                         color: AppColors.accentLight,
                         onTap: () =>
                             Navigator.pushNamed(context, AppRoutes.scan),
@@ -461,8 +414,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       const SizedBox(height: 10),
                       _MenuItem(
                         icon: Icons.feedback_outlined,
-                        label: 'Feedback',
-                        subtitle: 'Báo lỗi hoặc chia sẻ trải nghiệm',
+                        label: l10n.feedback,
+                        subtitle: l10n.feedbackSubtitle,
                         color: AppColors.amber,
                         onTap: () =>
                             Navigator.pushNamed(context, AppRoutes.feedback),
@@ -471,6 +424,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       GestureDetector(
                         onTap: () async {
                           await state.logout();
+                          await activatePortal(context, AppPortal.auth);
                           if (context.mounted) {
                             Navigator.pushNamedAndRemoveUntil(
                                 context, AppRoutes.login, (r) => false);
@@ -491,7 +445,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               Icon(Icons.logout,
                                   color: AppColors.error, size: 20),
                               const SizedBox(width: 10),
-                              Text('Logout',
+                              Text(l10n.logout,
                                   style: TextStyle(
                                       color: AppColors.error,
                                       fontSize: 15,
@@ -582,7 +536,7 @@ class _MenuItem extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: AppColors.cardBg.withOpacity(0.5),
+          color: AppColors.cardSurface,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: AppColors.cardBorder.withOpacity(0.4)),
         ),

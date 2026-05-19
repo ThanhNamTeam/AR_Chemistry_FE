@@ -6,6 +6,8 @@ import '../../../domain/models/login_route_args.dart';
 import '../../../routes/app_routes.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../../shared/widgets/custom_text_field.dart';
+import '../../../core/portal/portal_scope.dart';
+import '../../../domain/models/app_portal.dart';
 import '../../home/providers/app_state.dart';
 
 /// Email + password registration (no full name — add later in Profile).
@@ -17,6 +19,14 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      activatePortal(context, AppPortal.auth);
+    });
+  }
+
   final _formKey = GlobalKey<FormState>();
   final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();

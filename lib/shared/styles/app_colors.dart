@@ -85,11 +85,14 @@ class AppColors {
       backgroundMid = const Color(0xFFE2E8F0);
       backgroundBlue = const Color(0xFFDBEAFE);
       cardBg = const Color(0xFFFFFFFF);
-      cardBorder = Color.lerp(primaryColor, Colors.grey, 0.5)!;
+      cardBorder = Color.lerp(primaryColor, const Color(0xFFCBD5E1), 0.35)!;
       textPrimary = const Color(0xFF0F172A);
-      textSecondary = const Color(0xFF64748B);
-      textCyan = primaryColor;
-      textAmber = const Color(0xFFD97706);
+      textSecondary = const Color(0xFF475569);
+      // Darker accents for readable text on light surfaces.
+      textCyan = Color.lerp(primaryColor, const Color(0xFF0F172A), 0.45)!;
+      textAmber = const Color(0xFFB45309);
+      primaryLight = primaryDark;
+      secondaryLight = secondaryDark;
     } else {
       backgroundDark = const Color(0xFF020817);
       backgroundMid = const Color(0xFF0F172A);
@@ -122,4 +125,34 @@ class AppColors {
   static Color _tintBackground(Color c) {
     return Color.alphaBlend(c.withOpacity(0.12), const Color(0xFF020817));
   }
+
+  /// Solid card surface — avoids dark glass on light backgrounds.
+  static Color get cardSurface =>
+      isLight ? const Color(0xFFFFFFFF) : cardBg.withOpacity(0.55);
+
+  static Color get cardSurfaceMuted =>
+      isLight ? const Color(0xFFF1F5F9) : cardBg.withOpacity(0.45);
+
+  /// Links, badges, action labels on light UI.
+  static Color get accentText => isLight ? primaryDark : primaryLight;
+
+  /// Email / metadata subtitles.
+  static Color get subtitleAccent => isLight ? textCyan : textCyan;
+
+  /// Positive highlights (revenue, success values).
+  static Color get emphasisPositive => isLight ? secondaryDark : secondaryLight;
+
+  /// Bottom nav & chips — unselected label/icon.
+  static Color get navMuted => isLight ? const Color(0xFF64748B) : textSecondary;
+
+  static Color get navBarBg =>
+      isLight ? const Color(0xFFFFFFFF) : cardBg.withOpacity(0.92);
+
+  static Color get shadowSoft => isLight
+      ? Colors.black.withOpacity(0.08)
+      : Colors.black.withOpacity(0.25);
+
+  static Color get shadowCard => isLight
+      ? Colors.black.withOpacity(0.06)
+      : AppColors.primary.withOpacity(0.06);
 }

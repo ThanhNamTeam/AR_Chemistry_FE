@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+
+import 'core/l10n/app_localizations.dart';
+import 'core/l10n/locale_provider.dart';
 
 import 'presentation/admin/providers/admin_provider.dart';
 import 'presentation/admin/screens/admin_home_screen.dart';
@@ -33,6 +37,7 @@ import 'presentation/feedback/screens/feedback_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  GoogleFonts.config.allowRuntimeFetching = true;
   AppColors.applyTheme(
     primaryColor: const Color(0xFF06B6D4),
     accentColor: const Color(0xFF3B82F6),
@@ -65,17 +70,21 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
       providers: [
         ChangeNotifierProvider(create: (_) => AppState()),
         ChangeNotifierProvider(create: (_) => HomeProvider()),
-        ChangeNotifierProvider(create: (_) => ThemeProvider()..loadTheme()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()..loadThemes()),
+        ChangeNotifierProvider(create: (_) => LocaleProvider()..loadLocales()),
         ChangeNotifierProvider(create: (_) => RoleSessionProvider()),
         ChangeNotifierProvider(create: (_) => StaffProvider()),
         ChangeNotifierProvider(create: (_) => AdminProvider()),
       ],
-      child: Consumer<ThemeProvider>(
-        builder: (context, themeProvider, _) {
+      child: Consumer2<ThemeProvider, LocaleProvider>(
+        builder: (context, themeProvider, localeProvider, _) {
           return MaterialApp(
             navigatorKey: _navigatorKey,
             title: 'AR Chemistry Lab',
             debugShowCheckedModeBanner: false,
+            locale: localeProvider.locale,
+            supportedLocales: AppLocalizations.supportedLocales,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
             theme: themeProvider.buildThemeData(),
             initialRoute: AppRoutes.onboarding,
             routes: _buildRoutes(),

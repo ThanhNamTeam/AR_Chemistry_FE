@@ -2,12 +2,16 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../domain/models/app_portal.dart';
+
 class LocalStorageService {
   static const authTokenKey = 'auth_token';
   static const userKey = 'user';
   static const knowledgePointsKey = 'knowledge_points';
   static const registeredUserKey = 'registeredUser';
   static const themeKey = 'chemistry-ar-theme';
+  static const localeKey = 'app-locale';
+  static const onboardingCompletedKey = 'onboarding_completed_v1';
   static const unlockedCardsKey = 'unlocked_cards';
   static const myBagKey = 'my_bag';
   static const registeredUsersKey = 'registered_users_v2';
@@ -163,14 +167,56 @@ class LocalStorageService {
     await setUserHasLoggedInBefore(email, false);
   }
 
+  String _themeKeyForPortal(AppPortal portal) =>
+      'chemistry-ar-theme-${portal.storageSuffix}';
+
   Future<void> setTheme(String theme) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(themeKey, theme);
+    await setThemeForPortal(AppPortal.user, theme);
   }
 
   Future<String?> getTheme() async {
+    return getThemeForPortal(AppPortal.user);
+  }
+
+  Future<void> setThemeForPortal(AppPortal portal, String theme) async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(themeKey);
+    await prefs.setString(_themeKeyForPortal(portal), theme);
+  }
+
+  Future<String?> getThemeForPortal(AppPortal portal) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_themeKeyForPortal(portal));
+  }
+
+  String _localeKeyForPortal(AppPortal portal) =>
+      'app-locale-${portal.storageSuffix}';
+
+  Future<void> setLocale(String languageCode) async {
+    await setLocaleForPortal(AppPortal.user, languageCode);
+  }
+
+  Future<String?> getLocale() async {
+    return getLocaleForPortal(AppPortal.user);
+  }
+
+  Future<void> setLocaleForPortal(AppPortal portal, String languageCode) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_localeKeyForPortal(portal), languageCode);
+  }
+
+  Future<String?> getLocaleForPortal(AppPortal portal) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_localeKeyForPortal(portal));
+  }
+
+  Future<void> setOnboardingCompleted(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(onboardingCompletedKey, value);
+  }
+
+  Future<bool> isOnboardingCompleted() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(onboardingCompletedKey) ?? false;
   }
 
   Future<void> setUnlockedCardIds(List<String> ids) async {

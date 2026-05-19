@@ -56,6 +56,35 @@ class StaffProvider extends ChangeNotifier {
       _quizDrafts.where((q) => q.status == QuizDraftStatus.pendingReview).toList();
   bool get isLoading => _loading;
 
+  int get totalFeedbacks => _feedbacks.length;
+  int get awaitingResponseCount =>
+      _feedbacks.where((f) => f.staffResponse == null).length;
+  int get respondedCount =>
+      _feedbacks.where((f) => f.staffResponse != null).length;
+  int get approvedQuizzesCount => _quizDrafts
+      .where((q) => q.status == QuizDraftStatus.approved)
+      .length;
+  int get rejectedQuizzesCount => _quizDrafts
+      .where((q) => q.status == QuizDraftStatus.rejected)
+      .length;
+
+  /// Mock weekly feedback volume for dashboard chart.
+  List<({String label, double value})> get feedbackTrendWeek => const [
+        (label: 'T2', value: 4),
+        (label: 'T3', value: 7),
+        (label: 'T4', value: 5),
+        (label: 'T5', value: 9),
+        (label: 'T6', value: 6),
+        (label: 'T7', value: 3),
+        (label: 'CN', value: 2),
+      ];
+
+  List<StaffFeedbackItem> get recentFeedbacks {
+    final sorted = List<StaffFeedbackItem>.from(_feedbacks)
+      ..sort((a, b) => b.submittedAt.compareTo(a.submittedAt));
+    return sorted.take(3).toList();
+  }
+
   Future<void> initialize() async {
     _loading = true;
     notifyListeners();

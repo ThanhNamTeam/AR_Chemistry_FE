@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../../shared/widgets/knowledge_points_badge.dart';
+import '../../../domain/models/app_portal.dart';
 import '../../../domain/models/login_route_args.dart';
 import '../../../routes/app_routes.dart';
 import '../../home/providers/app_state.dart';
+import '../../../core/portal/portal_scope.dart';
 import '../../home/providers/theme_provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -29,7 +31,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       vsync: this,
       duration: const Duration(milliseconds: 2500),
     )..repeat(reverse: true);
-    WidgetsBinding.instance.addPostFrameCallback((_) => _showWelcomeMessage());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      activatePortal(context, AppPortal.user);
+      _showWelcomeMessage();
+    });
   }
 
   void _showWelcomeMessage() {

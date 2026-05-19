@@ -140,7 +140,7 @@ class _ProfileUpdateSheetState extends State<ProfileUpdateSheet> {
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
-                    color: AppColors.textCyan,
+                    color: AppColors.subtitleAccent,
                     fontFamily: 'Inter',
                   ),
                 ),
