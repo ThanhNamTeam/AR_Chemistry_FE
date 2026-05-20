@@ -5,6 +5,7 @@ import '../../../shared/widgets/knowledge_points_badge.dart';
 import '../../../routes/app_routes.dart';
 import '../../home/providers/app_state.dart';
 import '../../../domain/models/chemical_card_model.dart';
+import '../widgets/ar_camera_view.dart';
 
 class ScanScreen extends StatefulWidget {
   const ScanScreen({super.key});
@@ -17,11 +18,14 @@ class _ScanScreenState extends State<ScanScreen> with TickerProviderStateMixin {
   late AnimationController _scanCtrl;
   late Animation<double> _scanAnim;
   late AnimationController _pulseCtrl;
+  late final Widget _arCameraView;
   bool _scanning = false;
 
   @override
   void initState() {
     super.initState();
+    debugPrint('[AR_UNITY_TIMING] ScanScreen initState');
+    _arCameraView = const ARCameraView(key: ValueKey('stable-ar-camera-view'));
     _scanCtrl = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
@@ -38,6 +42,7 @@ class _ScanScreenState extends State<ScanScreen> with TickerProviderStateMixin {
 
   @override
   void dispose() {
+    debugPrint('[AR_UNITY_TIMING] ScanScreen dispose');
     _scanCtrl.dispose();
     _pulseCtrl.dispose();
     super.dispose();
@@ -55,28 +60,41 @@ class _ScanScreenState extends State<ScanScreen> with TickerProviderStateMixin {
 
   Future<void> _simulateScan(AppState state) async {
     if (state.unlockedCards.length < 2) {
+      debugPrint('[AR_UNITY_TIMING] ScanScreen simulateScan blocked=notEnoughCards');
       _toast('You need at least 2 unlocked cards to experiment');
       return;
     }
-    if (_scanning) return;
+    if (_scanning) {
+      debugPrint('[AR_UNITY_TIMING] ScanScreen simulateScan blocked=alreadyScanning');
+      return;
+    }
 
     final available = state.unlockedCards
         .where((c) => !state.scannedCards.contains(c.id))
         .toList();
-    if (available.isEmpty) return;
+    if (available.isEmpty) {
+      debugPrint('[AR_UNITY_TIMING] ScanScreen simulateScan blocked=noAvailableCards');
+      return;
+    }
 
+    debugPrint('[AR_UNITY_TIMING] ScanScreen scanning=true');
     setState(() => _scanning = true);
     await Future.delayed(const Duration(milliseconds: 1500));
     if (!mounted) return;
 
     final card = available.first;
     state.addScannedCard(card.id);
+    debugPrint('[AR_UNITY_TIMING] ScanScreen scanning=false card=${card.id}');
     setState(() => _scanning = false);
     _toast('Scanned: ${card.symbol} - ${card.name}');
   }
 
   void _goToResult(AppState state) {
-    if (state.scannedCards.length < 2) return;
+    if (state.scannedCards.length < 2) {
+      debugPrint('[AR_UNITY_TIMING] ScanScreen goToResult blocked=notEnoughScans');
+      return;
+    }
+    debugPrint('[AR_UNITY_TIMING] ScanScreen goToResult');
     Navigator.pushNamed(
       context,
       AppRoutes.result,
@@ -86,6 +104,7 @@ class _ScanScreenState extends State<ScanScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('[AR_UNITY_TIMING] ScanScreen build');
     final state = context.watch<AppState>();
     final scanned = state.scannedCards
         .map((id) => state.getCardById(id))
@@ -164,16 +183,8 @@ class _ScanScreenState extends State<ScanScreen> with TickerProviderStateMixin {
                             borderRadius: BorderRadius.circular(22),
                             child: Stack(
                               children: [
-                                // Fake camera background
-                                Container(
-                                  decoration: BoxDecoration(
-                                    gradient: RadialGradient(
-                                      colors: [
-                                        AppColors.primary.withOpacity(0.05),
-                                        Colors.black.withOpacity(0.6),
-                                      ],
-                                    ),
-                                  ),
+                                Positioned.fill(
+                                  child: _arCameraView,
                                 ),
 
                                 // Corner markers

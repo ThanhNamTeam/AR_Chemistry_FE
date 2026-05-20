@@ -9190,8 +9190,8 @@ IL_0008:
 		L_14 = String_get_Length_m42625D67623FA5CC7A44D47425CE86FB946542D2_inline(L_13, NULL);
 		StringBuilder_t* L_15 = (StringBuilder_t*)il2cpp_codegen_object_new(StringBuilder_t_il2cpp_TypeInfo_var);
 		StringBuilder__ctor_m2619CA8D2C3476DF1A302D9D941498BB1C6164C5(L_15, L_14, NULL);
-		*((RuntimeObject**)L_12) = (RuntimeObject*)L_15;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_12, (void*)(RuntimeObject*)L_15);
+		*((StringBuilder_t**)L_12) = (StringBuilder_t*)L_15;
+		Il2CppCodeGenWriteBarrier((void**)(StringBuilder_t**)L_12, (void*)(StringBuilder_t*)L_15);
 		StringBuilder_t** L_16 = ___1_sb;
 		StringBuilder_t* L_17 = *((StringBuilder_t**)L_16);
 		String_t* L_18 = ___0_src;
@@ -9363,8 +9363,8 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void Normalization_DecomposeChar_m6270D714CAC
 		L_4 = String_get_Length_m42625D67623FA5CC7A44D47425CE86FB946542D2_inline(L_3, NULL);
 		StringBuilder_t* L_5 = (StringBuilder_t*)il2cpp_codegen_object_new(StringBuilder_t_il2cpp_TypeInfo_var);
 		StringBuilder__ctor_m2619CA8D2C3476DF1A302D9D941498BB1C6164C5(L_5, ((int32_t)il2cpp_codegen_add(L_4, ((int32_t)100))), NULL);
-		*((RuntimeObject**)L_2) = (RuntimeObject*)L_5;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_2, (void*)(RuntimeObject*)L_5);
+		*((StringBuilder_t**)L_2) = (StringBuilder_t*)L_5;
+		Il2CppCodeGenWriteBarrier((void**)(StringBuilder_t**)L_2, (void*)(StringBuilder_t*)L_5);
 	}
 
 IL_0014:
@@ -9390,8 +9390,8 @@ IL_0014:
 	{
 		Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C** L_17 = ___1_buf;
 		Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C* L_18 = (Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C*)(Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C*)SZArrayNew(Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C_il2cpp_TypeInfo_var, (uint32_t)((int32_t)19));
-		*((RuntimeObject**)L_17) = (RuntimeObject*)L_18;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_17, (void*)(RuntimeObject*)L_18);
+		*((Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C**)L_17) = (Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C*)L_18;
+		Il2CppCodeGenWriteBarrier((void**)(Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C**)L_17, (void*)(Int32U5BU5D_t19C97395396A72ECAF310612F0760F165060314C*)L_18);
 	}
 
 IL_0032:
@@ -10527,7 +10527,7 @@ IL_006c_1:
 				Assembly_t* L_12 = ((EncodingHelper_t550B821C2238175DED2DD6B1E4442FC553A227DE_StaticFields*)il2cpp_codegen_static_fields_for(EncodingHelper_t550B821C2238175DED2DD6B1E4442FC553A227DE_il2cpp_TypeInfo_var))->___i18nAssembly;
 				NullCheck(L_12);
 				Type_t* L_13;
-				L_13 = VirtualFuncInvoker1< Type_t*, String_t* >::Invoke(18, L_12, _stringLiteral9D703B09DF913E36DA761B1832BC3B9679234848);
+				L_13 = VirtualFuncInvoker1< Type_t*, String_t* >::Invoke(19, L_12, _stringLiteral9D703B09DF913E36DA761B1832BC3B9679234848);
 				V_2 = L_13;
 				goto IL_008b_1;
 			}

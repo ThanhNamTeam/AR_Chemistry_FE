@@ -7,6 +7,8 @@
 
 
 
+extern void EmbeddedAttribute__ctor_m720B656498A69B70F91C7FEDEE30EB53209087BD (void);
+extern void RefSafetyRulesAttribute__ctor_mD4883EFA6A7FB332CB6C3B41AEE96B4A7B0FD787 (void);
 extern void RemoteSettings_RemoteSettingsUpdated_m6202CCC0AF33D44838BB46977D075E54FD5EC069 (void);
 extern void RemoteSettings_RemoteSettingsBeforeFetchFromServer_m677DED4CFA8C9E498227A3E939242974DF8FA35C (void);
 extern void RemoteSettings_RemoteSettingsUpdateCompleted_m56713308E00B18BF0E5FADEC93D67A70F7E5FD86 (void);
@@ -19,8 +21,10 @@ extern void SessionStateChanged__ctor_m8E04BB6766439BA455F9C808171BD791230496D8 
 extern void SessionStateChanged_Invoke_mB9195B30A226CB3E53E470C24FD31E039E5BB4F5 (void);
 extern void IdentityTokenChanged__ctor_m1970F8BEEDAA84A8FC5ABB973C0DB62FA2AA8312 (void);
 extern void IdentityTokenChanged_Invoke_m22D3DA825F0D6E701D050EFA3D35E84DFAC7F8D9 (void);
-static Il2CppMethodPointer s_methodPointers[12] = 
+static Il2CppMethodPointer s_methodPointers[14] = 
 {
+	EmbeddedAttribute__ctor_m720B656498A69B70F91C7FEDEE30EB53209087BD,
+	RefSafetyRulesAttribute__ctor_mD4883EFA6A7FB332CB6C3B41AEE96B4A7B0FD787,
 	RemoteSettings_RemoteSettingsUpdated_m6202CCC0AF33D44838BB46977D075E54FD5EC069,
 	RemoteSettings_RemoteSettingsBeforeFetchFromServer_m677DED4CFA8C9E498227A3E939242974DF8FA35C,
 	RemoteSettings_RemoteSettingsUpdateCompleted_m56713308E00B18BF0E5FADEC93D67A70F7E5FD86,
@@ -34,26 +38,28 @@ static Il2CppMethodPointer s_methodPointers[12] =
 	IdentityTokenChanged__ctor_m1970F8BEEDAA84A8FC5ABB973C0DB62FA2AA8312,
 	IdentityTokenChanged_Invoke_m22D3DA825F0D6E701D050EFA3D35E84DFAC7F8D9,
 };
-static const int32_t s_InvokerIndices[12] = 
+static const int32_t s_InvokerIndices[14] = 
 {
-	23277,
-	23923,
-	19030,
-	6019,
-	15390,
-	21155,
-	17827,
-	23288,
-	6019,
-	1831,
-	6019,
-	11802,
+	14645,
+	11196,
+	22183,
+	22809,
+	18139,
+	5792,
+	14645,
+	20132,
+	16988,
+	22195,
+	5792,
+	1780,
+	5792,
+	11258,
 };
 IL2CPP_EXTERN_C const Il2CppCodeGenModule g_UnityEngine_UnityAnalyticsModule_CodeGenModule;
 const Il2CppCodeGenModule g_UnityEngine_UnityAnalyticsModule_CodeGenModule = 
 {
 	"UnityEngine.UnityAnalyticsModule.dll",
-	12,
+	14,
 	s_methodPointers,
 	0,
 	NULL,

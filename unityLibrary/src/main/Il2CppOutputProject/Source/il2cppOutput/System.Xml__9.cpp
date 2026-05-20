@@ -20658,8 +20658,8 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void FacetsChecker_CheckWhitespaceFacets_mF4C
 		NullCheck(L_8);
 		String_t* L_9;
 		L_9 = String_Trim_mCD6D8C6D4CFD15225D12DB7D3E0544CA80FB8DA5(L_8, NULL);
-		*((RuntimeObject**)L_6) = (RuntimeObject*)L_9;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_6, (void*)(RuntimeObject*)L_9);
+		*((String_t**)L_6) = (String_t*)L_9;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_6, (void*)(String_t*)L_9);
 		return;
 	}
 
@@ -20680,8 +20680,8 @@ IL_001f:
 		String_t* L_14 = *((String_t**)L_13);
 		String_t* L_15;
 		L_15 = XmlComplianceUtil_NonCDataNormalize_m05104F40CDDB7AA097927219C896E3AF39715E67(L_14, NULL);
-		*((RuntimeObject**)L_12) = (RuntimeObject*)L_15;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_12, (void*)(RuntimeObject*)L_15);
+		*((String_t**)L_12) = (String_t*)L_15;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_12, (void*)(String_t*)L_15);
 		return;
 	}
 
@@ -20702,8 +20702,8 @@ IL_0032:
 		String_t* L_20 = *((String_t**)L_19);
 		String_t* L_21;
 		L_21 = XmlComplianceUtil_CDataNormalize_m5DE92209D1870DF7E10D8B9B0CAFBA8F0D45FA4D(L_20, NULL);
-		*((RuntimeObject**)L_18) = (RuntimeObject*)L_21;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_18, (void*)(RuntimeObject*)L_21);
+		*((String_t**)L_18) = (String_t*)L_21;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_18, (void*)(String_t*)L_21);
 		return;
 	}
 
@@ -20739,8 +20739,8 @@ IL_0045:
 		String_t* L_29 = *((String_t**)L_28);
 		String_t* L_30;
 		L_30 = XmlComplianceUtil_CDataNormalize_m5DE92209D1870DF7E10D8B9B0CAFBA8F0D45FA4D(L_29, NULL);
-		*((RuntimeObject**)L_27) = (RuntimeObject*)L_30;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_27, (void*)(RuntimeObject*)L_30);
+		*((String_t**)L_27) = (String_t*)L_30;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_27, (void*)(String_t*)L_30);
 		return;
 	}
 
@@ -20760,8 +20760,8 @@ IL_0066:
 		String_t* L_35 = *((String_t**)L_34);
 		String_t* L_36;
 		L_36 = XmlComplianceUtil_NonCDataNormalize_m05104F40CDDB7AA097927219C896E3AF39715E67(L_35, NULL);
-		*((RuntimeObject**)L_33) = (RuntimeObject*)L_36;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_33, (void*)(RuntimeObject*)L_36);
+		*((String_t**)L_33) = (String_t*)L_36;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_33, (void*)(String_t*)L_36);
 	}
 
 IL_0078:

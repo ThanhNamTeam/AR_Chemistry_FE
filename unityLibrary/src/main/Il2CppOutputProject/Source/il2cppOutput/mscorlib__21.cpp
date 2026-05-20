@@ -7128,7 +7128,7 @@ IL_00ad:
 		MethodBase_t* L_56 = ___1_mi;
 		NullCheck(L_56);
 		bool L_57;
-		L_57 = VirtualFuncInvoker0< bool >::Invoke(27, L_56);
+		L_57 = VirtualFuncInvoker0< bool >::Invoke(26, L_56);
 		if (!L_57)
 		{
 			goto IL_0149;
@@ -7138,12 +7138,12 @@ IL_00ad:
 		MethodBase_t* L_58 = ___1_mi;
 		NullCheck(((MethodInfo_t*)CastclassClass((RuntimeObject*)L_58, MethodInfo_t_il2cpp_TypeInfo_var)));
 		MethodInfo_t* L_59;
-		L_59 = VirtualFuncInvoker0< MethodInfo_t* >::Invoke(42, ((MethodInfo_t*)CastclassClass((RuntimeObject*)L_58, MethodInfo_t_il2cpp_TypeInfo_var)));
+		L_59 = VirtualFuncInvoker0< MethodInfo_t* >::Invoke(41, ((MethodInfo_t*)CastclassClass((RuntimeObject*)L_58, MethodInfo_t_il2cpp_TypeInfo_var)));
 		___1_mi = L_59;
 		MethodBase_t* L_60 = ___1_mi;
 		NullCheck(L_60);
 		TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* L_61;
-		L_61 = VirtualFuncInvoker0< TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(29, L_60);
+		L_61 = VirtualFuncInvoker0< TypeU5BU5D_t97234E1129B564EB38B8D85CAC2AD8B5B9522FFB* >::Invoke(28, L_60);
 		V_5 = L_61;
 		StringBuilder_t* L_62 = ___0_sb;
 		NullCheck(L_62);
@@ -7479,15 +7479,15 @@ IL_0042_1:
 			{
 				MethodBase_t** L_26 = ___0_method;
 				MethodInfo_t* L_27 = V_4;
-				*((RuntimeObject**)L_26) = (RuntimeObject*)L_27;
-				Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_26, (void*)(RuntimeObject*)L_27);
+				*((MethodBase_t**)L_26) = (MethodBase_t*)L_27;
+				Il2CppCodeGenWriteBarrier((void**)(MethodBase_t**)L_26, (void*)(MethodBase_t*)L_27);
 				Type_t** L_28 = ___1_declaringType;
 				MethodInfo_t* L_29 = V_4;
 				NullCheck(L_29);
 				Type_t* L_30;
 				L_30 = VirtualFuncInvoker0< Type_t* >::Invoke(9, L_29);
-				*((RuntimeObject**)L_28) = (RuntimeObject*)L_30;
-				Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_28, (void*)(RuntimeObject*)L_30);
+				*((Type_t**)L_28) = (Type_t*)L_30;
+				Il2CppCodeGenWriteBarrier((void**)(Type_t**)L_28, (void*)(Type_t*)L_30);
 				goto IL_0087;
 			}
 

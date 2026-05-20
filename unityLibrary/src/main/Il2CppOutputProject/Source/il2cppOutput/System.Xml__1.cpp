@@ -16119,8 +16119,8 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void XmlTextReaderImpl_AddAttributeChunkToLis
 	{
 		NodeData_tEB6A7F9E5147217F637373A7B7644BE377D539FF** L_2 = ___2_lastChunk;
 		NodeData_tEB6A7F9E5147217F637373A7B7644BE377D539FF* L_3 = ___1_chunk;
-		*((RuntimeObject**)L_2) = (RuntimeObject*)L_3;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_2, (void*)(RuntimeObject*)L_3);
+		*((NodeData_tEB6A7F9E5147217F637373A7B7644BE377D539FF**)L_2) = (NodeData_tEB6A7F9E5147217F637373A7B7644BE377D539FF*)L_3;
+		Il2CppCodeGenWriteBarrier((void**)(NodeData_tEB6A7F9E5147217F637373A7B7644BE377D539FF**)L_2, (void*)(NodeData_tEB6A7F9E5147217F637373A7B7644BE377D539FF*)L_3);
 		NodeData_tEB6A7F9E5147217F637373A7B7644BE377D539FF* L_4 = ___0_attr;
 		NodeData_tEB6A7F9E5147217F637373A7B7644BE377D539FF* L_5 = ___1_chunk;
 		NullCheck(L_4);
@@ -16139,8 +16139,8 @@ IL_000f:
 		Il2CppCodeGenWriteBarrier((void**)(&L_7->___nextAttrValueChunk), (void*)L_8);
 		NodeData_tEB6A7F9E5147217F637373A7B7644BE377D539FF** L_9 = ___2_lastChunk;
 		NodeData_tEB6A7F9E5147217F637373A7B7644BE377D539FF* L_10 = ___1_chunk;
-		*((RuntimeObject**)L_9) = (RuntimeObject*)L_10;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_9, (void*)(RuntimeObject*)L_10);
+		*((NodeData_tEB6A7F9E5147217F637373A7B7644BE377D539FF**)L_9) = (NodeData_tEB6A7F9E5147217F637373A7B7644BE377D539FF*)L_10;
+		Il2CppCodeGenWriteBarrier((void**)(NodeData_tEB6A7F9E5147217F637373A7B7644BE377D539FF**)L_9, (void*)(NodeData_tEB6A7F9E5147217F637373A7B7644BE377D539FF*)L_10);
 		return;
 	}
 }

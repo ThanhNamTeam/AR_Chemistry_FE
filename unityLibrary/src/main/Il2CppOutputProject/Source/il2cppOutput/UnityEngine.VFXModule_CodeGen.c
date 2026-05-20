@@ -7,6 +7,8 @@
 
 
 
+extern void EmbeddedAttribute__ctor_m9F22C8449B7FD95842EC5CD3F656507EE075FB13 (void);
+extern void RefSafetyRulesAttribute__ctor_mC658BFCA68F29BE5DDD3DC791709CD0DD6BF2F3A (void);
 extern void VFXEventAttribute__ctor_m08E26E4F79DA1062FC43501FDFE00B9EF3ED3AE1 (void);
 extern void VFXEventAttribute_CreateEventAttributeWrapper_m8875BE7EF5B016C001E79C5CC228969A98EA846A (void);
 extern void VFXEventAttribute_SetWrapValue_mB74CE4A4E6203AA7E95F9446AC2CC043E21CB757 (void);
@@ -46,8 +48,10 @@ extern void VisualEffect_InvokeGetCachedEventAttributeForOutputEvent_Internal_mB
 extern void VisualEffect_InvokeOutputEventReceived_Internal_m8F6FCF09BC8F3774FE1DD70A296182909A9CBCA7 (void);
 extern void VisualEffect_get_visualEffectAsset_Injected_m764595B94C5DC2BD82A19676459463A8DCE219F0 (void);
 extern void VFXRenderer__ctor_mF0F7DA1BF087936A6A95638221B09CE05EA475BF (void);
-static Il2CppMethodPointer s_methodPointers[42] = 
+static Il2CppMethodPointer s_methodPointers[44] = 
 {
+	EmbeddedAttribute__ctor_m9F22C8449B7FD95842EC5CD3F656507EE075FB13,
+	RefSafetyRulesAttribute__ctor_mC658BFCA68F29BE5DDD3DC791709CD0DD6BF2F3A,
 	VFXEventAttribute__ctor_m08E26E4F79DA1062FC43501FDFE00B9EF3ED3AE1,
 	VFXEventAttribute_CreateEventAttributeWrapper_m8875BE7EF5B016C001E79C5CC228969A98EA846A,
 	VFXEventAttribute_SetWrapValue_mB74CE4A4E6203AA7E95F9446AC2CC043E21CB757,
@@ -94,58 +98,60 @@ static Il2CppMethodPointer s_methodPointers[42] =
 extern void VFXOutputEventArgs__ctor_m4A6030F4BF7E27F5F682E0FC4211F53DF866ED56_AdjustorThunk (void);
 static Il2CppTokenAdjustorThunkPair s_adjustorThunks[1] = 
 {
-	{ 0x06000024, VFXOutputEventArgs__ctor_m4A6030F4BF7E27F5F682E0FC4211F53DF866ED56_AdjustorThunk },
+	{ 0x06000026, VFXOutputEventArgs__ctor_m4A6030F4BF7E27F5F682E0FC4211F53DF866ED56_AdjustorThunk },
 };
-static const int32_t s_InvokerIndices[42] = 
+static const int32_t s_InvokerIndices[44] = 
 {
-	2629,
-	23820,
-	11743,
-	23803,
-	22897,
-	11802,
-	15390,
-	15390,
-	15390,
-	23286,
-	20993,
-	22737,
-	15390,
-	22894,
-	17926,
-	17142,
-	22689,
-	15994,
-	23923,
-	16944,
-	22687,
-	15979,
+	14645,
+	11196,
+	2550,
+	22708,
+	11198,
+	22690,
+	21770,
+	11258,
+	14645,
+	14645,
+	14645,
+	22193,
+	19987,
+	21618,
+	14645,
+	21767,
+	17089,
+	16316,
+	21570,
+	15223,
+	22809,
+	16134,
+	21568,
+	15205,
 	-1,
 	-1,
 	-1,
-	15390,
-	5935,
-	23820,
-	15390,
-	5937,
-	15390,
-	15390,
-	15390,
-	23286,
-	23923,
-	5510,
-	15158,
-	15158,
-	22897,
-	21165,
-	22736,
-	15390,
+	14645,
+	5709,
+	22708,
+	14645,
+	5711,
+	14645,
+	14645,
+	14645,
+	22193,
+	22809,
+	5307,
+	14414,
+	14414,
+	21770,
+	20142,
+	21617,
+	14645,
 };
 IL2CPP_EXTERN_C const Il2CppCodeGenModule g_UnityEngine_VFXModule_CodeGenModule;
 const Il2CppCodeGenModule g_UnityEngine_VFXModule_CodeGenModule = 
 {
 	"UnityEngine.VFXModule.dll",
-	42,
+	44,
 	s_methodPointers,
 	1,
 	s_adjustorThunks,

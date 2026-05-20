@@ -5190,7 +5190,7 @@ IL_0035:
 		Assembly_t* L_19 = V_6;
 		NullCheck(L_19);
 		AssemblyName_t555F1570F523D87D970C6E7F27B1B44C83EADDD2* L_20;
-		L_20 = VirtualFuncInvoker0< AssemblyName_t555F1570F523D87D970C6E7F27B1B44C83EADDD2* >::Invoke(20, L_19);
+		L_20 = VirtualFuncInvoker0< AssemblyName_t555F1570F523D87D970C6E7F27B1B44C83EADDD2* >::Invoke(21, L_19);
 		NullCheck(L_20);
 		String_t* L_21;
 		L_21 = AssemblyName_get_Name_m7899B9B3F289EEBAF62AEAB51D1CA91DA92C4E6A_inline(L_20, NULL);
@@ -5255,7 +5255,7 @@ IL_0091:
 		String_t* L_35 = V_1;
 		NullCheck(L_34);
 		Type_t* L_36;
-		L_36 = VirtualFuncInvoker1< Type_t*, String_t* >::Invoke(18, L_34, L_35);
+		L_36 = VirtualFuncInvoker1< Type_t*, String_t* >::Invoke(19, L_34, L_35);
 		V_3 = L_36;
 		Type_t* L_37 = V_3;
 		il2cpp_codegen_runtime_class_init_inline(il2cpp_defaults.systemtype_class);
@@ -5404,7 +5404,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Type_t* DefaultSerializationBinder_GetGeneric
 		String_t* L_7 = V_2;
 		NullCheck(L_6);
 		Type_t* L_8;
-		L_8 = VirtualFuncInvoker1< Type_t*, String_t* >::Invoke(18, L_6, L_7);
+		L_8 = VirtualFuncInvoker1< Type_t*, String_t* >::Invoke(19, L_6, L_7);
 		V_3 = L_8;
 		Type_t* L_9 = V_3;
 		il2cpp_codegen_runtime_class_init_inline(il2cpp_defaults.systemtype_class);
@@ -5586,15 +5586,15 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void DefaultSerializationBinder_BindToName_m5
 		NullCheck(L_2);
 		String_t* L_3;
 		L_3 = VirtualFuncInvoker0< String_t* >::Invoke(9, L_2);
-		*((RuntimeObject**)L_0) = (RuntimeObject*)L_3;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_0, (void*)(RuntimeObject*)L_3);
+		*((String_t**)L_0) = (String_t*)L_3;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_0, (void*)(String_t*)L_3);
 		String_t** L_4 = ___2_typeName;
 		Type_t* L_5 = ___0_serializedType;
 		NullCheck(L_5);
 		String_t* L_6;
 		L_6 = VirtualFuncInvoker0< String_t* >::Invoke(26, L_5);
-		*((RuntimeObject**)L_4) = (RuntimeObject*)L_6;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_4, (void*)(RuntimeObject*)L_6);
+		*((String_t**)L_4) = (String_t*)L_6;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_4, (void*)(String_t*)L_6);
 		return;
 	}
 }
@@ -11253,8 +11253,8 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool JsonPropertyCollection_TryGetProperty_m3
 	}
 	{
 		JsonProperty_t8AC6AE6C6E97559E27739FDD2B6A3DA659FF04F3** L_1 = ___1_item;
-		*((RuntimeObject**)L_1) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_1, (void*)(RuntimeObject*)NULL);
+		*((JsonProperty_t8AC6AE6C6E97559E27739FDD2B6A3DA659FF04F3**)L_1) = (JsonProperty_t8AC6AE6C6E97559E27739FDD2B6A3DA659FF04F3*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(JsonProperty_t8AC6AE6C6E97559E27739FDD2B6A3DA659FF04F3**)L_1, (void*)(JsonProperty_t8AC6AE6C6E97559E27739FDD2B6A3DA659FF04F3*)NULL);
 		return (bool)0;
 	}
 
@@ -14284,8 +14284,8 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool JsonSerializerInternalReader_ReadMetadat
 	JToken_tFD7D9015F3F97A09AD93E439ACE894D12C06E8B3* G_B7_0 = NULL;
 	{
 		String_t** L_0 = ___8_id;
-		*((RuntimeObject**)L_0) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_0, (void*)(RuntimeObject*)NULL);
+		*((String_t**)L_0) = (String_t*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_0, (void*)(String_t*)NULL);
 		RuntimeObject** L_1 = ___7_newValue;
 		*((RuntimeObject**)L_1) = (RuntimeObject*)NULL;
 		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_1, (void*)(RuntimeObject*)NULL);
@@ -14582,8 +14582,8 @@ IL_019e:
 		il2cpp_codegen_runtime_class_init_inline(JToken_tFD7D9015F3F97A09AD93E439ACE894D12C06E8B3_il2cpp_TypeInfo_var);
 		String_t* L_86;
 		L_86 = JToken_op_Explicit_mA435B5A6C389220DF41F02E1CAE6AEA4EEFBCFF3(L_85, NULL);
-		*((RuntimeObject**)L_84) = (RuntimeObject*)L_86;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_84, (void*)(RuntimeObject*)L_86);
+		*((String_t**)L_84) = (String_t*)L_86;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_84, (void*)(String_t*)L_86);
 	}
 
 IL_01b6:
@@ -14669,8 +14669,8 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool JsonSerializerInternalReader_ReadMetadat
 	String_t** G_B24_1 = NULL;
 	{
 		String_t** L_0 = ___8_id;
-		*((RuntimeObject**)L_0) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_0, (void*)(RuntimeObject*)NULL);
+		*((String_t**)L_0) = (String_t*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_0, (void*)(String_t*)NULL);
 		RuntimeObject** L_1 = ___7_newValue;
 		*((RuntimeObject**)L_1) = (RuntimeObject*)NULL;
 		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_1, (void*)(RuntimeObject*)NULL);
@@ -14974,8 +14974,8 @@ IL_0196:
 
 IL_019b:
 	{
-		*((RuntimeObject**)G_B24_1) = (RuntimeObject*)G_B24_0;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)G_B24_1, (void*)(RuntimeObject*)G_B24_0);
+		*((String_t**)G_B24_1) = (String_t*)G_B24_0;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)G_B24_1, (void*)(String_t*)G_B24_0);
 		JsonReader_tB90522FA9D4C1C218A3F2C529A27D95123847765* L_78 = ___0_reader;
 		NullCheck(L_78);
 		JsonReader_ReadAndAssert_m8E4307CFC38DA6E98E818C3058CCE2E385DC9EB7(L_78, NULL);
@@ -15398,14 +15398,14 @@ IL_0187:
 	{
 		Type_t** L_76 = ___1_objectType;
 		Type_t* L_77 = V_5;
-		*((RuntimeObject**)L_76) = (RuntimeObject*)L_77;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_76, (void*)(RuntimeObject*)L_77);
+		*((Type_t**)L_76) = (Type_t*)L_77;
+		Il2CppCodeGenWriteBarrier((void**)(Type_t**)L_76, (void*)(Type_t*)L_77);
 		JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA** L_78 = ___2_contract;
 		Type_t* L_79 = V_5;
 		JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA* L_80;
 		L_80 = JsonSerializerInternalReader_GetContract_mEF9703FC4BA4C689050FE52E27142FD96E995C2A(__this, L_79, NULL);
-		*((RuntimeObject**)L_78) = (RuntimeObject*)L_80;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_78, (void*)(RuntimeObject*)L_80);
+		*((JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA**)L_78) = (JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA*)L_80;
+		Il2CppCodeGenWriteBarrier((void**)(JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA**)L_78, (void*)(JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA*)L_80);
 	}
 
 IL_0195:
@@ -16641,8 +16641,8 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool JsonSerializerInternalReader_CalculatePr
 		bool* L_1 = ___6_useExistingValue;
 		*((int8_t*)L_1) = (int8_t)0;
 		JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA** L_2 = ___8_propertyContract;
-		*((RuntimeObject**)L_2) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_2, (void*)(RuntimeObject*)NULL);
+		*((JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA**)L_2) = (JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA**)L_2, (void*)(JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA*)NULL);
 		bool* L_3 = ___9_gottenCurrentValue;
 		*((int8_t*)L_3) = (int8_t)0;
 		bool* L_4 = ___10_ignoredValue;
@@ -16801,8 +16801,8 @@ IL_0088:
 		L_41 = Object_GetType_mE10A8FC1E57F3DF29972CCBC026C2DC3942263B3(L_40, NULL);
 		JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA* L_42;
 		L_42 = JsonSerializerInternalReader_GetContract_mEF9703FC4BA4C689050FE52E27142FD96E995C2A(__this, L_41, NULL);
-		*((RuntimeObject**)L_38) = (RuntimeObject*)L_42;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_38, (void*)(RuntimeObject*)L_42);
+		*((JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA**)L_38) = (JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA*)L_42;
+		Il2CppCodeGenWriteBarrier((void**)(JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA**)L_38, (void*)(JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA*)L_42);
 		bool* L_43 = ___6_useExistingValue;
 		JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA** L_44 = ___8_propertyContract;
 		JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA* L_45 = *((JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA**)L_44);
@@ -17014,8 +17014,8 @@ IL_01b5:
 		NullCheck(L_97);
 		JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA* L_98;
 		L_98 = JsonProperty_get_PropertyContract_m02E7EB329EBDB11A555F5346C26A23B9DC3DF5A1_inline(L_97, NULL);
-		*((RuntimeObject**)L_96) = (RuntimeObject*)L_98;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_96, (void*)(RuntimeObject*)L_98);
+		*((JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA**)L_96) = (JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA*)L_98;
+		Il2CppCodeGenWriteBarrier((void**)(JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA**)L_96, (void*)(JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA*)L_98);
 		goto IL_01f5;
 	}
 
@@ -17029,8 +17029,8 @@ IL_01c5:
 		L_102 = Object_GetType_mE10A8FC1E57F3DF29972CCBC026C2DC3942263B3(L_101, NULL);
 		JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA* L_103;
 		L_103 = JsonSerializerInternalReader_GetContract_mEF9703FC4BA4C689050FE52E27142FD96E995C2A(__this, L_102, NULL);
-		*((RuntimeObject**)L_99) = (RuntimeObject*)L_103;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_99, (void*)(RuntimeObject*)L_103);
+		*((JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA**)L_99) = (JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA*)L_103;
+		Il2CppCodeGenWriteBarrier((void**)(JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA**)L_99, (void*)(JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA*)L_103);
 		JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA** L_104 = ___8_propertyContract;
 		JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA* L_105 = *((JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA**)L_104);
 		JsonProperty_t8AC6AE6C6E97559E27739FDD2B6A3DA659FF04F3* L_106 = ___0_property;
@@ -17054,8 +17054,8 @@ IL_01c5:
 		JsonProperty_t8AC6AE6C6E97559E27739FDD2B6A3DA659FF04F3* L_114 = ___3_containerProperty;
 		JsonConverter_tE765D011CD34CDF28759E6D58FDBF05AA5EA0F16* L_115;
 		L_115 = JsonSerializerInternalReader_GetConverter_m0F9028F2963C85A675C5B61135219B834F94DAAD(__this, L_110, L_112, L_113, L_114, NULL);
-		*((RuntimeObject**)L_108) = (RuntimeObject*)L_115;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_108, (void*)(RuntimeObject*)L_115);
+		*((JsonConverter_tE765D011CD34CDF28759E6D58FDBF05AA5EA0F16**)L_108) = (JsonConverter_tE765D011CD34CDF28759E6D58FDBF05AA5EA0F16*)L_115;
+		Il2CppCodeGenWriteBarrier((void**)(JsonConverter_tE765D011CD34CDF28759E6D58FDBF05AA5EA0F16**)L_108, (void*)(JsonConverter_tE765D011CD34CDF28759E6D58FDBF05AA5EA0F16*)L_115);
 	}
 
 IL_01f5:
@@ -25912,8 +25912,8 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool JsonSerializerInternalWriter_TryConvertT
 		NullCheck(L_3);
 		String_t* L_5;
 		L_5 = TypeConverter_ConvertToInvariantString_m1E0494D32C84A9F062F9762C8979E223C74D803C(L_3, L_4, NULL);
-		*((RuntimeObject**)L_2) = (RuntimeObject*)L_5;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_2, (void*)(RuntimeObject*)L_5);
+		*((String_t**)L_2) = (String_t*)L_5;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_2, (void*)(String_t*)L_5);
 		return (bool)1;
 	}
 
@@ -25933,16 +25933,16 @@ IL_0015:
 		NullCheck(L_9);
 		String_t* L_10;
 		L_10 = VirtualFuncInvoker0< String_t* >::Invoke(25, L_9);
-		*((RuntimeObject**)L_8) = (RuntimeObject*)L_10;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_8, (void*)(RuntimeObject*)L_10);
+		*((String_t**)L_8) = (String_t*)L_10;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_8, (void*)(String_t*)L_10);
 		return (bool)1;
 	}
 
 IL_0029:
 	{
 		String_t** L_11 = ___2_s;
-		*((RuntimeObject**)L_11) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_11, (void*)(RuntimeObject*)NULL);
+		*((String_t**)L_11) = (String_t*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_11, (void*)(String_t*)NULL);
 		return (bool)0;
 	}
 }
@@ -26643,8 +26643,8 @@ IL_0088:
 
 IL_008f:
 	{
-		*((RuntimeObject**)G_B9_1) = (RuntimeObject*)G_B9_0;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)G_B9_1, (void*)(RuntimeObject*)G_B9_0);
+		*((JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA**)G_B9_1) = (JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA*)G_B9_0;
+		Il2CppCodeGenWriteBarrier((void**)(JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA**)G_B9_1, (void*)(JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA*)G_B9_0);
 		RuntimeObject** L_34 = ___6_memberValue;
 		RuntimeObject* L_35 = *((RuntimeObject**)L_34);
 		JsonContainerContract_t047427003C1B86FBD0BD306946E8A38F442B0F0B* L_36 = ___2_contract;
@@ -26829,8 +26829,8 @@ IL_0177:
 IL_0179:
 	{
 		JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA** L_88 = ___5_memberContract;
-		*((RuntimeObject**)L_88) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_88, (void*)(RuntimeObject*)NULL);
+		*((JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA**)L_88) = (JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA**)L_88, (void*)(JsonContract_tE6A7D4E99E3396B56718606824E99F870FCCF4BA*)NULL);
 		RuntimeObject** L_89 = ___6_memberValue;
 		*((RuntimeObject**)L_89) = (RuntimeObject*)NULL;
 		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_89, (void*)(RuntimeObject*)NULL);

@@ -18832,8 +18832,8 @@ IL_0024:
 	{
 		String_t** L_8 = ___2_namespaceURI;
 		String_t* L_9 = __this->___strReservedXmlns;
-		*((RuntimeObject**)L_8) = (RuntimeObject*)L_9;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_8, (void*)(RuntimeObject*)L_9);
+		*((String_t**)L_8) = (String_t*)L_9;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_8, (void*)(String_t*)L_9);
 		return;
 	}
 
@@ -18851,8 +18851,8 @@ IL_002d:
 	{
 		String_t** L_13 = ___2_namespaceURI;
 		String_t* L_14 = __this->___strReservedXml;
-		*((RuntimeObject**)L_13) = (RuntimeObject*)L_14;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_13, (void*)(RuntimeObject*)L_14);
+		*((String_t**)L_13) = (String_t*)L_14;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_13, (void*)(String_t*)L_14);
 	}
 
 IL_0043:
@@ -29206,14 +29206,14 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void XmlLoader_ParseXmlDeclarationValue_m7A0C
 	XmlTextReaderImpl_t5F48FDC8E88C9E27593266F6C660B3973AE2167B* V_0 = NULL;
 	{
 		String_t** L_0 = ___1_version;
-		*((RuntimeObject**)L_0) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_0, (void*)(RuntimeObject*)NULL);
+		*((String_t**)L_0) = (String_t*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_0, (void*)(String_t*)NULL);
 		String_t** L_1 = ___2_encoding;
-		*((RuntimeObject**)L_1) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_1, (void*)(RuntimeObject*)NULL);
+		*((String_t**)L_1) = (String_t*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_1, (void*)(String_t*)NULL);
 		String_t** L_2 = ___3_standalone;
-		*((RuntimeObject**)L_2) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_2, (void*)(RuntimeObject*)NULL);
+		*((String_t**)L_2) = (String_t*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_2, (void*)(String_t*)NULL);
 		String_t* L_3 = ___0_strValue;
 		XmlTextReaderImpl_t5F48FDC8E88C9E27593266F6C660B3973AE2167B* L_4 = (XmlTextReaderImpl_t5F48FDC8E88C9E27593266F6C660B3973AE2167B*)il2cpp_codegen_object_new(XmlTextReaderImpl_t5F48FDC8E88C9E27593266F6C660B3973AE2167B_il2cpp_TypeInfo_var);
 		XmlTextReaderImpl__ctor_mB17B348B4F2C16D6F06AB86A2803970CA0517303(L_4, L_3, (XmlParserContext_t843976A0319F7334808DCCAAA4F36EAB41A92F3B*)NULL, NULL);
@@ -29253,8 +29253,8 @@ FINALLY_0059:
 				NullCheck(L_11);
 				String_t* L_12;
 				L_12 = VirtualFuncInvoker0< String_t* >::Invoke(11, L_11);
-				*((RuntimeObject**)L_10) = (RuntimeObject*)L_12;
-				Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_10, (void*)(RuntimeObject*)L_12);
+				*((String_t**)L_10) = (String_t*)L_12;
+				Il2CppCodeGenWriteBarrier((void**)(String_t**)L_10, (void*)(String_t*)L_12);
 			}
 
 IL_002d_1:
@@ -29274,8 +29274,8 @@ IL_002d_1:
 				NullCheck(L_16);
 				String_t* L_17;
 				L_17 = VirtualFuncInvoker0< String_t* >::Invoke(11, L_16);
-				*((RuntimeObject**)L_15) = (RuntimeObject*)L_17;
-				Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_15, (void*)(RuntimeObject*)L_17);
+				*((String_t**)L_15) = (String_t*)L_17;
+				Il2CppCodeGenWriteBarrier((void**)(String_t**)L_15, (void*)(String_t*)L_17);
 			}
 
 IL_0042_1:
@@ -29295,8 +29295,8 @@ IL_0042_1:
 				NullCheck(L_21);
 				String_t* L_22;
 				L_22 = VirtualFuncInvoker0< String_t* >::Invoke(11, L_21);
-				*((RuntimeObject**)L_20) = (RuntimeObject*)L_22;
-				Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_20, (void*)(RuntimeObject*)L_22);
+				*((String_t**)L_20) = (String_t*)L_22;
+				Il2CppCodeGenWriteBarrier((void**)(String_t**)L_20, (void*)(String_t*)L_22);
 			}
 
 IL_0057_1:

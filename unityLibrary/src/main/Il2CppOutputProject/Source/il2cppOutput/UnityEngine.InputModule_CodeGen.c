@@ -7,6 +7,8 @@
 
 
 
+extern void EmbeddedAttribute__ctor_m21A058F23627F8E6DB17BCE0D170B7F70952FE43 (void);
+extern void RefSafetyRulesAttribute__ctor_mF529A1A065F46DCF6EBE5DEC64C5961D5234FE90 (void);
 extern void NativeUpdateCallback__ctor_m04FDCD50564E7535FADAFF34BBA83500585A84F5 (void);
 extern void NativeUpdateCallback_Invoke_mC4B7018AE8ED52FB9C6805F65C57A81812D21333 (void);
 extern void NativeInputSystem_get_onDeviceDiscovered_mD55A996A1107331B95C4D9409B8D4C98BADB8FCC (void);
@@ -16,6 +18,7 @@ extern void NativeInputSystem_NotifyBeforeUpdate_m39AE2F1A42BD47200A263AD0EF9EDA
 extern void NativeInputSystem_NotifyUpdate_m482599CC17084B0383809F97671530613EA39AD0 (void);
 extern void NativeInputSystem_NotifyDeviceDiscovered_m861CCAFB4DD314DB3DC58FBD0398800CF9272C03 (void);
 extern void NativeInputSystem_ShouldRunUpdate_m7C9E1201550198D8E1F163787175C86A8B0EE71B (void);
+extern void NativeInputSystem_DoSendMouseEvents_m1D11FB9DBBB4E2CD0C22F18B8A2F439E1F2E40EB (void);
 extern void NativeInputSystem_set_hasDeviceDiscoveredCallback_m0979ABC04DBA52617481EDF743D8B48CC089A1C8 (void);
 extern void NativeInputSystem_get_currentTime_mB10D8CF832AA53952843986F29675B3BC71AAEC9 (void);
 extern void NativeInputSystem_get_currentTimeOffsetToRealtimeSinceStartup_mE5FB513F17BBF2FF45494D1939C44DEBF3040B55 (void);
@@ -28,8 +31,11 @@ extern void NativeInputSystem_Update_m898216ECCA26122D827C2FB45FC4A20296031036 (
 extern void NativeInputSystem_get_normalizeScrollWheelDelta_mF633DF00F7F5823179F3473BC5E07BE9BF75A04F (void);
 extern void NativeInputSystem_set_normalizeScrollWheelDelta_mA6CCECFB417A30D7AEB05FDB313FEA28963F012D (void);
 extern void NativeInputSystem_GetScrollWheelDeltaPerTick_mD4FBEBF03836656D5DE3D39A8CEB3CB395DB607B (void);
-static Il2CppMethodPointer s_methodPointers[21] = 
+extern void NativeInputSystem_get_useImplicitMouseEventScriptCallbacks_m61D9B15E56C6FF00A9EEA9F8FABADBE2390C1A43 (void);
+static Il2CppMethodPointer s_methodPointers[25] = 
 {
+	EmbeddedAttribute__ctor_m21A058F23627F8E6DB17BCE0D170B7F70952FE43,
+	RefSafetyRulesAttribute__ctor_mF529A1A065F46DCF6EBE5DEC64C5961D5234FE90,
 	NativeUpdateCallback__ctor_m04FDCD50564E7535FADAFF34BBA83500585A84F5,
 	NativeUpdateCallback_Invoke_mC4B7018AE8ED52FB9C6805F65C57A81812D21333,
 	NativeInputSystem_get_onDeviceDiscovered_mD55A996A1107331B95C4D9409B8D4C98BADB8FCC,
@@ -39,6 +45,7 @@ static Il2CppMethodPointer s_methodPointers[21] =
 	NativeInputSystem_NotifyUpdate_m482599CC17084B0383809F97671530613EA39AD0,
 	NativeInputSystem_NotifyDeviceDiscovered_m861CCAFB4DD314DB3DC58FBD0398800CF9272C03,
 	NativeInputSystem_ShouldRunUpdate_m7C9E1201550198D8E1F163787175C86A8B0EE71B,
+	NativeInputSystem_DoSendMouseEvents_m1D11FB9DBBB4E2CD0C22F18B8A2F439E1F2E40EB,
 	NativeInputSystem_set_hasDeviceDiscoveredCallback_m0979ABC04DBA52617481EDF743D8B48CC089A1C8,
 	NativeInputSystem_get_currentTime_mB10D8CF832AA53952843986F29675B3BC71AAEC9,
 	NativeInputSystem_get_currentTimeOffsetToRealtimeSinceStartup_mE5FB513F17BBF2FF45494D1939C44DEBF3040B55,
@@ -51,36 +58,41 @@ static Il2CppMethodPointer s_methodPointers[21] =
 	NativeInputSystem_get_normalizeScrollWheelDelta_mF633DF00F7F5823179F3473BC5E07BE9BF75A04F,
 	NativeInputSystem_set_normalizeScrollWheelDelta_mA6CCECFB417A30D7AEB05FDB313FEA28963F012D,
 	NativeInputSystem_GetScrollWheelDeltaPerTick_mD4FBEBF03836656D5DE3D39A8CEB3CB395DB607B,
+	NativeInputSystem_get_useImplicitMouseEventScriptCallbacks_m61D9B15E56C6FF00A9EEA9F8FABADBE2390C1A43,
 };
-static const int32_t s_InvokerIndices[21] = 
+static const int32_t s_InvokerIndices[25] = 
 {
-	6019,
-	5347,
-	23820,
-	23288,
-	23923,
-	23284,
-	20982,
-	20983,
-	20978,
-	23277,
-	23780,
-	23780,
-	23801,
-	23286,
-	17591,
-	23299,
-	23875,
-	23284,
-	23766,
-	23277,
-	23875,
+	14645,
+	11196,
+	5792,
+	5147,
+	22708,
+	22195,
+	22809,
+	22191,
+	19976,
+	19977,
+	19972,
+	16975,
+	22183,
+	22667,
+	22667,
+	22688,
+	22193,
+	16755,
+	22206,
+	22763,
+	22191,
+	22653,
+	22183,
+	22763,
+	22653,
 };
 IL2CPP_EXTERN_C const Il2CppCodeGenModule g_UnityEngine_InputModule_CodeGenModule;
 const Il2CppCodeGenModule g_UnityEngine_InputModule_CodeGenModule = 
 {
 	"UnityEngine.InputModule.dll",
-	21,
+	25,
 	s_methodPointers,
 	0,
 	NULL,
