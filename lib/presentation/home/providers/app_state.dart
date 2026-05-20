@@ -206,6 +206,32 @@ class AppState extends ChangeNotifier {
 
   // ── Auth ──────────────────────────────────────────────────────────
 
+  /// Sau Amplify sign-in — lưu token + bật phiên user thường (student).
+  Future<LoginResult> establishCognitoSession({
+    required String email,
+    required String idToken,
+  }) async {
+    final normalizedEmail = email.trim();
+    final isFirstLogin =
+        !await _storage.getUserHasLoggedInBefore(normalizedEmail);
+
+    _isLoggedIn = true;
+    _userEmail = normalizedEmail;
+    await _storage.setAuthToken(idToken);
+    await _loadUserProfileFields(normalizedEmail);
+    await _loadShopStateForUser(normalizedEmail);
+    await _persistAuth();
+    await _storage.setUserHasLoggedInBefore(normalizedEmail, true);
+
+    _initialized = true;
+    notifyListeners();
+
+    return LoginResult(
+      isFirstLogin: isFirstLogin,
+      displayName: displayName,
+    );
+  }
+
   Future<({String? error, LoginResult? result})> login(
     String email,
     String password,

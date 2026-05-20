@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../core/storage/avatar_storage_service.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../../shared/widgets/knowledge_points_badge.dart';
 import '../../../domain/models/app_portal.dart';
@@ -122,27 +125,48 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
           KnowledgePointsBadge(points: state.knowledgePoints),
           const SizedBox(width: 12),
-          GestureDetector(
-            onTap: () => Navigator.pushNamed(context, AppRoutes.profile),
-            child: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.primary.withOpacity(0.15),
-                border: Border.all(
-                  color: AppColors.primary.withOpacity(0.4),
-                  width: 1.5,
+          _buildProfileAvatar(state),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProfileAvatar(AppState state) {
+    final avatarPath = state.userAvatar;
+    final hasAvatar = AvatarStorageService.avatarFileExists(avatarPath);
+
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(context, AppRoutes.profile),
+      child: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: hasAvatar ? null : AppColors.cyanEmeraldGradient,
+          image: hasAvatar
+              ? DecorationImage(
+                  image: FileImage(File(avatarPath!)),
+                  fit: BoxFit.cover,
+                )
+              : null,
+          border: Border.all(
+            color: AppColors.primary.withOpacity(0.4),
+            width: 1.5,
+          ),
+        ),
+        child: hasAvatar
+            ? null
+            : Center(
+                child: Text(
+                  state.displayName.substring(0, 1).toUpperCase(),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                    fontFamily: 'Inter',
+                  ),
                 ),
               ),
-              child: Icon(
-                Icons.person_outline,
-                color: AppColors.primary,
-                size: 22,
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

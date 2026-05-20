@@ -10,6 +10,8 @@ class CustomTextField extends StatefulWidget {
   final TextInputType keyboardType;
   final String? Function(String?)? validator;
   final void Function(String)? onChanged;
+  final void Function(String)? onFieldSubmitted;
+  final TextInputAction? textInputAction;
   final bool readOnly;
   final int? maxLines;
   final int? minLines;
@@ -24,6 +26,8 @@ class CustomTextField extends StatefulWidget {
     this.keyboardType = TextInputType.text,
     this.validator,
     this.onChanged,
+    this.onFieldSubmitted,
+    this.textInputAction,
     this.readOnly = false,
     this.maxLines,
     this.minLines,
@@ -60,6 +64,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
           minLines: widget.minLines,
           validator: widget.validator,
           onChanged: widget.onChanged,
+          onFieldSubmitted: widget.onFieldSubmitted,
+          textInputAction: widget.textInputAction,
           style: TextStyle(
             color: AppColors.textPrimary,
             fontSize: 14,

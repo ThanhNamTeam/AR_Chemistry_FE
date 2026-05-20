@@ -1,7 +1,11 @@
 class LoginRouteArgs {
   final bool registrationSuccess;
+  final bool passwordResetSuccess;
 
-  const LoginRouteArgs({this.registrationSuccess = false});
+  const LoginRouteArgs({
+    this.registrationSuccess = false,
+    this.passwordResetSuccess = false,
+  });
 }
 
 class HomeRouteArgs {
