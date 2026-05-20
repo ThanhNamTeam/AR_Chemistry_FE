@@ -8,6 +8,7 @@ import '../../../core/storage/local_storage_service.dart';
 import '../../../domain/models/app_portal.dart';
 import '../../../routes/app_routes.dart';
 import '../../../shared/styles/app_colors.dart';
+import '../../../shared/widgets/pressable_scale.dart';
 import '../../home/providers/theme_provider.dart';
 import '../widgets/auth_appearance_sheet.dart';
 
@@ -270,7 +271,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                           }),
                         ),
                         const SizedBox(height: 32),
-                        GestureDetector(
+                        PressableScale(
                           onTap: () => _next(l10n),
                           child: Container(
                             width: double.infinity,

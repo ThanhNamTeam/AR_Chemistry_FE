@@ -3,6 +3,7 @@ class AppRoutes {
   static const String login = '/login';
   static const String verifyOtp = '/verify-otp';
   static const String completeProfile = '/complete-profile';
+  static const String forgotPassword = '/forgot-password';
   static const String home = '/home';
   static const String library = '/library';
   static const String quiz = '/quiz';

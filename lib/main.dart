@@ -20,6 +20,7 @@ import 'presentation/staff/screens/staff_home_screen.dart';
 import 'presentation/shared/screens/portal_profile_screen.dart';
 import 'shared/styles/app_colors.dart';
 import 'routes/app_routes.dart';
+import 'core/navigation/app_navigator.dart';
 
 
 // Screens
@@ -27,6 +28,7 @@ import 'presentation/auth/screens/onboarding_screen.dart';
 import 'presentation/auth/screens/login_screen.dart';
 import 'presentation/auth/screens/verify_otp_screen.dart';
 import 'presentation/auth/screens/complete_profile_screen.dart';
+import 'presentation/auth/screens/forgot_password_screen.dart';
 import 'presentation/home/screens/home_screen.dart';
 import 'presentation/home/screens/profile_screen.dart';
 import 'presentation/inventory/screens/library_screen.dart';
@@ -88,7 +90,7 @@ class ARChemistryApp extends StatefulWidget {
 }
 
 class _ARChemistryAppState extends State<ARChemistryApp> {
-  final _navigatorKey = GlobalKey<NavigatorState>();
+  final _navigatorKey = AppNavigator.key;
 
   @override
   Widget build(BuildContext context) {
@@ -126,6 +128,7 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
       AppRoutes.onboarding: (_) => const OnboardingScreen(),
       AppRoutes.login: (_) => const LoginScreen(),
       AppRoutes.completeProfile: (_) => const RegistrationScreen(),
+      AppRoutes.forgotPassword: (_) => const ForgotPasswordScreen(),
       AppRoutes.verifyOtp: (_) => const VerifyOtpScreen(),
       AppRoutes.home: (_) => const HomeScreen(),
       AppRoutes.profile: (_) => const ProfileScreen(),

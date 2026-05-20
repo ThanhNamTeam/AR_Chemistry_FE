@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import '../../core/auth/cognito_password_policy.dart';
 import '../../presentation/home/providers/theme_provider.dart';
 
 class AppLocalizations {
@@ -199,6 +200,76 @@ class AppLocalizations {
   String get registrationSuccessLogin => isVi
       ? 'Đăng ký thành công! Vui lòng đăng nhập.'
       : 'Registration successful! Please sign in.';
+  String get passwordResetSuccessLogin => isVi
+      ? 'Đổi mật khẩu thành công! Vui lòng đăng nhập.'
+      : 'Password changed successfully! Please sign in.';
+
+  // —— Registration ——
+  String get registerTitle =>
+      isVi ? 'Đăng ký tài khoản' : 'Create account';
+  String get registerSubtitle => isVi
+      ? 'Nhập email và mật khẩu. Họ tên có thể thêm sau trong Profile.'
+      : 'Enter email and password. You can add your name later in Profile.';
+  String get confirmPasswordLabel =>
+      isVi ? 'Xác nhận mật khẩu' : 'Confirm password';
+  String get confirmPasswordHint =>
+      isVi ? 'Nhập lại mật khẩu' : 'Re-enter password';
+  String get passwordMismatch =>
+      isVi ? 'Mật khẩu xác nhận không khớp' : 'Passwords do not match';
+  String get requiredField => isVi ? 'Bắt buộc' : 'Required';
+  String get invalidEmail =>
+      isVi ? 'Email không hợp lệ' : 'Invalid email';
+  String get passwordPolicyHint => isVi
+      ? CognitoPasswordPolicy.hintVi
+      : CognitoPasswordPolicy.hintEn;
+  String passwordPolicyError(String code) {
+    switch (code) {
+      case 'min8':
+        return isVi ? 'Mật khẩu tối thiểu 8 ký tự' : 'Password must be at least 8 characters';
+      case 'upper':
+        return isVi ? 'Cần ít nhất 1 chữ hoa' : 'Need at least one uppercase letter';
+      case 'lower':
+        return isVi ? 'Cần ít nhất 1 chữ thường' : 'Need at least one lowercase letter';
+      case 'digit':
+        return isVi ? 'Cần ít nhất 1 chữ số' : 'Need at least one number';
+      case 'symbol':
+        return isVi ? 'Cần ít nhất 1 ký tự đặc biệt' : 'Need at least one symbol';
+      default:
+        return isVi ? 'Mật khẩu không hợp lệ' : 'Invalid password';
+    }
+  }
+  String get loggingIn => isVi ? 'Đang đăng nhập...' : 'Signing in...';
+  String get forgotPassword =>
+      isVi ? 'Quên mật khẩu?' : 'Forgot password?';
+
+  // —— Forgot password ——
+  String get forgotPasswordTitle =>
+      isVi ? 'Quên mật khẩu' : 'Forgot password';
+  String get forgotPasswordEmailHint => isVi
+      ? 'Nhập email đã đăng ký. Chúng tôi sẽ gửi mã OTP.'
+      : 'Enter your registered email. We will send an OTP code.';
+  String get sendOtpButton => isVi ? 'Gửi mã OTP' : 'Send OTP';
+  String get otpLabel => isVi ? 'Mã OTP' : 'OTP code';
+  String get otpHint => isVi ? 'Nhập mã 6 số' : 'Enter 6-digit code';
+  String get newPasswordLabel =>
+      isVi ? 'Mật khẩu mới' : 'New password';
+  String get confirmNewPasswordLabel =>
+      isVi ? 'Xác nhận mật khẩu mới' : 'Confirm new password';
+  String get confirmChangePassword => isVi
+      ? 'Xác nhận đổi mật khẩu'
+      : 'Confirm password change';
+  String get otpSent =>
+      isVi ? 'Đã gửi mã OTP tới email của bạn' : 'OTP sent to your email';
+  String get backToLogin => isVi ? 'Quay lại đăng nhập' : 'Back to login';
+  String get verifyOtpTitle => isVi ? 'Xác thực OTP' : 'Verify OTP';
+  String get verifyOtpSubtitle => isVi
+      ? 'Nhập mã OTP đã gửi tới email của bạn'
+      : 'Enter the OTP code sent to your email';
+  String get resendOtp => isVi ? 'Gửi lại mã' : 'Resend code';
+  String get verifyButton => isVi ? 'Xác nhận' : 'Verify';
+  String get nextStep => isVi ? 'Tiếp tục' : 'Continue';
+  String get errorGeneric =>
+      isVi ? 'Đã xảy ra lỗi. Vui lòng thử lại.' : 'Something went wrong. Please try again.';
 
   String themeName(AppThemeKey key) {
     switch (key) {
