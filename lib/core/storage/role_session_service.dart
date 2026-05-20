@@ -18,14 +18,19 @@ class RoleSessionService {
 
   Future<({UserRole role, String email})?> load() async {
     final prefs = await SharedPreferences.getInstance();
+
     final roleName = prefs.getString(_roleKey);
     final email = prefs.getString(_emailKey);
-    if (roleName == null || email == null) return null;
+
+    if (roleName == null || email == null) {
+      return null;
+    }
+
     final role = UserRole.values.firstWhere(
-      (r) => r.name == roleName,
-      orElse: () => UserRole.user,
+          (r) => r.name == roleName,
+      orElse: () => UserRole.student,
     );
-    if (role == UserRole.user) return null;
+
     return (role: role, email: email);
   }
 

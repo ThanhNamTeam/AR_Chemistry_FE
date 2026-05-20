@@ -12,6 +12,7 @@ import '../../home/providers/app_state.dart';
 import '../../home/providers/theme_provider.dart';
 import '../widgets/profile_update_sheet.dart';
 
+
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -473,7 +474,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           await state.logout();
                           if (context.mounted) {
                             Navigator.pushNamedAndRemoveUntil(
-                                context, AppRoutes.login, (r) => false);
+                              context,
+                              AppRoutes.login,
+                                  (r) => false,
+                            );
                           }
                         },
                         child: Container(

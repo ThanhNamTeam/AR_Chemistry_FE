@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+
+import 'amplifyconfiguration.dart';
+
 import 'presentation/admin/providers/admin_provider.dart';
 import 'presentation/admin/screens/admin_home_screen.dart';
 import 'presentation/auth/providers/role_session_provider.dart';
@@ -14,9 +19,11 @@ import 'presentation/shared/screens/portal_profile_screen.dart';
 import 'shared/styles/app_colors.dart';
 import 'routes/app_routes.dart';
 
+
 // Screens
 import 'presentation/auth/screens/onboarding_screen.dart';
 import 'presentation/auth/screens/login_screen.dart';
+import 'presentation/auth/screens/verify_otp_screen.dart';
 import 'presentation/auth/screens/complete_profile_screen.dart';
 import 'presentation/home/screens/home_screen.dart';
 import 'presentation/home/screens/profile_screen.dart';
@@ -31,22 +38,44 @@ import 'presentation/payment/screens/payment_success_screen.dart';
 import 'presentation/quiz/screens/quiz_screen.dart';
 import 'presentation/feedback/screens/feedback_screen.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await _configureAmplify();
+
   AppColors.applyTheme(
     primaryColor: const Color(0xFF06B6D4),
     accentColor: const Color(0xFF3B82F6),
     light: false,
   );
+
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent,
-    statusBarIconBrightness: Brightness.light,
-  ));
+
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.light,
+    ),
+  );
+
   runApp(const ARChemistryApp());
+}
+
+Future<void> _configureAmplify() async {
+  try {
+    await Amplify.addPlugin(
+      AmplifyAuthCognito(),
+    );
+
+    await Amplify.configure(amplifyconfig);
+
+    debugPrint('Amplify configured');
+  } catch (e) {
+    debugPrint('Amplify configure failed: $e');
+  }
 }
 
 class ARChemistryApp extends StatefulWidget {
@@ -91,6 +120,7 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
       AppRoutes.onboarding: (_) => const OnboardingScreen(),
       AppRoutes.login: (_) => const LoginScreen(),
       AppRoutes.completeProfile: (_) => const RegistrationScreen(),
+      AppRoutes.verifyOtp: (_) => const VerifyOtpScreen(),
       AppRoutes.home: (_) => const HomeScreen(),
       AppRoutes.profile: (_) => const ProfileScreen(),
       AppRoutes.feedback: (_) => const FeedbackScreen(),

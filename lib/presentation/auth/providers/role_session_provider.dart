@@ -37,13 +37,45 @@ class RoleSessionProvider extends ChangeNotifier {
   bool get isAdmin => _role == UserRole.admin;
 
   Future<void> loadSession() async {
+
     final saved = await _storage.load();
+
+    debugPrint('SAVED_SESSION: $saved');
+
     if (saved != null) {
+
+      debugPrint('ROLE: ${saved.role}');
+      debugPrint('EMAIL: ${saved.email}');
+
       _role = saved.role;
       _email = saved.email;
+
+      debugPrint('SET_ROLE: $_role');
+
       await _loadProfile();
+
+      debugPrint('IS_ADMIN: $isAdmin');
+      debugPrint('IS_STAFF: $isStaff');
+
       notifyListeners();
+    } else {
+      debugPrint('NO SAVED SESSION');
     }
+  }
+
+  Future<void> saveSession({
+    required UserRole role,
+    required String email,
+  }) async {
+
+    _role = role;
+    _email = email;
+
+    await _storage.save(role, email);
+
+    await _loadProfile();
+
+    notifyListeners();
   }
 
   Future<void> _loadProfile() async {
