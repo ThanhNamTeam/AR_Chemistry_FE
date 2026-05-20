@@ -1,3 +1,4 @@
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../../core/storage/avatar_storage_service.dart';
@@ -313,13 +314,17 @@ class AppState extends ChangeNotifier {
   }
 
   Future<void> logout() async {
+
     _isLoggedIn = false;
     _userName = null;
     _userEmail = null;
     _userPhone = null;
     _userAvatar = null;
+
     await _storage.clearAuth();
+
     await _resetShopStateInMemory();
+
     notifyListeners();
   }
 
@@ -379,30 +384,28 @@ class AppState extends ChangeNotifier {
   }
 
   /// Saves account credentials only — user must log in on the login screen.
-  Future<String?> registerAccount(AccountSetupData data) async {
-    final email = data.email.trim();
-    final existing = await _storage.getRegisteredUserByEmail(email);
-    if (existing != null) {
-      return 'Email này đã được đăng ký.';
+  Future<String?> registerAccount(
+      AccountSetupData data,
+      ) async {
+
+    try {
+
+      await Amplify.Auth.signUp(
+        username: data.email,
+        password: data.password,
+        options: SignUpOptions(
+          userAttributes: {
+            AuthUserAttributeKey.email: data.email,
+          },
+        ),
+      );
+
+      return null;
+
+    } on AuthException catch (e) {
+
+      return e.message;
     }
-
-    await _storage.setRegisteredUser({
-      'fullname': data.fullName?.trim() ?? '',
-      'email': email,
-      'password': data.password,
-      'phone': '',
-    });
-    await _storage.initNewUserShopData(email);
-
-    _isLoggedIn = false;
-    _userName = null;
-    _userEmail = null;
-    _userPhone = null;
-    _userAvatar = null;
-    await _storage.clearAuth();
-    await _resetShopStateInMemory();
-    notifyListeners();
-    return null;
   }
 
   // ── Knowledge Points ────────────────────────────────────────────────

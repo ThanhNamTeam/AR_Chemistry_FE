@@ -1,5 +1,9 @@
+import 'dart:convert';
+
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../core/api/auth_api.dart';
 import '../../../core/l10n/locale_provider.dart';
 import '../../../core/portal/portal_scope.dart';
 import '../../../domain/models/app_portal.dart';
@@ -11,6 +15,7 @@ import '../providers/role_session_provider.dart';
 import '../../../shared/widgets/custom_text_field.dart';
 import '../../../routes/app_routes.dart';
 import '../../home/providers/app_state.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import '../widgets/auth_appearance_sheet.dart';
 import '../../../core/l10n/app_localizations.dart';
 
@@ -99,88 +104,163 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
   }
 
   Future<void> _login() async {
-    if (!_loginKey.currentState!.validate()) return;
 
-    final role = await context.read<RoleSessionProvider>().tryRoleLogin(
-          _emailCtrl.text.trim(),
-          _passCtrl.text,
-        );
-    if (!mounted) return;
-    if (role == UserRole.staff) {
-      await activatePortal(context, AppPortal.staff);
-      if (!mounted) return;
-      Navigator.pushReplacementNamed(context, AppRoutes.staffHome);
-      return;
-    }
-    if (role == UserRole.admin) {
-      await activatePortal(context, AppPortal.admin);
-      if (!mounted) return;
-      Navigator.pushReplacementNamed(context, AppRoutes.adminHome);
+    if (!_loginKey.currentState!.validate()) {
       return;
     }
 
-    final state = context.read<AppState>();
-    if (!state.initialized) await state.initialize();
-    final response = await state.login(
-      _emailCtrl.text.trim(),
-      _passCtrl.text,
-    );
-    if (!mounted) return;
-    if (response.error != null) {
+    try {
+
+      try {
+        await Amplify.Auth.signOut();
+      } catch (_) {}
+
+      final result = await Amplify.Auth.signIn(
+        username: _emailCtrl.text.trim(),
+        password: _passCtrl.text,
+      );
+
+      if (!result.isSignedIn) {
+        return;
+      }
+
+      final session =
+      await Amplify.Auth.fetchAuthSession()
+      as CognitoAuthSession;
+
+      final idToken =
+          session.userPoolTokensResult
+              .value
+              .idToken
+              .raw;
+
+// decode JWT
+      final parts = idToken.split('.');
+
+      final payload = utf8.decode(
+        base64Url.decode(
+          base64Url.normalize(parts[1]),
+        ),
+      );
+
+      final claims =
+      jsonDecode(payload) as Map<String, dynamic>;
+
+      debugPrint('CLAIMS: $claims');
+
+      final groups =
+          (claims['cognito:groups'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ?? [];
+
+      debugPrint('GROUPS: $groups');
+
+      final roleSession =
+      context.read<RoleSessionProvider>();
+
+      UserRole role = UserRole.student;
+
+      if (groups.contains('ROLE_ADMIN')) {
+        role = UserRole.admin;
+      } else if (groups.contains('ROLE_STAFF')) {
+        role = UserRole.staff;
+      } else if (groups.contains('ROLE_STUDENT')) {
+        role = UserRole.student;
+      }
+
+      await roleSession.saveSession(
+        role: role,
+        email: _emailCtrl.text.trim(),
+      );
+
+      if (!mounted) return;
+
+      await _restoreSession();
+
+    } on AuthException catch (e) {
+
+      if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(response.error!),
+          content: Text(e.message),
           backgroundColor: AppColors.error,
         ),
       );
-      return;
-    }
-    await activatePortal(context, AppPortal.user);
-    if (!mounted) return;
 
-    final result = response.result!;
-    final welcome = result.isFirstLogin
-        ? 'Đăng nhập thành công! Chào mừng ${result.displayName} đến với ${AppState.appDisplayName}!'
-        : 'Chào mừng bạn trở lại, ${result.displayName}!';
-    Navigator.pushReplacementNamed(
-      context,
-      AppRoutes.home,
-      arguments: HomeRouteArgs(welcomeMessage: welcome),
-    );
+    } catch (e) {
+
+      debugPrint('LOGIN_ERROR: $e');
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    }
   }
 
   Future<void> _loginGoogle() async {
     if (_googleLoading) return;
+
     setState(() => _googleLoading = true);
 
-    final state = context.read<AppState>();
-    if (!state.initialized) await state.initialize();
+    try {
+      final result = await Amplify.Auth.signInWithWebUI(
+        provider: AuthProvider.google,
+      );
 
-    // Mock Google account data (replace with real Google Sign-In later).
-    const googleName = 'Trần Thanh Nam';
-    const googleEmail = 'trannam@gmail.com';
+      if (!result.isSignedIn) return;
 
-    final result = await state.signInWithGoogle(
-      name: googleName,
-      email: googleEmail,
-    );
+      final session =
+      await Amplify.Auth.fetchAuthSession()
+      as CognitoAuthSession;
 
-    if (!mounted) return;
-    setState(() => _googleLoading = false);
+      final idToken =
+          session.userPoolTokensResult
+              .value
+              .idToken
+              .raw;
 
-    await activatePortal(context, AppPortal.user);
-    if (!mounted) return;
+      await AuthApi().syncGoogleUser(
+        idToken,
+      );
 
-    final welcome = result.isFirstLogin
-        ? 'Đăng nhập thành công! Chào mừng ${result.displayName} đến với ${AppState.appDisplayName}!'
-        : 'Chào mừng bạn trở lại, ${result.displayName}!';
+      debugPrint(idToken);
 
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      AppRoutes.home,
-      (_) => false,
-      arguments: HomeRouteArgs(welcomeMessage: welcome),
-    );
+      if (!mounted) return;
+
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        AppRoutes.home,
+            (_) => false,
+      );
+
+    } on Exception catch (e) {
+
+      debugPrint(
+        'Google sign in failed: $e',
+      );
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Đăng nhập Google thất bại',
+          ),
+        ),
+      );
+
+    } finally {
+
+      if (mounted) {
+        setState(() => _googleLoading = false);
+      }
+    }
   }
 
   void _openRegistration() {

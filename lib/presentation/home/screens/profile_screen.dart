@@ -18,6 +18,7 @@ import '../../../core/portal/portal_scope.dart';
 import '../../home/providers/theme_provider.dart';
 import '../widgets/profile_update_sheet.dart';
 
+
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -427,7 +428,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           await activatePortal(context, AppPortal.auth);
                           if (context.mounted) {
                             Navigator.pushNamedAndRemoveUntil(
-                                context, AppRoutes.login, (r) => false);
+                              context,
+                              AppRoutes.login,
+                                  (r) => false,
+                            );
                           }
                         },
                         child: Container(

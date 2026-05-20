@@ -70,11 +70,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       return;
     }
 
-    Navigator.pushNamedAndRemoveUntil(
+    Navigator.pushNamed(
       context,
-      AppRoutes.login,
-      (_) => false,
-      arguments: const LoginRouteArgs(registrationSuccess: true),
+      AppRoutes.verifyOtp,
+      arguments: _emailCtrl.text.trim(),
     );
   }
 

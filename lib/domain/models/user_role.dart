@@ -1,9 +1,9 @@
-enum UserRole { user, staff, admin }
+enum UserRole { student, staff, admin }
 
 extension UserRoleLabel on UserRole {
   String get label {
     switch (this) {
-      case UserRole.user:
+      case UserRole.student:
         return 'User';
       case UserRole.staff:
         return 'Staff';
