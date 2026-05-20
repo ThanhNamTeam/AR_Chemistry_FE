@@ -165,7 +165,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w500,
-                            color: AppColors.textCyan,
+                            color: AppColors.subtitleAccent,
                             fontFamily: 'Inter',
                           ),
                         ),
@@ -188,7 +188,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                                       : null,
                                   color: selected
                                       ? null
-                                      : AppColors.cardBg.withOpacity(0.5),
+                                      : AppColors.cardSurfaceMuted,
                                   borderRadius: BorderRadius.circular(20),
                                   border: Border.all(
                                     color: selected
@@ -239,7 +239,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w500,
-                            color: AppColors.textCyan,
+                            color: AppColors.subtitleAccent,
                             fontFamily: 'Inter',
                           ),
                         ),

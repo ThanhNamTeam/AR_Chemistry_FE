@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
-import '../../../shared/styles/app_colors.dart';
+import 'package:provider/provider.dart';
+
+import '../../../core/l10n/app_localizations.dart';
+import '../../../core/l10n/locale_provider.dart';
+import '../../../core/portal/portal_scope.dart';
+import '../../../core/storage/local_storage_service.dart';
+import '../../../domain/models/app_portal.dart';
 import '../../../routes/app_routes.dart';
+import '../../../shared/styles/app_colors.dart';
+import '../../home/providers/theme_provider.dart';
+import '../widgets/auth_appearance_sheet.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -15,27 +24,28 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   final PageController _pageCtrl = PageController();
   late AnimationController _pulseCtrl;
   late Animation<double> _pulse;
-
-  static final _slides = [
-    (Icons.qr_code_scanner, 'Scan Chemical Cards',
-        'Use AR technology to scan physical chemistry cards and bring molecules to life in 3D',
-        AppColors.primary),
-    (Icons.shopping_cart_outlined, 'Build Your Collection',
-        'Purchase chemical cards from our store. Unlock new elements and compounds for your experiments',
-        AppColors.secondary),
-    (Icons.science_outlined, 'Run Virtual Experiments',
-        'Combine chemicals in AR to trigger reactions, earn knowledge points, and learn chemistry',
-        AppColors.accent),
-  ];
+  final _storage = LocalStorageService();
 
   @override
   void initState() {
     super.initState();
     _pulseCtrl = AnimationController(
-        vsync: this, duration: const Duration(seconds: 2))
-      ..repeat(reverse: true);
-    _pulse = Tween<double>(begin: 0.9, end: 1.0)
-        .animate(CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut));
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat(reverse: true);
+    _pulse = Tween<double>(begin: 0.9, end: 1.0).animate(
+      CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut),
+    );
+    WidgetsBinding.instance.addPostFrameCallback((_) => _bootstrap());
+  }
+
+  Future<void> _bootstrap() async {
+    await activatePortal(context, AppPortal.auth);
+    if (!mounted) return;
+    final done = await _storage.isOnboardingCompleted();
+    if (done && mounted) {
+      Navigator.pushReplacementNamed(context, AppRoutes.login);
+    }
   }
 
   @override
@@ -45,17 +55,54 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     super.dispose();
   }
 
-  void _next() {
-    if (_current < _slides.length - 1) {
+  Future<void> _finish() async {
+    await _storage.setOnboardingCompleted(true);
+    if (!mounted) return;
+    Navigator.pushReplacementNamed(context, AppRoutes.login);
+  }
+
+  void _next(AppLocalizations l10n) {
+    if (_current < 2) {
       _pageCtrl.nextPage(
-          duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
     } else {
-      Navigator.pushReplacementNamed(context, AppRoutes.login);
+      _finish();
     }
   }
 
+  List<({IconData icon, String title, String desc, Color color})> _slides(
+    AppLocalizations l10n,
+  ) =>
+      [
+        (
+          icon: Icons.qr_code_scanner,
+          title: l10n.onboardingTitle1,
+          desc: l10n.onboardingDesc1,
+          color: AppColors.primary,
+        ),
+        (
+          icon: Icons.shopping_cart_outlined,
+          title: l10n.onboardingTitle2,
+          desc: l10n.onboardingDesc2,
+          color: AppColors.secondary,
+        ),
+        (
+          icon: Icons.science_outlined,
+          title: l10n.onboardingTitle3,
+          desc: l10n.onboardingDesc3,
+          color: AppColors.accent,
+        ),
+      ];
+
   @override
   Widget build(BuildContext context) {
+    context.watch<ThemeProvider>();
+    context.watch<LocaleProvider>();
+    final l10n = AppLocalizations.of(context);
+    final slides = _slides(l10n);
+
     return Scaffold(
       backgroundColor: AppColors.backgroundDark,
       body: Container(
@@ -63,15 +110,16 @@ class _OnboardingScreenState extends State<OnboardingScreen>
         child: SafeArea(
           child: Stack(
             children: [
-              // bg blobs
               Positioned(
-                top: 40, left: -30,
+                top: 40,
+                left: -30,
                 child: AnimatedBuilder(
                   animation: _pulseCtrl,
                   builder: (_, __) => Transform.scale(
                     scale: _pulse.value,
                     child: Container(
-                      width: 220, height: 220,
+                      width: 220,
+                      height: 220,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: AppColors.primary.withOpacity(0.07),
@@ -81,13 +129,15 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                 ),
               ),
               Positioned(
-                bottom: 100, right: -40,
+                bottom: 100,
+                right: -40,
                 child: AnimatedBuilder(
                   animation: _pulseCtrl,
                   builder: (_, __) => Transform.scale(
                     scale: _pulse.value,
                     child: Container(
-                      width: 260, height: 260,
+                      width: 260,
+                      height: 260,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: AppColors.secondary.withOpacity(0.07),
@@ -96,31 +146,35 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                   ),
                 ),
               ),
-
               Column(
                 children: [
-                  // Skip
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: TextButton(
-                      onPressed: () => Navigator.pushReplacementNamed(
-                          context, AppRoutes.login),
-                      child: Text('Skip',
-                          style: TextStyle(
-                              color: AppColors.primaryLight,
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 4, 16, 0),
+                    child: Row(
+                      children: [
+                        TextButton(
+                          onPressed: _finish,
+                          child: Text(
+                            l10n.skip,
+                            style: TextStyle(
+                              color: AppColors.accentText,
                               fontFamily: 'Inter',
-                              fontWeight: FontWeight.w500)),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                        const Spacer(),
+                        const AuthSettingsButton(),
+                      ],
                     ),
                   ),
-
-                  // Pages
                   Expanded(
                     child: PageView.builder(
                       controller: _pageCtrl,
                       onPageChanged: (i) => setState(() => _current = i),
-                      itemCount: _slides.length,
+                      itemCount: slides.length,
                       itemBuilder: (ctx, i) {
-                        final s = _slides[i];
+                        final s = slides[i];
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 32),
                           child: Column(
@@ -129,67 +183,76 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                               ScaleTransition(
                                 scale: _pulse,
                                 child: Container(
-                                  width: 120, height: 120,
+                                  width: 120,
+                                  height: 120,
                                   decoration: BoxDecoration(
-                                    gradient: LinearGradient(colors: [
-                                      s.$4.withOpacity(0.2),
-                                      s.$4.withOpacity(0.05),
-                                    ]),
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        s.color.withOpacity(0.2),
+                                        s.color.withOpacity(0.05),
+                                      ],
+                                    ),
                                     borderRadius: BorderRadius.circular(32),
                                     border: Border.all(
-                                        color: s.$4.withOpacity(0.4), width: 1.5),
+                                      color: s.color.withOpacity(0.4),
+                                      width: 1.5,
+                                    ),
                                     boxShadow: [
                                       BoxShadow(
-                                          color: s.$4.withOpacity(0.25),
-                                          blurRadius: 30)
+                                        color: s.color.withOpacity(0.25),
+                                        blurRadius: 30,
+                                      ),
                                     ],
                                   ),
-                                  child: Icon(s.$1, size: 56, color: s.$4),
+                                  child: Icon(s.icon, size: 56, color: s.color),
                                 ),
                               ),
                               const SizedBox(height: 48),
-                              ShaderMask(
-                                shaderCallback: (b) =>
-                                    AppColors.cyanEmeraldGradient.createShader(b),
-                                child: Text(s.$2,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: 26,
-                                        fontWeight: FontWeight.w700,
-                                        color: Colors.white,
-                                        fontFamily: 'Inter',
-                                        height: 1.25)),
+                              Text(
+                                s.title,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 26,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.textPrimary,
+                                  fontFamily: 'Inter',
+                                  height: 1.25,
+                                ),
                               ),
                               const SizedBox(height: 20),
-                              Text(s.$3,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: 15,
-                                      color: AppColors.textSecondary,
-                                      fontFamily: 'Inter',
-                                      height: 1.6)),
+                              Text(
+                                s.desc,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  color: AppColors.textSecondary,
+                                  fontFamily: 'Inter',
+                                  height: 1.6,
+                                ),
+                              ),
                             ],
                           ),
                         );
                       },
                     ),
                   ),
-
-                  // Dots + button
                   Padding(
                     padding: const EdgeInsets.fromLTRB(24, 0, 24, 40),
                     child: Column(
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: List.generate(_slides.length, (i) {
+                          children: List.generate(slides.length, (i) {
                             return GestureDetector(
-                              onTap: () => _pageCtrl.animateToPage(i,
-                                  duration: const Duration(milliseconds: 300),
-                                  curve: Curves.easeInOut),
+                              onTap: () => _pageCtrl.animateToPage(
+                                i,
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.easeInOut,
+                              ),
                               child: AnimatedContainer(
                                 duration: const Duration(milliseconds: 300),
-                                margin: const EdgeInsets.symmetric(horizontal: 4),
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 4),
                                 width: i == _current ? 28 : 8,
                                 height: 8,
                                 decoration: BoxDecoration(
@@ -197,7 +260,8 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                                       ? AppColors.cyanEmeraldGradient
                                       : null,
                                   color: i != _current
-                                      ? AppColors.textSecondary.withOpacity(0.3)
+                                      ? AppColors.textSecondary
+                                          .withOpacity(0.35)
                                       : null,
                                   borderRadius: BorderRadius.circular(4),
                                 ),
@@ -207,7 +271,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                         ),
                         const SizedBox(height: 32),
                         GestureDetector(
-                          onTap: _next,
+                          onTap: () => _next(l10n),
                           child: Container(
                             width: double.infinity,
                             padding: const EdgeInsets.symmetric(vertical: 18),
@@ -219,25 +283,29 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                                   color: AppColors.primary.withOpacity(0.4),
                                   blurRadius: 20,
                                   offset: const Offset(0, 6),
-                                )
+                                ),
                               ],
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  _current < _slides.length - 1
-                                      ? 'Next'
-                                      : 'Get Started',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      fontFamily: 'Inter'),
+                                  _current < slides.length - 1
+                                      ? l10n.next
+                                      : l10n.getStarted,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: 'Inter',
+                                  ),
                                 ),
                                 const SizedBox(width: 8),
-                                Icon(Icons.chevron_right,
-                                    color: Colors.white, size: 20),
+                                const Icon(
+                                  Icons.chevron_right,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
                               ],
                             ),
                           ),

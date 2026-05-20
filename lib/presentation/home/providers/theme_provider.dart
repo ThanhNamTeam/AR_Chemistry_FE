@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 import '../../../core/storage/local_storage_service.dart';
+import '../../../domain/models/app_portal.dart';
 import '../../../shared/styles/app_colors.dart';
+import '../../../shared/styles/app_typography.dart';
 
 enum AppThemeKey { dark, light, ocean, galaxy, forest }
 
 class AppThemeOption {
   final AppThemeKey key;
-  final String name;
   final Color primary;
   final Color accent;
 
   const AppThemeOption({
     required this.key,
-    required this.name,
     required this.primary,
     required this.accent,
   });
@@ -20,60 +22,78 @@ class AppThemeOption {
 
 class ThemeProvider extends ChangeNotifier {
   final LocalStorageService _storage = LocalStorageService();
-  AppThemeKey _theme = AppThemeKey.dark;
+
+  final Map<AppPortal, AppThemeKey> _themes = {
+    for (final p in AppPortal.values) p: AppThemeKey.dark,
+  };
+
+  AppPortal _activePortal = AppPortal.auth;
 
   static const options = [
     AppThemeOption(
       key: AppThemeKey.dark,
-      name: 'Dark Cyber',
       primary: Color(0xFF06B6D4),
       accent: Color(0xFF3B82F6),
     ),
     AppThemeOption(
       key: AppThemeKey.light,
-      name: 'Light Mode',
       primary: Color(0xFF0EA5E9),
       accent: Color(0xFFF59E0B),
     ),
     AppThemeOption(
       key: AppThemeKey.ocean,
-      name: 'Ocean Blue',
       primary: Color(0xFF06B6D4),
       accent: Color(0xFF14B8A6),
     ),
     AppThemeOption(
       key: AppThemeKey.galaxy,
-      name: 'Purple Galaxy',
       primary: Color(0xFFD946EF),
       accent: Color(0xFF8B5CF6),
     ),
     AppThemeOption(
       key: AppThemeKey.forest,
-      name: 'Green Forest',
       primary: Color(0xFF10B981),
       accent: Color(0xFF14B8A6),
     ),
   ];
 
-  AppThemeKey get theme => _theme;
+  AppPortal get activePortal => _activePortal;
+
+  /// Theme of the portal currently on screen (drives [AppColors] + MaterialApp).
+  AppThemeKey get theme => _themes[_activePortal]!;
+
+  AppThemeKey themeFor(AppPortal portal) => _themes[portal]!;
 
   AppThemeOption get currentOption =>
-      options.firstWhere((o) => o.key == _theme);
+      options.firstWhere((o) => o.key == theme);
 
-  Future<void> loadTheme() async {
-    final saved = await _storage.getTheme();
-    if (saved != null) {
-      _theme = AppThemeKey.values.firstWhere(
-        (k) => k.name == saved,
-        orElse: () => AppThemeKey.dark,
-      );
+  AppThemeOption optionFor(AppPortal portal) =>
+      options.firstWhere((o) => o.key == themeFor(portal));
+
+  Future<void> loadThemes() async {
+    final legacy = await _storage.getTheme();
+    for (final portal in AppPortal.values) {
+      var saved = await _storage.getThemeForPortal(portal);
+      if (saved == null &&
+          portal == AppPortal.user &&
+          legacy != null &&
+          legacy.isNotEmpty) {
+        saved = legacy;
+        await _storage.setThemeForPortal(portal, legacy);
+      }
+      if (saved != null) {
+        _themes[portal] = AppThemeKey.values.firstWhere(
+          (k) => k.name == saved,
+          orElse: () => AppThemeKey.dark,
+        );
+      }
     }
-    _syncPalette();
+    _syncPaletteFor(_activePortal);
     notifyListeners();
   }
 
-  void _syncPalette() {
-    final o = currentOption;
+  void _syncPaletteFor(AppPortal portal) {
+    final o = optionFor(portal);
     AppColors.applyTheme(
       primaryColor: o.primary,
       accentColor: o.accent,
@@ -83,19 +103,30 @@ class ThemeProvider extends ChangeNotifier {
     );
   }
 
-  Future<void> setTheme(AppThemeKey key) async {
-    _theme = key;
-    _syncPalette();
-    await _storage.setTheme(key.name);
+  Future<void> setActivePortal(AppPortal portal) async {
+    if (_activePortal == portal) return;
+    _activePortal = portal;
+    _syncPaletteFor(portal);
+    notifyListeners();
+  }
+
+  Future<void> setTheme(AppThemeKey key, {AppPortal? portal}) async {
+    final target = portal ?? _activePortal;
+    _themes[target] = key;
+    await _storage.setThemeForPortal(target, key.name);
+    if (target == _activePortal) {
+      _syncPaletteFor(target);
+    }
     notifyListeners();
   }
 
   ThemeData buildThemeData() {
     final option = currentOption;
     final isLight = AppColors.isLight;
-    return ThemeData(
+    final bodyColor = isLight ? const Color(0xFF0F172A) : Colors.white;
+
+    final base = ThemeData(
       useMaterial3: true,
-      fontFamily: 'Inter',
       brightness: isLight ? Brightness.light : Brightness.dark,
       colorScheme: isLight
           ? ColorScheme.light(
@@ -117,9 +148,20 @@ class ThemeProvider extends ChangeNotifier {
         foregroundColor: isLight ? Colors.black87 : Colors.white,
         elevation: 0,
       ),
-      textTheme: TextTheme(
-        bodyMedium: TextStyle(
-          fontFamily: 'Inter',
+    );
+
+    final textTheme = AppTypography.apply(base.textTheme).apply(
+      bodyColor: bodyColor,
+      displayColor: bodyColor,
+    );
+
+    return base.copyWith(
+      textTheme: textTheme,
+      primaryTextTheme: textTheme,
+      appBarTheme: base.appBarTheme.copyWith(
+        titleTextStyle: GoogleFonts.inter(
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
           color: isLight ? Colors.black87 : Colors.white,
         ),
       ),

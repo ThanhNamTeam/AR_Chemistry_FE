@@ -142,7 +142,7 @@ class _PortalProfileUpdateSheetState extends State<PortalProfileUpdateSheet> {
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
-                    color: AppColors.textCyan,
+                    color: AppColors.subtitleAccent,
                     fontFamily: 'Inter',
                   ),
                 ),

@@ -4,11 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/l10n/app_localizations.dart';
+import '../../../core/l10n/locale_provider.dart';
 import '../../../core/storage/avatar_storage_service.dart';
+import '../../../domain/models/app_portal.dart';
 import '../../../routes/app_routes.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../auth/providers/role_session_provider.dart';
+import '../../../core/portal/portal_scope.dart';
 import '../../home/providers/theme_provider.dart';
+import '../widgets/profile_language_section.dart';
+import '../widgets/profile_theme_section.dart';
 import '../../staff/providers/staff_provider.dart';
 import '../../admin/providers/admin_provider.dart';
 import '../widgets/portal_profile_update_sheet.dart';
@@ -50,17 +56,19 @@ class _PortalProfileScreenState extends State<PortalProfileScreen> {
         );
         return;
       }
+      final l10n = AppLocalizations.of(context);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Cập nhật ảnh đại diện thành công!'),
+        SnackBar(
+          content: Text(l10n.avatarUpdated),
           backgroundColor: AppColors.success,
         ),
       );
     } catch (_) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Không thể mở thư viện ảnh.'),
+          SnackBar(
+            content: Text(l10n.cannotOpenGallery),
             backgroundColor: AppColors.error,
           ),
         );
@@ -72,15 +80,20 @@ class _PortalProfileScreenState extends State<PortalProfileScreen> {
 
   Future<void> _logout() async {
     await context.read<RoleSessionProvider>().logout();
+    await activatePortal(context, AppPortal.auth);
     if (!mounted) return;
     Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (_) => false);
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    context.watch<LocaleProvider>();
+    context.watch<ThemeProvider>();
     final session = context.watch<RoleSessionProvider>();
-    final themeProvider = context.watch<ThemeProvider>();
     final isStaff = session.isStaff;
+    final portal =
+        isStaff ? AppPortal.staff : AppPortal.admin;
     final avatarPath = session.userAvatar;
     final hasAvatar = AvatarStorageService.avatarFileExists(avatarPath);
 
@@ -116,7 +129,7 @@ class _PortalProfileScreenState extends State<PortalProfileScreen> {
                       ),
                       const SizedBox(width: 14),
                       Text(
-                        'Profile',
+                        l10n.profile,
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.w700,
@@ -204,7 +217,7 @@ class _PortalProfileScreenState extends State<PortalProfileScreen> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Chạm ảnh để đổi avatar',
+                        l10n.tapAvatarHint,
                         style: TextStyle(
                           fontSize: 11,
                           color: AppColors.textSecondary,
@@ -225,11 +238,11 @@ class _PortalProfileScreenState extends State<PortalProfileScreen> {
                           ),
                         ),
                         child: Text(
-                          session.roleLabel,
+                          isStaff ? l10n.roleStaff : l10n.roleAdmin,
                           style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
-                            color: AppColors.primaryLight,
+                            color: AppColors.accentText,
                             fontFamily: 'Inter',
                           ),
                         ),
@@ -260,7 +273,7 @@ class _PortalProfileScreenState extends State<PortalProfileScreen> {
                           session.userPhone!,
                           style: TextStyle(
                             fontSize: 12,
-                            color: AppColors.textCyan,
+                            color: AppColors.subtitleAccent,
                             fontFamily: 'Inter',
                           ),
                         ),
@@ -286,15 +299,15 @@ class _PortalProfileScreenState extends State<PortalProfileScreen> {
                               Icon(
                                 Icons.edit_outlined,
                                 size: 16,
-                                color: AppColors.primaryLight,
+                                color: AppColors.accentText,
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                'Cập nhật thông tin',
+                                l10n.updateProfile,
                                 style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
-                                  color: AppColors.primaryLight,
+                                  color: AppColors.accentText,
                                   fontFamily: 'Inter',
                                 ),
                               ),
@@ -306,73 +319,14 @@ class _PortalProfileScreenState extends State<PortalProfileScreen> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                if (isStaff) _buildStaffSummary(context),
-                if (session.isAdmin) _buildAdminSummary(context),
+                if (isStaff) _buildStaffSummary(context, l10n),
+                if (session.isAdmin) _buildAdminSummary(context, l10n),
                 const SizedBox(height: 24),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'App Theme',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
-                          fontFamily: 'Inter',
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: ThemeProvider.options.map((option) {
-                          final selected = themeProvider.theme == option.key;
-                          return GestureDetector(
-                            onTap: () => themeProvider.setTheme(option.key),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 8,
-                              ),
-                              decoration: BoxDecoration(
-                                gradient: selected
-                                    ? LinearGradient(
-                                        colors: [
-                                          option.primary,
-                                          option.accent,
-                                        ],
-                                      )
-                                    : null,
-                                color: selected
-                                    ? null
-                                    : AppColors.cardBg.withOpacity(0.5),
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                  color: selected
-                                      ? Colors.transparent
-                                      : AppColors.primary.withOpacity(0.3),
-                                ),
-                              ),
-                              child: Text(
-                                option.name,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                  color: selected
-                                      ? Colors.white
-                                      : AppColors.textSecondary,
-                                  fontFamily: 'Inter',
-                                ),
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ],
-                  ),
+                ProfileLanguageSection(
+                  portal: isStaff ? AppPortal.staff : AppPortal.admin,
                 ),
+                const SizedBox(height: 24),
+                ProfileThemeSection(portal: portal),
                 const SizedBox(height: 24),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -381,32 +335,32 @@ class _PortalProfileScreenState extends State<PortalProfileScreen> {
                       if (isStaff) ...[
                         _PortalMenuItem(
                           icon: Icons.feedback_outlined,
-                          label: 'Quản lý Feedback',
-                          subtitle: 'Xem và phản hồi người dùng',
+                          label: l10n.manageFeedback,
+                          subtitle: l10n.manageFeedbackSubtitle,
                           color: AppColors.amber,
                           onTap: () => Navigator.pop(context),
                         ),
                         const SizedBox(height: 10),
                         _PortalMenuItem(
                           icon: Icons.quiz_outlined,
-                          label: 'Quiz pipeline',
-                          subtitle: 'Upload tài liệu & duyệt quiz',
+                          label: l10n.quizPipeline,
+                          subtitle: l10n.quizPipelineSubtitle,
                           color: AppColors.secondary,
                           onTap: () => Navigator.pop(context),
                         ),
                       ] else ...[
                         _PortalMenuItem(
                           icon: Icons.dashboard_outlined,
-                          label: 'Bảng điều khiển',
-                          subtitle: 'Thống kê & doanh thu hệ thống',
+                          label: l10n.dashboard,
+                          subtitle: l10n.dashboardSubtitle,
                           color: AppColors.primary,
                           onTap: () => Navigator.pop(context),
                         ),
                         const SizedBox(height: 10),
                         _PortalMenuItem(
                           icon: Icons.science_outlined,
-                          label: 'Quản lý chất & combo',
-                          subtitle: 'Shop, phản ứng, top sales',
+                          label: l10n.manageCatalog,
+                          subtitle: l10n.manageCatalogSubtitle,
                           color: AppColors.accent,
                           onTap: () => Navigator.pop(context),
                         ),
@@ -431,7 +385,7 @@ class _PortalProfileScreenState extends State<PortalProfileScreen> {
                                   color: AppColors.error, size: 20),
                               const SizedBox(width: 10),
                               Text(
-                                'Logout',
+                                l10n.logout,
                                 style: TextStyle(
                                   color: AppColors.error,
                                   fontSize: 15,
@@ -455,20 +409,20 @@ class _PortalProfileScreenState extends State<PortalProfileScreen> {
     );
   }
 
-  Widget _buildStaffSummary(BuildContext context) {
+  Widget _buildStaffSummary(BuildContext context, AppLocalizations l10n) {
     final staff = context.watch<StaffProvider>();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         children: [
           _miniStat(
-            'Feedback',
+            l10n.feedback,
             '${staff.feedbacks.length}',
             AppColors.amber,
           ),
           const SizedBox(width: 10),
           _miniStat(
-            'Quiz chờ duyệt',
+            l10n.pendingQuizzes,
             '${staff.pendingQuizzes.length}',
             AppColors.secondary,
           ),
@@ -477,16 +431,17 @@ class _PortalProfileScreenState extends State<PortalProfileScreen> {
     );
   }
 
-  Widget _buildAdminSummary(BuildContext context) {
+  Widget _buildAdminSummary(BuildContext context, AppLocalizations l10n) {
     final admin = context.watch<AdminProvider>();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         children: [
-          _miniStat('Users', '${admin.totalUsers}', AppColors.primary),
+          _miniStat(
+              l10n.users, '${admin.totalUsers}', AppColors.primary),
           const SizedBox(width: 10),
           _miniStat(
-            'Chất',
+            l10n.chemicals,
             '${admin.catalogCards.length}',
             AppColors.accent,
           ),
@@ -552,7 +507,7 @@ class _PortalMenuItem extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: AppColors.cardBg.withOpacity(0.5),
+          color: AppColors.cardSurface,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: AppColors.cardBorder.withOpacity(0.4)),
         ),

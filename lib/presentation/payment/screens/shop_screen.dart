@@ -190,7 +190,7 @@ class _ShopScreenState extends State<ShopScreen> {
                                 child: Text('Up to 20% off',
                                     style: TextStyle(
                                         fontSize: 11,
-                                        color: AppColors.secondaryLight,
+                                        color: AppColors.emphasisPositive,
                                         fontFamily: 'Inter',
                                         fontWeight: FontWeight.w600)),
                               ),
@@ -331,7 +331,7 @@ class _BundleCard extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(colors: [
           AppColors.cardBg,
-          AppColors.cardBg.withOpacity(0.6),
+          AppColors.cardSurface,
         ]),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: AppColors.cardBorder.withOpacity(0.5), width: 1.5),
@@ -403,7 +403,7 @@ class _BundleCard extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.secondaryLight,
+                      color: AppColors.emphasisPositive,
                       fontFamily: 'Inter',
                     ),
                   ),
@@ -524,11 +524,11 @@ class _BundleCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.add_shopping_cart,
-                        color: AppColors.primaryLight, size: 18),
+                        color: AppColors.accentText, size: 18),
                     SizedBox(width: 8),
                     Text('Add Bundle to Cart',
                         style: TextStyle(
-                            color: AppColors.primaryLight,
+                            color: AppColors.accentText,
                             fontWeight: FontWeight.w600,
                             fontSize: 13,
                             fontFamily: 'Inter')),
