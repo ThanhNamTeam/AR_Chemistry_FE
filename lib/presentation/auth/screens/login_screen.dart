@@ -164,6 +164,8 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
         role = UserRole.admin;
       } else if (groups.contains('ROLE_STAFF')) {
         role = UserRole.staff;
+      } else if (groups.contains('ROLE_STUDENT')) {
+        role = UserRole.student;
       }
 
       await roleSession.saveSession(

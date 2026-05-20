@@ -7,6 +7,8 @@ import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 
 import 'amplifyconfiguration.dart';
 
+import 'core/l10n/app_localizations.dart';
+import 'core/l10n/locale_provider.dart';
 import 'presentation/admin/providers/admin_provider.dart';
 import 'presentation/admin/screens/admin_home_screen.dart';
 import 'presentation/auth/providers/role_session_provider.dart';
