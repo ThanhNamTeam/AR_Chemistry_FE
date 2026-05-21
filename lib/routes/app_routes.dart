@@ -1,3 +1,8 @@
+import 'package:flutter/material.dart';
+
+final RouteObserver<ModalRoute<dynamic>> appRouteObserver =
+    RouteObserver<ModalRoute<dynamic>>();
+
 class AppRoutes {
   static const String onboarding = '/';
   static const String login = '/login';
