@@ -7785,7 +7785,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR Func_4_t714EA7575BC4411791EB413BE56D4DD1F8C57
 		L_2 = Type_GetTypeFromHandle_m6062B81682F79A4D6DF2640692EE6D9987858C57(L_1, NULL);
 		NullCheck(L_0);
 		Delegate_t* L_3;
-		L_3 = VirtualFuncInvoker1< Delegate_t*, Type_t* >::Invoke(45, L_0, L_2);
+		L_3 = VirtualFuncInvoker1< Delegate_t*, Type_t* >::Invoke(44, L_0, L_2);
 		return ((Func_4_t714EA7575BC4411791EB413BE56D4DD1F8C570B9*)Castclass((RuntimeObject*)L_3, Func_4_t714EA7575BC4411791EB413BE56D4DD1F8C570B9_il2cpp_TypeInfo_var));
 	}
 }
@@ -7913,7 +7913,7 @@ IL_002a:
 		String_t* L_12;
 		L_12 = VirtualFuncInvoker0< String_t* >::Invoke(48, L_11);
 		NullCheck(L_10);
-		VirtualActionInvoker1< String_t* >::Invoke(17, L_10, L_12);
+		VirtualActionInvoker1< String_t* >::Invoke(16, L_10, L_12);
 		NullCheck(L_10);
 		VirtualActionInvoker0::Invoke(10, L_10);
 		Stream_tF844051B786E8F7F4244DBD218D74E8617B9A2DE* L_13 = __this->____stream;

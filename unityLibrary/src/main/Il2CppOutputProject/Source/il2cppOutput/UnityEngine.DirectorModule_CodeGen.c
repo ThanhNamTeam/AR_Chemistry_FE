@@ -7,6 +7,8 @@
 
 
 
+extern void EmbeddedAttribute__ctor_mEF2EC6C87FFCBA521EDBF0EE8E0227CDBAE67E8D (void);
+extern void RefSafetyRulesAttribute__ctor_m8EDB2628C701ADF220D88F52B38D2D56345956B3 (void);
 extern void DataPlayableOutput__ctor_m09D4185F0C250450BE1FF451995AC6DFDF8176DD (void);
 extern void DataPlayableOutput_Internal_CallOnPlayerChanged_mE9D28970561BDA75DE3C3605481E417D94E1F084 (void);
 extern void PlayableDirector_SendOnPlayableDirectorPlay_m7F75DBA4355DAA92F53AC337BB952069B63081A0 (void);
@@ -28,8 +30,10 @@ extern void DataPlayableOutputEnumerator_System_Collections_IEnumerator_get_Curr
 extern void DataPlayableOutputEnumerator_Dispose_m5BD2B7D3897D0EBF12FAE16E334B3951BAD4C8A0 (void);
 extern void DataPlayableOutputEnumerator_MoveNext_m79AF7F2D9D94412B14EE28BA574B598B61B382D9 (void);
 extern void DataPlayableOutputEnumerator_Reset_mD8CE079A62EAB2C1D0A3D4CC780C7748D47247FF (void);
-static Il2CppMethodPointer s_methodPointers[23] = 
+static Il2CppMethodPointer s_methodPointers[25] = 
 {
+	EmbeddedAttribute__ctor_mEF2EC6C87FFCBA521EDBF0EE8E0227CDBAE67E8D,
+	RefSafetyRulesAttribute__ctor_m8EDB2628C701ADF220D88F52B38D2D56345956B3,
 	DataPlayableOutput__ctor_m09D4185F0C250450BE1FF451995AC6DFDF8176DD,
 	DataPlayableOutput_Internal_CallOnPlayerChanged_mE9D28970561BDA75DE3C3605481E417D94E1F084,
 	NULL,
@@ -57,39 +61,41 @@ static Il2CppMethodPointer s_methodPointers[23] =
 extern void DataPlayableOutput__ctor_m09D4185F0C250450BE1FF451995AC6DFDF8176DD_AdjustorThunk (void);
 static Il2CppTokenAdjustorThunkPair s_adjustorThunks[1] = 
 {
-	{ 0x06000001, DataPlayableOutput__ctor_m09D4185F0C250450BE1FF451995AC6DFDF8176DD_AdjustorThunk },
+	{ 0x06000003, DataPlayableOutput__ctor_m09D4185F0C250450BE1FF451995AC6DFDF8176DD_AdjustorThunk },
 };
-static const int32_t s_InvokerIndices[23] = 
+static const int32_t s_InvokerIndices[25] = 
 {
-	11832,
-	19168,
+	14665,
+	11216,
+	11308,
+	18297,
 	-1,
 	-1,
-	15390,
-	15390,
-	15390,
-	20198,
-	17234,
-	23923,
-	6019,
-	11802,
-	4875,
-	8887,
-	15093,
-	15158,
-	15158,
-	11802,
-	14988,
-	15158,
-	15390,
-	14960,
-	15390,
+	14665,
+	14665,
+	14665,
+	19268,
+	16433,
+	22844,
+	5810,
+	11278,
+	4693,
+	8476,
+	14368,
+	14434,
+	14434,
+	11278,
+	14264,
+	14434,
+	14665,
+	14236,
+	14665,
 };
 IL2CPP_EXTERN_C const Il2CppCodeGenModule g_UnityEngine_DirectorModule_CodeGenModule;
 const Il2CppCodeGenModule g_UnityEngine_DirectorModule_CodeGenModule = 
 {
 	"UnityEngine.DirectorModule.dll",
-	23,
+	25,
 	s_methodPointers,
 	1,
 	s_adjustorThunks,

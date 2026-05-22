@@ -7611,12 +7611,12 @@ IL_001b:
 	{
 		String_t** L_7 = ___1_prefix;
 		String_t* L_8 = ((String_t_StaticFields*)il2cpp_codegen_static_fields_for(il2cpp_defaults.string_class))->___Empty;
-		*((RuntimeObject**)L_7) = (RuntimeObject*)L_8;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_7, (void*)(RuntimeObject*)L_8);
+		*((String_t**)L_7) = (String_t*)L_8;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_7, (void*)(String_t*)L_8);
 		String_t** L_9 = ___2_localName;
 		String_t* L_10 = ___0_name;
-		*((RuntimeObject**)L_9) = (RuntimeObject*)L_10;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_9, (void*)(RuntimeObject*)L_10);
+		*((String_t**)L_9) = (String_t*)L_10;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_9, (void*)(String_t*)L_10);
 		return;
 	}
 
@@ -7628,16 +7628,16 @@ IL_0026:
 		NullCheck(L_12);
 		String_t* L_14;
 		L_14 = String_Substring_mB1D94F47935D22E130FF2C01DBB6A4135FBB76CE(L_12, 0, L_13, NULL);
-		*((RuntimeObject**)L_11) = (RuntimeObject*)L_14;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_11, (void*)(RuntimeObject*)L_14);
+		*((String_t**)L_11) = (String_t*)L_14;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_11, (void*)(String_t*)L_14);
 		String_t** L_15 = ___2_localName;
 		String_t* L_16 = ___0_name;
 		int32_t L_17 = V_0;
 		NullCheck(L_16);
 		String_t* L_18;
 		L_18 = String_Substring_m6BA4A3FA3800FE92662D0847CC8E1EEF940DF472(L_16, ((int32_t)il2cpp_codegen_add(L_17, 1)), NULL);
-		*((RuntimeObject**)L_15) = (RuntimeObject*)L_18;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_15, (void*)(RuntimeObject*)L_18);
+		*((String_t**)L_15) = (String_t*)L_18;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_15, (void*)(String_t*)L_18);
 		return;
 	}
 }
@@ -20462,11 +20462,11 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void DtdParser_ParseExternalId_m2B6C7C539D6B9
 		L_1 = DtdParser_get_LinePos_m2FDB78628E84297247B78BA60AF304C084790005(__this, NULL);
 		LineInfo__ctor_mFF99DC657778EB3519A941F3CB7E7C33710B0EE0((&V_0), L_0, ((int32_t)il2cpp_codegen_subtract(L_1, 6)), NULL);
 		String_t** L_2 = ___2_publicId;
-		*((RuntimeObject**)L_2) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_2, (void*)(RuntimeObject*)NULL);
+		*((String_t**)L_2) = (String_t*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_2, (void*)(String_t*)NULL);
 		String_t** L_3 = ___3_systemId;
-		*((RuntimeObject**)L_3) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_3, (void*)(RuntimeObject*)NULL);
+		*((String_t**)L_3) = (String_t*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_3, (void*)(String_t*)NULL);
 		int32_t L_4;
 		L_4 = DtdParser_GetToken_m314D3A1BA5596BD50E08F67B39CBFBE2AF04FE8A(__this, (bool)1, NULL);
 		if ((((int32_t)L_4) == ((int32_t)((int32_t)35))))
@@ -20491,8 +20491,8 @@ IL_003d:
 		String_t** L_7 = ___3_systemId;
 		String_t* L_8;
 		L_8 = DtdParser_GetValue_m3A56A10A245D1CDB50CCBFE897A8BA1AB3F5F622(__this, NULL);
-		*((RuntimeObject**)L_7) = (RuntimeObject*)L_8;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_7, (void*)(RuntimeObject*)L_8);
+		*((String_t**)L_7) = (String_t*)L_8;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_7, (void*)(String_t*)L_8);
 		String_t** L_9 = ___3_systemId;
 		String_t* L_10 = *((String_t**)L_9);
 		NullCheck(L_10);
@@ -20568,8 +20568,8 @@ IL_00d1:
 		String_t** L_38 = ___2_publicId;
 		String_t* L_39;
 		L_39 = DtdParser_GetValue_m3A56A10A245D1CDB50CCBFE897A8BA1AB3F5F622(__this, NULL);
-		*((RuntimeObject**)L_38) = (RuntimeObject*)L_39;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_38, (void*)(RuntimeObject*)L_39);
+		*((String_t**)L_38) = (String_t*)L_39;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_38, (void*)(String_t*)L_39);
 		XmlCharType_t7C471894C8862126737E800F5A14AACBD14FCBC3* L_40 = (XmlCharType_t7C471894C8862126737E800F5A14AACBD14FCBC3*)(&__this->___xmlCharType);
 		String_t** L_41 = ___2_publicId;
 		String_t* L_42 = *((String_t**)L_41);
@@ -20654,8 +20654,8 @@ IL_017d:
 		String_t** L_72 = ___3_systemId;
 		String_t* L_73;
 		L_73 = DtdParser_GetValue_m3A56A10A245D1CDB50CCBFE897A8BA1AB3F5F622(__this, NULL);
-		*((RuntimeObject**)L_72) = (RuntimeObject*)L_73;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_72, (void*)(RuntimeObject*)L_73);
+		*((String_t**)L_72) = (String_t*)L_73;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_72, (void*)(String_t*)L_73);
 		LineInfo_t415DCF0EAD0FB3806F779BA170EC9058E47CCB24* L_74 = (LineInfo_t415DCF0EAD0FB3806F779BA170EC9058E47CCB24*)(&__this->___literalLineInfo);
 		int32_t* L_75 = (int32_t*)(&L_74->___linePos);
 		int32_t* L_76 = L_75;
@@ -20710,8 +20710,8 @@ IL_0203:
 		String_t** L_92 = ___3_systemId;
 		String_t* L_93;
 		L_93 = DtdParser_GetValue_m3A56A10A245D1CDB50CCBFE897A8BA1AB3F5F622(__this, NULL);
-		*((RuntimeObject**)L_92) = (RuntimeObject*)L_93;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_92, (void*)(RuntimeObject*)L_93);
+		*((String_t**)L_92) = (String_t*)L_93;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_92, (void*)(String_t*)L_93);
 		return;
 	}
 

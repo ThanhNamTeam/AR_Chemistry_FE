@@ -17764,13 +17764,13 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void AttrInfo_GetLocalnameAndNamespaceUri_mDC
 		String_t** L_0 = ___0_localname;
 		QName_tA3E1CB09850DEF9376C068A29697FEDB0F82C156* L_1 = (QName_tA3E1CB09850DEF9376C068A29697FEDB0F82C156*)(&__this->___name);
 		String_t* L_2 = L_1->___localname;
-		*((RuntimeObject**)L_0) = (RuntimeObject*)L_2;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_0, (void*)(RuntimeObject*)L_2);
+		*((String_t**)L_0) = (String_t*)L_2;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_0, (void*)(String_t*)L_2);
 		String_t** L_3 = ___1_namespaceUri;
 		QName_tA3E1CB09850DEF9376C068A29697FEDB0F82C156* L_4 = (QName_tA3E1CB09850DEF9376C068A29697FEDB0F82C156*)(&__this->___name);
 		String_t* L_5 = L_4->___namespaceUri;
-		*((RuntimeObject**)L_3) = (RuntimeObject*)L_5;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_3, (void*)(RuntimeObject*)L_5);
+		*((String_t**)L_3) = (String_t*)L_5;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_3, (void*)(String_t*)L_5);
 		return;
 	}
 }
@@ -17788,13 +17788,13 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR int32_t AttrInfo_GetLocalnameAndNamespaceUriA
 		String_t** L_0 = ___1_localname;
 		QName_tA3E1CB09850DEF9376C068A29697FEDB0F82C156* L_1 = (QName_tA3E1CB09850DEF9376C068A29697FEDB0F82C156*)(&__this->___name);
 		String_t* L_2 = L_1->___localname;
-		*((RuntimeObject**)L_0) = (RuntimeObject*)L_2;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_0, (void*)(RuntimeObject*)L_2);
+		*((String_t**)L_0) = (String_t*)L_2;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_0, (void*)(String_t*)L_2);
 		String_t** L_3 = ___2_namespaceUri;
 		QName_tA3E1CB09850DEF9376C068A29697FEDB0F82C156* L_4 = (QName_tA3E1CB09850DEF9376C068A29697FEDB0F82C156*)(&__this->___name);
 		String_t* L_5 = L_4->___namespaceUri;
-		*((RuntimeObject**)L_3) = (RuntimeObject*)L_5;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_3, (void*)(RuntimeObject*)L_5);
+		*((String_t**)L_3) = (String_t*)L_5;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_3, (void*)(String_t*)L_5);
 		QName_tA3E1CB09850DEF9376C068A29697FEDB0F82C156* L_6 = (QName_tA3E1CB09850DEF9376C068A29697FEDB0F82C156*)(&__this->___name);
 		SecureStringHasher_t4052E73C966E6FE65426B19F4AF48AB9869F614E* L_7 = ___0_hasher;
 		int32_t L_8;

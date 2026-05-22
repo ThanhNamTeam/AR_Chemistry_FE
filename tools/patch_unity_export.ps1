@@ -1,0 +1,152 @@
+$ErrorActionPreference = 'Stop'
+
+$ProjectRoot = Split-Path -Parent $PSScriptRoot
+$GradleFile = Join-Path $ProjectRoot 'unityLibrary\build.gradle'
+$UnityManifestFile = Join-Path $ProjectRoot 'unityLibrary\src\main\AndroidManifest.xml'
+$AppManifestFile = Join-Path $ProjectRoot 'android\app\src\main\AndroidManifest.xml'
+
+function Write-Status($Message) {
+    Write-Host "[UNITY_EXPORT_PATCH] $Message"
+}
+
+function Require-File($Path) {
+    if (-not (Test-Path -LiteralPath $Path)) {
+        throw "Missing required file: $Path"
+    }
+}
+
+function Save-Utf8NoBom($Path, $Text) {
+    $Encoding = New-Object System.Text.UTF8Encoding($false)
+    [System.IO.File]::WriteAllText($Path, $Text, $Encoding)
+}
+
+function Patch-Gradle {
+    Require-File $GradleFile
+    $Text = Get-Content -LiteralPath $GradleFile -Raw
+
+    $Text = $Text -replace "implementation fileTree\(dir: 'libs', include: \['\*\.jar'\]\)", "implementation fileTree(dir: 'libs', include: ['*.jar'], exclude: ['unity-classes.jar'])"
+
+    if ($Text -notmatch "compileOnly\s+files\('libs/unity-classes\.jar'\)") {
+        $Text = $Text -replace "(implementation fileTree\(dir: 'libs', include: \['\*\.jar'\], exclude: \['unity-classes\.jar'\]\)\r?\n)", "`$1    compileOnly files('libs/unity-classes.jar')`r`n"
+    }
+
+    $Text = $Text -replace 'ndkPath\s+"[^"]+"', 'ndkPath project.property("unity.androidNdkPath").toString()'
+    $Text = $Text -replace 'ndkVersion\s+"[^"]+"', 'ndkVersion project.property("unity.androidNdkVersion").toString()'
+    $Text = $Text -replace '(?m)^\s*commandLineArgs\.add\("--profiler-report"\)\s*\r?\n', ''
+    $Text = $Text -replace '(?m)^\s*commandLineArgs\.add\("--profiler-output-file=[^"]+"\)\s*\r?\n', ''
+    $Text = $Text -replace '\)(\s+)commandLineArgs\.add\(', ")`r`n    commandLineArgs.add("
+    $Text = $Text -replace 'commandLineArgs\.add\("--tool-chain-path="\s*\+\s*getProperty\("unity\.androidNdkPath"\)\)', 'commandLineArgs.add("--tool-chain-path=" + project.property("unity.androidNdkPath").toString())'
+    $Text = $Text -replace 'getProperty\("unity\.androidSdkPath"\)', 'project.property("unity.androidSdkPath").toString()'
+    $Text = $Text -replace 'getProperty\("unity\.androidNdkPath"\)', 'project.property("unity.androidNdkPath").toString()'
+
+    Save-Utf8NoBom $GradleFile $Text
+    Write-Status 'Patched unityLibrary/build.gradle'
+}
+
+function Ensure-Feature($ManifestPath, $FeatureName) {
+    $Text = Get-Content -LiteralPath $ManifestPath -Raw
+    if ($Text -match [regex]::Escape("android:name=`"$FeatureName`"")) {
+        return
+    }
+
+    $FeatureLine = "    <uses-feature android:name=`"$FeatureName`" android:required=`"false`"/>"
+    $Text = $Text -replace '(<application\b)', "$FeatureLine`r`n    `$1"
+    Save-Utf8NoBom $ManifestPath $Text
+}
+
+function Patch-AppManifest {
+    Require-File $AppManifestFile
+    Ensure-Feature $AppManifestFile 'android.hardware.camera'
+    Ensure-Feature $AppManifestFile 'android.hardware.camera.autofocus'
+    Ensure-Feature $AppManifestFile 'android.hardware.camera.front'
+    Write-Status 'Verified Flutter app camera feature declarations'
+}
+
+function Patch-UnityManifest {
+    Require-File $UnityManifestFile
+    [xml]$Xml = Get-Content -LiteralPath $UnityManifestFile -Raw
+    $AndroidNs = 'http://schemas.android.com/apk/res/android'
+    $Application = $Xml.manifest.application
+    $Removed = 0
+
+    @($Application.activity) | ForEach-Object {
+        if ($_ -eq $null) {
+            return
+        }
+
+        $ActivityName = $_.GetAttribute('name', $AndroidNs)
+        $HasLauncher = $false
+        foreach ($Filter in @($_.'intent-filter')) {
+            if ($Filter -eq $null) {
+                continue
+            }
+
+            $HasMain = $false
+            $HasLauncherCategory = $false
+            foreach ($Action in @($Filter.action)) {
+                if ($Action.GetAttribute('name', $AndroidNs) -eq 'android.intent.action.MAIN') {
+                    $HasMain = $true
+                }
+            }
+            foreach ($Category in @($Filter.category)) {
+                if ($Category.GetAttribute('name', $AndroidNs) -eq 'android.intent.category.LAUNCHER') {
+                    $HasLauncherCategory = $true
+                }
+            }
+            if ($HasMain -and $HasLauncherCategory) {
+                $HasLauncher = $true
+            }
+        }
+
+        if ($ActivityName -eq 'com.unity3d.player.UnityPlayerActivity' -or $HasLauncher) {
+            [void]$Application.RemoveChild($_)
+            $Removed++
+        }
+    }
+
+    $WriterSettings = New-Object System.Xml.XmlWriterSettings
+    $WriterSettings.Encoding = New-Object System.Text.UTF8Encoding($false)
+    $WriterSettings.Indent = $true
+    $WriterSettings.OmitXmlDeclaration = $false
+    $Writer = [System.Xml.XmlWriter]::Create($UnityManifestFile, $WriterSettings)
+    try {
+        $Xml.Save($Writer)
+    } finally {
+        $Writer.Close()
+    }
+
+    Write-Status "Stripped Unity standalone launcher activities: $Removed"
+}
+
+function Test-PatchState {
+    $GradleText = Get-Content -LiteralPath $GradleFile -Raw
+    $UnityManifestText = Get-Content -LiteralPath $UnityManifestFile -Raw
+    $AppManifestText = Get-Content -LiteralPath $AppManifestFile -Raw
+
+    $Checks = @(
+        @{ Name = 'unity-classes.jar excluded from runtime fileTree'; Ok = $GradleText -match "exclude:\s*\['unity-classes\.jar'\]" },
+        @{ Name = 'unity-classes.jar added as compileOnly'; Ok = $GradleText -match "compileOnly\s+files\('libs/unity-classes\.jar'\)" },
+        @{ Name = 'NDK path comes from Gradle property'; Ok = $GradleText -match 'ndkPath\s+project\.property\("unity\.androidNdkPath"\)\.toString\(\)' },
+        @{ Name = 'NDK version comes from Gradle property'; Ok = $GradleText -match 'ndkVersion\s+project\.property\("unity\.androidNdkVersion"\)\.toString\(\)' },
+        @{ Name = 'IL2CPP profiler args removed'; Ok = $GradleText -notmatch '--profiler-report|--profiler-output-file' },
+        @{ Name = 'Unity standalone launcher activity removed'; Ok = $UnityManifestText -notmatch 'UnityPlayerActivity|android\.intent\.action\.MAIN|android\.intent\.category\.LAUNCHER' },
+        @{ Name = 'Flutter app manifest declares camera feature'; Ok = $AppManifestText -match 'android\.hardware\.camera' },
+        @{ Name = 'Flutter app manifest declares autofocus feature'; Ok = $AppManifestText -match 'android\.hardware\.camera\.autofocus' }
+    )
+
+    $Failed = $Checks | Where-Object { -not $_.Ok }
+    foreach ($Check in $Checks) {
+        $State = if ($Check.Ok) { 'OK' } else { 'FAIL' }
+        Write-Status "$State - $($Check.Name)"
+    }
+
+    if ($Failed.Count -gt 0) {
+        throw "Unity export patch failed $($Failed.Count) checks."
+    }
+}
+
+Set-Location $ProjectRoot
+Patch-Gradle
+Patch-AppManifest
+Patch-UnityManifest
+Test-PatchState

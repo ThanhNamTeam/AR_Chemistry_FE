@@ -4906,8 +4906,8 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void InputSystemProvider_UnregisterAction_mA1
 IL_000f:
 	{
 		InputAction_t1B550AD2B55AF322AFB53CD28DA64081220D01CD** L_6 = ___0_action;
-		*((RuntimeObject**)L_6) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_6, (void*)(RuntimeObject*)NULL);
+		*((InputAction_t1B550AD2B55AF322AFB53CD28DA64081220D01CD**)L_6) = (InputAction_t1B550AD2B55AF322AFB53CD28DA64081220D01CD*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(InputAction_t1B550AD2B55AF322AFB53CD28DA64081220D01CD**)L_6, (void*)(InputAction_t1B550AD2B55AF322AFB53CD28DA64081220D01CD*)NULL);
 		return;
 	}
 }
@@ -5406,18 +5406,10 @@ IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR void PointerEvent_set_eventModifi
 }
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR bool ButtonsState_Get_mE6798B0C21BCA75C5CB52BDA200536F9EE3E9893_inline (ButtonsState_tC596C9B742AF4FDB4D32B05551EEDB23D243E996* __this, uint32_t ___0_button, const RuntimeMethod* method) 
 {
-	bool V_0 = false;
 	{
 		uint32_t L_0 = __this->____state;
 		uint32_t L_1 = ___0_button;
-		V_0 = (bool)((!(((uint32_t)((int32_t)((int32_t)L_0&(int32_t)L_1))) <= ((uint32_t)0)))? 1 : 0);
-		goto IL_000f;
-	}
-
-IL_000f:
-	{
-		bool L_2 = V_0;
-		return L_2;
+		return (bool)((!(((uint32_t)((int32_t)((int32_t)L_0&(int32_t)L_1))) <= ((uint32_t)0)))? 1 : 0);
 	}
 }
 IL2CPP_MANAGED_FORCE_INLINE IL2CPP_METHOD_ATTR int32_t PointerState_get_LastDisplayIndex_m3873EF0EB7E68124D270FB3F7A2083F53604AA42_inline (PointerState_t941C910E8B3EACFFAC3594DB09ABBD7ED424E935* __this, const RuntimeMethod* method) 

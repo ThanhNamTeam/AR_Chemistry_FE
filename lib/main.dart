@@ -35,6 +35,7 @@ import 'presentation/inventory/screens/library_screen.dart';
 import 'presentation/inventory/screens/my_bag_screen.dart';
 import 'presentation/ar_view/screens/scan_screen.dart';
 import 'presentation/ar_view/screens/result_screen.dart';
+import 'presentation/ar_view/widgets/ar_camera_view.dart';
 import 'presentation/payment/screens/shop_screen.dart';
 import 'presentation/payment/screens/cart_screen.dart';
 import 'presentation/payment/screens/payment_page.dart';
@@ -114,9 +115,13 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
             supportedLocales: AppLocalizations.supportedLocales,
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             theme: themeProvider.buildThemeData(),
+            navigatorObservers: [appRouteObserver],
             initialRoute: AppRoutes.onboarding,
             routes: _buildRoutes(),
             onGenerateRoute: _onGenerateRoute,
+            builder: (context, child) {
+              return ARUnityHost(child: child ?? const SizedBox.shrink());
+            },
           );
         },
       ),

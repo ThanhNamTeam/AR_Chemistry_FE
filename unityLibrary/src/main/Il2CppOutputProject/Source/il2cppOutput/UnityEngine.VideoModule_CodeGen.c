@@ -7,6 +7,8 @@
 
 
 
+extern void EmbeddedAttribute__ctor_m004FEE4CA267097E4ACEFA08D307C9B99D852799 (void);
+extern void RefSafetyRulesAttribute__ctor_m8FD3A8D2C7A9A29EC37F62F7B113BD6824C0110D (void);
 extern void VideoClipPlayable_GetHandle_m1D990903234220E9FE756F2DA895650EBDC1415D (void);
 extern void VideoClipPlayable_Equals_mDBA2CCE1368B628829B065EA8DEDE84512B2723E (void);
 extern void VideoPlayer_InvokePrepareCompletedCallback_Internal_mF483B141E9AF0B553FF87B32A0EE54E40BE21EFD (void);
@@ -25,8 +27,10 @@ extern void FrameReadyEventHandler__ctor_mD875F736BCA2A2128427AB0546B5081ED3B22D
 extern void FrameReadyEventHandler_Invoke_m73FF71F81A620194421226D8A98C64FB82E7B235 (void);
 extern void TimeEventHandler__ctor_m7BF78A616C8FF71B3A7CA62B1A03446A5C581309 (void);
 extern void TimeEventHandler_Invoke_m2327761543815FB7181FFF73E87FC5EC0F84349D (void);
-static Il2CppMethodPointer s_methodPointers[18] = 
+static Il2CppMethodPointer s_methodPointers[20] = 
 {
+	EmbeddedAttribute__ctor_m004FEE4CA267097E4ACEFA08D307C9B99D852799,
+	RefSafetyRulesAttribute__ctor_m8FD3A8D2C7A9A29EC37F62F7B113BD6824C0110D,
 	VideoClipPlayable_GetHandle_m1D990903234220E9FE756F2DA895650EBDC1415D,
 	VideoClipPlayable_Equals_mDBA2CCE1368B628829B065EA8DEDE84512B2723E,
 	VideoPlayer_InvokePrepareCompletedCallback_Internal_mF483B141E9AF0B553FF87B32A0EE54E40BE21EFD,
@@ -50,35 +54,37 @@ extern void VideoClipPlayable_GetHandle_m1D990903234220E9FE756F2DA895650EBDC1415
 extern void VideoClipPlayable_Equals_mDBA2CCE1368B628829B065EA8DEDE84512B2723E_AdjustorThunk (void);
 static Il2CppTokenAdjustorThunkPair s_adjustorThunks[2] = 
 {
-	{ 0x06000001, VideoClipPlayable_GetHandle_m1D990903234220E9FE756F2DA895650EBDC1415D_AdjustorThunk },
-	{ 0x06000002, VideoClipPlayable_Equals_mDBA2CCE1368B628829B065EA8DEDE84512B2723E_AdjustorThunk },
+	{ 0x06000003, VideoClipPlayable_GetHandle_m1D990903234220E9FE756F2DA895650EBDC1415D_AdjustorThunk },
+	{ 0x06000004, VideoClipPlayable_Equals_mDBA2CCE1368B628829B065EA8DEDE84512B2723E_AdjustorThunk },
 };
-static const int32_t s_InvokerIndices[18] = 
+static const int32_t s_InvokerIndices[20] = 
 {
-	15190,
-	8561,
-	23288,
-	21166,
-	23288,
-	23288,
-	23288,
-	21173,
-	23288,
-	21158,
-	6019,
-	11802,
-	6019,
-	6027,
-	6019,
-	6018,
-	6019,
-	6007,
+	14665,
+	11216,
+	14466,
+	8187,
+	22230,
+	20175,
+	22230,
+	22230,
+	22230,
+	20181,
+	22230,
+	20167,
+	5810,
+	11278,
+	5810,
+	5818,
+	5810,
+	5809,
+	5810,
+	5798,
 };
 IL2CPP_EXTERN_C const Il2CppCodeGenModule g_UnityEngine_VideoModule_CodeGenModule;
 const Il2CppCodeGenModule g_UnityEngine_VideoModule_CodeGenModule = 
 {
 	"UnityEngine.VideoModule.dll",
-	18,
+	20,
 	s_methodPointers,
 	2,
 	s_adjustorThunks,

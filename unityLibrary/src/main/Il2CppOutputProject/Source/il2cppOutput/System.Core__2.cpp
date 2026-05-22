@@ -14965,8 +14965,8 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool LabelScopeInfo_TryGetLabelInfo_mF5B765CE
 	}
 	{
 		LabelInfo_t40537451CCC388A64123156309E35BA78DADE7CF** L_1 = ___1_info;
-		*((RuntimeObject**)L_1) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_1, (void*)(RuntimeObject*)NULL);
+		*((LabelInfo_t40537451CCC388A64123156309E35BA78DADE7CF**)L_1) = (LabelInfo_t40537451CCC388A64123156309E35BA78DADE7CF*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(LabelInfo_t40537451CCC388A64123156309E35BA78DADE7CF**)L_1, (void*)(LabelInfo_t40537451CCC388A64123156309E35BA78DADE7CF*)NULL);
 		return (bool)0;
 	}
 
@@ -19296,8 +19296,8 @@ IL_0062:
 	{
 		ExceptionHandler_t56240D765721B8561E8BE922DAAD2547B314083F** L_27 = ___2_handler;
 		ExceptionHandler_t56240D765721B8561E8BE922DAAD2547B314083F* L_28 = V_4;
-		*((RuntimeObject**)L_27) = (RuntimeObject*)L_28;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_27, (void*)(RuntimeObject*)L_28);
+		*((ExceptionHandler_t56240D765721B8561E8BE922DAAD2547B314083F**)L_27) = (ExceptionHandler_t56240D765721B8561E8BE922DAAD2547B314083F*)L_28;
+		Il2CppCodeGenWriteBarrier((void**)(ExceptionHandler_t56240D765721B8561E8BE922DAAD2547B314083F**)L_27, (void*)(ExceptionHandler_t56240D765721B8561E8BE922DAAD2547B314083F*)L_28);
 		return (bool)1;
 	}
 
@@ -19331,8 +19331,8 @@ IL_0074:
 IL_0078:
 	{
 		ExceptionHandler_t56240D765721B8561E8BE922DAAD2547B314083F** L_33 = ___2_handler;
-		*((RuntimeObject**)L_33) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_33, (void*)(RuntimeObject*)NULL);
+		*((ExceptionHandler_t56240D765721B8561E8BE922DAAD2547B314083F**)L_33) = (ExceptionHandler_t56240D765721B8561E8BE922DAAD2547B314083F*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(ExceptionHandler_t56240D765721B8561E8BE922DAAD2547B314083F**)L_33, (void*)(ExceptionHandler_t56240D765721B8561E8BE922DAAD2547B314083F*)NULL);
 		return (bool)0;
 	}
 }
@@ -29966,7 +29966,7 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void LightCompiler_CompileInvocationExpressio
 		MethodInfo_t* L_16 = V_1;
 		NullCheck(L_16);
 		Type_t* L_17;
-		L_17 = VirtualFuncInvoker0< Type_t* >::Invoke(41, L_16);
+		L_17 = VirtualFuncInvoker0< Type_t* >::Invoke(40, L_16);
 		il2cpp_codegen_runtime_class_init_inline(TypeUtils_t2C9FA7DD0D8907A05421D44B8E7F1D4F602C9FE7_il2cpp_TypeInfo_var);
 		MethodInfo_t* L_18;
 		L_18 = TypeUtils_GetInvokeMethod_m62AB477BF6415EEB6F7108534BAB598CA9CDCA02(L_17, NULL);
@@ -30144,7 +30144,7 @@ IL_0049:
 		MethodInfo_t* L_18 = V_2;
 		NullCheck(L_18);
 		Type_t* L_19;
-		L_19 = VirtualFuncInvoker0< Type_t* >::Invoke(41, L_18);
+		L_19 = VirtualFuncInvoker0< Type_t* >::Invoke(40, L_18);
 		RuntimeTypeHandle_t332A452B8B6179E4469B69525D0FE82A88030F7B L_20 = { reinterpret_cast<intptr_t> (&il2cpp_defaults.void_class->byval_arg) };
 		il2cpp_codegen_runtime_class_init_inline(il2cpp_defaults.systemtype_class);
 		Type_t* L_21;
