@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,7 +9,9 @@ import '../../../routes/app_routes.dart';
 import '../../../shared/styles/app_colors.dart';
 
 class ARCameraView extends StatefulWidget {
-  const ARCameraView({super.key});
+  const ARCameraView({super.key, this.portalBorderRadius = 22});
+
+  final double portalBorderRadius;
 
   @override
   State<ARCameraView> createState() => _ARCameraViewState();
@@ -89,11 +93,13 @@ class _ARCameraViewState extends State<ARCameraView>
     return AnimatedBuilder(
       animation: _session,
       builder: (context, _) {
-        if (_session.permissionGranted == false) {
-          return const _UnityUnavailableView();
+        if (_session.preloadState == ARUnityPreloadState.failedFinal) {
+          return const _UnityUnavailableView(
+            message: 'Unable to initialize AR on this device.',
+          );
         }
 
-        if (_session.permissionGranted == null || !_session.unityCreated) {
+        if (_session.permissionGranted == false) {
           return const _UnityUnavailableView();
         }
 
@@ -120,9 +126,19 @@ class _ARCameraViewState extends State<ARCameraView>
     _session.showPortal(
       owner: this,
       rect: topLeft & renderObject.size,
-      borderRadius: 22,
+      borderRadius: widget.portalBorderRadius,
     );
+    _session.ensureReadyForArEntry();
   }
+}
+
+enum ARUnityPreloadState {
+  idle,
+  preloading,
+  ready,
+  preloadFailed,
+  retrying,
+  failedFinal,
 }
 
 class ARUnityHost extends StatefulWidget {
@@ -137,19 +153,23 @@ class ARUnityHost extends StatefulWidget {
 class _ARUnityHostState extends State<ARUnityHost> with WidgetsBindingObserver {
   final _session = ARUnitySession.instance;
   late final Widget _unityWidget;
+  AppLifecycleState _lifecycleState =
+      WidgetsBinding.instance.lifecycleState ?? AppLifecycleState.resumed;
+  int _stableFrameToken = 0;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _unityWidget = UnityWidget(
+      key: const ValueKey('ar-unity-platform-view'),
       fullscreen: false,
+      useAndroidViewSurface: true,
       onUnityCreated: _session.attach,
       onUnityMessage: _session.onUnityMessage,
       onUnitySceneLoaded: _session.onUnitySceneLoaded,
       onUnityUnloaded: _session.onUnityUnloaded,
     );
-    _session.preload();
   }
 
   @override
@@ -161,14 +181,28 @@ class _ARUnityHostState extends State<ARUnityHost> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    _lifecycleState = state;
     _session.logWidgetLifecycle('appLifecycleState ${state.name}');
     if (state == AppLifecycleState.resumed) {
+      _scheduleSafePreload();
       _session.resume();
+    } else if (state == AppLifecycleState.inactive) {
+      _session.skipPauseForInactive();
     } else if (state == AppLifecycleState.paused ||
-        state == AppLifecycleState.inactive ||
         state == AppLifecycleState.detached) {
-      _session.pause();
+      _session.pause(lifecycleState: state);
     }
+  }
+
+  @override
+  void didChangeMetrics() {
+    _stableFrameToken++;
+    _session.logWidgetLifecycle(
+      'appUnityPreloadDeferred reason=metricsChanged',
+    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scheduleSafePreload();
+    });
   }
 
   @override
@@ -185,30 +219,76 @@ class _ARUnityHostState extends State<ARUnityHost> with WidgetsBindingObserver {
           fit: StackFit.expand,
           children: [
             widget.child,
-            if (_session.permissionGranted == true) _buildUnityLayer(),
+            if (_session.shouldMountUnity) _buildUnityLayer(),
           ],
         );
       },
     );
   }
 
+  void _scheduleSafePreload() {
+    if (!mounted ||
+        !_session.hasVisiblePortal ||
+        !_session.canStartSafePreload) {
+      return;
+    }
+
+    final token = ++_stableFrameToken;
+    _session.logWidgetLifecycle('appUnityPreloadScheduled visiblePortal=true');
+    _runSafePreload(token);
+  }
+
+  Future<void> _runSafePreload(int token) async {
+    if (_lifecycleState != AppLifecycleState.resumed) {
+      _session.logWidgetLifecycle(
+        'appUnityPreloadWaiting lifecycle=${_lifecycleState.name}',
+      );
+      return;
+    }
+
+    await WidgetsBinding.instance.endOfFrame;
+    await Future<void>.delayed(Duration.zero);
+
+    if (!mounted || token != _stableFrameToken || !_session.hasVisiblePortal) {
+      return;
+    }
+
+    if (_lifecycleState != AppLifecycleState.resumed) {
+      _session.logWidgetLifecycle(
+        'appUnityPreloadWaiting lifecycle=${_lifecycleState.name}',
+      );
+      return;
+    }
+
+    await _session.startInitialPreload();
+  }
+
   Widget _buildUnityLayer() {
-    final rect = _session.portalRect;
-    final isVisible = _session.isVisible && rect != null;
-    final positionedRect = isVisible ? rect : const Rect.fromLTWH(-1, -1, 1, 1);
+    final isVisible = _session.hasVisiblePortal;
+    final rect = isVisible
+        ? _session.portalRect!
+        : const Rect.fromLTWH(-1, -1, 1, 1);
 
     return Positioned(
-      left: positionedRect.left,
-      top: positionedRect.top,
-      width: positionedRect.width,
-      height: positionedRect.height,
+      left: rect.left,
+      top: rect.top,
+      width: rect.width,
+      height: rect.height,
       child: IgnorePointer(
         ignoring: !isVisible,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(
             isVisible ? _session.portalBorderRadius : 0,
           ),
-          child: _unityWidget,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              _session.logUnityHostRect(
+                mode: isVisible ? 'portal' : 'preload-hidden',
+                size: Size(constraints.maxWidth, constraints.maxHeight),
+              );
+              return _unityWidget;
+            },
+          ),
         ),
       ),
     );
@@ -225,20 +305,36 @@ class ARUnitySession extends ChangeNotifier {
 
   final Stopwatch _routeStopwatch = Stopwatch();
   Future<bool>? _permissionFuture;
+  Completer<void>? _sceneLoadedCompleter;
   UnityWidgetController? _controller;
   Object? _portalOwner;
   Rect? _portalRect;
   double _portalBorderRadius = 0;
+  bool _lifecycleTransitionInFlight = false;
+  DateTime? _lastRetryAt;
+  String? _lastHostRectLogKey;
 
   bool? permissionGranted;
   bool unityCreated = false;
   bool sceneLoaded = false;
   bool isVisible = false;
   bool isPaused = false;
-  bool isPreloading = false;
+  ARUnityPreloadState preloadState = ARUnityPreloadState.idle;
 
   Rect? get portalRect => _portalRect;
   double get portalBorderRadius => _portalBorderRadius;
+  bool get hasVisiblePortal => isVisible && _portalRect != null;
+  bool get isPreloading =>
+      preloadState == ARUnityPreloadState.preloading ||
+      preloadState == ARUnityPreloadState.retrying;
+  bool get shouldMountUnity =>
+      permissionGranted == true &&
+      hasVisiblePortal &&
+      preloadState != ARUnityPreloadState.idle &&
+      preloadState != ARUnityPreloadState.preloadFailed &&
+      preloadState != ARUnityPreloadState.failedFinal;
+  bool get canStartSafePreload =>
+      preloadState == ARUnityPreloadState.idle && !unityCreated;
 
   void markRouteOpened() {
     _routeStopwatch
@@ -247,16 +343,111 @@ class ARUnitySession extends ChangeNotifier {
     _log('routeOpened');
   }
 
-  Future<void> preload() async {
-    if (isPreloading || unityCreated) return;
+  Future<void> startInitialPreload() {
+    if (!canStartSafePreload) return Future<void>.value();
+    return _runPreload(
+      nextState: ARUnityPreloadState.preloading,
+      timeout: const Duration(seconds: 12),
+      failedState: ARUnityPreloadState.preloadFailed,
+      startLog: 'appUnityPreloadStart',
+      timeoutLog: 'appUnityPreloadTimeout',
+    );
+  }
 
-    isPreloading = true;
-    _log('appUnityPreloadStart');
+  Future<void> ensureReadyForArEntry() {
+    if (preloadState == ARUnityPreloadState.ready ||
+        preloadState == ARUnityPreloadState.preloading ||
+        preloadState == ARUnityPreloadState.retrying) {
+      return Future<void>.value();
+    }
+
+    if (preloadState == ARUnityPreloadState.idle) {
+      return startInitialPreload();
+    }
+
+    if (preloadState == ARUnityPreloadState.failedFinal) {
+      _log('appUnityPreloadRetrySkipped state=failedFinal');
+      return Future<void>.value();
+    }
+
+    final now = DateTime.now();
+    final lastRetryAt = _lastRetryAt;
+    if (lastRetryAt != null &&
+        now.difference(lastRetryAt) < const Duration(seconds: 3)) {
+      _log('appUnityPreloadRetrySkipped reason=cooldown');
+      return Future<void>.value();
+    }
+
+    _lastRetryAt = now;
+    return _runPreload(
+      nextState: ARUnityPreloadState.retrying,
+      timeout: const Duration(seconds: 15),
+      failedState: ARUnityPreloadState.failedFinal,
+      startLog: 'appUnityPreloadRetryStart',
+      timeoutLog: 'appUnityPreloadRetryTimeout',
+    );
+  }
+
+  Future<void> _runPreload({
+    required ARUnityPreloadState nextState,
+    required Duration timeout,
+    required ARUnityPreloadState failedState,
+    required String startLog,
+    required String timeoutLog,
+  }) async {
+    if (preloadState == ARUnityPreloadState.ready ||
+        preloadState == ARUnityPreloadState.preloading ||
+        preloadState == ARUnityPreloadState.retrying) {
+      _log('appUnityPreloadSkipped state=${preloadState.name}');
+      return;
+    }
+
+    preloadState = nextState;
+    sceneLoaded = false;
+    _sceneLoadedCompleter = Completer<void>();
+    _log(startLog);
     notifyListeners();
 
     final granted = await ensureCameraPermission();
     if (!granted) {
-      _log('appUnityPreloadBlocked cameraPermission=false');
+      preloadState = failedState;
+      _resetUnityControllerState();
+      _log(
+        failedState == ARUnityPreloadState.failedFinal
+            ? 'appUnityPreloadFailedFinal reason=cameraPermission'
+            : 'appUnityPreloadFailed reason=cameraPermission',
+      );
+      notifyListeners();
+      return;
+    }
+
+    notifyListeners();
+
+    try {
+      await _sceneLoadedCompleter!.future.timeout(timeout);
+    } on TimeoutException {
+      if (preloadState == ARUnityPreloadState.ready || sceneLoaded) return;
+
+      preloadState = failedState;
+      _resetUnityControllerState();
+      _log(timeoutLog);
+      if (failedState == ARUnityPreloadState.failedFinal) {
+        _log('appUnityPreloadFailedFinal reason=timeout');
+      } else {
+        _log('appUnityPreloadFailed reason=timeout');
+      }
+      notifyListeners();
+    } catch (error, stackTrace) {
+      if (preloadState == ARUnityPreloadState.ready || sceneLoaded) return;
+
+      preloadState = failedState;
+      _resetUnityControllerState();
+      _log('appUnityPreloadUnexpectedError $error');
+      _log('appUnityPreloadUnexpectedStack $stackTrace');
+      if (failedState == ARUnityPreloadState.failedFinal) {
+        _log('appUnityPreloadFailedFinal reason=unexpectedError');
+      }
+      notifyListeners();
     }
   }
 
@@ -273,7 +464,6 @@ class ARUnitySession extends ChangeNotifier {
   Future<void> attach(UnityWidgetController controller) async {
     _controller = controller;
     unityCreated = true;
-    isPreloading = false;
     _log('unityCreated');
     notifyListeners();
 
@@ -314,7 +504,12 @@ class ARUnitySession extends ChangeNotifier {
     );
     sceneLoaded = sceneInfo.isLoaded == true;
     if (sceneLoaded) {
+      preloadState = ARUnityPreloadState.ready;
       _log('appUnityPreloadReady');
+      final completer = _sceneLoadedCompleter;
+      if (completer != null && !completer.isCompleted) {
+        completer.complete();
+      }
     }
     notifyListeners();
   }
@@ -323,6 +518,10 @@ class ARUnitySession extends ChangeNotifier {
     unityCreated = false;
     sceneLoaded = false;
     isPaused = false;
+    _controller = null;
+    if (preloadState == ARUnityPreloadState.ready) {
+      preloadState = ARUnityPreloadState.idle;
+    }
     _log('unityUnloaded');
     notifyListeners();
   }
@@ -337,6 +536,23 @@ class ARUnitySession extends ChangeNotifier {
 
   void logWidgetLifecycle(String event) {
     _log(event);
+  }
+
+  void _resetUnityControllerState() {
+    _controller = null;
+    unityCreated = false;
+    sceneLoaded = false;
+    isPaused = false;
+  }
+
+  void logUnityHostRect({required String mode, required Size size}) {
+    final width = size.width.toStringAsFixed(1);
+    final height = size.height.toStringAsFixed(1);
+    final key = '$mode:$width:$height';
+    if (_lastHostRectLogKey == key) return;
+
+    _lastHostRectLogKey = key;
+    _log('unityHostRect mode=$mode width=$width height=$height');
   }
 
   void showPortal({
@@ -376,14 +592,38 @@ class ARUnitySession extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> pause() async {
+  void skipPauseForInactive() {
+    _log('unityPauseSkipped lifecycle=inactive');
+  }
+
+  Future<void> pause({AppLifecycleState? lifecycleState}) async {
     final controller = _controller;
     if (controller == null) {
       _log('unityPauseSkipped noController');
       return;
     }
+    if (!unityCreated) {
+      _log('unityPauseSkipped unityNotCreated');
+      return;
+    }
+    if (!sceneLoaded) {
+      _log('unityPauseSkipped sceneNotLoaded');
+      return;
+    }
+    if (isPreloading) {
+      _log('unityPauseSkipped startupInProgress');
+      return;
+    }
+    if (_lifecycleTransitionInFlight) {
+      _log('unityLifecycleSkipped inFlight action=pause');
+      return;
+    }
 
     try {
+      _lifecycleTransitionInFlight = true;
+      if (lifecycleState != null) {
+        _log('unityPauseRequested lifecycle=${lifecycleState.name}');
+      }
       await _logControllerState('pause-before');
       final isPaused = await controller.isPaused();
       if (isPaused == true) {
@@ -404,6 +644,8 @@ class ARUnitySession extends ChangeNotifier {
     } catch (error, stackTrace) {
       _log('unityPauseUnexpectedError $error');
       _log('unityPauseUnexpectedStack $stackTrace');
+    } finally {
+      _lifecycleTransitionInFlight = false;
     }
   }
 
@@ -413,8 +655,13 @@ class ARUnitySession extends ChangeNotifier {
       _log('unityResumeSkipped noController');
       return;
     }
+    if (_lifecycleTransitionInFlight) {
+      _log('unityLifecycleSkipped inFlight action=resume');
+      return;
+    }
 
     try {
+      _lifecycleTransitionInFlight = true;
       await _logControllerState('resume-before');
       final isPaused = await controller.isPaused();
       if (isPaused == false) {
@@ -436,6 +683,8 @@ class ARUnitySession extends ChangeNotifier {
     } catch (error, stackTrace) {
       _log('unityResumeUnexpectedError $error');
       _log('unityResumeUnexpectedStack $stackTrace');
+    } finally {
+      _lifecycleTransitionInFlight = false;
     }
   }
 
@@ -509,19 +758,34 @@ class ARUnitySession extends ChangeNotifier {
 }
 
 class _UnityUnavailableView extends StatelessWidget {
-  const _UnityUnavailableView();
+  const _UnityUnavailableView({this.message});
+
+  final String? message;
 
   @override
   Widget build(BuildContext context) {
+    final message = this.message;
     return DecoratedBox(
       decoration: BoxDecoration(
         gradient: RadialGradient(
           colors: [
-            AppColors.primary.withOpacity(0.08),
-            Colors.black.withOpacity(0.75),
+            AppColors.primary.withValues(alpha: 0.08),
+            Colors.black.withValues(alpha: 0.75),
           ],
         ),
       ),
+      child: message == null
+          ? null
+          : Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Text(
+                  message,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
     );
   }
 }
