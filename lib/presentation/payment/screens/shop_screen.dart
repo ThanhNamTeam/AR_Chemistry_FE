@@ -8,6 +8,7 @@ import '../../home/providers/app_state.dart';
 import '../../home/providers/theme_provider.dart';
 import '../../../domain/models/bundle_price_quote.dart';
 import '../../../domain/models/chemical_card_model.dart';
+import 'package:intl/intl.dart';
 
 class ShopScreen extends StatefulWidget {
   const ShopScreen({super.key});
@@ -557,6 +558,15 @@ class _QRModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final transferCode =
+        'CHEM_${DateTime.now().millisecondsSinceEpoch}';
+
+    final qrUrl =
+        'https://img.vietqr.io/image/'
+        'VCB-1031285717-print.png'
+        '?amount=$price'
+        '&addInfo=$transferCode'
+        '&accountName=NGUYEN%20HOAI%20AN';
     return Container(
       color: Colors.black.withOpacity(0.8),
       child: Center(
@@ -578,15 +588,14 @@ class _QRModal extends StatelessWidget {
                       fontFamily: 'Inter')),
               const SizedBox(height: 20),
               // QR placeholder
-              Container(
-                width: 180, height: 180,
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey.shade300, width: 2),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(
+                  qrUrl,
+                  width: 220,
+                  height: 220,
+                  fit: BoxFit.cover,
                 ),
-                child: Icon(Icons.qr_code,
-                    size: 120, color: Colors.black54),
               ),
               const SizedBox(height: 8),
               Text('Scan QR code to pay',
@@ -607,9 +616,15 @@ class _QRModal extends StatelessWidget {
                   children: [
                     _InfoRow('Receiver', 'Chemistry AR'),
                     const SizedBox(height: 6),
-                    _InfoRow('Amount', '${(price * 1000).toString()} VND'),
+                    _InfoRow(
+                      'Amount',
+                      NumberFormat.currency(
+                        locale: 'vi_VN',
+                        symbol: 'VND',
+                      ).format(price),
+                    ),
                     const SizedBox(height: 6),
-                    _InfoRow('Content', 'Chemistry AR Card'),
+                    _InfoRow('Content', transferCode),
                   ],
                 ),
               ),

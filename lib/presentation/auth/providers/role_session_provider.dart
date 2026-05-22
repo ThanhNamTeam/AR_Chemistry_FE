@@ -1,3 +1,4 @@
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../../core/auth/role_accounts.dart';
@@ -197,13 +198,28 @@ class RoleSessionProvider extends ChangeNotifier {
   }
 
   Future<void> logout() async {
+
+    try {
+
+      await Amplify.Auth.signOut();
+
+      debugPrint("Cognito logout success");
+
+    } catch (e, s) {
+
+      debugPrint(e.toString());
+      debugPrint(s.toString());
+    }
+
     _role = null;
     _email = null;
     _userName = null;
     _userPhone = null;
     _userAvatar = null;
     _password = '';
+
     await _storage.clear();
+
     notifyListeners();
   }
 }

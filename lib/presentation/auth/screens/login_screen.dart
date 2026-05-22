@@ -343,33 +343,57 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     setState(() => _googleLoading = true);
 
     try {
+      // Login Google bằng Cognito Hosted UI
       final result = await Amplify.Auth.signInWithWebUI(
         provider: AuthProvider.google,
       );
 
       if (!result.isSignedIn) return;
 
+      // Lấy session Cognito
       final session =
       await Amplify.Auth.fetchAuthSession()
       as CognitoAuthSession;
 
+      // Lấy JWT token
       final idToken =
           session.userPoolTokensResult
               .value
               .idToken
               .raw;
 
+      // Decode token để lấy email
       final parts = idToken.split('.');
+
       final payload = utf8.decode(
-        base64Url.decode(base64Url.normalize(parts[1])),
+        base64Url.decode(
+          base64Url.normalize(parts[1]),
+        ),
       );
-      final claims = jsonDecode(payload) as Map<String, dynamic>;
-      final email = claims['email'] as String? ?? '';
+
+      final claims =
+      jsonDecode(payload)
+      as Map<String, dynamic>;
+
+      final email =
+          claims['email'] as String? ?? '';
 
       if (email.isEmpty) {
-        throw Exception('Google account has no email');
+        throw Exception(
+          'Google account has no email',
+        );
       }
 
+      // Sync user từ Cognito -> Backend
+      await AuthApi().syncUser(idToken);
+
+      debugPrint(
+        'SYNC USER SUCCESS',
+      );
+
+      if (!mounted) return;
+
+      // Navigate sau login
       await _navigateAfterLogin(
         role: UserRole.student,
         email: email,
@@ -384,7 +408,8 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
         const SnackBar(
           content: Text(
             'Đăng nhập Google thất bại',
@@ -395,7 +420,9 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     } finally {
 
       if (mounted) {
-        setState(() => _googleLoading = false);
+        setState(
+              () => _googleLoading = false,
+        );
       }
     }
   }

@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 class AuthApi {
   static const String baseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://10.0.2.2:8080',
+    defaultValue: 'http://10.131.100.225:8080',
   );
 
   static const Duration _timeout = Duration(seconds: 8);

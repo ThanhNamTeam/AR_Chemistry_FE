@@ -8,6 +8,7 @@ import '../../../shared/widgets/knowledge_points_badge.dart';
 import '../../home/providers/app_state.dart';
 import '../../../domain/models/cart_item_model.dart';
 import '../../../domain/models/chemical_card_model.dart';
+import 'package:intl/intl.dart';
 
 class PaymentPage extends StatefulWidget {
   const PaymentPage({super.key});
@@ -324,6 +325,17 @@ class _QRModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final transferCode =
+        'CHEM_${DateTime.now().millisecondsSinceEpoch}';
+
+    final qrUrl =
+        'https://img.vietqr.io/image/'
+        'VCB-1031285717-compact2.png'
+        '?amount=$price'
+        '&addInfo=$transferCode'
+        '&accountName=NGUYEN%20HOAI%20AN';
+
     return Container(
       color: Colors.black.withOpacity(0.8),
       child: Center(
@@ -344,19 +356,52 @@ class _QRModal extends StatelessWidget {
                       color: Colors.black87,
                       fontFamily: 'Inter')),
               const SizedBox(height: 20),
-              Container(
-                width: 180,
-                height: 180,
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey.shade300, width: 2),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(
+                  qrUrl,
+                  width: 220,
+                  height: 220,
+                  fit: BoxFit.cover,
                 ),
-                child: Icon(Icons.qr_code, size: 120, color: Colors.black54),
               ),
               const SizedBox(height: 20),
-              Text('Amount: ${price * 1000} VND',
-                  style: TextStyle(fontFamily: 'Inter')),
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade50,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: Colors.blue.shade200,
+                  ),
+                ),
+                child: Column(
+                  children: [
+
+                    _InfoRow(
+                      'Receiver',
+                      'NGUYEN HOAI AN',
+                    ),
+
+                    const SizedBox(height: 6),
+
+                    _InfoRow(
+                      'Amount',
+                      NumberFormat.currency(
+                        locale: 'vi_VN',
+                        symbol: 'VND',
+                      ).format(price),
+                    ),
+
+                    const SizedBox(height: 6),
+
+                    _InfoRow(
+                      'Content',
+                      transferCode,
+                    ),
+                  ],
+                ),
+              ),
               const SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
@@ -370,6 +415,47 @@ class _QRModal extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _InfoRow extends StatelessWidget {
+
+  final String label;
+  final String value;
+
+  const _InfoRow(
+      this.label,
+      this.value,
+      );
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Row(
+      mainAxisAlignment:
+      MainAxisAlignment.spaceBetween,
+      children: [
+
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 12,
+            color: Colors.black54,
+            fontFamily: 'Inter',
+          ),
+        ),
+
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: Colors.black87,
+            fontFamily: 'Inter',
+          ),
+        ),
+      ],
     );
   }
 }

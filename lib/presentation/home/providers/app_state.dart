@@ -30,16 +30,16 @@ class AppState extends ChangeNotifier {
 
   // Cards state
   final List<ChemicalCardModel> _cards =
-      ChemicalData.cards.map((c) => ChemicalCardModel(
-            id: c.id,
-            symbol: c.symbol,
-            name: c.name,
-            atomicNumber: c.atomicNumber,
-            color: c.color,
-            price: c.price,
-            category: c.category,
-            isUnlocked: c.isUnlocked,
-          )).toList();
+  ChemicalData.cards.map((c) => ChemicalCardModel(
+    id: c.id,
+    symbol: c.symbol,
+    name: c.name,
+    atomicNumber: c.atomicNumber,
+    color: c.color,
+    price: c.price,
+    category: c.category,
+    isUnlocked: c.isUnlocked,
+  )).toList();
   final List<CartItem> _cart = [];
   final List<MyBagItem> _myBag = [];
   final List<String> _scannedCards = [];
@@ -146,19 +146,19 @@ class AppState extends ChangeNotifier {
   }
 
   Future<void> _loadUserProfileFields(
-    String email, {
-    Map<String, dynamic>? sessionUser,
-  }) async {
+      String email, {
+        Map<String, dynamic>? sessionUser,
+      }) async {
     final registered = await _storage.getRegisteredUserByEmail(email);
     final storedName = registered?['fullname'] as String? ??
         sessionUser?['name'] as String?;
     _userName =
-        storedName != null && storedName.trim().isNotEmpty ? storedName.trim() : null;
+    storedName != null && storedName.trim().isNotEmpty ? storedName.trim() : null;
     _userPhone = registered?['phone'] as String?;
     final avatarPath =
         sessionUser?['avatar'] as String? ?? registered?['avatar'] as String?;
     _userAvatar =
-        AvatarStorageService.avatarFileExists(avatarPath) ? avatarPath : null;
+    AvatarStorageService.avatarFileExists(avatarPath) ? avatarPath : null;
   }
 
   Future<void> _persistAuth() async {
@@ -213,7 +213,7 @@ class AppState extends ChangeNotifier {
   }) async {
     final normalizedEmail = email.trim();
     final isFirstLogin =
-        !await _storage.getUserHasLoggedInBefore(normalizedEmail);
+    !await _storage.getUserHasLoggedInBefore(normalizedEmail);
 
     _isLoggedIn = true;
     _userEmail = normalizedEmail;
@@ -233,22 +233,22 @@ class AppState extends ChangeNotifier {
   }
 
   Future<({String? error, LoginResult? result})> login(
-    String email,
-    String password,
-  ) async {
+      String email,
+      String password,
+      ) async {
     _isLoading = true;
     notifyListeners();
     await Future.delayed(const Duration(milliseconds: 500));
 
     final normalizedEmail = email.trim();
     final registered =
-        await _storage.getRegisteredUserByEmail(normalizedEmail);
+    await _storage.getRegisteredUserByEmail(normalizedEmail);
     if (registered == null) {
       _isLoading = false;
       notifyListeners();
       return (
-        error: 'No account found. Please sign up first.',
-        result: null,
+      error: 'No account found. Please sign up first.',
+      result: null,
       );
     }
     final storedPassword = registered['password'] as String? ?? '';
@@ -256,8 +256,8 @@ class AppState extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
       return (
-        error: 'Tài khoản Google. Vui lòng đăng nhập bằng Google.',
-        result: null,
+      error: 'Tài khoản Google. Vui lòng đăng nhập bằng Google.',
+      result: null,
       );
     }
     if (storedPassword != password) {
@@ -267,7 +267,7 @@ class AppState extends ChangeNotifier {
     }
 
     final isFirstLogin =
-        !await _storage.getUserHasLoggedInBefore(normalizedEmail);
+    !await _storage.getUserHasLoggedInBefore(normalizedEmail);
 
     _isLoggedIn = true;
     _userEmail = normalizedEmail;
@@ -283,11 +283,11 @@ class AppState extends ChangeNotifier {
     _isLoading = false;
     notifyListeners();
     return (
-      error: null,
-      result: LoginResult(
-        isFirstLogin: isFirstLogin,
-        displayName: displayName,
-      ),
+    error: null,
+    result: LoginResult(
+      isFirstLogin: isFirstLogin,
+      displayName: displayName,
+    ),
     );
   }
 
@@ -299,9 +299,9 @@ class AppState extends ChangeNotifier {
   }) async {
     final normalizedEmail = email.trim();
     final existing =
-        await _storage.getRegisteredUserByEmail(normalizedEmail);
+    await _storage.getRegisteredUserByEmail(normalizedEmail);
     final isFirstLogin =
-        !await _storage.getUserHasLoggedInBefore(normalizedEmail);
+    !await _storage.getUserHasLoggedInBefore(normalizedEmail);
 
     if (existing == null) {
       await _storage.setRegisteredUser({
@@ -465,13 +465,13 @@ class AppState extends ChangeNotifier {
 
   BundlePriceQuote getBundleQuote(String bundleId) {
     final bundle = ChemicalData.bundles.firstWhere(
-      (b) => b.id == bundleId,
+          (b) => b.id == bundleId,
       orElse: () => throw Exception('Bundle not found'),
     );
     return BundlePricing.calculate(
       bundle,
       isCardOwned,
-      (id) => getCardById(id)?.price ?? 0,
+          (id) => getCardById(id)?.price ?? 0,
     );
   }
 
