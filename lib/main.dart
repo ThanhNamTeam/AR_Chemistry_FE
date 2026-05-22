@@ -41,6 +41,10 @@ import 'presentation/payment/screens/payment_page.dart';
 import 'presentation/payment/screens/payment_success_screen.dart';
 import 'presentation/quiz/screens/quiz_screen.dart';
 import 'presentation/feedback/screens/feedback_screen.dart';
+import 'presentation/ai_chat/providers/ai_fab_visibility.dart';
+import 'presentation/ai_chat/providers/chat_provider.dart';
+import 'presentation/ai_chat/screens/ai_chat_screen.dart';
+import 'presentation/shared/widgets/user_portal_ai_overlay.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -103,6 +107,8 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
         ChangeNotifierProvider(create: (_) => RoleSessionProvider()),
         ChangeNotifierProvider(create: (_) => StaffProvider()),
         ChangeNotifierProvider(create: (_) => AdminProvider()),
+        ChangeNotifierProvider(create: (_) => ChatProvider()),
+        ChangeNotifierProvider(create: (_) => AiFabVisibility()),
       ],
       child: Consumer2<ThemeProvider, LocaleProvider>(
         builder: (context, themeProvider, localeProvider, _) {
@@ -117,6 +123,9 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
             initialRoute: AppRoutes.onboarding,
             routes: _buildRoutes(),
             onGenerateRoute: _onGenerateRoute,
+            builder: (context, child) => UserPortalAiOverlay(
+              child: child ?? const SizedBox.shrink(),
+            ),
           );
         },
       ),
@@ -133,6 +142,7 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
       AppRoutes.home: (_) => const HomeScreen(),
       AppRoutes.profile: (_) => const ProfileScreen(),
       AppRoutes.feedback: (_) => const FeedbackScreen(),
+      AppRoutes.aiChat: (_) => const AiChatScreen(),
       AppRoutes.library: (_) => const LibraryScreen(),
       AppRoutes.quiz: (_) => const QuizScreen(),
       AppRoutes.myBag: (_) => const MyBagScreen(),

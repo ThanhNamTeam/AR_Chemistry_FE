@@ -15,6 +15,7 @@ class AppRoutes {
   static const String myBag = '/my-bag';
   static const String profile = '/profile';
   static const String feedback = '/feedback';
+  static const String aiChat = '/ai-chat';
   static const String paymentSuccess = '/payment-success';
   static const String staffHome = '/staff';
   static const String adminHome = '/admin';
