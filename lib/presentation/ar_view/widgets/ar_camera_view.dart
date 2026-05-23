@@ -265,31 +265,42 @@ class _ARUnityHostState extends State<ARUnityHost> with WidgetsBindingObserver {
 
   Widget _buildUnityLayer() {
     final isVisible = _session.hasVisiblePortal;
+    final isFullscreen = _session.usesFullscreenPortal;
     final rect = isVisible
         ? _session.portalRect!
         : const Rect.fromLTWH(-1, -1, 1, 1);
+
+    final unityLayer = IgnorePointer(
+      ignoring: !isVisible,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          _session.logUnityHostRect(
+            mode: isFullscreen
+                ? 'fullscreen'
+                : isVisible
+                    ? 'portal'
+                    : 'preload-hidden',
+            size: Size(constraints.maxWidth, constraints.maxHeight),
+          );
+          return SizedBox.expand(child: _unityWidget);
+        },
+      ),
+    );
+
+    if (isFullscreen) {
+      return Positioned.fill(child: unityLayer);
+    }
 
     return Positioned(
       left: rect.left,
       top: rect.top,
       width: rect.width,
       height: rect.height,
-      child: IgnorePointer(
-        ignoring: !isVisible,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(
-            isVisible ? _session.portalBorderRadius : 0,
-          ),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              _session.logUnityHostRect(
-                mode: isVisible ? 'portal' : 'preload-hidden',
-                size: Size(constraints.maxWidth, constraints.maxHeight),
-              );
-              return _unityWidget;
-            },
-          ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(
+          isVisible ? _session.portalBorderRadius : 0,
         ),
+        child: unityLayer,
       ),
     );
   }
@@ -301,6 +312,9 @@ class ARUnitySession extends ChangeNotifier {
   static final ARUnitySession instance = ARUnitySession._();
   static const _permissionsChannel = MethodChannel(
     'ar_chemistry_visual/permissions',
+  );
+  static const _unityLayoutChannel = MethodChannel(
+    'ar_chemistry_visual/unity_layout',
   );
 
   final Stopwatch _routeStopwatch = Stopwatch();
@@ -335,6 +349,8 @@ class ARUnitySession extends ChangeNotifier {
       preloadState != ARUnityPreloadState.failedFinal;
   bool get canStartSafePreload =>
       preloadState == ARUnityPreloadState.idle && !unityCreated;
+  bool get usesFullscreenPortal =>
+      hasVisiblePortal && _portalBorderRadius == 0;
 
   void markRouteOpened() {
     _routeStopwatch
@@ -465,6 +481,17 @@ class ARUnitySession extends ChangeNotifier {
     _controller = controller;
     unityCreated = true;
     _log('unityCreated');
+    unawaited(forceNativeUnityFullscreen(reason: 'unityCreated'));
+    unawaited(_markReadyFromControllerIfLoaded(reason: 'attach'));
+    unawaited(
+      _markReadyFromControllerAfterDelay(reason: 'attach-delayed-750ms'),
+    );
+    unawaited(
+      _markReadyFromControllerAfterDelay(
+        reason: 'attach-delayed-1500ms',
+        delay: const Duration(milliseconds: 1500),
+      ),
+    );
     notifyListeners();
 
     try {
@@ -506,6 +533,7 @@ class ARUnitySession extends ChangeNotifier {
     if (sceneLoaded) {
       preloadState = ARUnityPreloadState.ready;
       _log('appUnityPreloadReady');
+      unawaited(forceNativeUnityFullscreen(reason: 'unitySceneLoaded'));
       final completer = _sceneLoadedCompleter;
       if (completer != null && !completer.isCompleted) {
         completer.complete();
@@ -524,6 +552,53 @@ class ARUnitySession extends ChangeNotifier {
     }
     _log('unityUnloaded');
     notifyListeners();
+  }
+
+  Future<void> _markReadyFromControllerAfterDelay({
+    required String reason,
+    Duration delay = const Duration(milliseconds: 750),
+  }) async {
+    await Future<void>.delayed(delay);
+    await _markReadyFromControllerIfLoaded(reason: reason);
+  }
+
+  Future<void> _markReadyFromControllerIfLoaded({required String reason}) async {
+    if (sceneLoaded || preloadState == ARUnityPreloadState.ready) return;
+
+    final controller = _controller;
+    if (controller == null) {
+      _log('unityReadyFallbackSkipped reason=$reason noController');
+      return;
+    }
+
+    try {
+      final isLoaded = await controller.isLoaded();
+      final isReady = await controller.isReady();
+      _log(
+        'unityReadyFallbackCheck reason=$reason '
+        'loaded=$isLoaded ready=$isReady',
+      );
+
+      if (isLoaded != true && isReady != true) return;
+
+      sceneLoaded = true;
+      preloadState = ARUnityPreloadState.ready;
+      _log('appUnityPreloadReadyFallback reason=$reason');
+      unawaited(forceNativeUnityFullscreen(reason: 'unityReadyFallback'));
+      final completer = _sceneLoadedCompleter;
+      if (completer != null && !completer.isCompleted) {
+        completer.complete();
+      }
+      notifyListeners();
+    } on PlatformException catch (error) {
+      _log(
+        'unityReadyFallbackPlatformError reason=$reason '
+        'code=${error.code} message=${error.message} details=${error.details}',
+      );
+    } catch (error, stackTrace) {
+      _log('unityReadyFallbackUnexpectedError reason=$reason $error');
+      _log('unityReadyFallbackUnexpectedStack reason=$reason $stackTrace');
+    }
   }
 
   void logPermissionResult(bool granted) {
@@ -553,6 +628,28 @@ class ARUnitySession extends ChangeNotifier {
 
     _lastHostRectLogKey = key;
     _log('unityHostRect mode=$mode width=$width height=$height');
+  }
+
+  Future<void> forceNativeUnityFullscreen({required String reason}) async {
+    if (defaultTargetPlatform != TargetPlatform.android) return;
+
+    try {
+      await _unityLayoutChannel.invokeMethod<void>(
+        'forceUnityFullscreen',
+        <String, Object?>{'reason': reason},
+      );
+      _log('unityNativeFullscreenForced reason=$reason');
+    } on MissingPluginException catch (error) {
+      _log('unityNativeFullscreenChannelMissing reason=$reason $error');
+    } on PlatformException catch (error) {
+      _log(
+        'unityNativeFullscreenPlatformError reason=$reason '
+        'code=${error.code} message=${error.message} details=${error.details}',
+      );
+    } catch (error, stackTrace) {
+      _log('unityNativeFullscreenUnexpectedError reason=$reason $error');
+      _log('unityNativeFullscreenUnexpectedStack reason=$reason $stackTrace');
+    }
   }
 
   void showPortal({

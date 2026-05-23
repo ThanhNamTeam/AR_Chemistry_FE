@@ -83,6 +83,20 @@ class MainActivity : FlutterUnityActivity() {
                 else -> result.notImplemented()
             }
         }
+
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            UNITY_LAYOUT_CHANNEL,
+        ).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "forceUnityFullscreen" -> {
+                    val flutterReason = call.argument<String>("reason") ?: "unknown"
+                    forceUnityFrameMatchParent("flutterForceUnityFullscreen:$flutterReason")
+                    result.success(true)
+                }
+                else -> result.notImplemented()
+            }
+        }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -186,6 +200,9 @@ class MainActivity : FlutterUnityActivity() {
             frame.layoutParams = nextParams
         }
 
+        val parentBeforeWidth = parent?.layoutParams?.width
+        val parentBeforeHeight = parent?.layoutParams?.height
+
         frame.requestLayout()
         frame.invalidate()
         parent?.requestLayout()
@@ -196,6 +213,8 @@ class MainActivity : FlutterUnityActivity() {
                 "parent=${parent?.javaClass?.simpleName ?: "none"} " +
                 "before=${beforeWidth ?: "null"}x${beforeHeight ?: "null"} " +
                 "after=${frame.layoutParams.width}x${frame.layoutParams.height} " +
+                "parentBefore=${parentBeforeWidth ?: "null"}x${parentBeforeHeight ?: "null"} " +
+                "parentAfter=${parent?.layoutParams?.width ?: "null"}x${parent?.layoutParams?.height ?: "null"} " +
                 "measured=${frame.measuredWidth}x${frame.measuredHeight} " +
                 "size=${frame.width}x${frame.height}",
         )
@@ -209,6 +228,7 @@ class MainActivity : FlutterUnityActivity() {
         private const val TAG = "ANDROID_HOST_DIAG"
         private const val PERMISSIONS_CHANNEL = "ar_chemistry_visual/permissions"
         private const val ORIENTATION_CHANNEL = "ar_chemistry_visual/orientation"
+        private const val UNITY_LAYOUT_CHANNEL = "ar_chemistry_visual/unity_layout"
         private const val CAMERA_PERMISSION_REQUEST_CODE = 4101
     }
 }

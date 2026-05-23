@@ -130,7 +130,6 @@ class _ScanScreenState extends State<ScanScreen>
       _landscapeGateSeen = false;
       _landscapeStabilized = false;
       _arEntryRequested = false;
-      _arCameraView = null;
       return;
     }
 
