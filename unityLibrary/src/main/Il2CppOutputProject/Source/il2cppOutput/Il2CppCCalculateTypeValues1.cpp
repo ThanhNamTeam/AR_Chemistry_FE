@@ -7874,7 +7874,7 @@ struct ShaderConstants_tAC5AA9F3398A6E983BDD922776718F14886F495F  : public Runti
 struct U3CU3Ec_tA5C2E4144EE7B61B812E4C964CBD023947FFFF4D  : public RuntimeObject
 {
 };
-struct U3CStartU3Ed__7_t01AB18AEBF1D3E7C4749E23033F93A74C2569F92  : public RuntimeObject
+struct U3CStartU3Ed__5_tF393DD58B1FF80988E712F17E59E8CA654AED696  : public RuntimeObject
 {
 	int32_t ___U3CU3E1__state;
 	RuntimeObject* ___U3CU3E2__current;
@@ -55731,7 +55731,7 @@ const Il2CppTypeDefinitionSizes g_typeDefinitionSize9536 = { sizeof(SceneBootPro
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize9537;
 const Il2CppTypeDefinitionSizes g_typeDefinitionSize9537 = { sizeof(TargetTrackingManager_tC996FFF10C90E9662869E4459AB5707B7D7617F3), -1, sizeof(TargetTrackingManager_tC996FFF10C90E9662869E4459AB5707B7D7617F3_StaticFields), 0 };
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize9538;
-const Il2CppTypeDefinitionSizes g_typeDefinitionSize9538 = { sizeof(U3CStartU3Ed__7_t01AB18AEBF1D3E7C4749E23033F93A74C2569F92), -1, 0, 0 };
+const Il2CppTypeDefinitionSizes g_typeDefinitionSize9538 = { sizeof(U3CStartU3Ed__5_tF393DD58B1FF80988E712F17E59E8CA654AED696), -1, 0, 0 };
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize9539;
 const Il2CppTypeDefinitionSizes g_typeDefinitionSize9539 = { sizeof(UnityRuntimeBootstrap_t3A0492D023D13FB1A5DA372C43FDCF1473A5FD47), -1, sizeof(UnityRuntimeBootstrap_t3A0492D023D13FB1A5DA372C43FDCF1473A5FD47_StaticFields), 0 };
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize9540;
