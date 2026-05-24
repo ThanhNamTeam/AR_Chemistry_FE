@@ -124,6 +124,50 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             ),
           ),
           KnowledgePointsBadge(points: state.knowledgePoints),
+          const SizedBox(width: 8),
+          GestureDetector(
+            onTap: () => Navigator.pushNamed(context, AppRoutes.packages),
+            child: Container(
+              height: 40,
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                gradient: AppColors.amberGradient,
+                borderRadius: BorderRadius.circular(999),
+                border: Border.all(
+                  color: AppColors.amberLight.withOpacity(0.7),
+                  width: 1.2,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.amberLight.withOpacity(0.35),
+                    blurRadius: 18,
+                    spreadRadius: 1,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  Icon(
+                    Icons.workspace_premium,
+                    color: Colors.white,
+                    size: 17,
+                  ),
+                  SizedBox(width: 5),
+                  Text(
+                    'Upgrade',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w800,
+                      fontFamily: 'Inter',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
           const SizedBox(width: 12),
           _buildProfileAvatar(state),
         ],
@@ -132,8 +176,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Widget _buildProfileAvatar(AppState state) {
-    final avatarPath = state.userAvatar;
-    final hasAvatar = AvatarStorageService.avatarFileExists(avatarPath);
+    final avatar = state.userAvatar;
+
+    final isNetworkAvatar = avatar != null &&
+        (avatar.startsWith('http://') || avatar.startsWith('https://'));
+
+    final hasLocalAvatar = avatar != null &&
+        !isNetworkAvatar &&
+        AvatarStorageService.avatarFileExists(avatar);
+
+    final hasAvatar = isNetworkAvatar || hasLocalAvatar;
 
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, AppRoutes.profile),
@@ -145,9 +197,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           gradient: hasAvatar ? null : AppColors.cyanEmeraldGradient,
           image: hasAvatar
               ? DecorationImage(
-                  image: FileImage(File(avatarPath!)),
-                  fit: BoxFit.cover,
-                )
+            image: isNetworkAvatar
+                ? NetworkImage(avatar)
+                : FileImage(File(avatar!)) as ImageProvider,
+            fit: BoxFit.cover,
+          )
               : null,
           border: Border.all(
             color: AppColors.primary.withOpacity(0.4),
@@ -157,16 +211,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         child: hasAvatar
             ? null
             : Center(
-                child: Text(
-                  state.displayName.substring(0, 1).toUpperCase(),
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                    fontFamily: 'Inter',
-                  ),
-                ),
-              ),
+          child: Text(
+            state.displayName.substring(0, 1).toUpperCase(),
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              color: Colors.white,
+              fontFamily: 'Inter',
+            ),
+          ),
+        ),
       ),
     );
   }

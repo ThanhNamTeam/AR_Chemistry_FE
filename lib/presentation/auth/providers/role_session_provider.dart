@@ -222,4 +222,15 @@ class RoleSessionProvider extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  Future<void> clearLocalSessionOnly() async {
+    _role = null;
+    _email = null;
+
+    // Nếu RoleSessionProvider có lưu role/email vào storage riêng,
+    // thì clear storage đó ở đây.
+    // Tuyệt đối KHÔNG gọi Amplify.Auth.signOut() trong hàm này.
+
+    notifyListeners();
+  }
 }

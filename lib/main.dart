@@ -30,6 +30,7 @@ import 'presentation/auth/screens/verify_otp_screen.dart';
 import 'presentation/auth/screens/complete_profile_screen.dart';
 import 'presentation/auth/screens/forgot_password_screen.dart';
 import 'presentation/home/screens/home_screen.dart';
+import 'presentation/packages/package_screen.dart';
 import 'presentation/home/screens/profile_screen.dart';
 import 'presentation/inventory/screens/library_screen.dart';
 import 'presentation/inventory/screens/my_bag_screen.dart';
@@ -148,6 +149,7 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
       AppRoutes.myBag: (_) => const MyBagScreen(),
       AppRoutes.scan: (_) => const ScanScreen(),
       AppRoutes.shop: (_) => const ShopScreen(),
+      AppRoutes.packages: (_) => const PackageScreen(),
       AppRoutes.cart: (_) => const CartScreen(),
       AppRoutes.payment: (_) => const PaymentPage(),
       AppRoutes.paymentSuccess: (_) => const PaymentSuccessScreen(),

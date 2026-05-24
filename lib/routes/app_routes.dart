@@ -10,6 +10,7 @@ class AppRoutes {
   static const String scan = '/scan';
   static const String result = '/result';
   static const String shop = '/shop';
+  static const String packages = '/packages';
   static const String cart = '/cart';
   static const String payment = '/payment';
   static const String myBag = '/my-bag';

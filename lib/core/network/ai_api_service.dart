@@ -4,6 +4,8 @@ import 'package:dio/dio.dart';
 
 import '../../domain/models/ai_chat_models.dart';
 import '../api/auth_api.dart';
+import '../constants/api_constants.dart';
+import '../services/auth_token_service.dart';
 import '../storage/local_storage_service.dart';
 import 'api_config.dart';
 
@@ -21,19 +23,11 @@ class AiApiService {
   AiApiService({Dio? dio}) : _dio = dio ?? Dio();
 
   final Dio _dio;
-  final _storage = LocalStorageService();
 
   static const _timeout = Duration(seconds: 60);
 
   Future<String?> _resolveToken() async {
-    try {
-      final session =
-          await Amplify.Auth.fetchAuthSession() as CognitoAuthSession;
-      if (session.isSignedIn) {
-        return session.userPoolTokensResult.value.idToken.raw;
-      }
-    } catch (_) {}
-    return _storage.getAuthToken();
+    return AuthTokenService.getValidAccessToken();
   }
 
   Future<Options> _authOptions() async {
@@ -177,8 +171,7 @@ class AiApiService {
     }
     if (e.type == DioExceptionType.connectionError) {
       return AiApiException(
-        'Không kết nối được backend (${AuthApi.baseUrl}). Kiểm tra mạng và API_BASE_URL.',
-      );
+        'Không kết nối được backend (${ApiConstants.baseUrl}). Kiểm tra mạng và API_BASE_URL.',      );
     }
     return AiApiException(e.message ?? 'Lỗi mạng không xác định.');
   }

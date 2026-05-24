@@ -10,6 +10,8 @@ import '../../../domain/models/bundle_price_quote.dart';
 import '../../../domain/models/chemical_card_model.dart';
 import 'package:intl/intl.dart';
 
+import 'package:image_picker/image_picker.dart';
+
 class ShopScreen extends StatefulWidget {
   const ShopScreen({super.key});
 
@@ -22,6 +24,8 @@ class _ShopScreenState extends State<ShopScreen> {
   String? _selectedId;
   int _selectedPrice = 0;
   String _selectedType = 'card';
+  String? _proofImageUrl;
+  String? _transferCode;
 
   void _showToast(String msg, {bool isError = false}) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -54,24 +58,81 @@ class _ShopScreenState extends State<ShopScreen> {
     }
   }
 
+  Future<void> _pickProofImage(AppState state) async {
+    final picker = ImagePicker();
+
+    final picked = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 80,
+    );
+
+    if (picked == null) return;
+
+    final bytes = await picked.readAsBytes();
+    final fileSize = bytes.length;
+    final fileName = picked.name;
+
+    final lowerName = fileName.toLowerCase();
+    final contentType = lowerName.endsWith('.png')
+        ? 'image/png'
+        : 'image/jpeg';
+
+    final fileUrl = await state.uploadPaymentProof(
+      fileName: fileName,
+      contentType: contentType,
+      fileSize: fileSize,
+      bytes: bytes,
+    );
+
+    if (!mounted) return;
+
+    if (fileUrl == null) {
+      _showToast('Upload proof image failed', isError: true);
+      return;
+    }
+
+    setState(() {
+      _proofImageUrl = fileUrl;
+    });
+
+    _showToast('Proof image uploaded successfully');
+  }
+
   void _openQR(String id, int price, String type) {
     setState(() {
       _selectedId = id;
       _selectedPrice = price;
       _selectedType = type;
+      _proofImageUrl = null;
+      _transferCode = 'CHEM_${DateTime.now().millisecondsSinceEpoch}';
       _showQRModal = true;
     });
   }
 
   Future<void> _confirmQRPayment(AppState state) async {
     if (_selectedId == null) return;
-    if (_selectedType == 'card') {
-      await state.purchaseCard(_selectedId!, deductPoints: false);
-    } else {
-      await state.purchaseBundle(_selectedId!, deductPoints: false);
+
+    if (_proofImageUrl == null || _proofImageUrl!.isEmpty) {
+      _showToast('Please upload payment proof image first', isError: true);
+      return;
     }
+
+    final ok = await state.createBankPayment(
+      packageId: _selectedId!,
+      proofImageUrl: _proofImageUrl!,
+    );
+
     if (!mounted) return;
+
+    if (!ok) {
+      _showToast('Create payment failed', isError: true);
+      return;
+    }
+
     setState(() => _showQRModal = false);
+
+    _showToast('Payment submitted. Please wait for staff approval.');
+
     Navigator.pushNamed(context, AppRoutes.paymentSuccess);
   }
 
@@ -287,6 +348,9 @@ class _ShopScreenState extends State<ShopScreen> {
               if (_showQRModal)
                 _QRModal(
                   price: _selectedPrice,
+                  transferCode: _transferCode ?? '',
+                  proofImageUrl: _proofImageUrl,
+                  onPickProof: () => _pickProofImage(state),
                   onConfirm: () => _confirmQRPayment(state),
                   onCancel: () => setState(() => _showQRModal = false),
                 ),
@@ -547,19 +611,23 @@ class _BundleCard extends StatelessWidget {
 
 class _QRModal extends StatelessWidget {
   final int price;
+  final String transferCode;
+  final String? proofImageUrl;
+  final VoidCallback onPickProof;
   final VoidCallback onConfirm;
   final VoidCallback onCancel;
 
   const _QRModal({
     required this.price,
+    required this.transferCode,
+    required this.proofImageUrl,
+    required this.onPickProof,
     required this.onConfirm,
     required this.onCancel,
   });
 
   @override
   Widget build(BuildContext context) {
-    final transferCode =
-        'CHEM_${DateTime.now().millisecondsSinceEpoch}';
 
     final qrUrl =
         'https://img.vietqr.io/image/'
@@ -628,22 +696,57 @@ class _QRModal extends StatelessWidget {
                   ],
                 ),
               ),
+              const SizedBox(height: 14),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: onPickProof,
+                  icon: Icon(
+                    proofImageUrl == null ? Icons.upload_file : Icons.check_circle,
+                    color: Colors.white,
+                    size: 18,
+                  ),
+                  label: Text(
+                    proofImageUrl == null
+                        ? 'Upload payment proof'
+                        : 'Payment proof selected',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'Inter',
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                    proofImageUrl == null ? Colors.orange.shade700 : Colors.green.shade700,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+              ),
               const SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: onConfirm,
+                  onPressed: proofImageUrl == null ? null : onConfirm,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue.shade700,
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
                   ),
-                  child: Text('Confirm Payment',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                          fontFamily: 'Inter')),
+                  child: Text(
+                    proofImageUrl == null
+                        ? 'Upload proof image first'
+                        : 'Confirm Payment',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'Inter',
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(height: 10),

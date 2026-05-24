@@ -32,6 +32,16 @@
                     android:scheme="chemistry"
                     android:host="oauth"/>
             </intent-filter>
+            <intent-filter android:label="logout">
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+
+                <data
+                    android:scheme="chemistry"
+                    android:host="logout"/>
+            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

@@ -89,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
 
     // Student session chỉ lưu trong AppState, không qua RoleSessionProvider.
     if (roleSession.role == UserRole.student) {
-      await roleSession.logout();
+      await roleSession.clearLocalSessionOnly();
     }
 
     if (roleSession.isStaff) {
@@ -155,7 +155,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
       return;
     }
 
-    await roleSession.logout();
+    await roleSession.clearLocalSessionOnly();
     if (!appState.initialized) {
       await appState.initialize();
     }
