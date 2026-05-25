@@ -45,6 +45,9 @@ dependencies:
   app_links: ^6.3.2
   url_launcher: ^6.3.0
   path: ^1.9.0
+  mime: ^2.0.0
+  package_info_plus: ^9.0.0
+  device_info_plus: ^12.4.0
 
 
 dev_dependencies:

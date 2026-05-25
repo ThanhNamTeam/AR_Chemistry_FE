@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
-import '../../../core/network/feedback_api_service.dart';
+import '../../../core/api/feedback_api_service.dart';
+import '../../../core/models/request/feedback_request.dart';
+import '../../../core/services/app_device_info_service.dart';
 import '../../../domain/models/feedback_model.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../../shared/widgets/custom_text_field.dart';
@@ -52,29 +54,33 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _submitting = true);
-    final state = context.read<AppState>();
+
     try {
       String? imageUrl;
+
       if (_imagePath != null) {
         imageUrl = await _api.uploadFeedbackImage(_imagePath!);
       }
 
+      final appVersion = await AppDeviceInfoService.getAppVersion();
+      final deviceInfo = await AppDeviceInfoService.getDeviceInfo();
+
       if (!mounted) return;
-      final payload = FeedbackPayload(
+
+      final request = FeedbackRequest(
         title: _titleCtrl.text.trim(),
         content: _contentCtrl.text.trim(),
-        type: _type,
+        type: _type.apiValue,
         anonymous: _anonymous,
         imageUrl: imageUrl,
+        appVersion: appVersion,
+        deviceInfo: deviceInfo,
       );
 
-      await _api.submitFeedback(
-        payload,
-        reporterEmail: _anonymous ? null : state.userEmail,
-        reporterName: _anonymous ? null : state.displayName,
-      );
+      await _api.submitFeedback(request);
 
       if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text(
@@ -83,13 +89,16 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
           ),
           backgroundColor: AppColors.success,
           behavior: SnackBarBehavior.floating,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       );
+
       Navigator.pop(context);
     } catch (e) {
       if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(

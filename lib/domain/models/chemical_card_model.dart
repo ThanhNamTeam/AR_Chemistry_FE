@@ -55,6 +55,32 @@ class ChemicalReaction {
 }
 
 class ChemicalData {
+  static Color colorForCategory(String? category) {
+    switch (category) {
+      case 'Alkali metal':
+        return const Color(0xFFF59E0B);
+      case 'Alkaline earth metal':
+        return const Color(0xFF84CC16);
+      case 'Transition metal':
+        return const Color(0xFFEF4444);
+      case 'Post-transition metal':
+        return const Color(0xFF0EA5E9);
+      case 'Metalloid':
+        return const Color(0xFF22C55E);
+      case 'Diatomic nonmetal':
+      case 'Polyatomic nonmetal':
+        return const Color(0xFF06B6D4);
+      case 'Noble gas':
+        return const Color(0xFF8B5CF6);
+      case 'Lanthanide':
+        return const Color(0xFFEC4899);
+      case 'Actinide':
+        return const Color(0xFFF97316);
+      default:
+        return const Color(0xFF94A3B8);
+    }
+  }
+
   static List<ChemicalCardModel> get cards => [
         ChemicalCardModel(
           id: 'H',

@@ -45,10 +45,14 @@ class _FeedbackCard extends StatelessWidget {
   const _FeedbackCard({required this.feedback, required this.l10n});
 
   Color _typeColor(FeedbackType type) => switch (type) {
-        FeedbackType.bug => AppColors.error,
-        FeedbackType.experience => AppColors.amber,
-        FeedbackType.suggestion => AppColors.secondary,
-      };
+    FeedbackType.bug => AppColors.error,
+    FeedbackType.uiUx => AppColors.amber,
+    FeedbackType.featureRequest => AppColors.secondary,
+    FeedbackType.performance => throw UnimplementedError(),
+    FeedbackType.contentError => throw UnimplementedError(),
+    FeedbackType.question => throw UnimplementedError(),
+    FeedbackType.other => throw UnimplementedError(),
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -73,10 +77,7 @@ class _FeedbackCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  PortalBadge(
-                    text: f.type.label,
-                    color: _typeColor(f.type),
-                  ),
+                  PortalBadge(text: f.type.label, color: _typeColor(f.type)),
                   const Spacer(),
                   if (hasResponse)
                     PortalBadge(
@@ -133,11 +134,7 @@ class _FeedbackCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  Icon(
-                    Icons.chevron_right,
-                    color: AppColors.primary,
-                    size: 20,
-                  ),
+                  Icon(Icons.chevron_right, color: AppColors.primary, size: 20),
                 ],
               ),
             ],

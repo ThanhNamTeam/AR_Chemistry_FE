@@ -142,7 +142,7 @@ class StaffProvider extends ChangeNotifier {
           id: 'mock_2',
           title: 'Trải nghiệm mua thẻ',
           content: 'Muốn có thêm combo giá tốt hơn.',
-          type: FeedbackType.experience,
+          type: FeedbackType.uiUx,
           anonymous: true,
           submittedAt: DateTime.now().subtract(const Duration(days: 1)),
         ),

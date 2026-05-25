@@ -5,6 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as p;
 
 
+import '../../../core/api/chemical_card_api.dart';
+import '../../../core/models/response/chemical_card_response.dart';
 import '../../../core/storage/avatar_storage_service.dart';
 import '../../../core/storage/local_storage_service.dart';
 import '../../../domain/models/account_setup_model.dart';
@@ -36,6 +38,7 @@ class AppState extends ChangeNotifier {
   final UploadApi _uploadApi = UploadApi();
   final PackageApi _packageApi = PackageApi();
   final ProfileApi _profileApi = ProfileApi();
+  final ChemicalCardApi _chemicalCardApi = ChemicalCardApi();
 
   bool _initialized = false;
   bool _isLoading = false;
@@ -72,6 +75,21 @@ class AppState extends ChangeNotifier {
 
   final List<PackageResponse> _packages = [];
   List<PackageResponse> get packages => List.unmodifiable(_packages);
+
+  final List<ChemicalCardResponse> _shopChemicalCards = [];
+  bool _loadingShopChemicalCards = false;
+  String? _shopChemicalCardsError;
+  int _shopChemicalCardsPage = 0;
+  bool _shopChemicalCardsLast = false;
+
+  List<ChemicalCardResponse> get shopChemicalCards =>
+      List.unmodifiable(_shopChemicalCards);
+
+  bool get loadingShopChemicalCards => _loadingShopChemicalCards;
+
+  String? get shopChemicalCardsError => _shopChemicalCardsError;
+
+  bool get shopChemicalCardsLast => _shopChemicalCardsLast;
 
   /// Full name if set in profile; otherwise the part before @ in email.
   String get displayName {
@@ -165,6 +183,49 @@ class AppState extends ChangeNotifier {
     } catch (e) {
       debugPrint('Load packages error: $e');
       return false;
+    }
+  }
+
+  Future<bool> loadShopChemicalCards({
+    bool refresh = false,
+  }) async {
+    if (_loadingShopChemicalCards) return false;
+
+    if (refresh) {
+      _shopChemicalCards
+        .clear();
+      _shopChemicalCardsPage = 0;
+      _shopChemicalCardsLast = false;
+      _shopChemicalCardsError = null;
+      notifyListeners();
+    }
+
+    if (_shopChemicalCardsLast) return true;
+
+    _loadingShopChemicalCards = true;
+    _shopChemicalCardsError = null;
+    notifyListeners();
+
+    try {
+      final page = await _chemicalCardApi.getShopCards(
+        page: _shopChemicalCardsPage,
+        size: 20,
+      );
+
+      _shopChemicalCards.addAll(page.items);
+      _shopChemicalCardsPage = page.page + 1;
+      _shopChemicalCardsLast = page.last;
+
+      notifyListeners();
+      return true;
+    } catch (e) {
+      debugPrint('Load shop chemical cards error: $e');
+      _shopChemicalCardsError = e.toString();
+      notifyListeners();
+      return false;
+    } finally {
+      _loadingShopChemicalCards = false;
+      notifyListeners();
     }
   }
 
@@ -581,12 +642,14 @@ class AppState extends ChangeNotifier {
   }
 
   Future<bool> createBankPayment({
-    required String packageId,
+    required String itemId,
+    required String itemType,
     required String proofImageUrl,
   }) async {
     try {
       final request = CreatePaymentRequest(
-        packageId: packageId,
+        itemId: itemId,
+        itemType: itemType,
         proofImageUrl: proofImageUrl,
       );
 

@@ -3,11 +3,8 @@ import 'package:amplify_flutter/amplify_flutter.dart' hide ApiConfig;
 import 'package:dio/dio.dart';
 
 import '../../domain/models/ai_chat_models.dart';
-import '../api/auth_api.dart';
 import '../constants/api_constants.dart';
 import '../services/auth_token_service.dart';
-import '../storage/local_storage_service.dart';
-import 'api_config.dart';
 
 class AiApiException implements Exception {
   AiApiException(this.message, {this.statusCode});
@@ -96,7 +93,7 @@ class AiApiService {
   }) async {
     try {
       final response = await _dio.post(
-        ApiConfig.aiChatUrl,
+        ApiConstants.aiChatUrl,
         data: {
           'message': message,
           if (conversationId != null && conversationId.isNotEmpty)
@@ -113,7 +110,7 @@ class AiApiService {
   Future<List<ConversationSummary>> getConversations() async {
     try {
       final response = await _dio.get(
-        ApiConfig.aiConversationsUrl,
+        ApiConstants.aiConversationsUrl,
         options: await _authOptions(),
       );
       return _parseEnvelopeList(
@@ -128,7 +125,7 @@ class AiApiService {
   Future<List<ChatMessage>> getConversationMessages(String id) async {
     try {
       final response = await _dio.get(
-        ApiConfig.aiConversationDetailUrl(id),
+        ApiConstants.aiConversationDetailUrl(id),
         options: await _authOptions(),
       );
       return _parseEnvelope(response, messagesFromConversationDetail);
@@ -140,7 +137,7 @@ class AiApiService {
   Future<void> deleteConversation(String id) async {
     try {
       final response = await _dio.delete(
-        ApiConfig.aiConversationDetailUrl(id),
+        ApiConstants.aiConversationDetailUrl(id),
         options: await _authOptions(),
       );
       final body = response.data;

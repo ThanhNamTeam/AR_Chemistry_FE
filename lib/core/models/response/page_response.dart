@@ -9,7 +9,7 @@ class PageResponse<T> {
   final bool hasNext;
   final bool hasPrevious;
 
-  PageResponse({
+  const PageResponse({
     required this.items,
     required this.page,
     required this.size,
@@ -23,20 +23,33 @@ class PageResponse<T> {
 
   factory PageResponse.fromJson(
       Map<String, dynamic> json,
-      T Function(dynamic item) fromJsonT,
+      T Function(Map<String, dynamic>) fromJson,
       ) {
+    final rawItems = json['items'];
+
     return PageResponse<T>(
-      items: (json['items'] as List)
-          .map((item) => fromJsonT(item))
-          .toList(),
-      page: json['page'],
-      size: json['size'],
-      totalItems: json['totalItems'],
-      totalPages: json['totalPages'],
-      first: json['first'],
-      last: json['last'],
-      hasNext: json['hasNext'],
-      hasPrevious: json['hasPrevious'],
+      items: rawItems is List
+          ? rawItems
+          .whereType<Map>()
+          .map((item) => Map<String, dynamic>.from(item))
+          .map(fromJson)
+          .toList()
+          : [],
+      page: _parseInt(json['page']),
+      size: _parseInt(json['size']),
+      totalItems: _parseInt(json['totalItems']),
+      totalPages: _parseInt(json['totalPages']),
+      first: json['first'] == true,
+      last: json['last'] == true,
+      hasNext: json['hasNext'] == true,
+      hasPrevious: json['hasPrevious'] == true,
     );
+  }
+
+  static int _parseInt(dynamic value) {
+    if (value == null) return 0;
+    if (value is int) return value;
+    if (value is num) return value.toInt();
+    return int.tryParse(value.toString()) ?? 0;
   }
 }

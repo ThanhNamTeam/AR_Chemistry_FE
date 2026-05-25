@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import '../../../core/network/ai_api_service.dart';
+import '../../../core/api/ai_api_service.dart';
 import '../../../domain/models/ai_chat_models.dart';
 
 class ChatProvider extends ChangeNotifier {

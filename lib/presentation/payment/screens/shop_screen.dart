@@ -27,6 +27,17 @@ class _ShopScreenState extends State<ShopScreen> {
   String? _proofImageUrl;
   String? _transferCode;
 
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<AppState>().loadShopChemicalCards(refresh: true);
+    });
+  }
+
+
+
   void _showToast(String msg, {bool isError = false}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -118,7 +129,8 @@ class _ShopScreenState extends State<ShopScreen> {
     }
 
     final ok = await state.createBankPayment(
-      packageId: _selectedId!,
+      itemId: _selectedId!,
+      itemType: _selectedType,
       proofImageUrl: _proofImageUrl!,
     );
 
@@ -140,8 +152,21 @@ class _ShopScreenState extends State<ShopScreen> {
   Widget build(BuildContext context) {
     context.watch<ThemeProvider>();
     final state = context.watch<AppState>();
-    final catalog = state.shopCatalogCards;
+    final catalog = state.shopChemicalCards
+        .map((card) => ChemicalCardModel(
+      id: card.id, // UUID backend
+      symbol: card.symbol,
+      name: card.name,
+      atomicNumber: card.atomicNumber,
+      color: ChemicalData.colorForCategory(card.category),
+      price: card.price,
+      category: CardCategory.element,
+      isUnlocked: state.isCardOwned(card.symbol),
+    ))
+        .toList();
     final bundles = ChemicalData.bundles;
+
+
 
     return Scaffold(
       backgroundColor: AppColors.backgroundDark,
@@ -324,7 +349,7 @@ class _ShopScreenState extends State<ShopScreen> {
                                 onBuyWithBank: owned
                                     ? null
                                     : () => _openQR(
-                                        card.id, card.price, 'card'),
+                                        card.id, card.price, 'CHEMICAL_CARD'),
                                 onAddToCart: owned
                                     ? null
                                     : () async {

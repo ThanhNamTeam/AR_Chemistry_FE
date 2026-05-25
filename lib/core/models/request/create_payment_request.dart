@@ -1,15 +1,18 @@
 class CreatePaymentRequest {
-  final String packageId;
+  final String itemId;
+  final String itemType;
   final String proofImageUrl;
 
-  CreatePaymentRequest({
-    required this.packageId,
+  const CreatePaymentRequest({
+    required this.itemId,
+    required this.itemType,
     required this.proofImageUrl,
   });
 
   Map<String, dynamic> toJson() {
     return {
-      'packageId': packageId,
+      'itemId': itemId,
+      'itemType': itemType,
       'proofImageUrl': proofImageUrl,
     };
   }
