@@ -18871,8 +18871,8 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void DataTable_SetNewRecordWorker_m6C0F8BA033
 	int32_t G_B74_0 = 0;
 	{
 		Exception_t** L_0 = ___7_deferredException;
-		*((RuntimeObject**)L_0) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_0, (void*)(RuntimeObject*)NULL);
+		*((Exception_t**)L_0) = (Exception_t*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(Exception_t**)L_0, (void*)(Exception_t*)NULL);
 		DataRow_t4C2743279B40E332809F4E6EE3443B75E4C38388* L_1 = ___0_row;
 		NullCheck(L_1);
 		int32_t L_2 = L_1->____tempRecord;
@@ -19554,8 +19554,8 @@ IL_02c5:
 		{
 			Exception_t** L_162 = ___7_deferredException;
 			Exception_t* L_163 = V_12;
-			*((RuntimeObject**)L_162) = (RuntimeObject*)L_163;
-			Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_162, (void*)(RuntimeObject*)L_163);
+			*((Exception_t**)L_162) = (Exception_t*)L_163;
+			Il2CppCodeGenWriteBarrier((void**)(Exception_t**)L_162, (void*)(Exception_t*)L_163);
 			IL2CPP_POP_ACTIVE_EXCEPTION(Exception_t*);
 			goto IL_02cc;
 		}

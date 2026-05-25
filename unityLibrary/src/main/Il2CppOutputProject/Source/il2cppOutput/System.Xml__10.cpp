@@ -9177,8 +9177,8 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR XmlSchemaElement_t24D5940E4EB4E5FFDAD1772AFBD
 		L_2 = XmlSchemaSet_Schemas_mB026F323BD5F5CCE6B270803AF10983103ED0BEF(L_0, L_1, NULL);
 		V_0 = (XmlSchemaElement_t24D5940E4EB4E5FFDAD1772AFBD7A83CD992C970*)NULL;
 		XmlSchema_t5C9506D00418BF5FD524254D0C6C405C620C941D** L_3 = ___2_parentSchema;
-		*((RuntimeObject**)L_3) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_3, (void*)(RuntimeObject*)NULL);
+		*((XmlSchema_t5C9506D00418BF5FD524254D0C6C405C620C941D**)L_3) = (XmlSchema_t5C9506D00418BF5FD524254D0C6C405C620C941D*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(XmlSchema_t5C9506D00418BF5FD524254D0C6C405C620C941D**)L_3, (void*)(XmlSchema_t5C9506D00418BF5FD524254D0C6C405C620C941D*)NULL);
 		NullCheck(L_2);
 		RuntimeObject* L_4;
 		L_4 = InterfaceFuncInvoker0< RuntimeObject* >::Invoke(0, IEnumerable_t6331596D5DD37C462B1B8D49CF6B319B00AB7131_il2cpp_TypeInfo_var, L_2);
@@ -9241,8 +9241,8 @@ IL_0019_1:
 			{
 				XmlSchema_t5C9506D00418BF5FD524254D0C6C405C620C941D** L_15 = ___2_parentSchema;
 				XmlSchema_t5C9506D00418BF5FD524254D0C6C405C620C941D* L_16 = V_2;
-				*((RuntimeObject**)L_15) = (RuntimeObject*)L_16;
-				Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_15, (void*)(RuntimeObject*)L_16);
+				*((XmlSchema_t5C9506D00418BF5FD524254D0C6C405C620C941D**)L_15) = (XmlSchema_t5C9506D00418BF5FD524254D0C6C405C620C941D*)L_16;
+				Il2CppCodeGenWriteBarrier((void**)(XmlSchema_t5C9506D00418BF5FD524254D0C6C405C620C941D**)L_15, (void*)(XmlSchema_t5C9506D00418BF5FD524254D0C6C405C620C941D*)L_16);
 				XmlSchemaElement_t24D5940E4EB4E5FFDAD1772AFBD7A83CD992C970* L_17 = V_0;
 				V_3 = L_17;
 				goto IL_005d;
@@ -17731,8 +17731,8 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool Parser_CheckSchemaRoot_m8B1B1D50A6A82441
 	}
 	{
 		String_t** L_0 = ___1_code;
-		*((RuntimeObject**)L_0) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_0, (void*)(RuntimeObject*)NULL);
+		*((String_t**)L_0) = (String_t*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_0, (void*)(String_t*)NULL);
 		int32_t L_1 = __this->___schemaType;
 		if (L_1)
 		{
@@ -17781,8 +17781,8 @@ IL_002a:
 	}
 	{
 		String_t** L_5 = ___1_code;
-		*((RuntimeObject**)L_5) = (RuntimeObject*)_stringLiteralD8FA166CA753B38667F520A06422EEA789FDB594;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_5, (void*)(RuntimeObject*)_stringLiteralD8FA166CA753B38667F520A06422EEA789FDB594);
+		*((String_t**)L_5) = (String_t*)_stringLiteralD8FA166CA753B38667F520A06422EEA789FDB594;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_5, (void*)(String_t*)_stringLiteralD8FA166CA753B38667F520A06422EEA789FDB594);
 		return (bool)0;
 	}
 
@@ -17796,8 +17796,8 @@ IL_003c:
 	}
 	{
 		String_t** L_7 = ___1_code;
-		*((RuntimeObject**)L_7) = (RuntimeObject*)_stringLiteral3641FFA61912FAD8C31F2361EC69C28CF21F0E7E;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_7, (void*)(RuntimeObject*)_stringLiteral3641FFA61912FAD8C31F2361EC69C28CF21F0E7E);
+		*((String_t**)L_7) = (String_t*)_stringLiteral3641FFA61912FAD8C31F2361EC69C28CF21F0E7E;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_7, (void*)(String_t*)_stringLiteral3641FFA61912FAD8C31F2361EC69C28CF21F0E7E);
 		return (bool)0;
 	}
 
@@ -17811,16 +17811,16 @@ IL_004e:
 	}
 	{
 		String_t** L_9 = ___1_code;
-		*((RuntimeObject**)L_9) = (RuntimeObject*)_stringLiteralD8FA166CA753B38667F520A06422EEA789FDB594;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_9, (void*)(RuntimeObject*)_stringLiteralD8FA166CA753B38667F520A06422EEA789FDB594);
+		*((String_t**)L_9) = (String_t*)_stringLiteralD8FA166CA753B38667F520A06422EEA789FDB594;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_9, (void*)(String_t*)_stringLiteralD8FA166CA753B38667F520A06422EEA789FDB594);
 		return (bool)0;
 	}
 
 IL_0060:
 	{
 		String_t** L_10 = ___1_code;
-		*((RuntimeObject**)L_10) = (RuntimeObject*)_stringLiteral826B5AC7289E12C4105F2280EBA32DE75FBACB90;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_10, (void*)(RuntimeObject*)_stringLiteral826B5AC7289E12C4105F2280EBA32DE75FBACB90);
+		*((String_t**)L_10) = (String_t*)_stringLiteral826B5AC7289E12C4105F2280EBA32DE75FBACB90;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_10, (void*)(String_t*)_stringLiteral826B5AC7289E12C4105F2280EBA32DE75FBACB90);
 		int32_t L_11 = __this->___schemaType;
 		if ((!(((uint32_t)L_11) == ((uint32_t)3))))
 		{
@@ -17829,8 +17829,8 @@ IL_0060:
 	}
 	{
 		String_t** L_12 = ___1_code;
-		*((RuntimeObject**)L_12) = (RuntimeObject*)_stringLiteral0803C607ECC17F1D2B6CAD9B4D11451A35EA46B4;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_12, (void*)(RuntimeObject*)_stringLiteral0803C607ECC17F1D2B6CAD9B4D11451A35EA46B4);
+		*((String_t**)L_12) = (String_t*)_stringLiteral0803C607ECC17F1D2B6CAD9B4D11451A35EA46B4;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_12, (void*)(String_t*)_stringLiteral0803C607ECC17F1D2B6CAD9B4D11451A35EA46B4);
 	}
 
 IL_0077:

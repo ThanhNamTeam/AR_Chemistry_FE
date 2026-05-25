@@ -1,0 +1,37 @@
+ManifestFileVersion: 0
+UnityVersion: 6000.4.7f1
+CRC: 1299893721
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: abb597ca298d71479f0a35df22ef2726
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 52e907f62d29966f0171d9ed564648d5
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: ff63fd1e668ba19fcad8220c06b72a06
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 64
+  Script: {instanceID: 0}
+- Class: 136
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Generated/MarkerVisualPrefabs/H2O_MarkerVisual.prefab
+Dependencies: []

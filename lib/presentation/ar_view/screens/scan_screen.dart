@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../../shared/styles/app_colors.dart';
-import '../../../shared/widgets/knowledge_points_badge.dart';
+import 'package:flutter/services.dart';
+
+import '../../../core/services/orientation_lock_service.dart';
 import '../../../routes/app_routes.dart';
-import '../../home/providers/app_state.dart';
-import '../../../domain/models/chemical_card_model.dart';
+import '../../../shared/styles/app_colors.dart';
+import '../widgets/ar_camera_view.dart';
 
 class ScanScreen extends StatefulWidget {
   const ScanScreen({super.key});
@@ -13,403 +13,287 @@ class ScanScreen extends StatefulWidget {
   State<ScanScreen> createState() => _ScanScreenState();
 }
 
-class _ScanScreenState extends State<ScanScreen> with TickerProviderStateMixin {
-  late AnimationController _scanCtrl;
-  late Animation<double> _scanAnim;
-  late AnimationController _pulseCtrl;
-  bool _scanning = false;
+class _ScanScreenState extends State<ScanScreen>
+    with SingleTickerProviderStateMixin, RouteAware {
+  late final AnimationController _pulseCtrl;
+  Widget? _arCameraView;
+  ModalRoute<dynamic>? _route;
+  bool _scannerUiModeActive = false;
+  bool _landscapeGateSeen = false;
+  bool _landscapeStabilized = false;
+  bool _arEntryRequested = false;
+  int _uiModeToken = 0;
+  int _landscapeGateToken = 0;
 
   @override
   void initState() {
     super.initState();
-    _scanCtrl = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 2),
-    )..repeat(reverse: true);
-    _scanAnim = Tween<double>(
-      begin: 0,
-      end: 1,
-    ).animate(CurvedAnimation(parent: _scanCtrl, curve: Curves.easeInOut));
+    debugPrint('[AR_UNITY_TIMING] ScanScreen initState');
     _pulseCtrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1500),
+      duration: const Duration(milliseconds: 1400),
     )..repeat(reverse: true);
+
+    _enterScannerUiMode();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final route = ModalRoute.of(context);
+    if (route != null && route != _route) {
+      if (_route != null) {
+        appRouteObserver.unsubscribe(this);
+      }
+      _route = route;
+      appRouteObserver.subscribe(this, route);
+    }
+    _syncLandscapeGate();
+  }
+
+  @override
+  void didPush() {
+    _enterScannerUiMode();
+  }
+
+  @override
+  void didPopNext() {
+    _enterScannerUiMode();
+  }
+
+  @override
+  void didPushNext() {
+    _restoreAppUiMode();
+  }
+
+  @override
+  void didPop() {
+    _restoreAppUiMode();
   }
 
   @override
   void dispose() {
-    _scanCtrl.dispose();
+    debugPrint('[AR_UNITY_TIMING] ScanScreen dispose');
+    appRouteObserver.unsubscribe(this);
+    _restoreAppUiMode();
     _pulseCtrl.dispose();
     super.dispose();
   }
 
-  void _toast(String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(msg, style: TextStyle(fontFamily: 'Inter')),
-        backgroundColor: AppColors.secondary,
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
-  }
-
-  Future<void> _simulateScan(AppState state) async {
-    if (state.unlockedCards.length < 2) {
-      _toast('You need at least 2 unlocked cards to experiment');
+  Future<void> _enterScannerUiMode() async {
+    if (_scannerUiModeActive) return;
+    final token = ++_uiModeToken;
+    _scannerUiModeActive = true;
+    debugPrint('[AR_UNITY_TIMING] ScanScreen landscapeRequested');
+    await OrientationLockService.requestScannerLandscape();
+    OrientationLockService.logAndroidOrientationState('scannerUiModeEntered');
+    if (!mounted || token != _uiModeToken || !_scannerUiModeActive) {
+      await OrientationLockService.restoreAppPortrait();
       return;
     }
-    if (_scanning) return;
-
-    final available = state.unlockedCards
-        .where((c) => !state.scannedCards.contains(c.id))
-        .toList();
-    if (available.isEmpty) return;
-
-    setState(() => _scanning = true);
-    await Future.delayed(const Duration(milliseconds: 1500));
-    if (!mounted) return;
-
-    final card = available.first;
-    state.addScannedCard(card.id);
-    setState(() => _scanning = false);
-    _toast('Scanned: ${card.symbol} - ${card.name}');
+    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   }
 
-  void _goToResult(AppState state) {
-    if (state.scannedCards.length < 2) return;
-    Navigator.pushNamed(
-      context,
-      AppRoutes.result,
-      arguments: state.scannedCards.toList(),
+  Future<void> _restoreAppUiMode() async {
+    if (!_scannerUiModeActive) return;
+    final token = ++_uiModeToken;
+    _scannerUiModeActive = false;
+    debugPrint('[AR_UNITY_TIMING] ScanScreen portraitRestored');
+    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    if (token != _uiModeToken || _scannerUiModeActive) return;
+    await OrientationLockService.restoreAppPortrait();
+  }
+
+  Future<void> _handleBackPressed() async {
+    await _restoreAppUiMode();
+    if (!mounted) return;
+    Navigator.maybePop(context);
+  }
+
+  void _syncLandscapeGate() {
+    final mediaQuery = MediaQuery.maybeOf(context);
+    if (mediaQuery == null) return;
+
+    final size = mediaQuery.size;
+    if (size.width <= size.height) {
+      if (_landscapeGateSeen ||
+          _landscapeStabilized ||
+          _arEntryRequested ||
+          _arCameraView != null) {
+        debugPrint(
+          '[AR_UNITY_TIMING] scanLandscapeGateReset '
+          'width=${size.width.toStringAsFixed(1)} '
+          'height=${size.height.toStringAsFixed(1)}',
+        );
+      }
+      _landscapeGateToken++;
+      _landscapeGateSeen = false;
+      _landscapeStabilized = false;
+      _arEntryRequested = false;
+      return;
+    }
+
+    if (!_landscapeGateSeen) {
+      _landscapeGateSeen = true;
+      final token = ++_landscapeGateToken;
+      debugPrint(
+        '[AR_UNITY_TIMING] scanLandscapeGateSeen '
+        'width=${size.width.toStringAsFixed(1)} '
+        'height=${size.height.toStringAsFixed(1)}',
+      );
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _stabilizeLandscapeGate(token);
+      });
+      return;
+    }
+
+    if (_landscapeStabilized) {
+      _ensureArCameraView();
+      _requestArEntryAfterLandscape();
+    }
+  }
+
+  void _stabilizeLandscapeGate(int token) {
+    if (!mounted || token != _landscapeGateToken) return;
+
+    final mediaQuery = MediaQuery.maybeOf(context);
+    if (mediaQuery == null) return;
+
+    final size = mediaQuery.size;
+    if (size.width <= size.height) {
+      _syncLandscapeGate();
+      return;
+    }
+
+    setState(() {
+      _landscapeStabilized = true;
+      _ensureArCameraView();
+    });
+    debugPrint(
+      '[AR_UNITY_TIMING] scanLandscapeGatePassed '
+      'width=${size.width.toStringAsFixed(1)} '
+      'height=${size.height.toStringAsFixed(1)}',
     );
+    OrientationLockService.logAndroidOrientationState('scanLandscapeGatePassed');
+    _requestArEntryAfterLandscape();
+  }
+
+  void _ensureArCameraView() {
+    _arCameraView ??= const ARCameraView(
+      key: ValueKey('stable-ar-camera-view'),
+      portalBorderRadius: 0,
+    );
+  }
+
+  void _requestArEntryAfterLandscape() {
+    if (_arEntryRequested || !_landscapeStabilized || _arCameraView == null) {
+      return;
+    }
+
+    _arEntryRequested = true;
+    debugPrint('[AR_UNITY_TIMING] scanArEntryRequested');
+    ARUnitySession.instance.ensureReadyForArEntry();
   }
 
   @override
   Widget build(BuildContext context) {
-    final state = context.watch<AppState>();
-    final scanned = state.scannedCards
-        .map((id) => state.getCardById(id))
-        .where((c) => c != null)
-        .cast<ChemicalCardModel>()
-        .toList();
+    debugPrint('[AR_UNITY_TIMING] ScanScreen build');
 
-    return Scaffold(
-      backgroundColor: AppColors.backgroundDark,
-      body: Container(
-        decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
-        child: SafeArea(
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) {
+        _restoreAppUiMode();
+      },
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle.light,
+          child: AnimatedBuilder(
+            animation: ARUnitySession.instance,
+            builder: (context, _) {
+              final session = ARUnitySession.instance;
+              final arCameraView =
+                  _landscapeStabilized ? _arCameraView : null;
+
+              return Stack(
+                fit: StackFit.expand,
+                children: [
+                  if (arCameraView != null)
+                    Positioned.fill(child: arCameraView),
+                  if (session.preloadState == ARUnityPreloadState.failedFinal)
+                    const _UnityScannerErrorView()
+                  else if (arCameraView == null ||
+                      session.preloadState != ARUnityPreloadState.ready ||
+                      !session.sceneLoaded)
+                    _UnityScannerLoadingView(animation: _pulseCtrl),
+                  _ScannerBackButton(onPressed: _handleBackPressed),
+                ],
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _UnityScannerLoadingView extends StatelessWidget {
+  const _UnityScannerLoadingView({required this.animation});
+
+  final Animation<double> animation;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: const BoxDecoration(
+        gradient: RadialGradient(
+          center: Alignment.center,
+          radius: 1.1,
+          colors: [Color(0xFF062321), Colors.black],
+        ),
+      ),
+      child: Center(
+        child: AnimatedBuilder(
+          animation: animation,
+          builder: (context, child) {
+            return Transform.scale(
+              scale: 0.96 + (animation.value * 0.06),
+              child: Opacity(
+                opacity: 0.74 + (animation.value * 0.26),
+                child: child,
+              ),
+            );
+          },
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              // Header
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
-                child: Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        state.clearScannedCards();
-                        Navigator.pop(context);
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: AppColors.primary.withOpacity(0.3),
-                          ),
-                        ),
-                        child: Icon(
-                          Icons.arrow_back,
-                          color: AppColors.primary,
-                          size: 20,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 14),
-                    Expanded(
-                      child: Text(
-                        'AR Scanner',
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
-                          fontFamily: 'Inter',
-                        ),
-                      ),
-                    ),
-                    KnowledgePointsBadge(points: state.knowledgePoints),
-                  ],
+              SizedBox(
+                width: 60,
+                height: 60,
+                child: CircularProgressIndicator(
+                  strokeWidth: 3,
+                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                  backgroundColor: Colors.white.withValues(alpha: 0.08),
                 ),
               ),
-
-              // Scanner viewfinder
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      // Viewfinder
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.4),
-                            borderRadius: BorderRadius.circular(24),
-                            border: Border.all(
-                              color: AppColors.primary.withOpacity(0.5),
-                              width: 2,
-                            ),
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(22),
-                            child: Stack(
-                              children: [
-                                // Fake camera background
-                                Container(
-                                  decoration: BoxDecoration(
-                                    gradient: RadialGradient(
-                                      colors: [
-                                        AppColors.primary.withOpacity(0.05),
-                                        Colors.black.withOpacity(0.6),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-
-                                // Corner markers
-                                ..._buildCorners(),
-
-                                // Scanning line
-                                AnimatedBuilder(
-                                  animation: _scanAnim,
-                                  builder: (_, __) {
-                                    return Positioned(
-                                      top:
-                                          _scanAnim.value *
-                                          (MediaQuery.of(context).size.height *
-                                              0.35),
-                                      left: 20,
-                                      right: 20,
-                                      child: Container(
-                                        height: 2,
-                                        decoration: BoxDecoration(
-                                          gradient:
-                                              AppColors.cyanEmeraldGradient,
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: AppColors.primary
-                                                  .withOpacity(0.6),
-                                              blurRadius: 8,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-
-                                // Center text
-                                Center(
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      AnimatedBuilder(
-                                        animation: _pulseCtrl,
-                                        builder: (_, child) => Opacity(
-                                          opacity: 0.5 + 0.5 * _pulseCtrl.value,
-                                          child: child,
-                                        ),
-                                        child: Container(
-                                          padding: const EdgeInsets.all(16),
-                                          decoration: BoxDecoration(
-                                            color: AppColors.primary
-                                                .withOpacity(0.1),
-                                            shape: BoxShape.circle,
-                                            border: Border.all(
-                                              color: AppColors.primary
-                                                  .withOpacity(0.4),
-                                            ),
-                                          ),
-                                          child: Icon(
-                                            Icons.qr_code_scanner,
-                                            color: AppColors.primary,
-                                            size: 40,
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 16),
-                                      Text(
-                                        'Point camera at a\nchemical card',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: AppColors.textSecondary,
-                                          fontFamily: 'Inter',
-                                          fontSize: 14,
-                                          height: 1.5,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-
-                      // Scanned cards row
-                      if (scanned.isNotEmpty) ...[
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Scanned Cards',
-                            style: TextStyle(
-                              color: AppColors.textSecondary,
-                              fontFamily: 'Inter',
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: [
-                              ...scanned.map(
-                                (card) => Padding(
-                                  padding: const EdgeInsets.only(right: 12),
-                                  child: _ScannedCardChip(card: card),
-                                ),
-                              ),
-                              if (scanned.length < 2)
-                                Container(
-                                  width: 56,
-                                  height: 56,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(
-                                      color: AppColors.textSecondary
-                                          .withOpacity(0.3),
-                                      style: BorderStyle.solid,
-                                      width: 1.5,
-                                    ),
-                                    color: AppColors.cardBg.withOpacity(0.3),
-                                  ),
-                                  child: Icon(
-                                    Icons.add,
-                                    color: AppColors.textSecondary,
-                                    size: 24,
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                      ],
-
-                      if (state.unlockedCards.length < 2)
-                        Padding(
-                          padding: EdgeInsets.only(bottom: 12),
-                          child: Text(
-                            'Unlock at least 2 cards in your library to run experiments',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: AppColors.error,
-                              fontSize: 12,
-                              fontFamily: 'Inter',
-                            ),
-                          ),
-                        ),
-                      GestureDetector(
-                        onTap: _scanning ? null : () => _simulateScan(state),
-                        child: Opacity(
-                          opacity: _scanning ? 0.6 : 1,
-                          child: Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(vertical: 18),
-                            decoration: BoxDecoration(
-                              gradient: AppColors.cyanEmeraldGradient,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                if (_scanning)
-                                  const SizedBox(
-                                    width: 20,
-                                    height: 20,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      color: Colors.white,
-                                    ),
-                                  )
-                                else
-                                  Icon(Icons.document_scanner,
-                                      color: Colors.white, size: 22),
-                                const SizedBox(width: 10),
-                                Text(
-                                  _scanning
-                                      ? 'Scanning...'
-                                      : scanned.isEmpty
-                                          ? 'Scan Card 1'
-                                          : scanned.length == 1
-                                              ? 'Scan Card 2'
-                                              : 'Scan again',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    fontFamily: 'Inter',
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      if (scanned.length >= 2)
-                        GestureDetector(
-                          onTap: () => _goToResult(state),
-                          child: Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            decoration: BoxDecoration(
-                              color: AppColors.secondary.withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(
-                                  color: AppColors.secondary.withOpacity(0.5)),
-                            ),
-                            child: Text(
-                              'Run Experiment',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: AppColors.secondaryLight,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                                fontFamily: 'Inter',
-                              ),
-                            ),
-                          ),
-                        ),
-                      if (scanned.isNotEmpty) ...[
-                        const SizedBox(height: 10),
-                        GestureDetector(
-                          onTap: state.clearScannedCards,
-                          child: Text(
-                            'Reset',
-                            style: TextStyle(
-                              color: AppColors.textSecondary,
-                              fontFamily: 'Inter',
-                              fontSize: 13,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
+              const SizedBox(height: 28),
+              const Text(
+                'Powered by Unity Engine',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'Inter',
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'Preparing AR scanner...',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.64),
+                  fontSize: 14,
+                  fontFamily: 'Inter',
                 ),
               ),
             ],
@@ -418,156 +302,80 @@ class _ScanScreenState extends State<ScanScreen> with TickerProviderStateMixin {
       ),
     );
   }
-
-  List<Widget> _buildCorners() {
-    const size = 24.0;
-    const stroke = 3.0;
-    final color = AppColors.primary;
-    return [
-      Positioned(
-        top: 20,
-        left: 20,
-        child: _Corner(
-          size: size,
-          stroke: stroke,
-          color: color,
-          top: true,
-          left: true,
-        ),
-      ),
-      Positioned(
-        top: 20,
-        right: 20,
-        child: _Corner(
-          size: size,
-          stroke: stroke,
-          color: color,
-          top: true,
-          left: false,
-        ),
-      ),
-      Positioned(
-        bottom: 20,
-        left: 20,
-        child: _Corner(
-          size: size,
-          stroke: stroke,
-          color: color,
-          top: false,
-          left: true,
-        ),
-      ),
-      Positioned(
-        bottom: 20,
-        right: 20,
-        child: _Corner(
-          size: size,
-          stroke: stroke,
-          color: color,
-          top: false,
-          left: false,
-        ),
-      ),
-    ];
-  }
 }
 
-class _Corner extends StatelessWidget {
-  final double size;
-  final double stroke;
-  final Color color;
-  final bool top;
-  final bool left;
+class _ScannerBackButton extends StatelessWidget {
+  const _ScannerBackButton({required this.onPressed});
 
-  const _Corner({
-    required this.size,
-    required this.stroke,
-    required this.color,
-    required this.top,
-    required this.left,
-  });
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: size,
-      height: size,
-      child: CustomPaint(
-        painter: _CornerPainter(
-          stroke: stroke,
-          color: color,
-          top: top,
-          left: left,
+    return SafeArea(
+      child: Align(
+        alignment: Alignment.topLeft,
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Material(
+            color: Colors.black.withValues(alpha: 0.48),
+            borderRadius: BorderRadius.circular(14),
+            clipBehavior: Clip.antiAlias,
+            child: IconButton(
+              tooltip: 'Back',
+              onPressed: onPressed,
+              icon: const Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+              ),
+            ),
+          ),
         ),
       ),
     );
   }
 }
 
-class _CornerPainter extends CustomPainter {
-  final double stroke;
-  final Color color;
-  final bool top;
-  final bool left;
-
-  _CornerPainter({
-    required this.stroke,
-    required this.color,
-    required this.top,
-    required this.left,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = stroke
-      ..strokeCap = StrokeCap.round
-      ..style = PaintingStyle.stroke;
-
-    final x = left ? 0.0 : size.width;
-    final y = top ? 0.0 : size.height;
-    final xEnd = left ? size.width : 0.0;
-    final yEnd = top ? size.height : 0.0;
-
-    canvas.drawLine(Offset(x, y), Offset(xEnd, y), paint);
-    canvas.drawLine(Offset(x, y), Offset(x, yEnd), paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-class _ScannedCardChip extends StatelessWidget {
-  final ChemicalCardModel card;
-
-  const _ScannedCardChip({required this.card});
+class _UnityScannerErrorView extends StatelessWidget {
+  const _UnityScannerErrorView();
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 56,
-      height: 56,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        gradient: LinearGradient(
-          colors: [card.color.withOpacity(0.2), AppColors.cardBg],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        border: Border.all(color: card.color.withOpacity(0.6), width: 1.5),
-        boxShadow: [
-          BoxShadow(color: card.color.withOpacity(0.3), blurRadius: 10),
-        ],
-      ),
+    return DecoratedBox(
+      decoration: const BoxDecoration(color: Colors.black),
       child: Center(
-        child: Text(
-          card.symbol,
-          style: TextStyle(
-            color: card.color,
-            fontSize: 20,
-            fontWeight: FontWeight.w900,
-            fontFamily: 'Inter',
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.warning_amber_rounded,
+                color: AppColors.error,
+                size: 56,
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                'Unable to start AR',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.w800,
+                  fontFamily: 'Inter',
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'The Unity engine could not initialize on this device.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.68),
+                  fontSize: 15,
+                  height: 1.4,
+                  fontFamily: 'Inter',
+                ),
+              ),
+            ],
           ),
         ),
       ),

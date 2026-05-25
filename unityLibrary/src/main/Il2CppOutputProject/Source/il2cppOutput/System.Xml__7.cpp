@@ -17710,8 +17710,8 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR RuntimeObject* XmlSerializationReader_ReadRef
 	}
 	{
 		String_t** L_1 = ___3_fixupReference;
-		*((RuntimeObject**)L_1) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_1, (void*)(RuntimeObject*)NULL);
+		*((String_t**)L_1) = (String_t*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_1, (void*)(String_t*)NULL);
 		return NULL;
 	}
 
@@ -17743,8 +17743,8 @@ IL_000e:
 IL_0032:
 	{
 		String_t** L_8 = ___3_fixupReference;
-		*((RuntimeObject**)L_8) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_8, (void*)(RuntimeObject*)NULL);
+		*((String_t**)L_8) = (String_t*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_8, (void*)(String_t*)NULL);
 		XmlQualifiedName_t2794880B373257E4108CC3F36D7373A343ACC5B9* L_9;
 		L_9 = XmlSerializationReader_GetXsiType_m4410C02427EB3A9BBD0FE460437AE86AADCA8D2B(__this, NULL);
 		V_1 = L_9;
@@ -17809,8 +17809,8 @@ IL_0077:
 		L_28 = Int32_ToString_m030E01C24E294D6762FB0B6F37CB541581F55CA5((&V_4), NULL);
 		String_t* L_29;
 		L_29 = String_Concat_m8855A6DE10F84DA7F4EC113CADDB59873A25573B(_stringLiteralD6E343F1FC14B98DB00C87F0E3819524F17E1996, L_28, _stringLiteralEF8AE9E6CBCFDABA932FBEB4C85964F450F724F5, NULL);
-		*((RuntimeObject**)L_25) = (RuntimeObject*)L_29;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_25, (void*)(RuntimeObject*)L_29);
+		*((String_t**)L_25) = (String_t*)L_29;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_25, (void*)(String_t*)L_29);
 		bool L_30;
 		L_30 = XmlSerializationReader_ReadList_m78AEC7BB70D7C5DD317E84DF1247101EB30A671C(__this, (&V_3), NULL);
 		Hashtable_tEFC3B6496E6747787D8BB761B51F2AE3A8CFFE2D* L_31 = __this->___delayedListFixups;
@@ -17889,8 +17889,8 @@ IL_0106:
 	}
 	{
 		String_t** L_51 = ___3_fixupReference;
-		*((RuntimeObject**)L_51) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_51, (void*)(RuntimeObject*)NULL);
+		*((String_t**)L_51) = (String_t*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_51, (void*)(String_t*)NULL);
 		String_t* L_52 = V_0;
 		RuntimeObject* L_53;
 		L_53 = XmlSerializationReader_GetTarget_mA46C91CC3F9CD7D7C907903992390A28F388213F(__this, L_52, NULL);
@@ -17901,8 +17901,8 @@ IL_0134:
 	{
 		String_t** L_54 = ___3_fixupReference;
 		String_t* L_55 = V_0;
-		*((RuntimeObject**)L_54) = (RuntimeObject*)L_55;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_54, (void*)(RuntimeObject*)L_55);
+		*((String_t**)L_54) = (String_t*)L_55;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_54, (void*)(String_t*)L_55);
 		return NULL;
 	}
 }

@@ -3619,11 +3619,11 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool TimeZoneInfo_TryGetLocalTzFile_mFB5811C1
 	String_t* V_1 = NULL;
 	{
 		ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031** L_0 = ___0_rawData;
-		*((RuntimeObject**)L_0) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_0, (void*)(RuntimeObject*)NULL);
+		*((ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031**)L_0) = (ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031**)L_0, (void*)(ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*)NULL);
 		String_t** L_1 = ___1_id;
-		*((RuntimeObject**)L_1) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_1, (void*)(RuntimeObject*)NULL);
+		*((String_t**)L_1) = (String_t*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_1, (void*)(String_t*)NULL);
 		il2cpp_codegen_runtime_class_init_inline(TimeZoneInfo_t30FD24E315EC4F4D942AF797CCD4CC4ED6B5CAD8_il2cpp_TypeInfo_var);
 		String_t* L_2;
 		L_2 = TimeZoneInfo_GetTzEnvironmentVariable_mDA0D1946DFB444F6961D6432DD368349D6027A42(NULL);
@@ -3693,8 +3693,8 @@ IL_0040:
 	{
 		String_t** L_16 = ___1_id;
 		String_t* L_17 = V_0;
-		*((RuntimeObject**)L_16) = (RuntimeObject*)L_17;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_16, (void*)(RuntimeObject*)L_17);
+		*((String_t**)L_16) = (String_t*)L_17;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_16, (void*)(String_t*)L_17);
 		il2cpp_codegen_runtime_class_init_inline(TimeZoneInfo_t30FD24E315EC4F4D942AF797CCD4CC4ED6B5CAD8_il2cpp_TypeInfo_var);
 		String_t* L_18;
 		L_18 = TimeZoneInfo_GetTimeZoneDirectory_mAA0ADCDCA238A54CEAF1CF2F8454B599FAA3BE98(NULL);
@@ -3794,8 +3794,8 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool TimeZoneInfo_TryLoadTzFile_mBECD00A281BF
 			String_t* L_3 = ___0_tzFilePath;
 			ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031* L_4;
 			L_4 = File_ReadAllBytes_m704CBBA3F130C94F5A3E0BE2A93D9E9D79DC3E24(L_3, NULL);
-			*((RuntimeObject**)L_2) = (RuntimeObject*)L_4;
-			Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_2, (void*)(RuntimeObject*)L_4);
+			*((ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031**)L_2) = (ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*)L_4;
+			Il2CppCodeGenWriteBarrier((void**)(ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031**)L_2, (void*)(ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*)L_4);
 			String_t** L_5 = ___2_id;
 			String_t* L_6 = *((String_t**)L_5);
 			bool L_7;
@@ -3811,8 +3811,8 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool TimeZoneInfo_TryLoadTzFile_mBECD00A281BF
 			il2cpp_codegen_runtime_class_init_inline(TimeZoneInfo_t30FD24E315EC4F4D942AF797CCD4CC4ED6B5CAD8_il2cpp_TypeInfo_var);
 			String_t* L_10;
 			L_10 = TimeZoneInfo_FindTimeZoneIdUsingReadLink_m4F3779AE7F83741C34E99803BCA0F1844BD8B895(L_9, NULL);
-			*((RuntimeObject**)L_8) = (RuntimeObject*)L_10;
-			Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_8, (void*)(RuntimeObject*)L_10);
+			*((String_t**)L_8) = (String_t*)L_10;
+			Il2CppCodeGenWriteBarrier((void**)(String_t**)L_8, (void*)(String_t*)L_10);
 			String_t** L_11 = ___2_id;
 			String_t* L_12 = *((String_t**)L_11);
 			bool L_13;
@@ -3829,8 +3829,8 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool TimeZoneInfo_TryLoadTzFile_mBECD00A281BF
 			il2cpp_codegen_runtime_class_init_inline(TimeZoneInfo_t30FD24E315EC4F4D942AF797CCD4CC4ED6B5CAD8_il2cpp_TypeInfo_var);
 			String_t* L_17;
 			L_17 = TimeZoneInfo_FindTimeZoneId_mDDD86DF4E88119C16DB85477DA18FCC4E2CC4F47(L_16, NULL);
-			*((RuntimeObject**)L_14) = (RuntimeObject*)L_17;
-			Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_14, (void*)(RuntimeObject*)L_17);
+			*((String_t**)L_14) = (String_t*)L_17;
+			Il2CppCodeGenWriteBarrier((void**)(String_t**)L_14, (void*)(String_t*)L_17);
 		}
 
 IL_0033_1:
@@ -5100,8 +5100,8 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void TimeZoneInfo_TZif_GenerateAdjustmentRule
 	List_1_tB5B245324D580D60EA9BF0044CE976C57670EF4C* V_1 = NULL;
 	{
 		AdjustmentRuleU5BU5D_tE06E08FC55F09158CD673CE867C3771D92906DFA** L_0 = ___0_rules;
-		*((RuntimeObject**)L_0) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_0, (void*)(RuntimeObject*)NULL);
+		*((AdjustmentRuleU5BU5D_tE06E08FC55F09158CD673CE867C3771D92906DFA**)L_0) = (AdjustmentRuleU5BU5D_tE06E08FC55F09158CD673CE867C3771D92906DFA*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(AdjustmentRuleU5BU5D_tE06E08FC55F09158CD673CE867C3771D92906DFA**)L_0, (void*)(AdjustmentRuleU5BU5D_tE06E08FC55F09158CD673CE867C3771D92906DFA*)NULL);
 		DateTimeU5BU5D_t8F9285FE729A200A620421ED546CFB3DCF386EA1* L_1 = ___2_dts;
 		NullCheck(L_1);
 		if (!(((RuntimeArray*)L_1)->max_length))
@@ -5147,8 +5147,8 @@ IL_0024:
 		NullCheck(L_14);
 		AdjustmentRuleU5BU5D_tE06E08FC55F09158CD673CE867C3771D92906DFA* L_15;
 		L_15 = List_1_ToArray_m4C6A88B12B46631D06072C836E9D709251CFF260(L_14, List_1_ToArray_m4C6A88B12B46631D06072C836E9D709251CFF260_RuntimeMethod_var);
-		*((RuntimeObject**)L_13) = (RuntimeObject*)L_15;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_13, (void*)(RuntimeObject*)L_15);
+		*((AdjustmentRuleU5BU5D_tE06E08FC55F09158CD673CE867C3771D92906DFA**)L_13) = (AdjustmentRuleU5BU5D_tE06E08FC55F09158CD673CE867C3771D92906DFA*)L_15;
+		Il2CppCodeGenWriteBarrier((void**)(AdjustmentRuleU5BU5D_tE06E08FC55F09158CD673CE867C3771D92906DFA**)L_13, (void*)(AdjustmentRuleU5BU5D_tE06E08FC55F09158CD673CE867C3771D92906DFA*)L_15);
 		AdjustmentRuleU5BU5D_tE06E08FC55F09158CD673CE867C3771D92906DFA** L_16 = ___0_rules;
 		AdjustmentRuleU5BU5D_tE06E08FC55F09158CD673CE867C3771D92906DFA* L_17 = *((AdjustmentRuleU5BU5D_tE06E08FC55F09158CD673CE867C3771D92906DFA**)L_16);
 		if (!L_17)
@@ -5167,8 +5167,8 @@ IL_0024:
 	}
 	{
 		AdjustmentRuleU5BU5D_tE06E08FC55F09158CD673CE867C3771D92906DFA** L_20 = ___0_rules;
-		*((RuntimeObject**)L_20) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_20, (void*)(RuntimeObject*)NULL);
+		*((AdjustmentRuleU5BU5D_tE06E08FC55F09158CD673CE867C3771D92906DFA**)L_20) = (AdjustmentRuleU5BU5D_tE06E08FC55F09158CD673CE867C3771D92906DFA*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(AdjustmentRuleU5BU5D_tE06E08FC55F09158CD673CE867C3771D92906DFA**)L_20, (void*)(AdjustmentRuleU5BU5D_tE06E08FC55F09158CD673CE867C3771D92906DFA*)NULL);
 	}
 
 IL_003e:
@@ -6692,49 +6692,49 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool TimeZoneInfo_TZif_ParsePosixFormat_m3BC6
 	int32_t V_0 = 0;
 	{
 		String_t** L_0 = ___1_standardName;
-		*((RuntimeObject**)L_0) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_0, (void*)(RuntimeObject*)NULL);
+		*((String_t**)L_0) = (String_t*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_0, (void*)(String_t*)NULL);
 		String_t** L_1 = ___2_standardOffset;
-		*((RuntimeObject**)L_1) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_1, (void*)(RuntimeObject*)NULL);
+		*((String_t**)L_1) = (String_t*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_1, (void*)(String_t*)NULL);
 		String_t** L_2 = ___3_daylightSavingsName;
-		*((RuntimeObject**)L_2) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_2, (void*)(RuntimeObject*)NULL);
+		*((String_t**)L_2) = (String_t*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_2, (void*)(String_t*)NULL);
 		String_t** L_3 = ___4_daylightSavingsOffset;
-		*((RuntimeObject**)L_3) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_3, (void*)(RuntimeObject*)NULL);
+		*((String_t**)L_3) = (String_t*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_3, (void*)(String_t*)NULL);
 		String_t** L_4 = ___5_start;
-		*((RuntimeObject**)L_4) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_4, (void*)(RuntimeObject*)NULL);
+		*((String_t**)L_4) = (String_t*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_4, (void*)(String_t*)NULL);
 		String_t** L_5 = ___6_startTime;
-		*((RuntimeObject**)L_5) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_5, (void*)(RuntimeObject*)NULL);
+		*((String_t**)L_5) = (String_t*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_5, (void*)(String_t*)NULL);
 		String_t** L_6 = ___7_end;
-		*((RuntimeObject**)L_6) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_6, (void*)(RuntimeObject*)NULL);
+		*((String_t**)L_6) = (String_t*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_6, (void*)(String_t*)NULL);
 		String_t** L_7 = ___8_endTime;
-		*((RuntimeObject**)L_7) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_7, (void*)(RuntimeObject*)NULL);
+		*((String_t**)L_7) = (String_t*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_7, (void*)(String_t*)NULL);
 		V_0 = 0;
 		String_t** L_8 = ___1_standardName;
 		String_t* L_9 = ___0_posixFormat;
 		il2cpp_codegen_runtime_class_init_inline(TimeZoneInfo_t30FD24E315EC4F4D942AF797CCD4CC4ED6B5CAD8_il2cpp_TypeInfo_var);
 		String_t* L_10;
 		L_10 = TimeZoneInfo_TZif_ParsePosixName_m2DA504DB22B1F27D155CAFF670EF88963126C4AE(L_9, (&V_0), NULL);
-		*((RuntimeObject**)L_8) = (RuntimeObject*)L_10;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_8, (void*)(RuntimeObject*)L_10);
+		*((String_t**)L_8) = (String_t*)L_10;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_8, (void*)(String_t*)L_10);
 		String_t** L_11 = ___2_standardOffset;
 		String_t* L_12 = ___0_posixFormat;
 		String_t* L_13;
 		L_13 = TimeZoneInfo_TZif_ParsePosixOffset_mB4DBF456E3386E266967C8086CE2509FB46D557F(L_12, (&V_0), NULL);
-		*((RuntimeObject**)L_11) = (RuntimeObject*)L_13;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_11, (void*)(RuntimeObject*)L_13);
+		*((String_t**)L_11) = (String_t*)L_13;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_11, (void*)(String_t*)L_13);
 		String_t** L_14 = ___3_daylightSavingsName;
 		String_t* L_15 = ___0_posixFormat;
 		String_t* L_16;
 		L_16 = TimeZoneInfo_TZif_ParsePosixName_m2DA504DB22B1F27D155CAFF670EF88963126C4AE(L_15, (&V_0), NULL);
-		*((RuntimeObject**)L_14) = (RuntimeObject*)L_16;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_14, (void*)(RuntimeObject*)L_16);
+		*((String_t**)L_14) = (String_t*)L_16;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_14, (void*)(String_t*)L_16);
 		String_t** L_17 = ___3_daylightSavingsName;
 		String_t* L_18 = *((String_t**)L_17);
 		bool L_19;
@@ -6750,8 +6750,8 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool TimeZoneInfo_TZif_ParsePosixFormat_m3BC6
 		il2cpp_codegen_runtime_class_init_inline(TimeZoneInfo_t30FD24E315EC4F4D942AF797CCD4CC4ED6B5CAD8_il2cpp_TypeInfo_var);
 		String_t* L_22;
 		L_22 = TimeZoneInfo_TZif_ParsePosixOffset_mB4DBF456E3386E266967C8086CE2509FB46D557F(L_21, (&V_0), NULL);
-		*((RuntimeObject**)L_20) = (RuntimeObject*)L_22;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_20, (void*)(RuntimeObject*)L_22);
+		*((String_t**)L_20) = (String_t*)L_22;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_20, (void*)(String_t*)L_22);
 		int32_t L_23 = V_0;
 		String_t* L_24 = ___0_posixFormat;
 		NullCheck(L_24);
@@ -7082,16 +7082,16 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void TimeZoneInfo_TZif_ParsePosixDateTime_mD6
 	}
 	{
 		String_t** L_0 = ___3_time;
-		*((RuntimeObject**)L_0) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_0, (void*)(RuntimeObject*)NULL);
+		*((String_t**)L_0) = (String_t*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_0, (void*)(String_t*)NULL);
 		String_t** L_1 = ___2_date;
 		String_t* L_2 = ___0_posixFormat;
 		int32_t* L_3 = ___1_index;
 		il2cpp_codegen_runtime_class_init_inline(TimeZoneInfo_t30FD24E315EC4F4D942AF797CCD4CC4ED6B5CAD8_il2cpp_TypeInfo_var);
 		String_t* L_4;
 		L_4 = TimeZoneInfo_TZif_ParsePosixDate_m34BDBEE3008BC7B2D55C6B26FADB5B1BC92574A3(L_2, L_3, NULL);
-		*((RuntimeObject**)L_1) = (RuntimeObject*)L_4;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_1, (void*)(RuntimeObject*)L_4);
+		*((String_t**)L_1) = (String_t*)L_4;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_1, (void*)(String_t*)L_4);
 		int32_t* L_5 = ___1_index;
 		int32_t L_6 = *((int32_t*)L_5);
 		String_t* L_7 = ___0_posixFormat;
@@ -7126,8 +7126,8 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void TimeZoneInfo_TZif_ParsePosixDateTime_mD6
 		il2cpp_codegen_runtime_class_init_inline(TimeZoneInfo_t30FD24E315EC4F4D942AF797CCD4CC4ED6B5CAD8_il2cpp_TypeInfo_var);
 		String_t* L_19;
 		L_19 = TimeZoneInfo_TZif_ParsePosixTime_m66A6243E6A91C09DAFFC9851F4552B1AB310DB7C(L_17, L_18, NULL);
-		*((RuntimeObject**)L_16) = (RuntimeObject*)L_19;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_16, (void*)(RuntimeObject*)L_19);
+		*((String_t**)L_16) = (String_t*)L_19;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_16, (void*)(String_t*)L_19);
 	}
 
 IL_0031:
@@ -7508,27 +7508,27 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void TimeZoneInfo_TZif_ParseRaw_m5BD8860EAEEB
 	int32_t V_8 = 0;
 	{
 		DateTimeU5BU5D_t8F9285FE729A200A620421ED546CFB3DCF386EA1** L_0 = ___2_dts;
-		*((RuntimeObject**)L_0) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_0, (void*)(RuntimeObject*)NULL);
+		*((DateTimeU5BU5D_t8F9285FE729A200A620421ED546CFB3DCF386EA1**)L_0) = (DateTimeU5BU5D_t8F9285FE729A200A620421ED546CFB3DCF386EA1*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(DateTimeU5BU5D_t8F9285FE729A200A620421ED546CFB3DCF386EA1**)L_0, (void*)(DateTimeU5BU5D_t8F9285FE729A200A620421ED546CFB3DCF386EA1*)NULL);
 		ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031** L_1 = ___3_typeOfLocalTime;
-		*((RuntimeObject**)L_1) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_1, (void*)(RuntimeObject*)NULL);
+		*((ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031**)L_1) = (ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031**)L_1, (void*)(ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*)NULL);
 		TZifTypeU5BU5D_tE399ACB8300400499E8949CFB73AE9BA3F21CD98** L_2 = ___4_transitionType;
-		*((RuntimeObject**)L_2) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_2, (void*)(RuntimeObject*)NULL);
+		*((TZifTypeU5BU5D_tE399ACB8300400499E8949CFB73AE9BA3F21CD98**)L_2) = (TZifTypeU5BU5D_tE399ACB8300400499E8949CFB73AE9BA3F21CD98*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(TZifTypeU5BU5D_tE399ACB8300400499E8949CFB73AE9BA3F21CD98**)L_2, (void*)(TZifTypeU5BU5D_tE399ACB8300400499E8949CFB73AE9BA3F21CD98*)NULL);
 		String_t** L_3 = ___5_zoneAbbreviations;
 		String_t* L_4 = ((String_t_StaticFields*)il2cpp_codegen_static_fields_for(il2cpp_defaults.string_class))->___Empty;
-		*((RuntimeObject**)L_3) = (RuntimeObject*)L_4;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_3, (void*)(RuntimeObject*)L_4);
+		*((String_t**)L_3) = (String_t*)L_4;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_3, (void*)(String_t*)L_4);
 		BooleanU5BU5D_tD317D27C31DB892BE79FAE3AEBC0B3FFB73DE9B4** L_5 = ___6_StandardTime;
-		*((RuntimeObject**)L_5) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_5, (void*)(RuntimeObject*)NULL);
+		*((BooleanU5BU5D_tD317D27C31DB892BE79FAE3AEBC0B3FFB73DE9B4**)L_5) = (BooleanU5BU5D_tD317D27C31DB892BE79FAE3AEBC0B3FFB73DE9B4*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(BooleanU5BU5D_tD317D27C31DB892BE79FAE3AEBC0B3FFB73DE9B4**)L_5, (void*)(BooleanU5BU5D_tD317D27C31DB892BE79FAE3AEBC0B3FFB73DE9B4*)NULL);
 		BooleanU5BU5D_tD317D27C31DB892BE79FAE3AEBC0B3FFB73DE9B4** L_6 = ___7_GmtTime;
-		*((RuntimeObject**)L_6) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_6, (void*)(RuntimeObject*)NULL);
+		*((BooleanU5BU5D_tD317D27C31DB892BE79FAE3AEBC0B3FFB73DE9B4**)L_6) = (BooleanU5BU5D_tD317D27C31DB892BE79FAE3AEBC0B3FFB73DE9B4*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(BooleanU5BU5D_tD317D27C31DB892BE79FAE3AEBC0B3FFB73DE9B4**)L_6, (void*)(BooleanU5BU5D_tD317D27C31DB892BE79FAE3AEBC0B3FFB73DE9B4*)NULL);
 		String_t** L_7 = ___8_futureTransitionsPosixFormat;
-		*((RuntimeObject**)L_7) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_7, (void*)(RuntimeObject*)NULL);
+		*((String_t**)L_7) = (String_t*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_7, (void*)(String_t*)NULL);
 		V_0 = 0;
 		TZifHead_tCE3B6453694DFA5CC267A302DBC5CB8AF9ECD852* L_8 = ___1_t;
 		ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031* L_9 = ___0_data;
@@ -7584,36 +7584,36 @@ IL_0095:
 		TZifHead_tCE3B6453694DFA5CC267A302DBC5CB8AF9ECD852* L_38 = ___1_t;
 		uint32_t L_39 = L_38->___TimeCount;
 		DateTimeU5BU5D_t8F9285FE729A200A620421ED546CFB3DCF386EA1* L_40 = (DateTimeU5BU5D_t8F9285FE729A200A620421ED546CFB3DCF386EA1*)(DateTimeU5BU5D_t8F9285FE729A200A620421ED546CFB3DCF386EA1*)SZArrayNew(DateTimeU5BU5D_t8F9285FE729A200A620421ED546CFB3DCF386EA1_il2cpp_TypeInfo_var, (uint32_t)L_39);
-		*((RuntimeObject**)L_37) = (RuntimeObject*)L_40;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_37, (void*)(RuntimeObject*)L_40);
+		*((DateTimeU5BU5D_t8F9285FE729A200A620421ED546CFB3DCF386EA1**)L_37) = (DateTimeU5BU5D_t8F9285FE729A200A620421ED546CFB3DCF386EA1*)L_40;
+		Il2CppCodeGenWriteBarrier((void**)(DateTimeU5BU5D_t8F9285FE729A200A620421ED546CFB3DCF386EA1**)L_37, (void*)(DateTimeU5BU5D_t8F9285FE729A200A620421ED546CFB3DCF386EA1*)L_40);
 		ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031** L_41 = ___3_typeOfLocalTime;
 		TZifHead_tCE3B6453694DFA5CC267A302DBC5CB8AF9ECD852* L_42 = ___1_t;
 		uint32_t L_43 = L_42->___TimeCount;
 		ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031* L_44 = (ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*)(ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*)SZArrayNew(ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031_il2cpp_TypeInfo_var, (uint32_t)L_43);
-		*((RuntimeObject**)L_41) = (RuntimeObject*)L_44;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_41, (void*)(RuntimeObject*)L_44);
+		*((ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031**)L_41) = (ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*)L_44;
+		Il2CppCodeGenWriteBarrier((void**)(ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031**)L_41, (void*)(ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*)L_44);
 		TZifTypeU5BU5D_tE399ACB8300400499E8949CFB73AE9BA3F21CD98** L_45 = ___4_transitionType;
 		TZifHead_tCE3B6453694DFA5CC267A302DBC5CB8AF9ECD852* L_46 = ___1_t;
 		uint32_t L_47 = L_46->___TypeCount;
 		TZifTypeU5BU5D_tE399ACB8300400499E8949CFB73AE9BA3F21CD98* L_48 = (TZifTypeU5BU5D_tE399ACB8300400499E8949CFB73AE9BA3F21CD98*)(TZifTypeU5BU5D_tE399ACB8300400499E8949CFB73AE9BA3F21CD98*)SZArrayNew(TZifTypeU5BU5D_tE399ACB8300400499E8949CFB73AE9BA3F21CD98_il2cpp_TypeInfo_var, (uint32_t)L_47);
-		*((RuntimeObject**)L_45) = (RuntimeObject*)L_48;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_45, (void*)(RuntimeObject*)L_48);
+		*((TZifTypeU5BU5D_tE399ACB8300400499E8949CFB73AE9BA3F21CD98**)L_45) = (TZifTypeU5BU5D_tE399ACB8300400499E8949CFB73AE9BA3F21CD98*)L_48;
+		Il2CppCodeGenWriteBarrier((void**)(TZifTypeU5BU5D_tE399ACB8300400499E8949CFB73AE9BA3F21CD98**)L_45, (void*)(TZifTypeU5BU5D_tE399ACB8300400499E8949CFB73AE9BA3F21CD98*)L_48);
 		String_t** L_49 = ___5_zoneAbbreviations;
 		String_t* L_50 = ((String_t_StaticFields*)il2cpp_codegen_static_fields_for(il2cpp_defaults.string_class))->___Empty;
-		*((RuntimeObject**)L_49) = (RuntimeObject*)L_50;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_49, (void*)(RuntimeObject*)L_50);
+		*((String_t**)L_49) = (String_t*)L_50;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_49, (void*)(String_t*)L_50);
 		BooleanU5BU5D_tD317D27C31DB892BE79FAE3AEBC0B3FFB73DE9B4** L_51 = ___6_StandardTime;
 		TZifHead_tCE3B6453694DFA5CC267A302DBC5CB8AF9ECD852* L_52 = ___1_t;
 		uint32_t L_53 = L_52->___TypeCount;
 		BooleanU5BU5D_tD317D27C31DB892BE79FAE3AEBC0B3FFB73DE9B4* L_54 = (BooleanU5BU5D_tD317D27C31DB892BE79FAE3AEBC0B3FFB73DE9B4*)(BooleanU5BU5D_tD317D27C31DB892BE79FAE3AEBC0B3FFB73DE9B4*)SZArrayNew(BooleanU5BU5D_tD317D27C31DB892BE79FAE3AEBC0B3FFB73DE9B4_il2cpp_TypeInfo_var, (uint32_t)L_53);
-		*((RuntimeObject**)L_51) = (RuntimeObject*)L_54;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_51, (void*)(RuntimeObject*)L_54);
+		*((BooleanU5BU5D_tD317D27C31DB892BE79FAE3AEBC0B3FFB73DE9B4**)L_51) = (BooleanU5BU5D_tD317D27C31DB892BE79FAE3AEBC0B3FFB73DE9B4*)L_54;
+		Il2CppCodeGenWriteBarrier((void**)(BooleanU5BU5D_tD317D27C31DB892BE79FAE3AEBC0B3FFB73DE9B4**)L_51, (void*)(BooleanU5BU5D_tD317D27C31DB892BE79FAE3AEBC0B3FFB73DE9B4*)L_54);
 		BooleanU5BU5D_tD317D27C31DB892BE79FAE3AEBC0B3FFB73DE9B4** L_55 = ___7_GmtTime;
 		TZifHead_tCE3B6453694DFA5CC267A302DBC5CB8AF9ECD852* L_56 = ___1_t;
 		uint32_t L_57 = L_56->___TypeCount;
 		BooleanU5BU5D_tD317D27C31DB892BE79FAE3AEBC0B3FFB73DE9B4* L_58 = (BooleanU5BU5D_tD317D27C31DB892BE79FAE3AEBC0B3FFB73DE9B4*)(BooleanU5BU5D_tD317D27C31DB892BE79FAE3AEBC0B3FFB73DE9B4*)SZArrayNew(BooleanU5BU5D_tD317D27C31DB892BE79FAE3AEBC0B3FFB73DE9B4_il2cpp_TypeInfo_var, (uint32_t)L_57);
-		*((RuntimeObject**)L_55) = (RuntimeObject*)L_58;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_55, (void*)(RuntimeObject*)L_58);
+		*((BooleanU5BU5D_tD317D27C31DB892BE79FAE3AEBC0B3FFB73DE9B4**)L_55) = (BooleanU5BU5D_tD317D27C31DB892BE79FAE3AEBC0B3FFB73DE9B4*)L_58;
+		Il2CppCodeGenWriteBarrier((void**)(BooleanU5BU5D_tD317D27C31DB892BE79FAE3AEBC0B3FFB73DE9B4**)L_55, (void*)(BooleanU5BU5D_tD317D27C31DB892BE79FAE3AEBC0B3FFB73DE9B4*)L_58);
 		V_3 = 0;
 		goto IL_010b;
 	}
@@ -7732,8 +7732,8 @@ IL_0159:
 		NullCheck(L_100);
 		String_t* L_105;
 		L_105 = VirtualFuncInvoker3< String_t*, ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*, int32_t, int32_t >::Invoke(35, L_100, L_101, L_102, L_104);
-		*((RuntimeObject**)L_99) = (RuntimeObject*)L_105;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_99, (void*)(RuntimeObject*)L_105);
+		*((String_t**)L_99) = (String_t*)L_105;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_99, (void*)(String_t*)L_105);
 		int32_t L_106 = V_0;
 		TZifHead_tCE3B6453694DFA5CC267A302DBC5CB8AF9ECD852* L_107 = ___1_t;
 		uint32_t L_108 = L_107->___CharCount;
@@ -7892,8 +7892,8 @@ IL_0207:
 		NullCheck(L_159);
 		String_t* L_164;
 		L_164 = VirtualFuncInvoker3< String_t*, ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031*, int32_t, int32_t >::Invoke(35, L_159, L_160, L_161, ((int32_t)il2cpp_codegen_subtract(((int32_t)il2cpp_codegen_subtract(((int32_t)(((RuntimeArray*)L_162)->max_length)), L_163)), 1)));
-		*((RuntimeObject**)L_158) = (RuntimeObject*)L_164;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_158, (void*)(RuntimeObject*)L_164);
+		*((String_t**)L_158) = (String_t*)L_164;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_158, (void*)(String_t*)L_164);
 	}
 
 IL_0237:
@@ -12771,8 +12771,8 @@ IL_0043:
 		L_43 = AdjustmentRule_get_NoDaylightTransitions_mA92395F5741FACBEE835A929B37B6BE7D50CE3FF_inline(L_42, NULL);
 		AdjustmentRule_t20B10C5F496B129CBAF7B5099499873EC8738F07* L_44;
 		L_44 = AdjustmentRule_CreateAdjustmentRule_m976CA3BF6AB913496821EBFFCBDBACCD8C20DBE8(L_23, L_26, L_29, L_32, L_35, L_40, L_43, NULL);
-		*((RuntimeObject**)L_20) = (RuntimeObject*)L_44;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_20, (void*)(RuntimeObject*)L_44);
+		*((AdjustmentRule_t20B10C5F496B129CBAF7B5099499873EC8738F07**)L_20) = (AdjustmentRule_t20B10C5F496B129CBAF7B5099499873EC8738F07*)L_44;
+		Il2CppCodeGenWriteBarrier((void**)(AdjustmentRule_t20B10C5F496B129CBAF7B5099499873EC8738F07**)L_20, (void*)(AdjustmentRule_t20B10C5F496B129CBAF7B5099499873EC8738F07*)L_44);
 	}
 
 IL_008e:
@@ -28706,41 +28706,6 @@ IL_0010:
 	{
 		il2cpp_codegen_runtime_class_init_inline(DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D_il2cpp_TypeInfo_var);
 		DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D L_4 = ((DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D_StaticFields*)il2cpp_codegen_static_fields_for(DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D_il2cpp_TypeInfo_var))->___MinValue;
-		return L_4;
-	}
-}
-IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D Convert_ToDateTime_mE15C6E51579A9876015F9E295D5025B80BE73726 (String_t* ___0_value, const RuntimeMethod* method) 
-{
-	static bool s_Il2CppMethodInitialized;
-	if (!s_Il2CppMethodInitialized)
-	{
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&CultureInfo_t9BA817D41AD55AC8BD07480DD8AC22F8FFA378E0_il2cpp_TypeInfo_var);
-		il2cpp_codegen_initialize_runtime_metadata((uintptr_t*)&DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D_il2cpp_TypeInfo_var);
-		s_Il2CppMethodInitialized = true;
-	}
-	{
-		String_t* L_0 = ___0_value;
-		if (L_0)
-		{
-			goto IL_000b;
-		}
-	}
-	{
-		DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D L_1;
-		memset((&L_1), 0, sizeof(L_1));
-		DateTime__ctor_m64AFCE84ABB24698256EB9F635EFD0A221823441((&L_1), ((int64_t)0), NULL);
-		return L_1;
-	}
-
-IL_000b:
-	{
-		String_t* L_2 = ___0_value;
-		il2cpp_codegen_runtime_class_init_inline(CultureInfo_t9BA817D41AD55AC8BD07480DD8AC22F8FFA378E0_il2cpp_TypeInfo_var);
-		CultureInfo_t9BA817D41AD55AC8BD07480DD8AC22F8FFA378E0* L_3;
-		L_3 = CultureInfo_get_CurrentCulture_m8A4580F49DDD7E9DB34C699965423DB8E3BBA9A5(NULL);
-		il2cpp_codegen_runtime_class_init_inline(DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D_il2cpp_TypeInfo_var);
-		DateTime_t66193957C73913903DDAD89FEDC46139BCA5802D L_4;
-		L_4 = DateTime_Parse_mC5B13ABDD2A2A2AC709D961EE959BBE26DB241AC(L_2, L_3, NULL);
 		return L_4;
 	}
 }

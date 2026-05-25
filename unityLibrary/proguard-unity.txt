@@ -13,7 +13,6 @@
   public void setImeEditorInfo(android.view.inputmethod.EditorInfo);
   public void setImeEditorInfoFields(int, int, int);
 }
--ignorewarnings
 
 # don't warn if playcore plugin wasn't added to project
 -dontwarn com.google.android.play.core.assetpacks.AssetPackLocation

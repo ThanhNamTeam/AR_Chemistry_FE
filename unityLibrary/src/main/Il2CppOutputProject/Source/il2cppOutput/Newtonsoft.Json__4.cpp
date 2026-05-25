@@ -17451,8 +17451,8 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR bool XmlNodeConverter_IsNamespaceAttribute_mD
 	{
 		String_t** L_4 = ___1_prefix;
 		String_t* L_5 = ((String_t_StaticFields*)il2cpp_codegen_static_fields_for(il2cpp_defaults.string_class))->___Empty;
-		*((RuntimeObject**)L_4) = (RuntimeObject*)L_5;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_4, (void*)(RuntimeObject*)L_5);
+		*((String_t**)L_4) = (String_t*)L_5;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_4, (void*)(String_t*)L_5);
 		return (bool)1;
 	}
 
@@ -17477,16 +17477,16 @@ IL_0020:
 		NullCheck(L_9);
 		String_t* L_12;
 		L_12 = String_Substring_mB1D94F47935D22E130FF2C01DBB6A4135FBB76CE(L_9, 6, ((int32_t)il2cpp_codegen_subtract(L_11, 6)), NULL);
-		*((RuntimeObject**)L_8) = (RuntimeObject*)L_12;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_8, (void*)(RuntimeObject*)L_12);
+		*((String_t**)L_8) = (String_t*)L_12;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_8, (void*)(String_t*)L_12);
 		return (bool)1;
 	}
 
 IL_003e:
 	{
 		String_t** L_13 = ___1_prefix;
-		*((RuntimeObject**)L_13) = (RuntimeObject*)NULL;
-		Il2CppCodeGenWriteBarrier((void**)(RuntimeObject**)L_13, (void*)(RuntimeObject*)NULL);
+		*((String_t**)L_13) = (String_t*)NULL;
+		Il2CppCodeGenWriteBarrier((void**)(String_t**)L_13, (void*)(String_t*)NULL);
 		return (bool)0;
 	}
 }

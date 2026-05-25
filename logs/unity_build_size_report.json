@@ -1,0 +1,568 @@
+﻿{
+    "generatedAt": "2026-05-21T13:46:44.5731826Z",
+    "projectRoot": "D:/Project 2026/Unity Project/Clone/My project-2026-05-19-13-56-49-2026-05-19-13-56-50",
+    "buildSettings": [
+        "Assets/Scenes/BootScene.unity",
+        "Assets/Scenes/SampleScene_Light.unity"
+    ],
+    "startupScenes": [
+        "Assets/Scenes/BootScene.unity",
+        "Assets/Scenes/SampleScene_Light.unity"
+    ],
+    "startupDependencyCount": 251,
+    "exportedDataUnity3dBytes": 17943905,
+    "topStartupDependencies": [
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Models/Fe.fbx",
+            "bytes": 141853036
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Models/queDim.fbx",
+            "bytes": 141444508
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Models/C.fbx",
+            "bytes": 131616572
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Models/Ca.fbx",
+            "bytes": 131348668
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Models/Zn.fbx",
+            "bytes": 120372348
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Models/K.fbx",
+            "bytes": 118716652
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Models/S.fbx",
+            "bytes": 117992748
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Textures/KClO3.fbx",
+            "bytes": 117622284
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Models/Cu.fbx",
+            "bytes": 116602924
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Models/ZnCl2.fbx",
+            "bytes": 116196316
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Models/Al.fbx",
+            "bytes": 109093052
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Textures/C/texture_pbr_20250901.png",
+            "bytes": 22318147
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Textures/Ca/texture_pbr_20260108.png",
+            "bytes": 20867739
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Textures/Cu/texture_pbr_20260108.png",
+            "bytes": 19594124
+        },
+        {
+            "path": "Assets/Materials/Fe/texture_pbr_20250901.png",
+            "bytes": 17546195
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Textures/S/texture_pbr_20250901.png",
+            "bytes": 16787039
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Textures/KClO3/texture_pbr_20250901.png",
+            "bytes": 16442005
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Textures/C/texture_pbr_20250901_normal.png",
+            "bytes": 15986852
+        },
+        {
+            "path": "Assets/texture/TextureZn/texture_pbr_20250901.png",
+            "bytes": 13551987
+        },
+        {
+            "path": "Assets/Materials/Fe/texture_pbr_20250901_normal.png",
+            "bytes": 12967260
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Textures/Al/texture_pbr_20250901.png",
+            "bytes": 12534296
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Textures/K/texture_pbr_20260108 1.png",
+            "bytes": 12427039
+        },
+        {
+            "path": "Assets/texture/TextureQue/texture_pbr_20250901.png",
+            "bytes": 11956312
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Textures/K/texture_pbr_20260108_roughness 1.png",
+            "bytes": 10348697
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Textures/Ca/texture_pbr_20260108_metallic.png",
+            "bytes": 10050037
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Textures/S/texture_pbr_20250901_normal.png",
+            "bytes": 9311861
+        },
+        {
+            "path": "Assets/texture/TextureZn/texture_pbr_20250901_normal.png",
+            "bytes": 8581703
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Textures/Cu/texture_pbr_20260108_normal.png",
+            "bytes": 7913755
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Textures/KClO3/texture_pbr_20250901_normal.png",
+            "bytes": 7552718
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Textures/Ca/texture_pbr_20260108_normal.png",
+            "bytes": 7494223
+        },
+        {
+            "path": "Assets/Materials/Fe/texture_pbr_20250901_metallic.png",
+            "bytes": 7362614
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Textures/Ca/texture_pbr_20260108_roughness.png",
+            "bytes": 6973642
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Textures/K/texture_pbr_20260108_metallic 1.png",
+            "bytes": 6685495
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Textures/Cu/texture_pbr_20260108_roughness.png",
+            "bytes": 6630922
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Textures/Al/texture_pbr_20250901_normal.png",
+            "bytes": 6620406
+        },
+        {
+            "path": "Assets/Materials/Fe/texture_pbr_20250901_roughness.png",
+            "bytes": 6467430
+        },
+        {
+            "path": "Assets/texture/TextureQue/texture_pbr_20250901_normal.png",
+            "bytes": 5610491
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Textures/C/texture_pbr_20250901_roughness.png",
+            "bytes": 4364000
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Textures/K/texture_pbr_20260108_normal 1.png",
+            "bytes": 3941325
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Textures/KClO3/texture_pbr_20250901_roughness.png",
+            "bytes": 3777751
+        },
+        {
+            "path": "Assets/texture/TextureZn/texture_pbr_20250901_metallic.png",
+            "bytes": 3588865
+        },
+        {
+            "path": "Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Roboto-Bold SDF.asset",
+            "bytes": 3499634
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Textures/Al/texture_pbr_20250901_roughness.png",
+            "bytes": 3465697
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Textures/Al/texture_pbr_20250901_metallic.png",
+            "bytes": 3353864
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Textures/S/texture_pbr_20250901_roughness.png",
+            "bytes": 3257437
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Textures/KClO3/texture_pbr_20250901_metallic.png",
+            "bytes": 3241989
+        },
+        {
+            "path": "Assets/texture/TextureZn/texture_pbr_20250901_roughness.png",
+            "bytes": 3027647
+        },
+        {
+            "path": "Assets/texture/TextureQue/texture_pbr_20250901_roughness.png",
+            "bytes": 3016123
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Textures/Cu/texture_pbr_20260108_metallic.png",
+            "bytes": 2963258
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Textures/S/texture_pbr_20250901_metallic.png",
+            "bytes": 2932074
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Textures/C/texture_pbr_20250901_metallic.png",
+            "bytes": 2836139
+        },
+        {
+            "path": "Assets/texture/TextureQue/texture_pbr_20250901_metallic.png",
+            "bytes": 2601392
+        },
+        {
+            "path": "Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset",
+            "bytes": 2264689
+        },
+        {
+            "path": "Assets/Vefects/Free Fire VFX URP/Audio/SFX_FireSmall_L.wav",
+            "bytes": 881304
+        },
+        {
+            "path": "Assets/Prefabs/KMnO4ThermalDecomposition_VFX.prefab",
+            "bytes": 787025
+        },
+        {
+            "path": "Assets/Vefects/Free Fire VFX URP/Textures/T_VFX_Dust_01.tga",
+            "bytes": 786476
+        },
+        {
+            "path": "Packages/com.ptc.vuforia.engine/Vuforia/Plugins/Managed/Runtime/Vuforia.Unity.Engine.dll",
+            "bytes": 542720
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Textures/Laboratory03_Other_01_BaseMap.png",
+            "bytes": 490687
+        },
+        {
+            "path": "Assets/Prefabs/NaH2OReactionFX.prefab",
+            "bytes": 478728
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Textures/Laboratory03_Other_01_MaskMap.png",
+            "bytes": 408272
+        },
+        {
+            "path": "Assets/Prefabs/ZnHClReaction_VFX.prefab",
+            "bytes": 378502
+        },
+        {
+            "path": "Assets/Scenes/SampleScene_Light.unity",
+            "bytes": 366843
+        },
+        {
+            "path": "Assets/TextMesh Pro/Fonts/LiberationSans.ttf",
+            "bytes": 350200
+        },
+        {
+            "path": "Packages/com.unity.ugui/Runtime/TMP/TextMeshProUGUI.cs",
+            "bytes": 285705
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Models/Boiling_Liquid_Stand.fbx",
+            "bytes": 204400
+        },
+        {
+            "path": "Assets/Vefects/Free Fire VFX URP/Textures/T_VFX_Fire_Mask_01.tga",
+            "bytes": 196652
+        },
+        {
+            "path": "Assets/Vefects/Free Fire VFX URP/Textures/T_VFX_Noise_08.tga",
+            "bytes": 196652
+        },
+        {
+            "path": "Assets/Vefects/Free Fire VFX URP/Textures/T_VFX_Ash_01.tga",
+            "bytes": 196652
+        },
+        {
+            "path": "Assets/Vefects/Free Fire VFX URP/Textures/T_VFX_Noise_Normal_01.tga",
+            "bytes": 196652
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Textures/Laboratory03_Other_01_Normal.png",
+            "bytes": 172944
+        },
+        {
+            "path": "Assets/TextMesh Pro/Examples & Extras/Fonts/Roboto-Bold.ttf",
+            "bytes": 170760
+        },
+        {
+            "path": "Packages/com.unity.ugui/Runtime/TMP/TMP_FontAsset.cs",
+            "bytes": 158729
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Models/Spirit_Lamp.fbx",
+            "bytes": 146160
+        },
+        {
+            "path": "Packages/com.unity.inputsystem/InputSystem/Plugins/UI/InputSystemUIInputModule.cs",
+            "bytes": 128427
+        },
+        {
+            "path": "Assets/Vefects/Free Fire VFX URP/Shaders/SH_Vefects_VFX_URP_Particles_Erosion_01.shader",
+            "bytes": 104025
+        },
+        {
+            "path": "Packages/com.unity.ugui/Editor Resources/Gizmos/TMP - Font Asset Icon.psd",
+            "bytes": 103962
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Models/liquids.fbx",
+            "bytes": 103200
+        },
+        {
+            "path": "Packages/com.unity.ugui/Editor Resources/Gizmos/TMP - Text Component Icon.psd",
+            "bytes": 89826
+        },
+        {
+            "path": "Packages/com.unity.ugui/Runtime/UGUI/UI/Core/Image.cs",
+            "bytes": 79933
+        },
+        {
+            "path": "Assets/3D Laboratory Environment with Appratus/Models/florence_flask.fbx",
+            "bytes": 68048
+        }
+    ],
+    "reactionDefinitions": [
+        {
+            "path": "Assets/ScriptableObjects/Reactions/Fe_HCl.asset",
+            "reactionSceneName": "",
+            "reactionBundleName": "",
+            "frameWholePrefabOnSpawn": false
+        },
+        {
+            "path": "Assets/ScriptableObjects/Reactions/KMnO4_ThermalDecomposition.asset",
+            "reactionSceneName": "Reaction_KMnO4",
+            "reactionBundleName": "reaction_kmno4",
+            "frameWholePrefabOnSpawn": true
+        },
+        {
+            "path": "Assets/ScriptableObjects/Reactions/Na_H2O.asset",
+            "reactionSceneName": "Reaction_NaH2O",
+            "reactionBundleName": "reaction_nah2o",
+            "frameWholePrefabOnSpawn": true
+        },
+        {
+            "path": "Assets/ScriptableObjects/Reactions/Zn_HCl.asset",
+            "reactionSceneName": "Reaction_ZnHCl",
+            "reactionBundleName": "reaction_znhcl",
+            "frameWholePrefabOnSpawn": true
+        }
+    ],
+    "markerVisualBundles": [
+        {
+            "bundleName": "Android",
+            "path": "Assets/StreamingAssets/MarkerVisualBundles/Android/Android",
+            "bytes": 2014
+        },
+        {
+            "bundleName": "marker_al",
+            "path": "Assets/StreamingAssets/MarkerVisualBundles/Android/marker_al",
+            "bytes": 33169272
+        },
+        {
+            "bundleName": "marker_bacl2",
+            "path": "Assets/StreamingAssets/MarkerVisualBundles/Android/marker_bacl2",
+            "bytes": 34681731
+        },
+        {
+            "bundleName": "marker_c",
+            "path": "Assets/StreamingAssets/MarkerVisualBundles/Android/marker_c",
+            "bytes": 36653693
+        },
+        {
+            "bundleName": "marker_ca",
+            "path": "Assets/StreamingAssets/MarkerVisualBundles/Android/marker_ca",
+            "bytes": 36094081
+        },
+        {
+            "bundleName": "marker_cu",
+            "path": "Assets/StreamingAssets/MarkerVisualBundles/Android/marker_cu",
+            "bytes": 32475219
+        },
+        {
+            "bundleName": "marker_fe",
+            "path": "Assets/StreamingAssets/MarkerVisualBundles/Android/marker_fe",
+            "bytes": 32391395
+        },
+        {
+            "bundleName": "marker_h2o",
+            "path": "Assets/StreamingAssets/MarkerVisualBundles/Android/marker_h2o",
+            "bytes": 461702
+        },
+        {
+            "bundleName": "marker_hcl",
+            "path": "Assets/StreamingAssets/MarkerVisualBundles/Android/marker_hcl",
+            "bytes": 461565
+        },
+        {
+            "bundleName": "marker_k",
+            "path": "Assets/StreamingAssets/MarkerVisualBundles/Android/marker_k",
+            "bytes": 34685592
+        },
+        {
+            "bundleName": "marker_kclo3",
+            "path": "Assets/StreamingAssets/MarkerVisualBundles/Android/marker_kclo3",
+            "bytes": 34681752
+        },
+        {
+            "bundleName": "marker_kmno4",
+            "path": "Assets/StreamingAssets/MarkerVisualBundles/Android/marker_kmno4",
+            "bytes": 450657
+        },
+        {
+            "bundleName": "marker_mg",
+            "path": "Assets/StreamingAssets/MarkerVisualBundles/Android/marker_mg",
+            "bytes": 34685630
+        },
+        {
+            "bundleName": "marker_na",
+            "path": "Assets/StreamingAssets/MarkerVisualBundles/Android/marker_na",
+            "bytes": 254597
+        },
+        {
+            "bundleName": "marker_na2so4",
+            "path": "Assets/StreamingAssets/MarkerVisualBundles/Android/marker_na2so4",
+            "bytes": 34681901
+        },
+        {
+            "bundleName": "marker_s",
+            "path": "Assets/StreamingAssets/MarkerVisualBundles/Android/marker_s",
+            "bytes": 34804374
+        },
+        {
+            "bundleName": "marker_zn",
+            "path": "Assets/StreamingAssets/MarkerVisualBundles/Android/marker_zn",
+            "bytes": 33321637
+        }
+    ],
+    "warnings": [
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Models/queDim.fbx; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes large model path=Assets/3D Laboratory Environment with Appratus/Models/queDim.fbx bytes=141444508; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Textures/Al/texture_pbr_20250901_metallic.png; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Textures/Ca/texture_pbr_20260108_roughness.png; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Textures/KClO3/texture_pbr_20250901_metallic.png; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Textures/Al/texture_pbr_20250901_roughness.png; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Models/S.fbx; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes large model path=Assets/3D Laboratory Environment with Appratus/Models/S.fbx bytes=117992748; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Textures/K/texture_pbr_20260108_metallic 1.png; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Models/liquids.fbx; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Materials/water.mat; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Materials/Laboratory03_Other_01_BaseMap.mat; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Textures/Laboratory03_Other_01_BaseMap.png; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Textures/Cu/texture_pbr_20260108_normal.png; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Prefabs/Beakerwater.prefab; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Models/K.fbx; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes large model path=Assets/3D Laboratory Environment with Appratus/Models/K.fbx bytes=118716652; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Textures/S/texture_pbr_20250901_metallic.png; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Materials/Laboratory03_Glass_BaseMap.mat; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Textures/KClO3/texture_pbr_20250901_normal.png; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Textures/C/texture_pbr_20250901_roughness.png; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Models/ZnCl2.fbx; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes large model path=Assets/3D Laboratory Environment with Appratus/Models/ZnCl2.fbx bytes=116196316; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Textures/Ca/texture_pbr_20260108_normal.png; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Textures/Laboratory03_Other_01_Normal.png; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Textures/K/texture_pbr_20260108_roughness 1.png; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes large texture path=Assets/3D Laboratory Environment with Appratus/Textures/K/texture_pbr_20260108_roughness 1.png bytes=10348697; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Textures/Cu/texture_pbr_20260108_metallic.png; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Textures/Ca/texture_pbr_20260108.png; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes large texture path=Assets/3D Laboratory Environment with Appratus/Textures/Ca/texture_pbr_20260108.png bytes=20867739; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Models/Beaker.fbx; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Textures/KClO3/texture_pbr_20250901_roughness.png; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Models/Zn.fbx; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes large model path=Assets/3D Laboratory Environment with Appratus/Models/Zn.fbx bytes=120372348; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Textures/Ca/texture_pbr_20260108_metallic.png; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes large texture path=Assets/3D Laboratory Environment with Appratus/Textures/Ca/texture_pbr_20260108_metallic.png bytes=10050037; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Textures/Al/texture_pbr_20250901.png; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes large texture path=Assets/3D Laboratory Environment with Appratus/Textures/Al/texture_pbr_20250901.png bytes=12534296; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Textures/S/texture_pbr_20250901_roughness.png; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes large texture path=Assets/texture/TextureZn/texture_pbr_20250901_normal.png bytes=8581703; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Models/C.fbx; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes large model path=Assets/3D Laboratory Environment with Appratus/Models/C.fbx bytes=131616572; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Textures/Laboratory03_Glass_BaseMap.png; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Textures/S/texture_pbr_20250901.png; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes large texture path=Assets/3D Laboratory Environment with Appratus/Textures/S/texture_pbr_20250901.png bytes=16787039; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Models/Glass_Lab_test_tube.fbx; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Textures/KClO3/texture_pbr_20250901.png; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes large texture path=Assets/3D Laboratory Environment with Appratus/Textures/KClO3/texture_pbr_20250901.png bytes=16442005; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Textures/C/texture_pbr_20250901.png; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes large texture path=Assets/3D Laboratory Environment with Appratus/Textures/C/texture_pbr_20250901.png bytes=22318147; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Models/Spirit_Lamp.fbx; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Textures/S/texture_pbr_20250901_normal.png; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes large texture path=Assets/3D Laboratory Environment with Appratus/Textures/S/texture_pbr_20250901_normal.png bytes=9311861; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Models/Cu.fbx; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes large model path=Assets/3D Laboratory Environment with Appratus/Models/Cu.fbx bytes=116602924; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Textures/Cu/texture_pbr_20260108.png; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes large texture path=Assets/3D Laboratory Environment with Appratus/Textures/Cu/texture_pbr_20260108.png bytes=19594124; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Models/Fe.fbx; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes large model path=Assets/3D Laboratory Environment with Appratus/Models/Fe.fbx bytes=141853036; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Textures/C/texture_pbr_20250901_normal.png; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes large texture path=Assets/3D Laboratory Environment with Appratus/Textures/C/texture_pbr_20250901_normal.png bytes=15986852; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Models/florence_flask.fbx; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Models/Al.fbx; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes large model path=Assets/3D Laboratory Environment with Appratus/Models/Al.fbx bytes=109093052; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Textures/Laboratory03_Glass_Normal.png; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Models/Boiling_Liquid_Stand.fbx; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Textures/Al/texture_pbr_20250901_normal.png; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/Kitchen Asset/FBX/Knife2/Knife2.fbx; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes large texture path=Assets/texture/TextureZn/texture_pbr_20250901.png bytes=13551987; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Textures/C/texture_pbr_20250901_metallic.png; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes large texture path=Assets/Materials/Fe/texture_pbr_20250901.png bytes=17546195; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes large texture path=Assets/texture/TextureQue/texture_pbr_20250901.png bytes=11956312; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Models/Ca.fbx; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes large model path=Assets/3D Laboratory Environment with Appratus/Models/Ca.fbx bytes=131348668; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Textures/Cu/texture_pbr_20260108_roughness.png; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Textures/K/texture_pbr_20260108 1.png; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes large texture path=Assets/3D Laboratory Environment with Appratus/Textures/K/texture_pbr_20260108 1.png bytes=12427039; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Materials/Liquid 1.mat; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes large texture path=Assets/Materials/Fe/texture_pbr_20250901_normal.png bytes=12967260; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Textures/KClO3.fbx; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes large model path=Assets/3D Laboratory Environment with Appratus/Textures/KClO3.fbx bytes=117622284; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Prefabs/Beaker water.prefab; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Textures/K/texture_pbr_20260108_normal 1.png; verify Android export size after UNITY_EDITOR stripping",
+        "raw editor dependency includes heavy folder path=Assets/3D Laboratory Environment with Appratus/Textures/Laboratory03_Other_01_MaskMap.png; verify Android export size after UNITY_EDITOR stripping",
+        "editor fxPrefab present asset=Assets/ScriptableObjects/Reactions/Fe_HCl.asset prefab=Assets/Prefabs/FeHClReactionFX.prefab; Android runtime field is editor-only",
+        "editor fxPrefab present asset=Assets/ScriptableObjects/Reactions/KMnO4_ThermalDecomposition.asset prefab=Assets/Prefabs/KMnO4ThermalDecomposition_VFX.prefab; Android runtime field is editor-only",
+        "editor fxPrefab present asset=Assets/ScriptableObjects/Reactions/Na_H2O.asset prefab=Assets/Prefabs/NaH2OReactionFX.prefab; Android runtime field is editor-only",
+        "editor fxPrefab present asset=Assets/ScriptableObjects/Reactions/Zn_HCl.asset prefab=Assets/Prefabs/ZnHClReaction_VFX.prefab; Android runtime field is editor-only",
+        "editor markerVisualPrefab present asset=Assets/ScriptableObjects/Elements/Al.asset prefab=Assets/Generated/MarkerVisualPrefabs/Al_MarkerVisual.prefab; Android runtime field is editor-only",
+        "editor markerVisualPrefab present asset=Assets/ScriptableObjects/Elements/BaCl2.asset prefab=Assets/Generated/MarkerVisualPrefabs/BaCl2_MarkerVisual.prefab; Android runtime field is editor-only",
+        "editor markerVisualPrefab present asset=Assets/ScriptableObjects/Elements/C.asset prefab=Assets/Generated/MarkerVisualPrefabs/C_MarkerVisual.prefab; Android runtime field is editor-only",
+        "editor markerVisualPrefab present asset=Assets/ScriptableObjects/Elements/Ca.asset prefab=Assets/Generated/MarkerVisualPrefabs/Ca_MarkerVisual.prefab; Android runtime field is editor-only",
+        "editor markerVisualPrefab present asset=Assets/ScriptableObjects/Elements/Cu.asset prefab=Assets/Generated/MarkerVisualPrefabs/Cu_MarkerVisual.prefab; Android runtime field is editor-only",
+        "editor markerVisualPrefab present asset=Assets/ScriptableObjects/Elements/FE.asset prefab=Assets/Generated/MarkerVisualPrefabs/Fe_MarkerVisual.prefab; Android runtime field is editor-only",
+        "editor markerVisualPrefab present asset=Assets/ScriptableObjects/Elements/H2O.asset prefab=Assets/Generated/MarkerVisualPrefabs/H2O_MarkerVisual.prefab; Android runtime field is editor-only",
+        "editor markerVisualPrefab present asset=Assets/ScriptableObjects/Elements/HCl.asset prefab=Assets/Generated/MarkerVisualPrefabs/HCl_MarkerVisual.prefab; Android runtime field is editor-only",
+        "editor markerVisualPrefab present asset=Assets/ScriptableObjects/Elements/K.asset prefab=Assets/Generated/MarkerVisualPrefabs/K_MarkerVisual.prefab; Android runtime field is editor-only",
+        "editor markerVisualPrefab present asset=Assets/ScriptableObjects/Elements/KClO3 1.asset prefab=Assets/Generated/MarkerVisualPrefabs/KClO3_MarkerVisual.prefab; Android runtime field is editor-only",
+        "editor markerVisualPrefab present asset=Assets/ScriptableObjects/Elements/KMnO4.asset prefab=Assets/Generated/MarkerVisualPrefabs/KMnO4_MarkerVisual.prefab; Android runtime field is editor-only",
+        "editor markerVisualPrefab present asset=Assets/ScriptableObjects/Elements/Mg.asset prefab=Assets/Generated/MarkerVisualPrefabs/Mg_MarkerVisual.prefab; Android runtime field is editor-only",
+        "editor markerVisualPrefab present asset=Assets/ScriptableObjects/Elements/Na.asset prefab=Assets/Generated/MarkerVisualPrefabs/Na_MarkerVisual.prefab; Android runtime field is editor-only",
+        "editor markerVisualPrefab present asset=Assets/ScriptableObjects/Elements/Na2SO4.asset prefab=Assets/Generated/MarkerVisualPrefabs/Na2SO4_MarkerVisual.prefab; Android runtime field is editor-only",
+        "editor markerVisualPrefab present asset=Assets/ScriptableObjects/Elements/S.asset prefab=Assets/Generated/MarkerVisualPrefabs/S_MarkerVisual.prefab; Android runtime field is editor-only",
+        "editor markerVisualPrefab present asset=Assets/ScriptableObjects/Elements/Zn.asset prefab=Assets/Generated/MarkerVisualPrefabs/Zn_MarkerVisual.prefab; Android runtime field is editor-only",
+        "marker visual bundle exceeds size budget bundle=marker_al bytes=33169272 threshold=26214400",
+        "marker visual bundle exceeds size budget bundle=marker_bacl2 bytes=34681731 threshold=26214400",
+        "marker visual bundle exceeds size budget bundle=marker_c bytes=36653693 threshold=26214400",
+        "marker visual bundle exceeds size budget bundle=marker_ca bytes=36094081 threshold=26214400",
+        "marker visual bundle exceeds size budget bundle=marker_cu bytes=32475219 threshold=26214400",
+        "marker visual bundle exceeds size budget bundle=marker_fe bytes=32391395 threshold=26214400",
+        "marker visual bundle exceeds size budget bundle=marker_k bytes=34685592 threshold=26214400",
+        "marker visual bundle exceeds size budget bundle=marker_kclo3 bytes=34681752 threshold=26214400",
+        "marker visual bundle exceeds size budget bundle=marker_mg bytes=34685630 threshold=26214400",
+        "marker visual bundle exceeds size budget bundle=marker_na2so4 bytes=34681901 threshold=26214400",
+        "marker visual bundle exceeds size budget bundle=marker_s bytes=34804374 threshold=26214400",
+        "marker visual bundle exceeds size budget bundle=marker_zn bytes=33321637 threshold=26214400"
+    ],
+    "failures": []
+}

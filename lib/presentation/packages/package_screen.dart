@@ -93,7 +93,8 @@ class _PackageScreenState extends State<PackageScreen> {
     }
 
     final ok = await state.createBankPayment(
-      packageId: _selectedPackageId!,
+      itemId: _selectedPackageId!,
+      itemType: 'PACKAGE',
       proofImageUrl: _proofImageUrl!,
     );
 

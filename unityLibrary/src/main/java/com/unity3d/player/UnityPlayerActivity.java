@@ -150,7 +150,6 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
     }
 
     @Override
-    @TargetApi(Build.VERSION_CODES.M)
     public void requestPermissions(PermissionRequest request)
     {
         mUnityPlayer.addPermissionRequest(request);
