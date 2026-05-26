@@ -1,0 +1,91 @@
+ManifestFileVersion: 0
+UnityVersion: 6000.4.7f1
+CRC: 724696495
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: d30c45f2405964baeb589af84b1ab332
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 66d54afe58bf18b0f744a20e618e9f84
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: 600a6db63676ec23ff5496c2a057e06b
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 64
+  Script: {instanceID: 0}
+- Class: 89
+  Script: {instanceID: 0}
+- Class: 104
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: 83266fbe5cf2f664d9e00b1da32855bb, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: d54a8838a2c8d28498ae6c0a7a53531f, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 9d769716f939bde40a2ba56b081b5da0, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: bc8f343207ccad94fb718ae4cd5bfafc, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 9e06ccc7d2cabfa45b85f98d1a58b1bc, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 67740972c299de84bb0b18e9174acbe1, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: b11cbfce03a10dc419d0a58cf0e147c2, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+- Class: 128
+  Script: {instanceID: 0}
+- Class: 136
+  Script: {instanceID: 0}
+- Class: 157
+  Script: {instanceID: 0}
+- Class: 196
+  Script: {instanceID: 0}
+- Class: 198
+  Script: {instanceID: 0}
+- Class: 199
+  Script: {instanceID: 0}
+- Class: 222
+  Script: {instanceID: 0}
+- Class: 223
+  Script: {instanceID: 0}
+- Class: 224
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Scenes/Reaction_CuHCl_NaNO3.unity
+Dependencies: []

@@ -1,6 +1,6 @@
 ManifestFileVersion: 0
 UnityVersion: 6000.4.7f1
-CRC: 275027280
+CRC: 3141242696
 HashAppended: 0
 AssetBundleManifest:
   AssetBundleInfos:
@@ -21,4 +21,10 @@ AssetBundleManifest:
       Dependencies: {}
     Info_5:
       Name: reaction_cuhcl
+      Dependencies: {}
+    Info_6:
+      Name: reaction_cuhclnano3
+      Dependencies: {}
+    Info_7:
+      Name: reaction_alhcl
       Dependencies: {}

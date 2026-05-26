@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -141,6 +142,8 @@ enum ARUnityPreloadState {
   failedFinal,
 }
 
+enum ARUnityReadySignal { sceneLoaded, fallback }
+
 class ARUnityHost extends StatefulWidget {
   const ARUnityHost({super.key, required this.child});
 
@@ -278,8 +281,8 @@ class _ARUnityHostState extends State<ARUnityHost> with WidgetsBindingObserver {
             mode: isFullscreen
                 ? 'fullscreen'
                 : isVisible
-                    ? 'portal'
-                    : 'preload-hidden',
+                ? 'portal'
+                : 'preload-hidden',
             size: Size(constraints.maxWidth, constraints.maxHeight),
           );
           return SizedBox.expand(child: _unityWidget);
@@ -333,6 +336,7 @@ class ARUnitySession extends ChangeNotifier {
   bool sceneLoaded = false;
   bool isVisible = false;
   bool isPaused = false;
+  ARUnityReadySignal? readySignal;
   ARUnityPreloadState preloadState = ARUnityPreloadState.idle;
 
   Rect? get portalRect => _portalRect;
@@ -349,8 +353,7 @@ class ARUnitySession extends ChangeNotifier {
       preloadState != ARUnityPreloadState.failedFinal;
   bool get canStartSafePreload =>
       preloadState == ARUnityPreloadState.idle && !unityCreated;
-  bool get usesFullscreenPortal =>
-      hasVisiblePortal && _portalBorderRadius == 0;
+  bool get usesFullscreenPortal => hasVisiblePortal && _portalBorderRadius == 0;
 
   void markRouteOpened() {
     _routeStopwatch
@@ -420,6 +423,7 @@ class ARUnitySession extends ChangeNotifier {
 
     preloadState = nextState;
     sceneLoaded = false;
+    readySignal = null;
     _sceneLoadedCompleter = Completer<void>();
     _log(startLog);
     notifyListeners();
@@ -515,7 +519,68 @@ class ARUnitySession extends ChangeNotifier {
   }
 
   void onUnityMessage(dynamic message) {
-    _log('unityMessage ${message.toString()}');
+    _log('unityMessage ${_formatUnityMessage(message)}');
+  }
+
+  Future<void> sendOrientationToUnity(String orientation) async {
+    final controller = _controller;
+    if (controller == null) {
+      _log('sendOrientationToUnity skipped noController');
+      return;
+    }
+
+    try {
+      final json = '{"orientation": "$orientation"}';
+      await controller.postMessage('FlutterBridge', 'SetOrientation', json);
+      _log('sendOrientationToUnity sent=$orientation');
+    } on PlatformException catch (error) {
+      _log(
+        'sendOrientationToUnity error '
+        'code=${error.code} message=${error.message}',
+      );
+    } catch (error, stackTrace) {
+      _log('sendOrientationToUnity unexpected error $error');
+      _log('sendOrientationToUnity stack $stackTrace');
+    }
+  }
+
+  Future<bool> postHudCommand(
+    String command, {
+    Map<String, Object?> payload = const <String, Object?>{},
+  }) async {
+    final controller = _controller;
+    if (controller == null) {
+      _log('postHudCommand skipped command=$command noController');
+      return false;
+    }
+
+    final message = <String, Object?>{
+      'command': command,
+      if (payload.isNotEmpty) 'payload': payload,
+    };
+
+    try {
+      await controller.postMessage(
+        'FlutterBridge',
+        'HandleHudCommand',
+        jsonEncode(message),
+      );
+      _log(
+        'postHudCommand sent command=$command '
+        'payload=${_safeJsonEncode(payload)}',
+      );
+      return true;
+    } on PlatformException catch (error) {
+      _log(
+        'postHudCommand error command=$command '
+        'code=${error.code} message=${error.message}',
+      );
+      return false;
+    } catch (error, stackTrace) {
+      _log('postHudCommand unexpectedError command=$command $error');
+      _log('postHudCommand stack command=$command $stackTrace');
+      return false;
+    }
   }
 
   void onUnitySceneLoaded(SceneLoaded? sceneInfo) {
@@ -532,6 +597,7 @@ class ARUnitySession extends ChangeNotifier {
     sceneLoaded = sceneInfo.isLoaded == true;
     if (sceneLoaded) {
       preloadState = ARUnityPreloadState.ready;
+      readySignal = ARUnityReadySignal.sceneLoaded;
       _log('appUnityPreloadReady');
       unawaited(forceNativeUnityFullscreen(reason: 'unitySceneLoaded'));
       final completer = _sceneLoadedCompleter;
@@ -546,6 +612,7 @@ class ARUnitySession extends ChangeNotifier {
     unityCreated = false;
     sceneLoaded = false;
     isPaused = false;
+    readySignal = null;
     _controller = null;
     if (preloadState == ARUnityPreloadState.ready) {
       preloadState = ARUnityPreloadState.idle;
@@ -562,7 +629,9 @@ class ARUnitySession extends ChangeNotifier {
     await _markReadyFromControllerIfLoaded(reason: reason);
   }
 
-  Future<void> _markReadyFromControllerIfLoaded({required String reason}) async {
+  Future<void> _markReadyFromControllerIfLoaded({
+    required String reason,
+  }) async {
     if (sceneLoaded || preloadState == ARUnityPreloadState.ready) return;
 
     final controller = _controller;
@@ -583,6 +652,7 @@ class ARUnitySession extends ChangeNotifier {
 
       sceneLoaded = true;
       preloadState = ARUnityPreloadState.ready;
+      readySignal = ARUnityReadySignal.fallback;
       _log('appUnityPreloadReadyFallback reason=$reason');
       unawaited(forceNativeUnityFullscreen(reason: 'unityReadyFallback'));
       final completer = _sceneLoadedCompleter;
@@ -618,6 +688,7 @@ class ARUnitySession extends ChangeNotifier {
     unityCreated = false;
     sceneLoaded = false;
     isPaused = false;
+    readySignal = null;
   }
 
   void logUnityHostRect({required String mode, required Size size}) {
@@ -817,6 +888,38 @@ class ARUnitySession extends ChangeNotifier {
         ? _routeStopwatch.elapsedMilliseconds
         : 0;
     debugPrint('[AR_UNITY_TIMING] ${elapsed}ms $event');
+  }
+
+  String _formatUnityMessage(dynamic message) {
+    if (message == null) {
+      return 'kind=null';
+    }
+
+    if (message is Map) {
+      return 'kind=map runtimeType=${message.runtimeType} '
+          'payload=${_safeJsonEncode(message)}';
+    }
+
+    final text = message.toString();
+    if (text.isEmpty) {
+      return 'kind=empty runtimeType=${message.runtimeType}';
+    }
+
+    try {
+      final decoded = jsonDecode(text);
+      return 'kind=json runtimeType=${message.runtimeType} '
+          'payload=${_safeJsonEncode(decoded)}';
+    } on FormatException {
+      return 'kind=text runtimeType=${message.runtimeType} text=$text';
+    }
+  }
+
+  String _safeJsonEncode(Object? value) {
+    try {
+      return jsonEncode(value);
+    } catch (_) {
+      return value.toString();
+    }
   }
 
   Future<bool> _requestCameraPermission() async {

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -14,26 +16,38 @@ class ScanScreen extends StatefulWidget {
 }
 
 class _ScanScreenState extends State<ScanScreen>
-    with SingleTickerProviderStateMixin, RouteAware {
+    with SingleTickerProviderStateMixin, WidgetsBindingObserver, RouteAware {
+  static const _unityLandscapeMessage = 'landscape';
+  static const _unityPortraitMessage = 'portrait';
+
+  final _session = ARUnitySession.instance;
   late final AnimationController _pulseCtrl;
   Widget? _arCameraView;
   ModalRoute<dynamic>? _route;
-  bool _scannerUiModeActive = false;
-  bool _landscapeGateSeen = false;
-  bool _landscapeStabilized = false;
-  bool _arEntryRequested = false;
+  bool _unityReadyForLandscape = false;
+  bool _scannerActive = false;
   int _uiModeToken = 0;
-  int _landscapeGateToken = 0;
 
   @override
   void initState() {
     super.initState();
     debugPrint('[AR_UNITY_TIMING] ScanScreen initState');
+    WidgetsBinding.instance.addObserver(this);
     _pulseCtrl = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1400),
     )..repeat(reverse: true);
 
+    _ensureArCameraView();
+    _syncUnityReadyFromCurrentState(
+      reason: OrientationLockService.scannerAlreadyReady,
+      shouldSetState: false,
+    );
+    _session.addListener(_onUnitySessionChanged);
+    _syncUnityReadyFromCurrentState(
+      reason: OrientationLockService.scannerAlreadyReady,
+      shouldSetState: false,
+    );
     _enterScannerUiMode();
   }
 
@@ -48,7 +62,7 @@ class _ScanScreenState extends State<ScanScreen>
       _route = route;
       appRouteObserver.subscribe(this, route);
     }
-    _syncLandscapeGate();
+    _scheduleLandscapeMetricsLog();
   }
 
   @override
@@ -72,8 +86,15 @@ class _ScanScreenState extends State<ScanScreen>
   }
 
   @override
+  void didChangeMetrics() {
+    _scheduleLandscapeMetricsLog();
+  }
+
+  @override
   void dispose() {
     debugPrint('[AR_UNITY_TIMING] ScanScreen dispose');
+    WidgetsBinding.instance.removeObserver(this);
+    _session.removeListener(_onUnitySessionChanged);
     appRouteObserver.unsubscribe(this);
     _restoreAppUiMode();
     _pulseCtrl.dispose();
@@ -81,101 +102,45 @@ class _ScanScreenState extends State<ScanScreen>
   }
 
   Future<void> _enterScannerUiMode() async {
-    if (_scannerUiModeActive) return;
+    if (_scannerActive) return;
     final token = ++_uiModeToken;
-    _scannerUiModeActive = true;
-    debugPrint('[AR_UNITY_TIMING] ScanScreen landscapeRequested');
-    await OrientationLockService.requestScannerLandscape();
-    OrientationLockService.logAndroidOrientationState('scannerUiModeEntered');
-    if (!mounted || token != _uiModeToken || !_scannerUiModeActive) {
+    _scannerActive = true;
+    _resetScannerLocalFlags();
+    _ensureArCameraView();
+    _syncUnityReadyFromCurrentState(
+      reason: OrientationLockService.scannerAlreadyReady,
+      shouldSetState: false,
+    );
+    debugPrint('[AR_UNITY_TIMING] ScanScreen scannerModeEntered');
+    unawaited(
+      OrientationLockService.lockScannerLandscape(
+        reason: OrientationLockService.scannerEnter,
+      ),
+    );
+    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    if (!mounted || token != _uiModeToken || !_scannerActive) {
       await OrientationLockService.restoreAppPortrait();
       return;
     }
-    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    _scheduleLandscapeMetricsLog();
+    _sendUnityLandscapeIfReady();
   }
 
   Future<void> _restoreAppUiMode() async {
-    if (!_scannerUiModeActive) return;
+    if (!_scannerActive) return;
     final token = ++_uiModeToken;
-    _scannerUiModeActive = false;
+    _scannerActive = false;
     debugPrint('[AR_UNITY_TIMING] ScanScreen portraitRestored');
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    if (token != _uiModeToken || _scannerUiModeActive) return;
+    if (token != _uiModeToken || _scannerActive) return;
     await OrientationLockService.restoreAppPortrait();
+    unawaited(_session.sendOrientationToUnity(_unityPortraitMessage));
   }
 
   Future<void> _handleBackPressed() async {
     await _restoreAppUiMode();
     if (!mounted) return;
     Navigator.maybePop(context);
-  }
-
-  void _syncLandscapeGate() {
-    final mediaQuery = MediaQuery.maybeOf(context);
-    if (mediaQuery == null) return;
-
-    final size = mediaQuery.size;
-    if (size.width <= size.height) {
-      if (_landscapeGateSeen ||
-          _landscapeStabilized ||
-          _arEntryRequested ||
-          _arCameraView != null) {
-        debugPrint(
-          '[AR_UNITY_TIMING] scanLandscapeGateReset '
-          'width=${size.width.toStringAsFixed(1)} '
-          'height=${size.height.toStringAsFixed(1)}',
-        );
-      }
-      _landscapeGateToken++;
-      _landscapeGateSeen = false;
-      _landscapeStabilized = false;
-      _arEntryRequested = false;
-      return;
-    }
-
-    if (!_landscapeGateSeen) {
-      _landscapeGateSeen = true;
-      final token = ++_landscapeGateToken;
-      debugPrint(
-        '[AR_UNITY_TIMING] scanLandscapeGateSeen '
-        'width=${size.width.toStringAsFixed(1)} '
-        'height=${size.height.toStringAsFixed(1)}',
-      );
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _stabilizeLandscapeGate(token);
-      });
-      return;
-    }
-
-    if (_landscapeStabilized) {
-      _ensureArCameraView();
-      _requestArEntryAfterLandscape();
-    }
-  }
-
-  void _stabilizeLandscapeGate(int token) {
-    if (!mounted || token != _landscapeGateToken) return;
-
-    final mediaQuery = MediaQuery.maybeOf(context);
-    if (mediaQuery == null) return;
-
-    final size = mediaQuery.size;
-    if (size.width <= size.height) {
-      _syncLandscapeGate();
-      return;
-    }
-
-    setState(() {
-      _landscapeStabilized = true;
-      _ensureArCameraView();
-    });
-    debugPrint(
-      '[AR_UNITY_TIMING] scanLandscapeGatePassed '
-      'width=${size.width.toStringAsFixed(1)} '
-      'height=${size.height.toStringAsFixed(1)}',
-    );
-    OrientationLockService.logAndroidOrientationState('scanLandscapeGatePassed');
-    _requestArEntryAfterLandscape();
   }
 
   void _ensureArCameraView() {
@@ -185,14 +150,97 @@ class _ScanScreenState extends State<ScanScreen>
     );
   }
 
-  void _requestArEntryAfterLandscape() {
-    if (_arEntryRequested || !_landscapeStabilized || _arCameraView == null) {
-      return;
+  void _resetScannerLocalFlags() {
+    _unityReadyForLandscape = false;
+  }
+
+  void _onUnitySessionChanged() {
+    if (!_scannerActive) return;
+    _syncUnityReadyFromCurrentState(
+      reason: _scannerReadyReason(),
+      shouldSetState: true,
+    );
+  }
+
+  void _syncUnityReadyFromCurrentState({
+    required String reason,
+    required bool shouldSetState,
+  }) {
+    if (!_isUnityReadyForLandscape) return;
+
+    if (!_unityReadyForLandscape) {
+      if (shouldSetState && mounted) {
+        setState(() {
+          _unityReadyForLandscape = true;
+        });
+      } else {
+        _unityReadyForLandscape = true;
+      }
+      debugPrint('[AR_UNITY_TIMING] scanUnityReadyForLandscape reason=$reason');
     }
 
-    _arEntryRequested = true;
-    debugPrint('[AR_UNITY_TIMING] scanArEntryRequested');
-    ARUnitySession.instance.ensureReadyForArEntry();
+    _sendUnityLandscapeIfReady();
+  }
+
+  bool get _isUnityReadyForLandscape =>
+      _session.sceneLoaded &&
+      _session.preloadState == ARUnityPreloadState.ready;
+
+  String _scannerReadyReason() {
+    switch (_session.readySignal) {
+      case ARUnityReadySignal.sceneLoaded:
+        return OrientationLockService.scannerUnitySceneLoaded;
+      case ARUnityReadySignal.fallback:
+        return OrientationLockService.scannerUnityReadyFallback;
+      case null:
+        return OrientationLockService.scannerAlreadyReady;
+    }
+  }
+
+  void _sendUnityLandscapeIfReady() {
+    if (!_scannerActive || !_unityReadyForLandscape) return;
+
+    final reason = _scannerReadyReason();
+    unawaited(_session.forceNativeUnityFullscreen(reason: reason));
+    unawaited(_session.sendOrientationToUnity(_unityLandscapeMessage));
+  }
+
+  void _scheduleLandscapeMetricsLog() {
+    if (!mounted || !_scannerActive) return;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _logLandscapeMetricsIfSettled();
+    });
+  }
+
+  void _logLandscapeMetricsIfSettled() {
+    if (!mounted || !_scannerActive) return;
+
+    final mediaQuery = MediaQuery.maybeOf(context);
+    if (mediaQuery == null || !_isLandscape(mediaQuery)) return;
+
+    setState(() {});
+    debugPrint(
+      '[AR_UNITY_TIMING] scanLandscapeSettled '
+      'width=${mediaQuery.size.width.toStringAsFixed(1)} '
+      'height=${mediaQuery.size.height.toStringAsFixed(1)}',
+    );
+    OrientationLockService.logAndroidOrientationState('scanLandscapeSettled');
+    unawaited(
+      _session.forceNativeUnityFullscreen(reason: 'scanLandscapeSettled'),
+    );
+  }
+
+  bool _isLandscape(MediaQueryData mediaQuery) {
+    return mediaQuery.orientation == Orientation.landscape ||
+        mediaQuery.size.width > mediaQuery.size.height;
+  }
+
+  bool _shouldShowLoading(ARUnitySession session, MediaQueryData mediaQuery) {
+    return !_unityReadyForLandscape ||
+        session.preloadState != ARUnityPreloadState.ready ||
+        !session.sceneLoaded ||
+        !_isLandscape(mediaQuery);
   }
 
   @override
@@ -210,20 +258,17 @@ class _ScanScreenState extends State<ScanScreen>
           child: AnimatedBuilder(
             animation: ARUnitySession.instance,
             builder: (context, _) {
-              final session = ARUnitySession.instance;
-              final arCameraView =
-                  _landscapeStabilized ? _arCameraView : null;
+              final session = _session;
+              final mediaQuery = MediaQuery.of(context);
 
               return Stack(
                 fit: StackFit.expand,
                 children: [
-                  if (arCameraView != null)
-                    Positioned.fill(child: arCameraView),
+                  if (_scannerActive && _arCameraView != null)
+                    Positioned.fill(child: _arCameraView!),
                   if (session.preloadState == ARUnityPreloadState.failedFinal)
                     const _UnityScannerErrorView()
-                  else if (arCameraView == null ||
-                      session.preloadState != ARUnityPreloadState.ready ||
-                      !session.sceneLoaded)
+                  else if (_shouldShowLoading(session, mediaQuery))
                     _UnityScannerLoadingView(animation: _pulseCtrl),
                   _ScannerBackButton(onPressed: _handleBackPressed),
                 ],
@@ -323,10 +368,7 @@ class _ScannerBackButton extends StatelessWidget {
             child: IconButton(
               tooltip: 'Back',
               onPressed: onPressed,
-              icon: const Icon(
-                Icons.arrow_back,
-                color: Colors.white,
-              ),
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
             ),
           ),
         ),
