@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../core/models/response/card_bundle_response.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../../shared/widgets/knowledge_points_badge.dart';
 import '../../../shared/widgets/chemical_card_widget.dart';
@@ -32,7 +33,10 @@ class _ShopScreenState extends State<ShopScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<AppState>().loadShopChemicalCards(refresh: true);
+      final state = context.read<AppState>();
+
+      state.loadShopChemicalCards(refresh: true);
+      state.loadShopCardBundles(refresh: true);
     });
   }
 
@@ -56,12 +60,15 @@ class _ShopScreenState extends State<ShopScreen> {
       _showToast('Not enough Knowledge Points', isError: true);
       return;
     }
-    final ok = type == 'card'
+
+    final ok = type == 'CHEMICAL_CARD'
         ? await state.purchaseCard(id)
         : await state.purchaseBundle(id);
+
     if (!mounted) return;
+
     if (ok) {
-      _showToast(type == 'card'
+      _showToast(type == 'CHEMICAL_CARD'
           ? 'Card purchased! Check your bag.'
           : 'Bundle added to your bag!');
     } else {
@@ -161,10 +168,10 @@ class _ShopScreenState extends State<ShopScreen> {
       color: ChemicalData.colorForCategory(card.category),
       price: card.price,
       category: CardCategory.element,
-      isUnlocked: state.isCardOwned(card.symbol),
+      isUnlocked: state.isCardOwned(card.id),
     ))
         .toList();
-    final bundles = ChemicalData.bundles;
+    final bundles = state.shopCardBundles;
 
 
 
@@ -283,37 +290,50 @@ class _ShopScreenState extends State<ShopScreen> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 14),
-                          ...bundles.map((b) {
-                            final quote = state.getBundleQuote(b.id);
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 16),
-                              child: _BundleCard(
-                                bundle: b,
-                                quote: quote,
-                                allCards: state.cards,
-                                isOwned: state.isCardOwned,
-                                onBuyPoints: quote.canPurchase
-                                    ? () => _buyWithPoints(
-                                        state, b.id, quote.totalPrice, 'bundle')
-                                    : null,
-                                onBuyBank: quote.canPurchase
-                                    ? () => _openQR(
-                                        b.id, quote.totalPrice, 'bundle')
-                                    : null,
-                                onAddToCart: quote.canPurchase &&
-                                        !state.isBundleInCart(b.id)
-                                    ? () async {
-                                        final ok =
-                                            await state.addBundleToCart(b.id);
-                                        if (ok) {
-                                          _showToast('Bundle added to cart!');
-                                        }
-                                      }
-                                    : null,
+                          if (state.loadingShopCardBundles)
+                            const Center(
+                              child: Padding(
+                                padding: EdgeInsets.all(16),
+                                child: CircularProgressIndicator(),
                               ),
-                            );
-                          }),
+                            )
+                          else ...[
+                            const SizedBox(height: 14),
+                            ...bundles.map((b) {
+                              final canPurchase = b.purchasable;
+
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 16),
+                                child: _BundleCard(
+                                  bundle: b,
+                                  isOwned: state.isCardOwned,
+                                  onBuyPoints: canPurchase
+                                      ? () => _buyWithPoints(
+                                    state,
+                                    b.id,
+                                    b.discountedPrice,
+                                    'CARD_BUNDLE',
+                                  )
+                                      : null,
+                                  onBuyBank: canPurchase
+                                      ? () => _openQR(
+                                    b.id,
+                                    b.discountedPrice,
+                                    'CARD_BUNDLE',
+                                  )
+                                      : null,
+                                  onAddToCart: canPurchase && !state.isBundleInCart(b.id)
+                                      ? () async {
+                                    final ok = await state.addBundleToCart(b.id);
+                                    if (ok) {
+                                      _showToast('Bundle added to cart!');
+                                    }
+                                  }
+                                      : null,
+                                ),
+                              );
+                            }),
+                          ],
 
                           const SizedBox(height: 8),
                           Text('Single Cards',
@@ -345,7 +365,7 @@ class _ShopScreenState extends State<ShopScreen> {
                                 onBuyWithPoints: owned
                                     ? null
                                     : () => _buyWithPoints(
-                                        state, card.id, card.price, 'card'),
+                                        state, card.id, card.price, 'CHEMICAL_CARD'),
                                 onBuyWithBank: owned
                                     ? null
                                     : () => _openQR(
@@ -388,9 +408,7 @@ class _ShopScreenState extends State<ShopScreen> {
 }
 
 class _BundleCard extends StatelessWidget {
-  final BundleModel bundle;
-  final BundlePriceQuote quote;
-  final List<ChemicalCardModel> allCards;
+  final CardBundleResponse bundle;
   final bool Function(String id) isOwned;
   final VoidCallback? onBuyPoints;
   final VoidCallback? onBuyBank;
@@ -398,8 +416,6 @@ class _BundleCard extends StatelessWidget {
 
   const _BundleCard({
     required this.bundle,
-    required this.quote,
-    required this.allCards,
     required this.isOwned,
     this.onBuyPoints,
     this.onBuyBank,
@@ -408,11 +424,8 @@ class _BundleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cards = bundle.cardIds
-        .map((id) => allCards.firstWhere((c) => c.id == id,
-            orElse: () => allCards.first))
-        .toList();
-    final canBuy = quote.canPurchase;
+    final cards = bundle.cards;
+    final canBuy = bundle.purchasable;
 
     return Opacity(
       opacity: canBuy ? 1 : 0.5,
@@ -447,7 +460,7 @@ class _BundleCard extends StatelessWidget {
                             color: AppColors.textPrimary,
                             fontFamily: 'Inter')),
                     const SizedBox(height: 4),
-                    Text('${bundle.cardIds.length} cards included',
+                    Text('${bundle.cards.length} cards included',
                         style: TextStyle(
                             fontSize: 12,
                             color: AppColors.textSecondary,
@@ -458,7 +471,7 @@ class _BundleCard extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  if (quote.hasSale) ...[
+                  if (bundle.hasSale) ...[
                     Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 10, vertical: 4),
@@ -467,7 +480,7 @@ class _BundleCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        quote.saleLabel,
+                        '-${bundle.salePercent}%',
                         style: const TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w700,
@@ -478,7 +491,7 @@ class _BundleCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      '${quote.compareAtPrice} KP',
+                      '${bundle.originalPrice} KP',
                       style: TextStyle(
                         fontSize: 12,
                         color: AppColors.textSecondary.withOpacity(0.6),
@@ -489,7 +502,7 @@ class _BundleCard extends StatelessWidget {
                     const SizedBox(height: 2),
                   ],
                   Text(
-                    canBuy ? '${quote.totalPrice} KP' : 'Owned',
+                    canBuy ? '${bundle.discountedPrice} KP' : 'Owned',
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
@@ -505,35 +518,43 @@ class _BundleCard extends StatelessWidget {
           Row(
             children: cards.map((card) {
               final owned = isOwned(card.id);
+              final cardColor = ChemicalData.colorForCategory(card.category);
+
               return Padding(
                 padding: const EdgeInsets.only(right: 8),
                 child: Opacity(
                   opacity: owned ? 0.4 : 1,
                   child: Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 8),
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
                     decoration: BoxDecoration(
-                      color: card.color.withOpacity(owned ? 0.05 : 0.1),
+                      color: cardColor.withOpacity(owned ? 0.05 : 0.1),
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
-                          color: card.color.withOpacity(owned ? 0.2 : 0.4)),
+                        color: cardColor.withOpacity(owned ? 0.2 : 0.4),
+                      ),
                     ),
                     child: Column(
                       children: [
-                        Text(card.symbol,
-                            style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w900,
-                                color: owned ? Colors.white24 : card.color,
-                                fontFamily: 'Inter')),
                         Text(
-                            owned ? 'Owned' : card.name,
-                            style: TextStyle(
-                                fontSize: 10,
-                                color: owned
-                                    ? AppColors.textSecondary
-                                    : AppColors.textSecondary,
-                                fontFamily: 'Inter')),
+                          card.symbol,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w900,
+                            color: owned ? Colors.white24 : cardColor,
+                            fontFamily: 'Inter',
+                          ),
+                        ),
+                        Text(
+                          owned ? 'Owned' : card.name,
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: AppColors.textSecondary,
+                            fontFamily: 'Inter',
+                          ),
+                        ),
                       ],
                     ),
                   ),

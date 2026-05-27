@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 
 import '../constants/api_constants.dart';
 import '../models/response/chemical_card_response.dart';
+import '../models/response/card_bundle_response.dart';
 import '../models/response/page_response.dart';
 import '../services/auth_token_service.dart';
 
@@ -57,5 +58,34 @@ class ChemicalCardApi {
     }
 
     throw Exception('Invalid shop cards response');
+  }
+
+  Future<PageResponse<CardBundleResponse>> getShopCardBundles({
+    int page = 0,
+    int size = 20,
+  }) async {
+    final response = await _dio.get(
+      ApiConstants.cardBundlesShopPath,
+      queryParameters: {
+        'page': page,
+        'size': size,
+      },
+      options: await _authOptions(),
+    );
+
+    final data = response.data;
+
+    if (data is Map<String, dynamic>) {
+      final rawPage = data['data'];
+
+      if (rawPage is Map) {
+        return PageResponse.fromJson(
+          Map<String, dynamic>.from(rawPage),
+          CardBundleResponse.fromJson,
+        );
+      }
+    }
+
+    throw Exception('Invalid shop card bundles response');
   }
 }

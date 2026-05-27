@@ -126,9 +126,13 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
             initialRoute: AppRoutes.onboarding,
             routes: _buildRoutes(),
             onGenerateRoute: _onGenerateRoute,
-            builder: (context, child) => UserPortalAiOverlay(
-              child: child ?? const SizedBox.shrink(),
-            ),
+            builder: (context, child) {
+              return ARUnityHost(
+                child: UserPortalAiOverlay(
+                  child: child ?? const SizedBox.shrink(),
+                ),
+              );
+            },
           );
         },
       ),

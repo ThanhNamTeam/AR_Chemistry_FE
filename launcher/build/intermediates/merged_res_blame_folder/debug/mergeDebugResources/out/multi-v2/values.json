@@ -1,0 +1,62 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.vuforia.engine.VuforiaEngine.launcher-mergeDebugResources-2:/values/values.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\admin\\.gradle\\caches\\9.1.0\\transforms\\35e7737c6eadd8a3be61ed54dcff6a20\\workspace\\transformed\\jetified-VuforiaEngine\\res\\values\\values.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "79",
+                        "endOffsets": "130"
+                    },
+                    "to": {
+                        "startLines": "13",
+                        "startColumns": "4",
+                        "startOffsets": "722",
+                        "endColumns": "79",
+                        "endOffsets": "797"
+                    }
+                },
+                {
+                    "source": "D:\\EXE201\\ar_chemistry_fe\\unityLibrary\\build\\intermediates\\packaged_res\\debug\\packageDebugResources\\values\\values.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,16",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,125,214,305,351,408,464,513,559,606,674,766,909",
+                        "endLines": "2,3,4,5,6,7,8,9,10,11,12,15,19",
+                        "endColumns": "69,88,90,45,56,55,48,45,46,67,91,10,10",
+                        "endOffsets": "120,209,300,346,403,459,508,554,601,669,761,904,1133"
+                    },
+                    "to": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,12,14,15,18",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,125,214,305,351,408,464,513,559,654,802,894,1037",
+                        "endLines": "2,3,4,5,6,7,8,9,10,12,14,17,21",
+                        "endColumns": "69,88,90,45,56,55,48,45,46,67,91,10,10",
+                        "endOffsets": "120,209,300,346,403,459,508,554,601,717,889,1032,1261"
+                    }
+                },
+                {
+                    "source": "D:\\EXE201\\ar_chemistry_fe\\launcher\\src\\main\\res\\values\\strings.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "2",
+                        "startOffsets": "55",
+                        "endColumns": "45",
+                        "endOffsets": "98"
+                    },
+                    "to": {
+                        "startLines": "11",
+                        "startColumns": "4",
+                        "startOffsets": "606",
+                        "endColumns": "47",
+                        "endOffsets": "649"
+                    }
+                }
+            ]
+        }
+    ]
+}

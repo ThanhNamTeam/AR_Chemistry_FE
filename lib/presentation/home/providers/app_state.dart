@@ -6,6 +6,7 @@ import 'package:path/path.dart' as p;
 
 
 import '../../../core/api/chemical_card_api.dart';
+import '../../../core/models/response/card_bundle_response.dart';
 import '../../../core/models/response/chemical_card_response.dart';
 import '../../../core/storage/avatar_storage_service.dart';
 import '../../../core/storage/local_storage_service.dart';
@@ -82,6 +83,13 @@ class AppState extends ChangeNotifier {
   int _shopChemicalCardsPage = 0;
   bool _shopChemicalCardsLast = false;
 
+  final List<CardBundleResponse> _shopCardBundles = [];
+  bool _loadingShopCardBundles = false;
+  String? _shopCardBundlesError;
+  int _shopCardBundlesPage = 0;
+  bool _shopCardBundlesLast = false;
+
+  //cards
   List<ChemicalCardResponse> get shopChemicalCards =>
       List.unmodifiable(_shopChemicalCards);
 
@@ -90,6 +98,16 @@ class AppState extends ChangeNotifier {
   String? get shopChemicalCardsError => _shopChemicalCardsError;
 
   bool get shopChemicalCardsLast => _shopChemicalCardsLast;
+
+  //bundle
+  List<CardBundleResponse> get shopCardBundles =>
+      List.unmodifiable(_shopCardBundles);
+
+  bool get loadingShopCardBundles => _loadingShopCardBundles;
+
+  String? get shopCardBundlesError => _shopCardBundlesError;
+
+  bool get shopCardBundlesLast => _shopCardBundlesLast;
 
   /// Full name if set in profile; otherwise the part before @ in email.
   String get displayName {
@@ -225,6 +243,48 @@ class AppState extends ChangeNotifier {
       return false;
     } finally {
       _loadingShopChemicalCards = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> loadShopCardBundles({
+    bool refresh = false,
+  }) async {
+    if (_loadingShopCardBundles) return false;
+
+    if (refresh) {
+      _shopCardBundles.clear();
+      _shopCardBundlesPage = 0;
+      _shopCardBundlesLast = false;
+      _shopCardBundlesError = null;
+      notifyListeners();
+    }
+
+    if (_shopCardBundlesLast) return true;
+
+    _loadingShopCardBundles = true;
+    _shopCardBundlesError = null;
+    notifyListeners();
+
+    try {
+      final page = await _chemicalCardApi.getShopCardBundles(
+        page: _shopCardBundlesPage,
+        size: 20,
+      );
+
+      _shopCardBundles.addAll(page.items);
+      _shopCardBundlesPage = page.page + 1;
+      _shopCardBundlesLast = page.last;
+
+      notifyListeners();
+      return true;
+    } catch (e) {
+      debugPrint('Load shop card bundles error: $e');
+      _shopCardBundlesError = e.toString();
+      notifyListeners();
+      return false;
+    } finally {
+      _loadingShopCardBundles = false;
       notifyListeners();
     }
   }
