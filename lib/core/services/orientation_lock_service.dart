@@ -8,9 +8,28 @@ class OrientationLockService {
     'ar_chemistry_visual/orientation',
   );
 
+  static const scannerUnitySceneLoaded = 'scannerUnitySceneLoaded';
+  static const scannerUnityReadyFallback = 'scannerUnityReadyFallback';
+  static const scannerAlreadyReady = 'scannerAlreadyReady';
+  static const scannerEnter = 'scannerEnter';
+  static const scannerExit = 'scannerExit';
+
+  static Future<void> lockScannerLandscape({required String reason}) async {
+    await _invokeAndroidOrientation(
+      'lockScannerLandscape',
+      reason: reason,
+      arguments: <String, Object?>{'reason': reason},
+    );
+    await SystemChrome.setPreferredOrientations(const [
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+  }
+
   static Future<void> requestScannerLandscape() async {
     await SystemChrome.setPreferredOrientations(const [
       DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
     ]);
     await _invokeAndroidOrientation(
       'requestScannerLandscape',
@@ -18,15 +37,16 @@ class OrientationLockService {
     );
   }
 
-  static Future<void> restoreAppPortrait() async {
+  static Future<void> restoreAppPortrait({String reason = scannerExit}) async {
+    await _invokeAndroidOrientation(
+      'restoreAppPortrait',
+      reason: reason,
+      arguments: <String, Object?>{'reason': reason},
+    );
     await SystemChrome.setPreferredOrientations(const [
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    await _invokeAndroidOrientation(
-      'restoreAppPortrait',
-      reason: 'restoreAppPortrait',
-    );
   }
 
   static Future<void> logAndroidOrientationState(String reason) async {
@@ -36,11 +56,15 @@ class OrientationLockService {
   static Future<void> _invokeAndroidOrientation(
     String method, {
     String? reason,
+    Object? arguments,
   }) async {
     if (defaultTargetPlatform != TargetPlatform.android) return;
 
     try {
-      final state = await _channel.invokeMapMethod<String, Object?>(method);
+      final state = await _channel.invokeMapMethod<String, Object?>(
+        method,
+        arguments,
+      );
       debugPrint(
         '[AR_UNITY_TIMING] orientationNative $method '
         'reason=${reason ?? method} state=$state',

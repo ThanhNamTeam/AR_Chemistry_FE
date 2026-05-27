@@ -1,6 +1,7 @@
 package com.example.ar_chemistry_visual
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
@@ -18,6 +19,8 @@ import io.flutter.plugin.common.MethodChannel
 class MainActivity : FlutterUnityActivity() {
     private var pendingCameraPermissionResult: MethodChannel.Result? = null
     private val mainHandler = Handler(Looper.getMainLooper())
+    private var orientationRequestToken: Int = 0
+    private var scannerOrientationActive: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         logHost("onCreate activity=${this::class.java.name}")
@@ -28,6 +31,7 @@ class MainActivity : FlutterUnityActivity() {
     override fun onResume() {
         logHost("onResume cameraPermission=${hasCameraPermission()}")
         super.onResume()
+        reassertScannerLandscapeIfActive("onResume")
         forceUnityFrameMatchParent("onResume")
     }
 
@@ -67,16 +71,30 @@ class MainActivity : FlutterUnityActivity() {
             ORIENTATION_CHANNEL,
         ).setMethodCallHandler { call, result ->
             when (call.method) {
+                "lockScannerLandscape" -> {
+                    val flutterReason = call.argument<String>("reason")
+                        ?: "scannerEnter"
+                    lockScannerLandscape(flutterReason)
+                    result.success(orientationSnapshot())
+                }
+                "lockScannerLandscapeAfterUnityReady" -> {
+                    val flutterReason = call.argument<String>("reason")
+                        ?: "scannerUnityReadyLegacy"
+                    lockScannerLandscape(flutterReason)
+                    result.success(orientationSnapshot())
+                }
                 "requestScannerLandscape" -> {
-                    requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-                    logOrientation("requestScannerLandscape")
-                    forceUnityFrameMatchParent("requestScannerLandscape")
+                    lockScannerLandscape("requestScannerLandscape")
                     result.success(orientationSnapshot())
                 }
                 "restoreAppPortrait" -> {
+                    val flutterReason = call.argument<String>("reason") ?: "restoreAppPortrait"
+                    orientationRequestToken += 1
+                    scannerOrientationActive = false
                     requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-                    logOrientation("restoreAppPortrait")
-                    forceUnityFrameMatchParent("restoreAppPortrait")
+                    logOrientation(flutterReason)
+                    forceUnityFrameMatchParent(flutterReason)
+                    broadcastOrientationToUnity("portrait")
                     result.success(orientationSnapshot())
                 }
                 "getOrientationState" -> result.success(orientationSnapshot())
@@ -105,6 +123,7 @@ class MainActivity : FlutterUnityActivity() {
             "onConfigurationChanged orientation=${newConfig.orientation} " +
                 "requestedOrientation=$requestedOrientation",
         )
+        reassertScannerLandscapeIfActive("configurationChanged")
         forceUnityFrameMatchParent("configurationChanged")
     }
 
@@ -112,6 +131,7 @@ class MainActivity : FlutterUnityActivity() {
         super.onWindowFocusChanged(hasFocus)
         logHost("onWindowFocusChanged hasFocus=$hasFocus")
         if (hasFocus) {
+            reassertScannerLandscapeIfActive("windowFocus")
             forceUnityFrameMatchParent("windowFocus")
         }
     }
@@ -168,6 +188,60 @@ class MainActivity : FlutterUnityActivity() {
                 "requestedOrientation=$requestedOrientation " +
                 "configurationOrientation=$configOrientation",
         )
+    }
+
+    private fun lockScannerLandscape(reason: String) {
+        orientationRequestToken += 1
+        scannerOrientationActive = true
+        val token = orientationRequestToken
+        applyScannerLandscapeRequest(reason, token)
+        scheduleScannerLandscapeRetry(reason, token, 100L)
+        scheduleScannerLandscapeRetry(reason, token, 250L)
+        scheduleScannerLandscapeRetry(reason, token, 750L)
+        scheduleScannerLandscapeRetry(reason, token, 1500L)
+        scheduleScannerLandscapeRetry(reason, token, 3000L)
+    }
+
+    private fun scheduleScannerLandscapeRetry(reason: String, token: Int, delayMillis: Long) {
+        mainHandler.postDelayed({
+            applyScannerLandscapeRequest("$reason-retry-${delayMillis}ms", token)
+        }, delayMillis)
+    }
+
+    private fun applyScannerLandscapeRequest(reason: String, token: Int) {
+        if (!scannerOrientationActive || token != orientationRequestToken) {
+            logHost(
+                "orientationRequestSkipped reason=$reason token=$token " +
+                    "active=$scannerOrientationActive currentToken=$orientationRequestToken",
+            )
+            return
+        }
+
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+        logOrientation(reason)
+        // Unity embedded views can keep stale dimensions across Android rotations.
+        // Re-applying match-parent during each orientation assertion keeps the
+        // Unity frame aligned with the Flutter scanner viewport.
+        forceUnityFrameMatchParent(reason)
+        broadcastOrientationToUnity("landscape")
+    }
+
+    private fun reassertScannerLandscapeIfActive(reason: String) {
+        if (!scannerOrientationActive) return
+        applyScannerLandscapeRequest("$reason-reassert", orientationRequestToken)
+    }
+
+    private fun broadcastOrientationToUnity(orientation: String) {
+        val intent = Intent("com.unity3d.player.ORIENTATION_CHANGE").apply {
+            putExtra("orientation", orientation)
+            setPackage("com.unity3d.player") // Target the unity library package
+        }
+        try {
+            sendBroadcast(intent)
+            logHost("orientationBroadcast sent orientation=$orientation")
+        } catch (e: Exception) {
+            logHost("orientationBroadcast failed: ${e.message}")
+        }
     }
 
     private fun forceUnityFrameMatchParent(reason: String) {
