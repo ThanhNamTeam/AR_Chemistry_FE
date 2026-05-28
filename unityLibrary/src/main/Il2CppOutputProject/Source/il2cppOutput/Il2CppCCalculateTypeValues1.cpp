@@ -6314,20 +6314,20 @@ struct OptionDataList_t53255477D0A9C6980AB48693A520EFBC94DFFB96  : public Runtim
 {
 	List_1_tCEC1993B65ACD0529D8C0BB5006274E22D7D8A55* ___m_Options;
 };
-struct U3CMainFlowRoutineU3Ed__105_t7845304B99961543E8451A6DDE1063638FF1AE79  : public RuntimeObject
+struct U3CMainFlowRoutineU3Ed__106_t6272C95C4EDBC0040F112958486532110C34813B  : public RuntimeObject
 {
 	int32_t ___U3CU3E1__state;
 	RuntimeObject* ___U3CU3E2__current;
 	DropperMoveToPoint_t4240C4675A9769AEFED60DF5704B7164D307A298* ___U3CU3E4__this;
 };
-struct U3CSmoothLiquidScaleToU3Ed__108_tF9BEE0135D9079BB5425AD4EF7C0A8920B2FA688  : public RuntimeObject
+struct U3CSmoothLiquidScaleToU3Ed__109_t8C724FF47E370FC1AA7FE42607B75415C83F7B96  : public RuntimeObject
 {
 	int32_t ___U3CU3E1__state;
 	RuntimeObject* ___U3CU3E2__current;
 	DropperMoveToPoint_t4240C4675A9769AEFED60DF5704B7164D307A298* ___U3CU3E4__this;
 	float ___targetY;
 };
-struct U3CWaitWithCloudUpdateU3Ed__140_t54D1A74C575CCCDC9FDEEA5B61F50749C3FBF68A  : public RuntimeObject
+struct U3CWaitWithCloudUpdateU3Ed__142_tD1FD75C1D48D97A0BCA5075507EE3306644E7AC2  : public RuntimeObject
 {
 	int32_t ___U3CU3E1__state;
 	RuntimeObject* ___U3CU3E2__current;
@@ -7694,7 +7694,7 @@ struct ShaderConstants_tD617760F09F8C9DC848F17132C7FF95B809CF3A3  : public Runti
 struct ShaderConstants_t998A46E4D1C565424F91473978005C07EA120A70  : public RuntimeObject
 {
 };
-struct U3CAnimateSpoonPathU3Ed__129_t95A3E205EBD20F95B29FEC8E4B02D2601B046C94  : public RuntimeObject
+struct U3CAnimateSpoonPathU3Ed__130_tCC419558FF10E233314DD2E4C458256EDD51C08F  : public RuntimeObject
 {
 	int32_t ___U3CU3E1__state;
 	RuntimeObject* ___U3CU3E2__current;
@@ -7704,33 +7704,33 @@ struct U3CAnimateSpoonPathU3Ed__129_t95A3E205EBD20F95B29FEC8E4B02D2601B046C94  :
 	bool ___U3CusedPathPointU3E5__2;
 	int32_t ___U3CiU3E5__3;
 };
-struct U3CAnimateSpoonPathPointU3Ed__130_t5B0563720EEA449277D95EF9AB3E39FF0952DCEA  : public RuntimeObject
+struct U3CAnimateSpoonPathPointU3Ed__131_t1E370AD04137E047413BEF64A9B3F99003384368  : public RuntimeObject
 {
 	int32_t ___U3CU3E1__state;
 	RuntimeObject* ___U3CU3E2__current;
 	SulfurCombustionReaction_t8A82DF12DCF2B033F7B10BB271753C4C9A934C1E* ___U3CU3E4__this;
 	int32_t ___index;
 };
-struct U3CAutoStartNextFrameU3Ed__121_t6783064C33BBBE26C05BEDEFD04EA936D657E2D7  : public RuntimeObject
+struct U3CAutoStartNextFrameU3Ed__122_t474A57D4EAFFAFDAE79F73603F4B9DB7B4A20BBC  : public RuntimeObject
 {
 	int32_t ___U3CU3E1__state;
 	RuntimeObject* ___U3CU3E2__current;
 	SulfurCombustionReaction_t8A82DF12DCF2B033F7B10BB271753C4C9A934C1E* ___U3CU3E4__this;
 };
-struct U3CAutoStartSequenceU3Ed__122_t57D62BE4A701DF567676220F4EFD749A4A61D8F2  : public RuntimeObject
+struct U3CAutoStartSequenceU3Ed__123_tCE77555331345766314783F77CEF236478C57B5B  : public RuntimeObject
 {
 	int32_t ___U3CU3E1__state;
 	RuntimeObject* ___U3CU3E2__current;
 	SulfurCombustionReaction_t8A82DF12DCF2B033F7B10BB271753C4C9A934C1E* ___U3CU3E4__this;
 };
-struct U3CCompletionWaitRoutineU3Ed__195_tC357E3FDF652C66CE53CE8F5675E751B2CDF9164  : public RuntimeObject
+struct U3CCompletionWaitRoutineU3Ed__197_tE132E2FD4F798A354355ABE3C5958A1BCF8802F4  : public RuntimeObject
 {
 	int32_t ___U3CU3E1__state;
 	RuntimeObject* ___U3CU3E2__current;
 	SulfurCombustionReaction_t8A82DF12DCF2B033F7B10BB271753C4C9A934C1E* ___U3CU3E4__this;
 	float ___U3CelapsedU3E5__2;
 };
-struct U3COxygenSequenceRoutineU3Ed__126_t2F257B02314E1BB0981EB6BE6532744EF25462D9  : public RuntimeObject
+struct U3COxygenSequenceRoutineU3Ed__127_tB40BE2EBE3B4C4898727B2AF88688BE517FC53DA  : public RuntimeObject
 {
 	int32_t ___U3CU3E1__state;
 	RuntimeObject* ___U3CU3E2__current;
@@ -7739,7 +7739,7 @@ struct U3COxygenSequenceRoutineU3Ed__126_t2F257B02314E1BB0981EB6BE6532744EF25462
 	bool ___U3CcanAnimateLidU3E5__3;
 	int32_t ___U3CspoonPathStartIndexU3E5__4;
 };
-struct U3CReactionRoutineU3Ed__124_t8EAE77C67D160CB5DD447C39D0C5201307F04A57  : public RuntimeObject
+struct U3CReactionRoutineU3Ed__125_t2ADFF269DF238733C6A39A297D7CCC5D1F80C0E4  : public RuntimeObject
 {
 	int32_t ___U3CU3E1__state;
 	RuntimeObject* ___U3CU3E2__current;
@@ -7747,7 +7747,7 @@ struct U3CReactionRoutineU3Ed__124_t8EAE77C67D160CB5DD447C39D0C5201307F04A57  : 
 	float ___U3CdurationU3E5__2;
 	float ___U3CelapsedU3E5__3;
 };
-struct U3CWaitReactionSecondsU3Ed__125_tE77E7BBD66BAE037CF7B9AC967897B1C9DA7A70A  : public RuntimeObject
+struct U3CWaitReactionSecondsU3Ed__126_t3155DC838CF53333F3612B76F98C323093464CE8  : public RuntimeObject
 {
 	int32_t ___U3CU3E1__state;
 	RuntimeObject* ___U3CU3E2__current;
@@ -7756,7 +7756,7 @@ struct U3CWaitReactionSecondsU3Ed__125_tE77E7BBD66BAE037CF7B9AC967897B1C9DA7A70A
 	float ___U3CdurationU3E5__2;
 	float ___U3CelapsedU3E5__3;
 };
-struct U3CWaitUntilSulfurColorCompleteU3Ed__127_tEBCDBFF82DD9F6D8B2617A68C6F59DF4F43A79CC  : public RuntimeObject
+struct U3CWaitUntilSulfurColorCompleteU3Ed__128_t3761E94A6600D3B1D10C42AE9B9548B023977631  : public RuntimeObject
 {
 	int32_t ___U3CU3E1__state;
 	RuntimeObject* ___U3CU3E2__current;
@@ -23268,7 +23268,7 @@ struct U3CMoveToFlaskU3Ed__20_tF6C86D2564DE4D03241A0F764C87259A40F47853  : publi
 	float ___U3CelapsedU3E5__6;
 	float ___U3CdurationU3E5__7;
 };
-struct U3CAnimateDripThroughLiquidU3Ed__134_tC2038F37EAA880185A26CC82AC360DA7EDE8D2CA  : public RuntimeObject
+struct U3CAnimateDripThroughLiquidU3Ed__136_t5D50980BF8028D7559D24FFC6DA112F82BF7EB15  : public RuntimeObject
 {
 	int32_t ___U3CU3E1__state;
 	RuntimeObject* ___U3CU3E2__current;
@@ -23286,7 +23286,7 @@ struct U3CAnimateDripThroughLiquidU3Ed__134_tC2038F37EAA880185A26CC82AC360DA7EDE
 	float ___U3CdripWorldSizeU3E5__7;
 	int32_t ___U3CpathCloudletCountU3E5__8;
 };
-struct U3CAnimateDripToSurfaceU3Ed__132_t6721E5977A58F517FF5718FFA768CD9926334176  : public RuntimeObject
+struct U3CAnimateDripToSurfaceU3Ed__133_t8F57879029940F3A5E6C9D73A5EECBAFCEBCDBD2  : public RuntimeObject
 {
 	int32_t ___U3CU3E1__state;
 	RuntimeObject* ___U3CU3E2__current;
@@ -23297,7 +23297,7 @@ struct U3CAnimateDripToSurfaceU3Ed__132_t6721E5977A58F517FF5718FFA768CD992633417
 	DropperMoveToPoint_t4240C4675A9769AEFED60DF5704B7164D307A298* ___U3CU3E4__this;
 	float ___U3CelapsedU3E5__2;
 };
-struct U3CAnimateDripToSurfaceLocalU3Ed__133_tAB5A5AF62431A86F5934602C5BF269AE6BF875C3  : public RuntimeObject
+struct U3CAnimateDripToSurfaceLocalU3Ed__135_tFA80A57335D484F8544A4CEB9051A90FBBA72567  : public RuntimeObject
 {
 	int32_t ___U3CU3E1__state;
 	RuntimeObject* ___U3CU3E2__current;
@@ -23308,7 +23308,7 @@ struct U3CAnimateDripToSurfaceLocalU3Ed__133_tAB5A5AF62431A86F5934602C5BF269AE6B
 	DropperMoveToPoint_t4240C4675A9769AEFED60DF5704B7164D307A298* ___U3CU3E4__this;
 	float ___U3CelapsedU3E5__2;
 };
-struct U3CCloudReactionRoutineU3Ed__110_t0835FE95C7D39CD58B45FBEDABDFE255C0F34A34  : public RuntimeObject
+struct U3CCloudReactionRoutineU3Ed__111_t2E9D5F4DFA12D7101F8F54D1470583E6C9808A82  : public RuntimeObject
 {
 	int32_t ___U3CU3E1__state;
 	RuntimeObject* ___U3CU3E2__current;
@@ -23317,7 +23317,7 @@ struct U3CCloudReactionRoutineU3Ed__110_t0835FE95C7D39CD58B45FBEDABDFE255C0F34A3
 	float ___U3CelapsedU3E5__2;
 	float ___U3CdurationU3E5__3;
 };
-struct U3CDripRoutineU3Ed__107_t968D825C30C336DB7A868931E67A4510B9588186  : public RuntimeObject
+struct U3CDripRoutineU3Ed__108_t538343830351BB8C691DE012571E49543FCEBCFF  : public RuntimeObject
 {
 	int32_t ___U3CU3E1__state;
 	RuntimeObject* ___U3CU3E2__current;
@@ -23326,20 +23326,21 @@ struct U3CDripRoutineU3Ed__107_t968D825C30C336DB7A868931E67A4510B9588186  : publ
 	DropperMoveToPoint_t4240C4675A9769AEFED60DF5704B7164D307A298* ___U3CU3E4__this;
 	int32_t ___dripCount;
 	Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* ___dripSpawnPoint;
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___targetLocalPosition;
 	bool ___showVisibleDrips;
 	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___holdLocalPosition;
 	bool ___allowLiquidScale;
-	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___targetLocalPosition;
 	bool ___triggerClouding;
 	float ___U3CtimeBetweenDripsU3E5__2;
 	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___U3CdripSpawnLocalPositionU3E5__3;
-	bool ___U3CreactionStartedU3E5__4;
-	int32_t ___U3CiU3E5__5;
-	GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* ___U3CdripU3E5__6;
-	bool ___U3CstopAfterThisDripU3E5__7;
-	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___U3CimpactWorldU3E5__8;
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___U3CvisibleTargetLocalPositionU3E5__4;
+	bool ___U3CreactionStartedU3E5__5;
+	int32_t ___U3CiU3E5__6;
+	GameObject_t76FEDD663AB33C991A9C9A23129337651094216F* ___U3CdripU3E5__7;
+	bool ___U3CstopAfterThisDripU3E5__8;
+	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___U3CimpactWorldU3E5__9;
 };
-struct U3CMoveSegmentU3Ed__111_tC3669FFDFFC03E60F971E41C123648A556B02744  : public RuntimeObject
+struct U3CMoveSegmentU3Ed__112_t1674EB35706CDE7B63101F2EECCE31CEB4AAFC89  : public RuntimeObject
 {
 	int32_t ___U3CU3E1__state;
 	RuntimeObject* ___U3CU3E2__current;
@@ -23351,7 +23352,7 @@ struct U3CMoveSegmentU3Ed__111_tC3669FFDFFC03E60F971E41C123648A556B02744  : publ
 	float ___U3CelapsedU3E5__2;
 	float ___U3CdurationU3E5__3;
 };
-struct U3CMoveSegmentLocalU3Ed__112_t9D1B088A3C0CF99C9762767E2D8F3578938FF7A2  : public RuntimeObject
+struct U3CMoveSegmentLocalU3Ed__113_tA0DDB3607595D231C39C1C5B99E0C8118C8A16BC  : public RuntimeObject
 {
 	int32_t ___U3CU3E1__state;
 	RuntimeObject* ___U3CU3E2__current;
@@ -23363,7 +23364,7 @@ struct U3CMoveSegmentLocalU3Ed__112_t9D1B088A3C0CF99C9762767E2D8F3578938FF7A2  :
 	float ___U3CelapsedU3E5__2;
 	float ___U3CdurationU3E5__3;
 };
-struct U3CRunDropperU3Ed__106_t8F28282B670EBFCCB535C0989A00FB32859D1B18  : public RuntimeObject
+struct U3CRunDropperU3Ed__107_t57147C93284B325F966A927D6A791C69D514C6E3  : public RuntimeObject
 {
 	int32_t ___U3CU3E1__state;
 	RuntimeObject* ___U3CU3E2__current;
@@ -23382,7 +23383,7 @@ struct U3CRunDropperU3Ed__106_t8F28282B670EBFCCB535C0989A00FB32859D1B18  : publi
 	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___U3CpourLocalU3E5__5;
 	Vector3_t24C512C7B96BBABAD472002D0BA2BDA40A5A80B2 ___U3CsurfaceLocalU3E5__6;
 };
-struct U3CSmoothLiquidScaleToU3Ed__109_t8C724FF47E370FC1AA7FE42607B75415C83F7B96  : public RuntimeObject
+struct U3CSmoothLiquidScaleToU3Ed__110_t8808C29A84D643D635C415A57B3B0664FC63C19E  : public RuntimeObject
 {
 	int32_t ___U3CU3E1__state;
 	RuntimeObject* ___U3CU3E2__current;
@@ -24800,7 +24801,7 @@ struct SubOvfUInt32_t932A73DDF809B950D1F5CB758FA83F3342686CBA  : public SubOvfIn
 struct SubOvfUInt64_t74BCE9D28306123871C806A42D7C5B6E2114A4EC  : public SubOvfInstruction_tD4711C82E1052DA357221075D4F71E27F1A47D19
 {
 };
-struct U3CAnimateTransformU3Ed__128_t0985556A1458F702BEF1ED3026D150FDD1BEB507  : public RuntimeObject
+struct U3CAnimateTransformU3Ed__129_tBB2FFC0D9296A4BAA087D3C912E6A7E548AD9B33  : public RuntimeObject
 {
 	int32_t ___U3CU3E1__state;
 	RuntimeObject* ___U3CU3E2__current;
@@ -39855,6 +39856,7 @@ struct SulfurCombustionReaction_t8A82DF12DCF2B033F7B10BB271753C4C9A934C1E  : pub
 	Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* ___lidOpenTarget;
 	Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* ___lidThrowOutsideTarget;
 	Transform_tB27202C6F4E36D225EE28A13E4D662BF99785DB1* ___lidSafeClosedTarget;
+	float ___lidMouthSealOverlap;
 	bool ___stopLidAtMouth;
 	float ___sequenceStartDelay;
 	float ___extraBlueFlameHoldDelay;
@@ -54352,29 +54354,29 @@ const Il2CppTypeDefinitionSizes g_typeDefinitionSize8727 = { sizeof(DropperPose_
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize8728;
 const Il2CppTypeDefinitionSizes g_typeDefinitionSize8728 = { sizeof(CloudSeed_t0C06AA137439D1BB40910F5AFF5AE86DEF3C2BED), -1, 0, 0 };
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize8729;
-const Il2CppTypeDefinitionSizes g_typeDefinitionSize8729 = { sizeof(U3CAnimateDripThroughLiquidU3Ed__134_tC2038F37EAA880185A26CC82AC360DA7EDE8D2CA), -1, 0, 0 };
+const Il2CppTypeDefinitionSizes g_typeDefinitionSize8729 = { sizeof(U3CAnimateDripThroughLiquidU3Ed__136_t5D50980BF8028D7559D24FFC6DA112F82BF7EB15), -1, 0, 0 };
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize8730;
-const Il2CppTypeDefinitionSizes g_typeDefinitionSize8730 = { sizeof(U3CAnimateDripToSurfaceU3Ed__132_t6721E5977A58F517FF5718FFA768CD9926334176), -1, 0, 0 };
+const Il2CppTypeDefinitionSizes g_typeDefinitionSize8730 = { sizeof(U3CAnimateDripToSurfaceU3Ed__133_t8F57879029940F3A5E6C9D73A5EECBAFCEBCDBD2), -1, 0, 0 };
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize8731;
-const Il2CppTypeDefinitionSizes g_typeDefinitionSize8731 = { sizeof(U3CAnimateDripToSurfaceLocalU3Ed__133_tAB5A5AF62431A86F5934602C5BF269AE6BF875C3), -1, 0, 0 };
+const Il2CppTypeDefinitionSizes g_typeDefinitionSize8731 = { sizeof(U3CAnimateDripToSurfaceLocalU3Ed__135_tFA80A57335D484F8544A4CEB9051A90FBBA72567), -1, 0, 0 };
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize8732;
-const Il2CppTypeDefinitionSizes g_typeDefinitionSize8732 = { sizeof(U3CCloudReactionRoutineU3Ed__110_t0835FE95C7D39CD58B45FBEDABDFE255C0F34A34), -1, 0, 0 };
+const Il2CppTypeDefinitionSizes g_typeDefinitionSize8732 = { sizeof(U3CCloudReactionRoutineU3Ed__111_t2E9D5F4DFA12D7101F8F54D1470583E6C9808A82), -1, 0, 0 };
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize8733;
-const Il2CppTypeDefinitionSizes g_typeDefinitionSize8733 = { sizeof(U3CDripRoutineU3Ed__107_t968D825C30C336DB7A868931E67A4510B9588186), -1, 0, 0 };
+const Il2CppTypeDefinitionSizes g_typeDefinitionSize8733 = { sizeof(U3CDripRoutineU3Ed__108_t538343830351BB8C691DE012571E49543FCEBCFF), -1, 0, 0 };
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize8734;
-const Il2CppTypeDefinitionSizes g_typeDefinitionSize8734 = { sizeof(U3CMainFlowRoutineU3Ed__105_t7845304B99961543E8451A6DDE1063638FF1AE79), -1, 0, 0 };
+const Il2CppTypeDefinitionSizes g_typeDefinitionSize8734 = { sizeof(U3CMainFlowRoutineU3Ed__106_t6272C95C4EDBC0040F112958486532110C34813B), -1, 0, 0 };
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize8735;
-const Il2CppTypeDefinitionSizes g_typeDefinitionSize8735 = { sizeof(U3CMoveSegmentU3Ed__111_tC3669FFDFFC03E60F971E41C123648A556B02744), -1, 0, 0 };
+const Il2CppTypeDefinitionSizes g_typeDefinitionSize8735 = { sizeof(U3CMoveSegmentU3Ed__112_t1674EB35706CDE7B63101F2EECCE31CEB4AAFC89), -1, 0, 0 };
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize8736;
-const Il2CppTypeDefinitionSizes g_typeDefinitionSize8736 = { sizeof(U3CMoveSegmentLocalU3Ed__112_t9D1B088A3C0CF99C9762767E2D8F3578938FF7A2), -1, 0, 0 };
+const Il2CppTypeDefinitionSizes g_typeDefinitionSize8736 = { sizeof(U3CMoveSegmentLocalU3Ed__113_tA0DDB3607595D231C39C1C5B99E0C8118C8A16BC), -1, 0, 0 };
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize8737;
-const Il2CppTypeDefinitionSizes g_typeDefinitionSize8737 = { sizeof(U3CRunDropperU3Ed__106_t8F28282B670EBFCCB535C0989A00FB32859D1B18), -1, 0, 0 };
+const Il2CppTypeDefinitionSizes g_typeDefinitionSize8737 = { sizeof(U3CRunDropperU3Ed__107_t57147C93284B325F966A927D6A791C69D514C6E3), -1, 0, 0 };
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize8738;
-const Il2CppTypeDefinitionSizes g_typeDefinitionSize8738 = { sizeof(U3CSmoothLiquidScaleToU3Ed__108_tF9BEE0135D9079BB5425AD4EF7C0A8920B2FA688), -1, 0, 0 };
+const Il2CppTypeDefinitionSizes g_typeDefinitionSize8738 = { sizeof(U3CSmoothLiquidScaleToU3Ed__109_t8C724FF47E370FC1AA7FE42607B75415C83F7B96), -1, 0, 0 };
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize8739;
-const Il2CppTypeDefinitionSizes g_typeDefinitionSize8739 = { sizeof(U3CSmoothLiquidScaleToU3Ed__109_t8C724FF47E370FC1AA7FE42607B75415C83F7B96), -1, 0, 0 };
+const Il2CppTypeDefinitionSizes g_typeDefinitionSize8739 = { sizeof(U3CSmoothLiquidScaleToU3Ed__110_t8808C29A84D643D635C415A57B3B0664FC63C19E), -1, 0, 0 };
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize8740;
-const Il2CppTypeDefinitionSizes g_typeDefinitionSize8740 = { sizeof(U3CWaitWithCloudUpdateU3Ed__140_t54D1A74C575CCCDC9FDEEA5B61F50749C3FBF68A), -1, 0, 0 };
+const Il2CppTypeDefinitionSizes g_typeDefinitionSize8740 = { sizeof(U3CWaitWithCloudUpdateU3Ed__142_tD1FD75C1D48D97A0BCA5075507EE3306644E7AC2), -1, 0, 0 };
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize8741;
 const Il2CppTypeDefinitionSizes g_typeDefinitionSize8741 = { sizeof(DropperMoveToPoint_t4240C4675A9769AEFED60DF5704B7164D307A298), -1, 0, 0 };
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize8742;
@@ -54458,25 +54460,25 @@ const Il2CppTypeDefinitionSizes g_typeDefinitionSize8780 = { sizeof(TransformSca
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize8781;
 const Il2CppTypeDefinitionSizes g_typeDefinitionSize8781 = { sizeof(TimelineMarkers_tF5812A1DBCA641F8A5A1CE1C655136C6DB297329)+ sizeof(RuntimeObject), sizeof(TimelineMarkers_tF5812A1DBCA641F8A5A1CE1C655136C6DB297329_marshaled_pinvoke), 0, 0 };
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize8782;
-const Il2CppTypeDefinitionSizes g_typeDefinitionSize8782 = { sizeof(U3CAnimateSpoonPathU3Ed__129_t95A3E205EBD20F95B29FEC8E4B02D2601B046C94), -1, 0, 0 };
+const Il2CppTypeDefinitionSizes g_typeDefinitionSize8782 = { sizeof(U3CAnimateSpoonPathU3Ed__130_tCC419558FF10E233314DD2E4C458256EDD51C08F), -1, 0, 0 };
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize8783;
-const Il2CppTypeDefinitionSizes g_typeDefinitionSize8783 = { sizeof(U3CAnimateSpoonPathPointU3Ed__130_t5B0563720EEA449277D95EF9AB3E39FF0952DCEA), -1, 0, 0 };
+const Il2CppTypeDefinitionSizes g_typeDefinitionSize8783 = { sizeof(U3CAnimateSpoonPathPointU3Ed__131_t1E370AD04137E047413BEF64A9B3F99003384368), -1, 0, 0 };
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize8784;
-const Il2CppTypeDefinitionSizes g_typeDefinitionSize8784 = { sizeof(U3CAnimateTransformU3Ed__128_t0985556A1458F702BEF1ED3026D150FDD1BEB507), -1, 0, 0 };
+const Il2CppTypeDefinitionSizes g_typeDefinitionSize8784 = { sizeof(U3CAnimateTransformU3Ed__129_tBB2FFC0D9296A4BAA087D3C912E6A7E548AD9B33), -1, 0, 0 };
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize8785;
-const Il2CppTypeDefinitionSizes g_typeDefinitionSize8785 = { sizeof(U3CAutoStartNextFrameU3Ed__121_t6783064C33BBBE26C05BEDEFD04EA936D657E2D7), -1, 0, 0 };
+const Il2CppTypeDefinitionSizes g_typeDefinitionSize8785 = { sizeof(U3CAutoStartNextFrameU3Ed__122_t474A57D4EAFFAFDAE79F73603F4B9DB7B4A20BBC), -1, 0, 0 };
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize8786;
-const Il2CppTypeDefinitionSizes g_typeDefinitionSize8786 = { sizeof(U3CAutoStartSequenceU3Ed__122_t57D62BE4A701DF567676220F4EFD749A4A61D8F2), -1, 0, 0 };
+const Il2CppTypeDefinitionSizes g_typeDefinitionSize8786 = { sizeof(U3CAutoStartSequenceU3Ed__123_tCE77555331345766314783F77CEF236478C57B5B), -1, 0, 0 };
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize8787;
-const Il2CppTypeDefinitionSizes g_typeDefinitionSize8787 = { sizeof(U3CCompletionWaitRoutineU3Ed__195_tC357E3FDF652C66CE53CE8F5675E751B2CDF9164), -1, 0, 0 };
+const Il2CppTypeDefinitionSizes g_typeDefinitionSize8787 = { sizeof(U3CCompletionWaitRoutineU3Ed__197_tE132E2FD4F798A354355ABE3C5958A1BCF8802F4), -1, 0, 0 };
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize8788;
-const Il2CppTypeDefinitionSizes g_typeDefinitionSize8788 = { sizeof(U3COxygenSequenceRoutineU3Ed__126_t2F257B02314E1BB0981EB6BE6532744EF25462D9), -1, 0, 0 };
+const Il2CppTypeDefinitionSizes g_typeDefinitionSize8788 = { sizeof(U3COxygenSequenceRoutineU3Ed__127_tB40BE2EBE3B4C4898727B2AF88688BE517FC53DA), -1, 0, 0 };
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize8789;
-const Il2CppTypeDefinitionSizes g_typeDefinitionSize8789 = { sizeof(U3CReactionRoutineU3Ed__124_t8EAE77C67D160CB5DD447C39D0C5201307F04A57), -1, 0, 0 };
+const Il2CppTypeDefinitionSizes g_typeDefinitionSize8789 = { sizeof(U3CReactionRoutineU3Ed__125_t2ADFF269DF238733C6A39A297D7CCC5D1F80C0E4), -1, 0, 0 };
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize8790;
-const Il2CppTypeDefinitionSizes g_typeDefinitionSize8790 = { sizeof(U3CWaitReactionSecondsU3Ed__125_tE77E7BBD66BAE037CF7B9AC967897B1C9DA7A70A), -1, 0, 0 };
+const Il2CppTypeDefinitionSizes g_typeDefinitionSize8790 = { sizeof(U3CWaitReactionSecondsU3Ed__126_t3155DC838CF53333F3612B76F98C323093464CE8), -1, 0, 0 };
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize8791;
-const Il2CppTypeDefinitionSizes g_typeDefinitionSize8791 = { sizeof(U3CWaitUntilSulfurColorCompleteU3Ed__127_tEBCDBFF82DD9F6D8B2617A68C6F59DF4F43A79CC), -1, 0, 0 };
+const Il2CppTypeDefinitionSizes g_typeDefinitionSize8791 = { sizeof(U3CWaitUntilSulfurColorCompleteU3Ed__128_t3761E94A6600D3B1D10C42AE9B9548B023977631), -1, 0, 0 };
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize8792;
 const Il2CppTypeDefinitionSizes g_typeDefinitionSize8792 = { sizeof(SulfurCombustionReaction_t8A82DF12DCF2B033F7B10BB271753C4C9A934C1E), -1, sizeof(SulfurCombustionReaction_t8A82DF12DCF2B033F7B10BB271753C4C9A934C1E_StaticFields), 0 };
 IL2CPP_EXTERN_C_CONST Il2CppTypeDefinitionSizes g_typeDefinitionSize8793;
