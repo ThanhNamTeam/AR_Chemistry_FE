@@ -1,3 +1,5 @@
+import 'package:ar_chemistry_visual/presentation/quiz/providers/student_quiz_provider.dart';
+import 'package:ar_chemistry_visual/presentation/quiz/screens/student_quiz_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +23,6 @@ import 'presentation/shared/screens/portal_profile_screen.dart';
 import 'shared/styles/app_colors.dart';
 import 'routes/app_routes.dart';
 import 'core/navigation/app_navigator.dart';
-
 
 // Screens
 import 'presentation/auth/screens/onboarding_screen.dart';
@@ -76,9 +77,7 @@ Future<void> main() async {
 
 Future<void> _configureAmplify() async {
   try {
-    await Amplify.addPlugin(
-      AmplifyAuthCognito(),
-    );
+    await Amplify.addPlugin(AmplifyAuthCognito());
 
     await Amplify.configure(amplifyconfig);
 
@@ -111,6 +110,7 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
         ChangeNotifierProvider(create: (_) => AdminProvider()),
         ChangeNotifierProvider(create: (_) => ChatProvider()),
         ChangeNotifierProvider(create: (_) => AiFabVisibility()),
+        ChangeNotifierProvider(create: (_) => StudentQuizProvider()),
       ],
       child: Consumer2<ThemeProvider, LocaleProvider>(
         builder: (context, themeProvider, localeProvider, _) {
@@ -162,6 +162,7 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
       AppRoutes.staffHome: (_) => const StaffHomeScreen(),
       AppRoutes.adminHome: (_) => const AdminHomeScreen(),
       AppRoutes.portalProfile: (_) => const PortalProfileScreen(),
+      AppRoutes.quizList: (_) => const StudentQuizListScreen(),
     };
   }
 

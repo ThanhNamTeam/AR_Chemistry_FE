@@ -441,7 +441,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       (Icons.menu_book_outlined, 'Library', AppRoutes.library),
       (Icons.store_outlined, 'Shop', AppRoutes.shop),
       (Icons.shopping_cart_outlined, 'Cart', AppRoutes.cart),
-      (Icons.quiz_outlined, 'Quiz', AppRoutes.quiz),
+      (Icons.quiz_outlined, 'Quiz', AppRoutes.quizList),
       (Icons.shopping_bag_outlined, 'My Bag', AppRoutes.myBag),
     ];
 

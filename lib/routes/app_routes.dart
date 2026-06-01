@@ -26,4 +26,5 @@ class AppRoutes {
   static const String staffHome = '/staff';
   static const String adminHome = '/admin';
   static const String portalProfile = '/portal-profile';
+  static const String quizList = '/quiz-list';
 }

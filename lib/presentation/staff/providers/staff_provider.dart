@@ -1,8 +1,16 @@
 import 'package:flutter/foundation.dart';
 
+import '../../../core/api/staff_quiz_management_api.dart';
+import '../../../core/api/upload_api.dart';
+import '../../../core/models/request/generate_upload_url_request.dart';
+import '../../../core/models/request/start_quiz_import_request.dart';
 import '../../../core/storage/feedback_storage_service.dart';
+import '../../../domain/models/staff_lesson_content_model.dart';
+import '../../../domain/models/staff_quiz_detail_model.dart';
+import '../../../domain/models/staff_quiz_summary_model.dart';
 import '../../../domain/models/feedback_model.dart';
 import '../../../domain/models/quiz_draft_model.dart';
+import '../../../domain/models/staff_lesson_quiz_overview_model.dart';
 
 class StaffFeedbackItem {
   final String id;
@@ -50,6 +58,74 @@ class StaffProvider extends ChangeNotifier {
   List<QuizDraftModel> _quizDrafts = [];
   bool _loading = false;
 
+  final StaffQuizManagementApi _staffQuizManagementApi =
+  StaffQuizManagementApi();
+
+  final UploadApi _uploadApi = UploadApi();
+
+  bool _importingQuizCsv = false;
+  String? _quizImportError;
+
+  String? _selectedLessonContent;
+  bool _loadingLessonContent = false;
+  String? _lessonContentError;
+
+  bool _publishingQuiz = false;
+  String? _publishQuizError;
+
+  bool get publishingQuiz => _publishingQuiz;
+  String? get publishQuizError => _publishQuizError;
+
+  String? get selectedLessonContent => _selectedLessonContent;
+  bool get loadingLessonContent => _loadingLessonContent;
+  String? get lessonContentError => _lessonContentError;
+
+  bool get importingQuizCsv => _importingQuizCsv;
+  String? get quizImportError => _quizImportError;
+
+  List<StaffLessonQuizOverviewModel> _lessonQuizOverviews = [];
+  bool _loadingLessonQuizOverviews = false;
+  String? _lessonQuizOverviewError;
+
+  String? _selectedLessonCode;
+  List<StaffQuizSummaryModel> _selectedLessonQuizzes = [];
+  bool _loadingSelectedLessonQuizzes = false;
+  String? _selectedLessonQuizError;
+
+  StaffLessonQuizPromptModel? _selectedLessonPrompt;
+  bool _loadingLessonPrompt = false;
+  String? _lessonPromptError;
+
+  StaffLessonQuizPromptModel? get selectedLessonPrompt => _selectedLessonPrompt;
+  bool get loadingLessonPrompt => _loadingLessonPrompt;
+  String? get lessonPromptError => _lessonPromptError;
+
+  StaffQuizDetailModel? _selectedQuizDetail;
+  bool _loadingQuizDetail = false;
+  String? _quizDetailError;
+
+  StaffQuizDetailModel? get selectedQuizDetail => _selectedQuizDetail;
+
+  bool get loadingQuizDetail => _loadingQuizDetail;
+
+  String? get quizDetailError => _quizDetailError;
+
+  String? get selectedLessonCode => _selectedLessonCode;
+
+  List<StaffQuizSummaryModel> get selectedLessonQuizzes =>
+      List.unmodifiable(_selectedLessonQuizzes);
+
+  bool get loadingSelectedLessonQuizzes => _loadingSelectedLessonQuizzes;
+
+  String? get selectedLessonQuizError => _selectedLessonQuizError;
+
+  List<StaffLessonQuizOverviewModel> get lessonQuizOverviews =>
+      List.unmodifiable(_lessonQuizOverviews);
+
+  bool get loadingLessonQuizOverviews => _loadingLessonQuizOverviews;
+
+  String? get lessonQuizOverviewError => _lessonQuizOverviewError;
+
   List<StaffFeedbackItem> get feedbacks => List.unmodifiable(_feedbacks);
   List<QuizDraftModel> get quizDrafts => List.unmodifiable(_quizDrafts);
   List<QuizDraftModel> get pendingQuizzes =>
@@ -88,10 +164,178 @@ class StaffProvider extends ChangeNotifier {
   Future<void> initialize() async {
     _loading = true;
     notifyListeners();
+
     await _loadFeedbacks();
-    _seedMockQuizDrafts();
+    await loadLessonQuizOverviews();
+
     _loading = false;
     notifyListeners();
+  }
+
+  Future<void> publishQuiz(String quizCode) async {
+    _publishingQuiz = true;
+    _publishQuizError = null;
+    notifyListeners();
+
+    try {
+      await _staffQuizManagementApi.publishQuiz(quizCode);
+
+      await loadQuizDetail(quizCode);
+
+      if (_selectedLessonCode != null) {
+        await loadQuizzesByLesson(_selectedLessonCode!);
+      }
+
+      await loadLessonQuizOverviews();
+    } catch (e) {
+      _publishQuizError = e.toString();
+      rethrow;
+    } finally {
+      _publishingQuiz = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> importQuizCsv({
+    required String lessonCode,
+    required String fileName,
+    required Uint8List bytes,
+    required int fileSize,
+  }) async {
+    _importingQuizCsv = true;
+    _quizImportError = null;
+    notifyListeners();
+
+    try {
+      const contentType = 'text/csv';
+
+      final presigned = await _uploadApi.generateUploadUrl(
+        GenerateUploadUrlRequest(
+          fileName: fileName,
+          contentType: contentType,
+          fileSize: fileSize,
+          purposeCode: 'QUIZ_IMPORT',
+        ),
+      );
+
+      await _uploadApi.uploadFileToS3(
+        uploadUrl: presigned.uploadUrl,
+        bytes: bytes,
+        contentType: presigned.contentType ?? contentType,
+      );
+
+      await _staffQuizManagementApi.startQuizImport(
+        StartQuizImportRequest(
+          lessonCode: lessonCode,
+          s3Key: presigned.storageKey,
+          originalFilename: fileName,
+        ),
+      );
+
+      await loadLessonQuizOverviews();
+
+      if (_selectedLessonCode == lessonCode) {
+        await loadQuizzesByLesson(lessonCode);
+      }
+    } catch (e) {
+      _quizImportError = e.toString();
+      rethrow;
+    } finally {
+      _importingQuizCsv = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> loadLessonContent(String lessonCode) async {
+    _loadingLessonContent = true;
+    _lessonContentError = null;
+    notifyListeners();
+
+    try {
+      _selectedLessonContent = await _staffQuizManagementApi.getLessonContent(
+        lessonCode: lessonCode,
+      );
+    } catch (e) {
+      _lessonContentError = e.toString();
+    } finally {
+      _loadingLessonContent = false;
+      notifyListeners();
+    }
+  }
+
+  void clearSelectedLessonPrompt() {
+    _selectedLessonPrompt = null;
+    _lessonPromptError = null;
+    _loadingLessonPrompt = false;
+    notifyListeners();
+  }
+
+  Future<void> loadQuizDetail(
+      String quizCode, {
+        int page = 0,
+        int size = 10,
+      }) async {
+    _loadingQuizDetail = true;
+    _quizDetailError = null;
+    notifyListeners();
+
+    try {
+      final result = await _staffQuizManagementApi.getQuizDetail(
+        quizCode: quizCode,
+        page: page,
+        size: size,
+      );
+
+      _selectedQuizDetail = result;
+    } catch (e) {
+      _quizDetailError = e.toString();
+    } finally {
+      _loadingQuizDetail = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> loadQuizzesByLesson(String lessonCode) async {
+    _selectedLessonCode = lessonCode;
+    _loadingSelectedLessonQuizzes = true;
+    _selectedLessonQuizError = null;
+    notifyListeners();
+
+    try {
+      final result = await _staffQuizManagementApi.getLessonQuizzes(
+        lessonCode: lessonCode,
+      );
+
+      _selectedLessonQuizzes = result;
+    } catch (e) {
+      _selectedLessonQuizError = e.toString();
+    } finally {
+      _loadingSelectedLessonQuizzes = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> loadLessonQuizOverviews({
+    int page = 0,
+    int size = 20,
+  }) async {
+    _loadingLessonQuizOverviews = true;
+    _lessonQuizOverviewError = null;
+    notifyListeners();
+
+    try {
+      final result = await _staffQuizManagementApi.getQuizManagementLessons(
+        page: page,
+        size: size,
+      );
+
+      _lessonQuizOverviews = result.items;
+    } catch (e) {
+      _lessonQuizOverviewError = e.toString();
+    } finally {
+      _loadingLessonQuizOverviews = false;
+      notifyListeners();
+    }
   }
 
   Future<void> _loadFeedbacks() async {
@@ -148,28 +392,6 @@ class StaffProvider extends ChangeNotifier {
         ),
       ];
 
-  void _seedMockQuizDrafts() {
-    if (_quizDrafts.isNotEmpty) return;
-    _quizDrafts = [
-      QuizDraftModel(
-        id: 'q1',
-        title: 'Phản ứng axit-bazơ cơ bản',
-        topic: 'Acid-Base',
-        sourceDocument: 'acid_base_chapter.pdf',
-        status: QuizDraftStatus.pendingReview,
-        createdAt: DateTime.now().subtract(const Duration(hours: 5)),
-      ),
-      QuizDraftModel(
-        id: 'q2',
-        title: 'Cân bằng phương trình hóa học',
-        topic: 'Balancing Equations',
-        sourceDocument: 'balancing_lab.docx',
-        status: QuizDraftStatus.pendingReview,
-        createdAt: DateTime.now().subtract(const Duration(hours: 12)),
-      ),
-    ];
-  }
-
   Future<void> submitFeedbackResponse(String id, String response) async {
     final idx = _feedbacks.indexWhere((f) => f.id == id);
     if (idx < 0) return;
@@ -206,6 +428,41 @@ class StaffProvider extends ChangeNotifier {
     if (idx < 0) return;
     _quizDrafts[idx] =
         _quizDrafts[idx].copyWith(status: status, staffNote: note);
+    notifyListeners();
+  }
+
+  void clearSelectedLessonQuizzes() {
+    _selectedLessonCode = null;
+    _selectedLessonQuizzes = [];
+    _selectedLessonQuizError = null;
+    _loadingSelectedLessonQuizzes = false;
+
+    _selectedQuizDetail = null;
+    _quizDetailError = null;
+    _loadingQuizDetail = false;
+
+    _selectedLessonPrompt = null;
+    _lessonPromptError = null;
+    _loadingLessonPrompt = false;
+
+    _selectedLessonContent = null;
+    _lessonContentError = null;
+    _loadingLessonContent = false;
+
+    notifyListeners();
+  }
+
+  void clearSelectedQuizDetail() {
+    _selectedQuizDetail = null;
+    _quizDetailError = null;
+    _loadingQuizDetail = false;
+    notifyListeners();
+  }
+
+  void clearSelectedLessonContent() {
+    _selectedLessonContent = null;
+    _lessonContentError = null;
+    _loadingLessonContent = false;
     notifyListeners();
   }
 }
