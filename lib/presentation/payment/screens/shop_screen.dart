@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../core/models/response/card_bundle_response.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../../shared/widgets/knowledge_points_badge.dart';
 import '../../../shared/widgets/chemical_card_widget.dart';
@@ -8,6 +9,9 @@ import '../../home/providers/app_state.dart';
 import '../../home/providers/theme_provider.dart';
 import '../../../domain/models/bundle_price_quote.dart';
 import '../../../domain/models/chemical_card_model.dart';
+import 'package:intl/intl.dart';
+
+import 'package:image_picker/image_picker.dart';
 
 class ShopScreen extends StatefulWidget {
   const ShopScreen({super.key});
@@ -21,6 +25,22 @@ class _ShopScreenState extends State<ShopScreen> {
   String? _selectedId;
   int _selectedPrice = 0;
   String _selectedType = 'card';
+  String? _proofImageUrl;
+  String? _transferCode;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final state = context.read<AppState>();
+
+      state.loadShopChemicalCards(refresh: true);
+      state.loadShopCardBundles(refresh: true);
+    });
+  }
+
+
 
   void _showToast(String msg, {bool isError = false}) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -40,12 +60,15 @@ class _ShopScreenState extends State<ShopScreen> {
       _showToast('Not enough Knowledge Points', isError: true);
       return;
     }
-    final ok = type == 'card'
+
+    final ok = type == 'CHEMICAL_CARD'
         ? await state.purchaseCard(id)
         : await state.purchaseBundle(id);
+
     if (!mounted) return;
+
     if (ok) {
-      _showToast(type == 'card'
+      _showToast(type == 'CHEMICAL_CARD'
           ? 'Card purchased! Check your bag.'
           : 'Bundle added to your bag!');
     } else {
@@ -53,24 +76,82 @@ class _ShopScreenState extends State<ShopScreen> {
     }
   }
 
+  Future<void> _pickProofImage(AppState state) async {
+    final picker = ImagePicker();
+
+    final picked = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 80,
+    );
+
+    if (picked == null) return;
+
+    final bytes = await picked.readAsBytes();
+    final fileSize = bytes.length;
+    final fileName = picked.name;
+
+    final lowerName = fileName.toLowerCase();
+    final contentType = lowerName.endsWith('.png')
+        ? 'image/png'
+        : 'image/jpeg';
+
+    final fileUrl = await state.uploadPaymentProof(
+      fileName: fileName,
+      contentType: contentType,
+      fileSize: fileSize,
+      bytes: bytes,
+    );
+
+    if (!mounted) return;
+
+    if (fileUrl == null) {
+      _showToast('Upload proof image failed', isError: true);
+      return;
+    }
+
+    setState(() {
+      _proofImageUrl = fileUrl;
+    });
+
+    _showToast('Proof image uploaded successfully');
+  }
+
   void _openQR(String id, int price, String type) {
     setState(() {
       _selectedId = id;
       _selectedPrice = price;
       _selectedType = type;
+      _proofImageUrl = null;
+      _transferCode = 'CHEM_${DateTime.now().millisecondsSinceEpoch}';
       _showQRModal = true;
     });
   }
 
   Future<void> _confirmQRPayment(AppState state) async {
     if (_selectedId == null) return;
-    if (_selectedType == 'card') {
-      await state.purchaseCard(_selectedId!, deductPoints: false);
-    } else {
-      await state.purchaseBundle(_selectedId!, deductPoints: false);
+
+    if (_proofImageUrl == null || _proofImageUrl!.isEmpty) {
+      _showToast('Please upload payment proof image first', isError: true);
+      return;
     }
+
+    final ok = await state.createBankPayment(
+      itemId: _selectedId!,
+      itemType: _selectedType,
+      proofImageUrl: _proofImageUrl!,
+    );
+
     if (!mounted) return;
+
+    if (!ok) {
+      _showToast('Create payment failed', isError: true);
+      return;
+    }
+
     setState(() => _showQRModal = false);
+
+    _showToast('Payment submitted. Please wait for staff approval.');
+
     Navigator.pushNamed(context, AppRoutes.paymentSuccess);
   }
 
@@ -78,8 +159,21 @@ class _ShopScreenState extends State<ShopScreen> {
   Widget build(BuildContext context) {
     context.watch<ThemeProvider>();
     final state = context.watch<AppState>();
-    final catalog = state.shopCatalogCards;
-    final bundles = ChemicalData.bundles;
+    final catalog = state.shopChemicalCards
+        .map((card) => ChemicalCardModel(
+      id: card.id, // UUID backend
+      symbol: card.symbol,
+      name: card.name,
+      atomicNumber: card.atomicNumber,
+      color: ChemicalData.colorForCategory(card.category),
+      price: card.price,
+      category: CardCategory.element,
+      isUnlocked: state.isCardOwned(card.id),
+    ))
+        .toList();
+    final bundles = state.shopCardBundles;
+
+
 
     return Scaffold(
       backgroundColor: AppColors.backgroundDark,
@@ -196,37 +290,50 @@ class _ShopScreenState extends State<ShopScreen> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 14),
-                          ...bundles.map((b) {
-                            final quote = state.getBundleQuote(b.id);
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 16),
-                              child: _BundleCard(
-                                bundle: b,
-                                quote: quote,
-                                allCards: state.cards,
-                                isOwned: state.isCardOwned,
-                                onBuyPoints: quote.canPurchase
-                                    ? () => _buyWithPoints(
-                                        state, b.id, quote.totalPrice, 'bundle')
-                                    : null,
-                                onBuyBank: quote.canPurchase
-                                    ? () => _openQR(
-                                        b.id, quote.totalPrice, 'bundle')
-                                    : null,
-                                onAddToCart: quote.canPurchase &&
-                                        !state.isBundleInCart(b.id)
-                                    ? () async {
-                                        final ok =
-                                            await state.addBundleToCart(b.id);
-                                        if (ok) {
-                                          _showToast('Bundle added to cart!');
-                                        }
-                                      }
-                                    : null,
+                          if (state.loadingShopCardBundles)
+                            const Center(
+                              child: Padding(
+                                padding: EdgeInsets.all(16),
+                                child: CircularProgressIndicator(),
                               ),
-                            );
-                          }),
+                            )
+                          else ...[
+                            const SizedBox(height: 14),
+                            ...bundles.map((b) {
+                              final canPurchase = b.purchasable;
+
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 16),
+                                child: _BundleCard(
+                                  bundle: b,
+                                  isOwned: state.isCardOwned,
+                                  onBuyPoints: canPurchase
+                                      ? () => _buyWithPoints(
+                                    state,
+                                    b.id,
+                                    b.discountedPrice,
+                                    'CARD_BUNDLE',
+                                  )
+                                      : null,
+                                  onBuyBank: canPurchase
+                                      ? () => _openQR(
+                                    b.id,
+                                    b.discountedPrice,
+                                    'CARD_BUNDLE',
+                                  )
+                                      : null,
+                                  onAddToCart: canPurchase && !state.isBundleInCart(b.id)
+                                      ? () async {
+                                    final ok = await state.addBundleToCart(b.id);
+                                    if (ok) {
+                                      _showToast('Bundle added to cart!');
+                                    }
+                                  }
+                                      : null,
+                                ),
+                              );
+                            }),
+                          ],
 
                           const SizedBox(height: 8),
                           Text('Single Cards',
@@ -258,11 +365,11 @@ class _ShopScreenState extends State<ShopScreen> {
                                 onBuyWithPoints: owned
                                     ? null
                                     : () => _buyWithPoints(
-                                        state, card.id, card.price, 'card'),
+                                        state, card.id, card.price, 'CHEMICAL_CARD'),
                                 onBuyWithBank: owned
                                     ? null
                                     : () => _openQR(
-                                        card.id, card.price, 'card'),
+                                        card.id, card.price, 'CHEMICAL_CARD'),
                                 onAddToCart: owned
                                     ? null
                                     : () async {
@@ -286,6 +393,9 @@ class _ShopScreenState extends State<ShopScreen> {
               if (_showQRModal)
                 _QRModal(
                   price: _selectedPrice,
+                  transferCode: _transferCode ?? '',
+                  proofImageUrl: _proofImageUrl,
+                  onPickProof: () => _pickProofImage(state),
                   onConfirm: () => _confirmQRPayment(state),
                   onCancel: () => setState(() => _showQRModal = false),
                 ),
@@ -298,9 +408,7 @@ class _ShopScreenState extends State<ShopScreen> {
 }
 
 class _BundleCard extends StatelessWidget {
-  final BundleModel bundle;
-  final BundlePriceQuote quote;
-  final List<ChemicalCardModel> allCards;
+  final CardBundleResponse bundle;
   final bool Function(String id) isOwned;
   final VoidCallback? onBuyPoints;
   final VoidCallback? onBuyBank;
@@ -308,8 +416,6 @@ class _BundleCard extends StatelessWidget {
 
   const _BundleCard({
     required this.bundle,
-    required this.quote,
-    required this.allCards,
     required this.isOwned,
     this.onBuyPoints,
     this.onBuyBank,
@@ -318,11 +424,8 @@ class _BundleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cards = bundle.cardIds
-        .map((id) => allCards.firstWhere((c) => c.id == id,
-            orElse: () => allCards.first))
-        .toList();
-    final canBuy = quote.canPurchase;
+    final cards = bundle.cards;
+    final canBuy = bundle.purchasable;
 
     return Opacity(
       opacity: canBuy ? 1 : 0.5,
@@ -357,7 +460,7 @@ class _BundleCard extends StatelessWidget {
                             color: AppColors.textPrimary,
                             fontFamily: 'Inter')),
                     const SizedBox(height: 4),
-                    Text('${bundle.cardIds.length} cards included',
+                    Text('${bundle.cards.length} cards included',
                         style: TextStyle(
                             fontSize: 12,
                             color: AppColors.textSecondary,
@@ -368,7 +471,7 @@ class _BundleCard extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  if (quote.hasSale) ...[
+                  if (bundle.hasSale) ...[
                     Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 10, vertical: 4),
@@ -377,7 +480,7 @@ class _BundleCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        quote.saleLabel,
+                        '-${bundle.salePercent}%',
                         style: const TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w700,
@@ -388,7 +491,7 @@ class _BundleCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      '${quote.compareAtPrice} KP',
+                      '${bundle.originalPrice} KP',
                       style: TextStyle(
                         fontSize: 12,
                         color: AppColors.textSecondary.withOpacity(0.6),
@@ -399,7 +502,7 @@ class _BundleCard extends StatelessWidget {
                     const SizedBox(height: 2),
                   ],
                   Text(
-                    canBuy ? '${quote.totalPrice} KP' : 'Owned',
+                    canBuy ? '${bundle.discountedPrice} KP' : 'Owned',
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
@@ -415,35 +518,43 @@ class _BundleCard extends StatelessWidget {
           Row(
             children: cards.map((card) {
               final owned = isOwned(card.id);
+              final cardColor = ChemicalData.colorForCategory(card.category);
+
               return Padding(
                 padding: const EdgeInsets.only(right: 8),
                 child: Opacity(
                   opacity: owned ? 0.4 : 1,
                   child: Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 8),
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
                     decoration: BoxDecoration(
-                      color: card.color.withOpacity(owned ? 0.05 : 0.1),
+                      color: cardColor.withOpacity(owned ? 0.05 : 0.1),
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
-                          color: card.color.withOpacity(owned ? 0.2 : 0.4)),
+                        color: cardColor.withOpacity(owned ? 0.2 : 0.4),
+                      ),
                     ),
                     child: Column(
                       children: [
-                        Text(card.symbol,
-                            style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w900,
-                                color: owned ? Colors.white24 : card.color,
-                                fontFamily: 'Inter')),
                         Text(
-                            owned ? 'Owned' : card.name,
-                            style: TextStyle(
-                                fontSize: 10,
-                                color: owned
-                                    ? AppColors.textSecondary
-                                    : AppColors.textSecondary,
-                                fontFamily: 'Inter')),
+                          card.symbol,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w900,
+                            color: owned ? Colors.white24 : cardColor,
+                            fontFamily: 'Inter',
+                          ),
+                        ),
+                        Text(
+                          owned ? 'Owned' : card.name,
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: AppColors.textSecondary,
+                            fontFamily: 'Inter',
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -546,17 +657,30 @@ class _BundleCard extends StatelessWidget {
 
 class _QRModal extends StatelessWidget {
   final int price;
+  final String transferCode;
+  final String? proofImageUrl;
+  final VoidCallback onPickProof;
   final VoidCallback onConfirm;
   final VoidCallback onCancel;
 
   const _QRModal({
     required this.price,
+    required this.transferCode,
+    required this.proofImageUrl,
+    required this.onPickProof,
     required this.onConfirm,
     required this.onCancel,
   });
 
   @override
   Widget build(BuildContext context) {
+
+    final qrUrl =
+        'https://img.vietqr.io/image/'
+        'VCB-1031285717-print.png'
+        '?amount=$price'
+        '&addInfo=$transferCode'
+        '&accountName=NGUYEN%20HOAI%20AN';
     return Container(
       color: Colors.black.withOpacity(0.8),
       child: Center(
@@ -578,15 +702,14 @@ class _QRModal extends StatelessWidget {
                       fontFamily: 'Inter')),
               const SizedBox(height: 20),
               // QR placeholder
-              Container(
-                width: 180, height: 180,
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey.shade300, width: 2),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(
+                  qrUrl,
+                  width: 220,
+                  height: 220,
+                  fit: BoxFit.cover,
                 ),
-                child: Icon(Icons.qr_code,
-                    size: 120, color: Colors.black54),
               ),
               const SizedBox(height: 8),
               Text('Scan QR code to pay',
@@ -607,28 +730,69 @@ class _QRModal extends StatelessWidget {
                   children: [
                     _InfoRow('Receiver', 'Chemistry AR'),
                     const SizedBox(height: 6),
-                    _InfoRow('Amount', '${(price * 1000).toString()} VND'),
+                    _InfoRow(
+                      'Amount',
+                      NumberFormat.currency(
+                        locale: 'vi_VN',
+                        symbol: 'VND',
+                      ).format(price),
+                    ),
                     const SizedBox(height: 6),
-                    _InfoRow('Content', 'Chemistry AR Card'),
+                    _InfoRow('Content', transferCode),
                   ],
+                ),
+              ),
+              const SizedBox(height: 14),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: onPickProof,
+                  icon: Icon(
+                    proofImageUrl == null ? Icons.upload_file : Icons.check_circle,
+                    color: Colors.white,
+                    size: 18,
+                  ),
+                  label: Text(
+                    proofImageUrl == null
+                        ? 'Upload payment proof'
+                        : 'Payment proof selected',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'Inter',
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                    proofImageUrl == null ? Colors.orange.shade700 : Colors.green.shade700,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: onConfirm,
+                  onPressed: proofImageUrl == null ? null : onConfirm,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue.shade700,
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
                   ),
-                  child: Text('Confirm Payment',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                          fontFamily: 'Inter')),
+                  child: Text(
+                    proofImageUrl == null
+                        ? 'Upload proof image first'
+                        : 'Confirm Payment',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'Inter',
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(height: 10),

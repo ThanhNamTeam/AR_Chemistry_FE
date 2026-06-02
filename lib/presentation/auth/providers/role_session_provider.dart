@@ -1,6 +1,6 @@
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/foundation.dart';
 
-import '../../../core/auth/role_accounts.dart';
 import '../../../core/storage/avatar_storage_service.dart';
 import '../../../core/storage/role_session_service.dart';
 import '../../../domain/models/user_role.dart';
@@ -13,7 +13,7 @@ class RoleSessionProvider extends ChangeNotifier {
   String? _userName;
   String? _userPhone;
   String? _userAvatar;
-  String _password = '';
+
 
   UserRole? get role => _role;
   String? get email => _email;
@@ -91,7 +91,6 @@ class RoleSessionProvider extends ChangeNotifier {
     _userName = profile['fullname'] as String?;
     if (_userName != null && _userName!.trim().isEmpty) _userName = null;
     _userPhone = profile['phone'] as String?;
-    _password = profile['password'] as String? ?? _defaultPassword(role);
     final avatar = profile['avatar'] as String?;
     _userAvatar =
         AvatarStorageService.avatarFileExists(avatar) ? avatar : null;
@@ -101,15 +100,8 @@ class RoleSessionProvider extends ChangeNotifier {
     return {
       'fullname': role == UserRole.staff ? 'Staff Member' : 'Administrator',
       'phone': '',
-      'password': _defaultPassword(role),
       if (_email != null) 'email': _email,
     };
-  }
-
-  String _defaultPassword(UserRole role) {
-    return role == UserRole.staff
-        ? RoleAccounts.staffPassword
-        : RoleAccounts.adminPassword;
   }
 
   Future<String?> _persistProfile({String? passwordOverride}) async {
@@ -120,36 +112,9 @@ class RoleSessionProvider extends ChangeNotifier {
       'fullname': _userName ?? '',
       'email': _email,
       'phone': _userPhone ?? '',
-      'password': passwordOverride ?? _password,
       if (_userAvatar != null) 'avatar': _userAvatar,
     });
     return null;
-  }
-
-  /// Returns staff/admin role if credentials match; null → use normal user login.
-  Future<UserRole?> tryRoleLogin(String email, String password) async {
-    final normalized = email.trim().toLowerCase();
-
-    UserRole? matchedRole;
-    if (normalized == RoleAccounts.staffEmail) {
-      matchedRole = UserRole.staff;
-    } else if (normalized == RoleAccounts.adminEmail) {
-      matchedRole = UserRole.admin;
-    } else {
-      return null;
-    }
-
-    final stored = await _storage.getProfile(matchedRole);
-    final expectedPassword = stored?['password'] as String? ??
-        _defaultPassword(matchedRole);
-    if (password != expectedPassword) return null;
-
-    _role = matchedRole;
-    _email = normalized;
-    await _storage.save(matchedRole, normalized);
-    await _loadProfile();
-    notifyListeners();
-    return matchedRole;
   }
 
   Future<String?> updateProfile({
@@ -166,7 +131,6 @@ class RoleSessionProvider extends ChangeNotifier {
     if (wantsPasswordChange) {
       if (password.length < 6) return 'Mật khẩu tối thiểu 6 ký tự.';
       if (password != confirmPassword) return 'Mật khẩu xác nhận không khớp.';
-      _password = password;
     }
 
     _userName = fullName.trim();
@@ -197,13 +161,38 @@ class RoleSessionProvider extends ChangeNotifier {
   }
 
   Future<void> logout() async {
+
+    try {
+
+      await Amplify.Auth.signOut();
+
+      debugPrint("Cognito logout success");
+
+    } catch (e, s) {
+
+      debugPrint(e.toString());
+      debugPrint(s.toString());
+    }
+
     _role = null;
     _email = null;
     _userName = null;
     _userPhone = null;
     _userAvatar = null;
-    _password = '';
+
     await _storage.clear();
+
+    notifyListeners();
+  }
+
+  Future<void> clearLocalSessionOnly() async {
+    _role = null;
+    _email = null;
+
+    // Nếu RoleSessionProvider có lưu role/email vào storage riêng,
+    // thì clear storage đó ở đây.
+    // Tuyệt đối KHÔNG gọi Amplify.Auth.signOut() trong hàm này.
+
     notifyListeners();
   }
 }

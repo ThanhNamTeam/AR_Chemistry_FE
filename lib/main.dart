@@ -1,3 +1,5 @@
+import 'package:ar_chemistry_visual/presentation/quiz/providers/student_quiz_provider.dart';
+import 'package:ar_chemistry_visual/presentation/quiz/screens/student_quiz_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -22,7 +24,6 @@ import 'shared/styles/app_colors.dart';
 import 'routes/app_routes.dart';
 import 'core/navigation/app_navigator.dart';
 
-
 // Screens
 import 'presentation/auth/screens/onboarding_screen.dart';
 import 'presentation/auth/screens/login_screen.dart';
@@ -30,6 +31,7 @@ import 'presentation/auth/screens/verify_otp_screen.dart';
 import 'presentation/auth/screens/complete_profile_screen.dart';
 import 'presentation/auth/screens/forgot_password_screen.dart';
 import 'presentation/home/screens/home_screen.dart';
+import 'presentation/packages/package_screen.dart';
 import 'presentation/home/screens/profile_screen.dart';
 import 'presentation/inventory/screens/library_screen.dart';
 import 'presentation/inventory/screens/my_bag_screen.dart';
@@ -42,6 +44,11 @@ import 'presentation/payment/screens/payment_page.dart';
 import 'presentation/payment/screens/payment_success_screen.dart';
 import 'presentation/quiz/screens/quiz_screen.dart';
 import 'presentation/feedback/screens/feedback_screen.dart';
+import 'presentation/ai_chat/providers/ai_fab_visibility.dart';
+import 'presentation/ai_chat/providers/chat_provider.dart';
+import 'presentation/ai_chat/screens/ai_chat_screen.dart';
+import 'presentation/shared/widgets/user_portal_ai_overlay.dart';
+import 'presentation/mini_game/screens/mini_game_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -71,9 +78,7 @@ Future<void> main() async {
 
 Future<void> _configureAmplify() async {
   try {
-    await Amplify.addPlugin(
-      AmplifyAuthCognito(),
-    );
+    await Amplify.addPlugin(AmplifyAuthCognito());
 
     await Amplify.configure(amplifyconfig);
 
@@ -104,6 +109,9 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
         ChangeNotifierProvider(create: (_) => RoleSessionProvider()),
         ChangeNotifierProvider(create: (_) => StaffProvider()),
         ChangeNotifierProvider(create: (_) => AdminProvider()),
+        ChangeNotifierProvider(create: (_) => ChatProvider()),
+        ChangeNotifierProvider(create: (_) => AiFabVisibility()),
+        ChangeNotifierProvider(create: (_) => StudentQuizProvider()),
       ],
       child: Consumer2<ThemeProvider, LocaleProvider>(
         builder: (context, themeProvider, localeProvider, _) {
@@ -120,7 +128,11 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
             routes: _buildRoutes(),
             onGenerateRoute: _onGenerateRoute,
             builder: (context, child) {
-              return ARUnityHost(child: child ?? const SizedBox.shrink());
+              return ARUnityHost(
+                child: UserPortalAiOverlay(
+                  child: child ?? const SizedBox.shrink(),
+                ),
+              );
             },
           );
         },
@@ -138,17 +150,21 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
       AppRoutes.home: (_) => const HomeScreen(),
       AppRoutes.profile: (_) => const ProfileScreen(),
       AppRoutes.feedback: (_) => const FeedbackScreen(),
+      AppRoutes.aiChat: (_) => const AiChatScreen(),
       AppRoutes.library: (_) => const LibraryScreen(),
       AppRoutes.quiz: (_) => const QuizScreen(),
       AppRoutes.myBag: (_) => const MyBagScreen(),
       AppRoutes.scan: (_) => const ScanScreen(),
       AppRoutes.shop: (_) => const ShopScreen(),
+      AppRoutes.packages: (_) => const PackageScreen(),
       AppRoutes.cart: (_) => const CartScreen(),
       AppRoutes.payment: (_) => const PaymentPage(),
       AppRoutes.paymentSuccess: (_) => const PaymentSuccessScreen(),
       AppRoutes.staffHome: (_) => const StaffHomeScreen(),
       AppRoutes.adminHome: (_) => const AdminHomeScreen(),
       AppRoutes.portalProfile: (_) => const PortalProfileScreen(),
+      AppRoutes.quizList: (_) => const StudentQuizListScreen(),
+      AppRoutes.miniGame: (_) => const MiniGameScreen(),
     };
   }
 

@@ -1,0 +1,54 @@
+ManifestFileVersion: 0
+UnityVersion: 6000.4.7f1
+CRC: 4223371549
+HashAppended: 0
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: marker_na
+      Dependencies: {}
+    Info_1:
+      Name: marker_h2o
+      Dependencies: {}
+    Info_2:
+      Name: marker_kmno4
+      Dependencies: {}
+    Info_3:
+      Name: marker_zn
+      Dependencies: {}
+    Info_4:
+      Name: marker_cu
+      Dependencies: {}
+    Info_5:
+      Name: marker_mg
+      Dependencies: {}
+    Info_6:
+      Name: marker_al
+      Dependencies: {}
+    Info_7:
+      Name: marker_s
+      Dependencies: {}
+    Info_8:
+      Name: marker_kclo3
+      Dependencies: {}
+    Info_9:
+      Name: marker_na2so4
+      Dependencies: {}
+    Info_10:
+      Name: marker_bacl2
+      Dependencies: {}
+    Info_11:
+      Name: marker_c
+      Dependencies: {}
+    Info_12:
+      Name: marker_k
+      Dependencies: {}
+    Info_13:
+      Name: marker_ca
+      Dependencies: {}
+    Info_14:
+      Name: marker_hcl
+      Dependencies: {}
+    Info_15:
+      Name: marker_fe
+      Dependencies: {}

@@ -95,9 +95,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     context.watch<LocaleProvider>();
     context.watch<ThemeProvider>();
     final state = context.watch<AppState>();
-    final avatarPath = state.userAvatar;
-    final hasAvatar =
-        AvatarStorageService.avatarFileExists(avatarPath);
+
+    final avatar = state.userAvatar;
+
+    final isNetworkAvatar = avatar != null &&
+        (avatar.startsWith('http://') || avatar.startsWith('https://'));
+
+    final hasLocalAvatar = avatar != null &&
+        !isNetworkAvatar &&
+        AvatarStorageService.avatarFileExists(avatar);
+
+    final hasAvatar = isNetworkAvatar || hasLocalAvatar;
 
     return Scaffold(
       backgroundColor: AppColors.backgroundDark,
@@ -170,9 +178,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     : AppColors.cyanEmeraldGradient,
                                 image: hasAvatar
                                     ? DecorationImage(
-                                        image: FileImage(File(avatarPath!)),
-                                        fit: BoxFit.cover,
-                                      )
+                                  image: isNetworkAvatar
+                                      ? NetworkImage(avatar)
+                                      : FileImage(File(avatar!)) as ImageProvider,
+                                  fit: BoxFit.cover,
+                                )
                                     : null,
                                 boxShadow: [
                                   BoxShadow(

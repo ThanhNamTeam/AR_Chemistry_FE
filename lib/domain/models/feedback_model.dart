@@ -1,9 +1,14 @@
 enum FeedbackType {
   bug('BUG', 'Báo lỗi'),
-  experience('EXPERIENCE', 'Trải nghiệm'),
-  suggestion('SUGGESTION', 'Góp ý');
+  uiUx('UI_UX', 'Giao diện / trải nghiệm'),
+  performance('PERFORMANCE', 'Hiệu năng'),
+  featureRequest('FEATURE_REQUEST', 'Đề xuất tính năng'),
+  contentError('CONTENT_ERROR', 'Sai nội dung'),
+  question('QUESTION', 'Câu hỏi'),
+  other('OTHER', 'Khác');
 
   const FeedbackType(this.apiValue, this.label);
+
   final String apiValue;
   final String label;
 }

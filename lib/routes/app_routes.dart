@@ -15,13 +15,17 @@ class AppRoutes {
   static const String scan = '/scan';
   static const String result = '/result';
   static const String shop = '/shop';
+  static const String packages = '/packages';
   static const String cart = '/cart';
   static const String payment = '/payment';
   static const String myBag = '/my-bag';
   static const String profile = '/profile';
   static const String feedback = '/feedback';
+  static const String aiChat = '/ai-chat';
   static const String paymentSuccess = '/payment-success';
   static const String staffHome = '/staff';
   static const String adminHome = '/admin';
   static const String portalProfile = '/portal-profile';
+  static const String quizList = '/quiz-list';
+  static const String miniGame = '/mini-game';
 }

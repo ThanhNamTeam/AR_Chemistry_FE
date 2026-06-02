@@ -6,7 +6,7 @@
     <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
     <uses-feature android:name="android.hardware.camera.front" android:required="false"/>
     <application
-        android:label="ar_chemistry_visual"
+        android:label="LABEDU"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
@@ -35,6 +35,16 @@
                 <data
                     android:scheme="chemistry"
                     android:host="oauth"/>
+            </intent-filter>
+            <intent-filter android:label="logout">
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+
+                <data
+                    android:scheme="chemistry"
+                    android:host="logout"/>
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

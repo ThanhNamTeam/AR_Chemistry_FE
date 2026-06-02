@@ -12,7 +12,7 @@ android {
     namespace "com.unity3d.player"
     ndkPath project.property("unity.androidNdkPath").toString()
     ndkVersion project.property("unity.androidNdkVersion").toString()
-    compileSdk 36
+    compileSdk 37
     buildToolsVersion "36.0.0"
 
     compileOptions {
@@ -23,9 +23,11 @@ android {
     defaultConfig {
         consumerProguardFiles "proguard-unity.txt"
         minSdk 29
+        //noinspection OldTargetApi
         targetSdk 36
 
         ndk {
+            //noinspection ChromeOsAbiSupport
             abiFilters "arm64-v8a"
             debugSymbolLevel "none"
         }
@@ -105,11 +107,11 @@ def getSdkDir() {
     return local.getProperty('sdk.dir')
 }
 
-def getIl2CppOutputPath(String workingDir, String abi) {
+static def getIl2CppOutputPath(String workingDir, String abi) {
     return "${workingDir}/src/main/jniLibs/${abi}/libil2cpp.so";
 }
 
-def getIl2CppSymbolPath(String workingDir, String abi) {
+static def getIl2CppSymbolPath(String workingDir, String abi) {
     return "${workingDir}/symbols/${abi}/libil2cpp.so";
 }
 

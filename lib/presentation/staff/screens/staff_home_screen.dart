@@ -1,3 +1,4 @@
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,6 +12,7 @@ import '../../shared/widgets/portal/portal_shell.dart';
 import '../providers/staff_provider.dart';
 import '../widgets/staff_dashboard_tab.dart';
 import '../widgets/staff_feedback_tab.dart';
+import '../widgets/staff_payment_tab.dart';
 import '../widgets/staff_quiz_tab.dart';
 
 class StaffHomeScreen extends StatefulWidget {
@@ -34,6 +36,9 @@ class _StaffHomeScreenState extends State<StaffHomeScreen> {
 
   Future<void> _logout() async {
     await context.read<RoleSessionProvider>().logout();
+    final session = await Amplify.Auth.fetchAuthSession();
+
+    debugPrint(session.isSignedIn.toString());
     await activatePortal(context, AppPortal.auth);
     if (!mounted) return;
     Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (_) => false);
@@ -67,6 +72,11 @@ class _StaffHomeScreenState extends State<StaffHomeScreen> {
           label: l10n.feedback,
         ),
         PortalNavItem(
+          icon: Icons.payments_outlined,
+          activeIcon: Icons.payments_rounded,
+          label: 'Thanh toán',
+        ),
+        PortalNavItem(
           icon: Icons.quiz_outlined,
           activeIcon: Icons.quiz_rounded,
           label: l10n.quizPipeline,
@@ -75,9 +85,11 @@ class _StaffHomeScreenState extends State<StaffHomeScreen> {
       pages: [
         StaffDashboardTab(
           onOpenFeedback: () => setState(() => _index = 1),
-          onOpenQuiz: () => setState(() => _index = 2),
+          onOpenPayment: () => setState(() => _index = 2),
+          onOpenQuiz: () => setState(() => _index = 3),
         ),
         const StaffFeedbackTab(),
+        const StaffPaymentTab(),
         const StaffQuizTab(),
       ],
     );

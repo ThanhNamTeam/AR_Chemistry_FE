@@ -1,0 +1,20 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.vuforia.engine.VuforiaEngine.launcher-mergeDebugResources-2:/values-v21/values-v21.xml",
+            "map": [
+                {
+                    "source": "D:\\EXE201\\ar_chemistry_fe\\unityLibrary\\build\\intermediates\\packaged_res\\debug\\packageDebugResources\\values-v21\\values-v21.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endLines": "3",
+                        "endColumns": "10",
+                        "endOffsets": "156"
+                    }
+                }
+            ]
+        }
+    ]
+}

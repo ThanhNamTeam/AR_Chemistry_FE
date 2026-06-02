@@ -89,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
 
     // Student session chỉ lưu trong AppState, không qua RoleSessionProvider.
     if (roleSession.role == UserRole.student) {
-      await roleSession.logout();
+      await roleSession.clearLocalSessionOnly();
     }
 
     if (roleSession.isStaff) {
@@ -155,7 +155,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
       return;
     }
 
-    await roleSession.logout();
+    await roleSession.clearLocalSessionOnly();
     if (!appState.initialized) {
       await appState.initialize();
     }
@@ -257,14 +257,16 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
       final password = _passCtrl.text;
 
       var session =
-          await Amplify.Auth.fetchAuthSession() as CognitoAuthSession;
+      await Amplify.Auth.fetchAuthSession() as CognitoAuthSession;
 
       if (session.isSignedIn) {
         final idToken = session.userPoolTokensResult.value.idToken.raw;
         final sessionEmail =
-            _emailFromClaims(_decodeJwtClaims(idToken)).toLowerCase();
+        _emailFromClaims(_decodeJwtClaims(idToken)).toLowerCase();
 
         if (sessionEmail == requestedEmail.toLowerCase()) {
+          await AuthApi().syncUser(idToken);
+
           await _finishLoginWithSession(
             session: session,
             requestedEmail: requestedEmail,
@@ -274,7 +276,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
 
         await Amplify.Auth.signOut();
         session =
-            await Amplify.Auth.fetchAuthSession() as CognitoAuthSession;
+        await Amplify.Auth.fetchAuthSession() as CognitoAuthSession;
       }
 
       if (!session.isSignedIn) {
@@ -289,7 +291,8 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text(
-                  'Đăng nhập chưa hoàn tất. Kiểm tra OTP hoặc mật khẩu.'),
+                'Đăng nhập chưa hoàn tất. Kiểm tra OTP hoặc mật khẩu.',
+              ),
               backgroundColor: AppColors.error,
             ),
           );
@@ -298,16 +301,27 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
       }
 
       session = await _requireSignedInSession();
+
+      final idToken = session.userPoolTokensResult.value.idToken.raw;
+
+      await AuthApi().syncUser(idToken);
+
       await _finishLoginWithSession(
         session: session,
         requestedEmail: requestedEmail,
       );
     } on AuthException catch (e) {
       if (!mounted) return;
+
       final msg = e.message.toLowerCase();
+
       if (msg.contains('already signed in')) {
         try {
           final session = await _requireSignedInSession();
+          final idToken = session.userPoolTokensResult.value.idToken.raw;
+
+          await AuthApi().syncUser(idToken);
+
           await _finishLoginWithSession(
             session: session,
             requestedEmail: _emailCtrl.text.trim(),
@@ -317,6 +331,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
           // fall through to show original error
         }
       }
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(e.message),
@@ -325,7 +340,9 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
       );
     } catch (e) {
       debugPrint('LOGIN_ERROR: $e');
+
       if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(e.toString()),
@@ -343,33 +360,58 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     setState(() => _googleLoading = true);
 
     try {
+      // Login Google bằng Cognito Hosted UI
       final result = await Amplify.Auth.signInWithWebUI(
         provider: AuthProvider.google,
       );
 
       if (!result.isSignedIn) return;
 
+      // Lấy session Cognito
       final session =
       await Amplify.Auth.fetchAuthSession()
       as CognitoAuthSession;
 
+      // Lấy JWT token
       final idToken =
           session.userPoolTokensResult
               .value
               .idToken
               .raw;
 
+      // Decode token để lấy email
       final parts = idToken.split('.');
+
       final payload = utf8.decode(
-        base64Url.decode(base64Url.normalize(parts[1])),
+        base64Url.decode(
+          base64Url.normalize(parts[1]),
+        ),
       );
-      final claims = jsonDecode(payload) as Map<String, dynamic>;
-      final email = claims['email'] as String? ?? '';
+
+      final claims =
+      jsonDecode(payload)
+      as Map<String, dynamic>;
+
+      final email =
+          claims['email'] as String? ?? '';
 
       if (email.isEmpty) {
-        throw Exception('Google account has no email');
+        throw Exception(
+          'Google account has no email',
+        );
       }
 
+      // Sync user từ Cognito -> Backend
+      try {
+        await AuthApi().syncUser(idToken);
+        debugPrint('SYNC USER SUCCESS');
+      } catch (e) {
+        debugPrint('SYNC USER FAILED, CONTINUE LOGIN: $e');
+      }
+
+      if (!mounted) return;
+
+      // Navigate sau login
       await _navigateAfterLogin(
         role: UserRole.student,
         email: email,
@@ -384,7 +426,8 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
 
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
         const SnackBar(
           content: Text(
             'Đăng nhập Google thất bại',
@@ -395,7 +438,9 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     } finally {
 
       if (mounted) {
-        setState(() => _googleLoading = false);
+        setState(
+              () => _googleLoading = false,
+        );
       }
     }
   }

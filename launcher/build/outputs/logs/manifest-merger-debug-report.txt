@@ -1,0 +1,197 @@
+-- Merging decision tree log ---
+manifest
+ADDED from D:\EXE201\ar_chemistry_fe\launcher\src\main\AndroidManifest.xml:2:1-5:12
+INJECTED from D:\EXE201\ar_chemistry_fe\launcher\src\main\AndroidManifest.xml:2:1-5:12
+INJECTED from D:\EXE201\ar_chemistry_fe\launcher\src\main\AndroidManifest.xml:2:1-5:12
+INJECTED from D:\EXE201\ar_chemistry_fe\launcher\src\main\AndroidManifest.xml:2:1-5:12
+MERGED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:2:1-64:12
+MERGED from [:VuforiaEngine:] C:\Users\admin\.gradle\caches\9.1.0\transforms\35e7737c6eadd8a3be61ed54dcff6a20\workspace\transformed\jetified-VuforiaEngine\AndroidManifest.xml:2:1-36:12
+	package
+		INJECTED from D:\EXE201\ar_chemistry_fe\launcher\src\main\AndroidManifest.xml
+	android:versionName
+		INJECTED from D:\EXE201\ar_chemistry_fe\launcher\src\main\AndroidManifest.xml
+	xmlns:tools
+		ADDED from D:\EXE201\ar_chemistry_fe\launcher\src\main\AndroidManifest.xml:2:111-157
+	android:versionCode
+		INJECTED from D:\EXE201\ar_chemistry_fe\launcher\src\main\AndroidManifest.xml
+	xmlns:android
+		ADDED from D:\EXE201\ar_chemistry_fe\launcher\src\main\AndroidManifest.xml:2:52-110
+	android:installLocation
+		ADDED from D:\EXE201\ar_chemistry_fe\launcher\src\main\AndroidManifest.xml:2:11-51
+application
+ADDED from D:\EXE201\ar_chemistry_fe\launcher\src\main\AndroidManifest.xml:3:3-126
+INJECTED from D:\EXE201\ar_chemistry_fe\launcher\src\main\AndroidManifest.xml:3:3-126
+MERGED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:31:5-62:19
+MERGED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:31:5-62:19
+MERGED from [:VuforiaEngine:] C:\Users\admin\.gradle\caches\9.1.0\transforms\35e7737c6eadd8a3be61ed54dcff6a20\workspace\transformed\jetified-VuforiaEngine\AndroidManifest.xml:24:5-34:19
+MERGED from [:VuforiaEngine:] C:\Users\admin\.gradle\caches\9.1.0\transforms\35e7737c6eadd8a3be61ed54dcff6a20\workspace\transformed\jetified-VuforiaEngine\AndroidManifest.xml:24:5-34:19
+	android:extractNativeLibs
+		INJECTED from D:\EXE201\ar_chemistry_fe\launcher\src\main\AndroidManifest.xml
+		REJECTED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:34:9-41
+	android:label
+		ADDED from D:\EXE201\ar_chemistry_fe\launcher\src\main\AndroidManifest.xml:3:48-80
+	android:appCategory
+		ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:32:9-35
+	android:roundIcon
+		ADDED from D:\EXE201\ar_chemistry_fe\launcher\src\main\AndroidManifest.xml:3:81-123
+	android:icon
+		ADDED from D:\EXE201\ar_chemistry_fe\launcher\src\main\AndroidManifest.xml:3:16-47
+	android:enableOnBackInvokedCallback
+		ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:33:9-52
+supports-screens
+ADDED from D:\EXE201\ar_chemistry_fe\launcher\src\main\AndroidManifest.xml:4:3-163
+	android:largeScreens
+		ADDED from D:\EXE201\ar_chemistry_fe\launcher\src\main\AndroidManifest.xml:4:78-105
+	android:smallScreens
+		ADDED from D:\EXE201\ar_chemistry_fe\launcher\src\main\AndroidManifest.xml:4:21-48
+	android:normalScreens
+		ADDED from D:\EXE201\ar_chemistry_fe\launcher\src\main\AndroidManifest.xml:4:49-77
+	android:xlargeScreens
+		ADDED from D:\EXE201\ar_chemistry_fe\launcher\src\main\AndroidManifest.xml:4:106-134
+	android:anyDensity
+		ADDED from D:\EXE201\ar_chemistry_fe\launcher\src\main\AndroidManifest.xml:4:135-160
+uses-sdk
+INJECTED from D:\EXE201\ar_chemistry_fe\launcher\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from D:\EXE201\ar_chemistry_fe\launcher\src\main\AndroidManifest.xml
+INJECTED from D:\EXE201\ar_chemistry_fe\launcher\src\main\AndroidManifest.xml
+MERGED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:6:5-44
+MERGED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:6:5-44
+MERGED from [:VuforiaEngine:] C:\Users\admin\.gradle\caches\9.1.0\transforms\35e7737c6eadd8a3be61ed54dcff6a20\workspace\transformed\jetified-VuforiaEngine\AndroidManifest.xml:5:5-44
+MERGED from [:VuforiaEngine:] C:\Users\admin\.gradle\caches\9.1.0\transforms\35e7737c6eadd8a3be61ed54dcff6a20\workspace\transformed\jetified-VuforiaEngine\AndroidManifest.xml:5:5-44
+	android:targetSdkVersion
+		INJECTED from D:\EXE201\ar_chemistry_fe\launcher\src\main\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from D:\EXE201\ar_chemistry_fe\launcher\src\main\AndroidManifest.xml
+uses-permission#android.permission.INTERNET
+ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:8:5-67
+MERGED from [:VuforiaEngine:] C:\Users\admin\.gradle\caches\9.1.0\transforms\35e7737c6eadd8a3be61ed54dcff6a20\workspace\transformed\jetified-VuforiaEngine\AndroidManifest.xml:22:5-67
+MERGED from [:VuforiaEngine:] C:\Users\admin\.gradle\caches\9.1.0\transforms\35e7737c6eadd8a3be61ed54dcff6a20\workspace\transformed\jetified-VuforiaEngine\AndroidManifest.xml:22:5-67
+	android:name
+		ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:8:22-64
+uses-permission#android.permission.CAMERA
+ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:9:5-65
+MERGED from [:VuforiaEngine:] C:\Users\admin\.gradle\caches\9.1.0\transforms\35e7737c6eadd8a3be61ed54dcff6a20\workspace\transformed\jetified-VuforiaEngine\AndroidManifest.xml:10:5-65
+MERGED from [:VuforiaEngine:] C:\Users\admin\.gradle\caches\9.1.0\transforms\35e7737c6eadd8a3be61ed54dcff6a20\workspace\transformed\jetified-VuforiaEngine\AndroidManifest.xml:10:5-65
+	android:name
+		ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:9:22-62
+uses-feature#0x00030000
+ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:11:5-54
+	android:glEsVersion
+		ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:11:19-51
+uses-feature#android.hardware.camera
+ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:12:5-14:36
+MERGED from [:VuforiaEngine:] C:\Users\admin\.gradle\caches\9.1.0\transforms\35e7737c6eadd8a3be61ed54dcff6a20\workspace\transformed\jetified-VuforiaEngine\AndroidManifest.xml:7:5-60
+MERGED from [:VuforiaEngine:] C:\Users\admin\.gradle\caches\9.1.0\transforms\35e7737c6eadd8a3be61ed54dcff6a20\workspace\transformed\jetified-VuforiaEngine\AndroidManifest.xml:7:5-60
+	android:required
+		ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:14:9-33
+		MERGED from D:\EXE201\ar_chemistry_fe\launcher\src\main\AndroidManifest.xml
+	android:name
+		ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:13:9-47
+uses-feature#android.hardware.camera.autofocus
+ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:15:5-17:36
+	android:required
+		ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:17:9-33
+	android:name
+		ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:16:9-57
+uses-feature#android.hardware.camera.front
+ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:18:5-20:36
+	android:required
+		ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:20:9-33
+	android:name
+		ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:19:9-53
+uses-feature#android.hardware.touchscreen
+ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:21:5-23:36
+	android:required
+		ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:23:9-33
+	android:name
+		ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:22:9-52
+uses-feature#android.hardware.touchscreen.multitouch
+ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:24:5-26:36
+	android:required
+		ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:26:9-33
+	android:name
+		ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:25:9-63
+uses-feature#android.hardware.touchscreen.multitouch.distinct
+ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:27:5-29:36
+	android:required
+		ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:29:9-33
+	android:name
+		ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:28:9-72
+meta-data#unity.splash-mode
+ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:35:9-37:33
+	android:value
+		ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:37:13-30
+	android:name
+		ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:36:13-45
+meta-data#unity.splash-enable
+ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:38:9-40:36
+	android:value
+		ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:40:13-33
+	android:name
+		ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:39:13-47
+meta-data#unity.launch-fullscreen
+ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:41:9-43:36
+	android:value
+		ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:43:13-33
+	android:name
+		ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:42:13-51
+meta-data#unity.render-outside-safearea
+ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:44:9-46:36
+	android:value
+		ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:46:13-33
+	android:name
+		ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:45:13-57
+meta-data#notch.config
+ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:47:9-49:50
+	android:value
+		ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:49:13-47
+	android:name
+		ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:48:13-40
+meta-data#unity.auto-report-fully-drawn
+ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:50:9-52:36
+	android:value
+		ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:52:13-33
+	android:name
+		ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:51:13-57
+meta-data#unity.strip-engine-code
+ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:53:9-55:37
+	android:value
+		ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:55:13-34
+	android:name
+		ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:54:13-51
+meta-data#unity.auto-set-game-state
+ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:56:9-58:36
+	android:value
+		ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:58:13-33
+	android:name
+		ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:57:13-53
+meta-data#com.google.ar.core
+ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:59:9-61:40
+	android:value
+		ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:61:13-37
+	android:name
+		ADDED from [:unityLibrary] D:\EXE201\ar_chemistry_fe\unityLibrary\build\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:60:13-46
+uses-permission#android.permission.HIGH_SAMPLING_RATE_SENSORS
+ADDED from [:VuforiaEngine:] C:\Users\admin\.gradle\caches\9.1.0\transforms\35e7737c6eadd8a3be61ed54dcff6a20\workspace\transformed\jetified-VuforiaEngine\AndroidManifest.xml:16:5-85
+	android:name
+		ADDED from [:VuforiaEngine:] C:\Users\admin\.gradle\caches\9.1.0\transforms\35e7737c6eadd8a3be61ed54dcff6a20\workspace\transformed\jetified-VuforiaEngine\AndroidManifest.xml:16:22-82
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from [:VuforiaEngine:] C:\Users\admin\.gradle\caches\9.1.0\transforms\35e7737c6eadd8a3be61ed54dcff6a20\workspace\transformed\jetified-VuforiaEngine\AndroidManifest.xml:19:5-79
+	android:name
+		ADDED from [:VuforiaEngine:] C:\Users\admin\.gradle\caches\9.1.0\transforms\35e7737c6eadd8a3be61ed54dcff6a20\workspace\transformed\jetified-VuforiaEngine\AndroidManifest.xml:19:22-76
+provider#com.vuforia.engine.app.VuforiaContentProvider
+ADDED from [:VuforiaEngine:] C:\Users\admin\.gradle\caches\9.1.0\transforms\35e7737c6eadd8a3be61ed54dcff6a20\workspace\transformed\jetified-VuforiaEngine\AndroidManifest.xml:25:9-33:20
+	android:grantUriPermissions
+		ADDED from [:VuforiaEngine:] C:\Users\admin\.gradle\caches\9.1.0\transforms\35e7737c6eadd8a3be61ed54dcff6a20\workspace\transformed\jetified-VuforiaEngine\AndroidManifest.xml:29:13-47
+	android:authorities
+		ADDED from [:VuforiaEngine:] C:\Users\admin\.gradle\caches\9.1.0\transforms\35e7737c6eadd8a3be61ed54dcff6a20\workspace\transformed\jetified-VuforiaEngine\AndroidManifest.xml:27:13-65
+	android:exported
+		ADDED from [:VuforiaEngine:] C:\Users\admin\.gradle\caches\9.1.0\transforms\35e7737c6eadd8a3be61ed54dcff6a20\workspace\transformed\jetified-VuforiaEngine\AndroidManifest.xml:28:13-37
+	android:name
+		ADDED from [:VuforiaEngine:] C:\Users\admin\.gradle\caches\9.1.0\transforms\35e7737c6eadd8a3be61ed54dcff6a20\workspace\transformed\jetified-VuforiaEngine\AndroidManifest.xml:26:13-73
+meta-data#android.support.FILE_PROVIDER_PATHS
+ADDED from [:VuforiaEngine:] C:\Users\admin\.gradle\caches\9.1.0\transforms\35e7737c6eadd8a3be61ed54dcff6a20\workspace\transformed\jetified-VuforiaEngine\AndroidManifest.xml:30:13-32:53
+	android:resource
+		ADDED from [:VuforiaEngine:] C:\Users\admin\.gradle\caches\9.1.0\transforms\35e7737c6eadd8a3be61ed54dcff6a20\workspace\transformed\jetified-VuforiaEngine\AndroidManifest.xml:32:17-50
+	android:name
+		ADDED from [:VuforiaEngine:] C:\Users\admin\.gradle\caches\9.1.0\transforms\35e7737c6eadd8a3be61ed54dcff6a20\workspace\transformed\jetified-VuforiaEngine\AndroidManifest.xml:31:17-67

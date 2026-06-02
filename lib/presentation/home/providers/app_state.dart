@@ -1,6 +1,13 @@
+import 'dart:io';
+
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/foundation.dart';
+import 'package:path/path.dart' as p;
 
+
+import '../../../core/api/chemical_card_api.dart';
+import '../../../core/models/response/card_bundle_response.dart';
+import '../../../core/models/response/chemical_card_response.dart';
 import '../../../core/storage/avatar_storage_service.dart';
 import '../../../core/storage/local_storage_service.dart';
 import '../../../domain/models/account_setup_model.dart';
@@ -9,6 +16,18 @@ import '../../../domain/models/cart_item_model.dart';
 import '../../../domain/models/chemical_card_model.dart';
 import '../../../domain/models/login_route_args.dart';
 import '../../../domain/models/my_bag_item_model.dart';
+import '../../../core/api/profile_api.dart';
+
+import '../../../core/api/payment_api.dart';
+import '../../../core/models/request/create_payment_request.dart';
+
+import '../../../core/api/upload_api.dart';
+import '../../../core/models/request/generate_upload_url_request.dart';
+import '../../../core/api/package_api.dart';
+import '../../../core/models/response/package_response.dart';
+
+
+
 
 class AppState extends ChangeNotifier {
   static const appDisplayName = 'Chemistry AR';
@@ -16,6 +35,11 @@ class AppState extends ChangeNotifier {
   static const defaultStarterUnlocked = ['H', 'O'];
 
   final LocalStorageService _storage = LocalStorageService();
+  final PaymentApi _paymentApi = PaymentApi();
+  final UploadApi _uploadApi = UploadApi();
+  final PackageApi _packageApi = PackageApi();
+  final ProfileApi _profileApi = ProfileApi();
+  final ChemicalCardApi _chemicalCardApi = ChemicalCardApi();
 
   bool _initialized = false;
   bool _isLoading = false;
@@ -30,16 +54,16 @@ class AppState extends ChangeNotifier {
 
   // Cards state
   final List<ChemicalCardModel> _cards =
-      ChemicalData.cards.map((c) => ChemicalCardModel(
-            id: c.id,
-            symbol: c.symbol,
-            name: c.name,
-            atomicNumber: c.atomicNumber,
-            color: c.color,
-            price: c.price,
-            category: c.category,
-            isUnlocked: c.isUnlocked,
-          )).toList();
+  ChemicalData.cards.map((c) => ChemicalCardModel(
+    id: c.id,
+    symbol: c.symbol,
+    name: c.name,
+    atomicNumber: c.atomicNumber,
+    color: c.color,
+    price: c.price,
+    category: c.category,
+    isUnlocked: c.isUnlocked,
+  )).toList();
   final List<CartItem> _cart = [];
   final List<MyBagItem> _myBag = [];
   final List<String> _scannedCards = [];
@@ -49,6 +73,41 @@ class AppState extends ChangeNotifier {
 
   String? get userName => _userName;
   String? get userEmail => _userEmail;
+
+  final List<PackageResponse> _packages = [];
+  List<PackageResponse> get packages => List.unmodifiable(_packages);
+
+  final List<ChemicalCardResponse> _shopChemicalCards = [];
+  bool _loadingShopChemicalCards = false;
+  String? _shopChemicalCardsError;
+  int _shopChemicalCardsPage = 0;
+  bool _shopChemicalCardsLast = false;
+
+  final List<CardBundleResponse> _shopCardBundles = [];
+  bool _loadingShopCardBundles = false;
+  String? _shopCardBundlesError;
+  int _shopCardBundlesPage = 0;
+  bool _shopCardBundlesLast = false;
+
+  //cards
+  List<ChemicalCardResponse> get shopChemicalCards =>
+      List.unmodifiable(_shopChemicalCards);
+
+  bool get loadingShopChemicalCards => _loadingShopChemicalCards;
+
+  String? get shopChemicalCardsError => _shopChemicalCardsError;
+
+  bool get shopChemicalCardsLast => _shopChemicalCardsLast;
+
+  //bundle
+  List<CardBundleResponse> get shopCardBundles =>
+      List.unmodifiable(_shopCardBundles);
+
+  bool get loadingShopCardBundles => _loadingShopCardBundles;
+
+  String? get shopCardBundlesError => _shopCardBundlesError;
+
+  bool get shopCardBundlesLast => _shopCardBundlesLast;
 
   /// Full name if set in profile; otherwise the part before @ in email.
   String get displayName {
@@ -99,6 +158,7 @@ class AppState extends ChangeNotifier {
         _userEmail = email;
         await _loadUserProfileFields(email, sessionUser: user);
         await _loadShopStateForUser(email);
+        await loadProfileFromBackend();
       } else {
         await _resetShopStateInMemory();
       }
@@ -108,6 +168,125 @@ class AppState extends ChangeNotifier {
 
     _initialized = true;
     notifyListeners();
+  }
+
+  Future<void> loadProfileFromBackend() async {
+    try {
+      final profile = await _profileApi.getProfile();
+
+      _userName = profile['fullName'] as String?;
+      _userEmail = profile['email'] as String? ?? _userEmail;
+      _userPhone = profile['phoneNumber'] as String?;
+      _userAvatar = profile['avatarUrl'] as String?;
+
+      await _persistAuth();
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Load profile from backend error: $e');
+    }
+  }
+
+  Future<bool> loadPackages() async {
+    try {
+      final packages = await _packageApi.getPackages();
+
+      _packages
+        ..clear()
+        ..addAll(
+          packages.where((p) => p.packageType != 'FREE'),
+        );
+
+      notifyListeners();
+      return true;
+    } catch (e) {
+      debugPrint('Load packages error: $e');
+      return false;
+    }
+  }
+
+  Future<bool> loadShopChemicalCards({
+    bool refresh = false,
+  }) async {
+    if (_loadingShopChemicalCards) return false;
+
+    if (refresh) {
+      _shopChemicalCards
+        .clear();
+      _shopChemicalCardsPage = 0;
+      _shopChemicalCardsLast = false;
+      _shopChemicalCardsError = null;
+      notifyListeners();
+    }
+
+    if (_shopChemicalCardsLast) return true;
+
+    _loadingShopChemicalCards = true;
+    _shopChemicalCardsError = null;
+    notifyListeners();
+
+    try {
+      final page = await _chemicalCardApi.getShopCards(
+        page: _shopChemicalCardsPage,
+        size: 20,
+      );
+
+      _shopChemicalCards.addAll(page.items);
+      _shopChemicalCardsPage = page.page + 1;
+      _shopChemicalCardsLast = page.last;
+
+      notifyListeners();
+      return true;
+    } catch (e) {
+      debugPrint('Load shop chemical cards error: $e');
+      _shopChemicalCardsError = e.toString();
+      notifyListeners();
+      return false;
+    } finally {
+      _loadingShopChemicalCards = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> loadShopCardBundles({
+    bool refresh = false,
+  }) async {
+    if (_loadingShopCardBundles) return false;
+
+    if (refresh) {
+      _shopCardBundles.clear();
+      _shopCardBundlesPage = 0;
+      _shopCardBundlesLast = false;
+      _shopCardBundlesError = null;
+      notifyListeners();
+    }
+
+    if (_shopCardBundlesLast) return true;
+
+    _loadingShopCardBundles = true;
+    _shopCardBundlesError = null;
+    notifyListeners();
+
+    try {
+      final page = await _chemicalCardApi.getShopCardBundles(
+        page: _shopCardBundlesPage,
+        size: 20,
+      );
+
+      _shopCardBundles.addAll(page.items);
+      _shopCardBundlesPage = page.page + 1;
+      _shopCardBundlesLast = page.last;
+
+      notifyListeners();
+      return true;
+    } catch (e) {
+      debugPrint('Load shop card bundles error: $e');
+      _shopCardBundlesError = e.toString();
+      notifyListeners();
+      return false;
+    } finally {
+      _loadingShopCardBundles = false;
+      notifyListeners();
+    }
   }
 
   void _applyUnlockedIds(List<String> unlockedIds) {
@@ -146,19 +325,19 @@ class AppState extends ChangeNotifier {
   }
 
   Future<void> _loadUserProfileFields(
-    String email, {
-    Map<String, dynamic>? sessionUser,
-  }) async {
+      String email, {
+        Map<String, dynamic>? sessionUser,
+      }) async {
     final registered = await _storage.getRegisteredUserByEmail(email);
     final storedName = registered?['fullname'] as String? ??
         sessionUser?['name'] as String?;
     _userName =
-        storedName != null && storedName.trim().isNotEmpty ? storedName.trim() : null;
+    storedName != null && storedName.trim().isNotEmpty ? storedName.trim() : null;
     _userPhone = registered?['phone'] as String?;
     final avatarPath =
         sessionUser?['avatar'] as String? ?? registered?['avatar'] as String?;
     _userAvatar =
-        AvatarStorageService.avatarFileExists(avatarPath) ? avatarPath : null;
+    AvatarStorageService.avatarFileExists(avatarPath) ? avatarPath : null;
   }
 
   Future<void> _persistAuth() async {
@@ -213,13 +392,14 @@ class AppState extends ChangeNotifier {
   }) async {
     final normalizedEmail = email.trim();
     final isFirstLogin =
-        !await _storage.getUserHasLoggedInBefore(normalizedEmail);
+    !await _storage.getUserHasLoggedInBefore(normalizedEmail);
 
     _isLoggedIn = true;
     _userEmail = normalizedEmail;
     await _storage.setAuthToken(idToken);
     await _loadUserProfileFields(normalizedEmail);
     await _loadShopStateForUser(normalizedEmail);
+    await loadProfileFromBackend();
     await _persistAuth();
     await _storage.setUserHasLoggedInBefore(normalizedEmail, true);
 
@@ -232,115 +412,40 @@ class AppState extends ChangeNotifier {
     );
   }
 
-  Future<({String? error, LoginResult? result})> login(
-    String email,
-    String password,
-  ) async {
-    _isLoading = true;
-    notifyListeners();
-    await Future.delayed(const Duration(milliseconds: 500));
-
-    final normalizedEmail = email.trim();
-    final registered =
-        await _storage.getRegisteredUserByEmail(normalizedEmail);
-    if (registered == null) {
-      _isLoading = false;
-      notifyListeners();
-      return (
-        error: 'No account found. Please sign up first.',
-        result: null,
-      );
-    }
-    final storedPassword = registered['password'] as String? ?? '';
-    if (storedPassword.isEmpty) {
-      _isLoading = false;
-      notifyListeners();
-      return (
-        error: 'Tài khoản Google. Vui lòng đăng nhập bằng Google.',
-        result: null,
-      );
-    }
-    if (storedPassword != password) {
-      _isLoading = false;
-      notifyListeners();
-      return (error: 'Invalid email or password', result: null);
-    }
-
-    final isFirstLogin =
-        !await _storage.getUserHasLoggedInBefore(normalizedEmail);
-
-    _isLoggedIn = true;
-    _userEmail = normalizedEmail;
-    await _loadUserProfileFields(normalizedEmail);
-
-    await _loadShopStateForUser(normalizedEmail);
-
-    final token = 'mock_token_${DateTime.now().millisecondsSinceEpoch}';
-    await _storage.setAuthToken(token);
-    await _persistAuth();
-    await _storage.setUserHasLoggedInBefore(normalizedEmail, true);
-
-    _isLoading = false;
-    notifyListeners();
-    return (
-      error: null,
-      result: LoginResult(
-        isFirstLogin: isFirstLogin,
-        displayName: displayName,
-      ),
-    );
-  }
-
-  /// Mock Google sign-in — goes straight to Home with Google profile data.
-  Future<LoginResult> signInWithGoogle({
-    required String name,
-    required String email,
-    String? avatar,
+  Future<String?> uploadPaymentProof({
+    required String fileName,
+    required String contentType,
+    required int fileSize,
+    required Uint8List bytes,
   }) async {
-    final normalizedEmail = email.trim();
-    final existing =
-        await _storage.getRegisteredUserByEmail(normalizedEmail);
-    final isFirstLogin =
-        !await _storage.getUserHasLoggedInBefore(normalizedEmail);
+    try {
+      final presigned = await _uploadApi.generateUploadUrl(
+        GenerateUploadUrlRequest(
+          purposeCode: 'PAYMENT_PROOF',
+          fileName: fileName,
+          contentType: contentType,
+          fileSize: fileSize,
+        ),
+      );
 
-    if (existing == null) {
-      await _storage.setRegisteredUser({
-        'fullname': name,
-        'email': normalizedEmail,
-        'password': '',
-        'phone': '',
-        'isGoogle': true,
-      });
-      await _storage.initNewUserShopData(normalizedEmail);
-    } else {
-      await _storage.setRegisteredUser({
-        'fullname': name,
-        'email': normalizedEmail,
-        'password': existing['password'] ?? '',
-        'phone': existing['phone'] ?? '',
-        'isGoogle': true,
-        if (existing['avatar'] != null) 'avatar': existing['avatar'],
-      });
+      await _uploadApi.uploadFileToS3(
+        uploadUrl: presigned.uploadUrl,
+        bytes: bytes,
+        contentType: contentType,
+      );
+
+      return presigned.fileUrl;
+    } catch (e) {
+      debugPrint('Upload payment proof error: $e');
+      return null;
     }
-
-    _isLoggedIn = true;
-    _userName = name;
-    _userEmail = normalizedEmail;
-    _userAvatar = avatar;
-
-    await _loadShopStateForUser(normalizedEmail);
-
-    final token = 'google_token_${DateTime.now().millisecondsSinceEpoch}';
-    await _storage.setAuthToken(token);
-    await _persistAuth();
-    await _storage.setUserHasLoggedInBefore(normalizedEmail, true);
-    notifyListeners();
-
-    return LoginResult(isFirstLogin: isFirstLogin, displayName: name);
   }
+
+
+
+
 
   Future<void> logout() async {
-
     _isLoggedIn = false;
     _userName = null;
     _userEmail = null;
@@ -348,10 +453,15 @@ class AppState extends ChangeNotifier {
     _userAvatar = null;
 
     await _storage.clearAuth();
-
     await _resetShopStateInMemory();
 
     notifyListeners();
+
+    try {
+      await Amplify.Auth.signOut();
+    } catch (e) {
+      safePrint('Amplify signOut error: $e');
+    }
   }
 
   Future<String?> updateProfile({
@@ -380,32 +490,69 @@ class AppState extends ChangeNotifier {
       }
     }
 
-    _userName = fullName.trim();
-    _userPhone = phone.trim();
-    await _persistRegisteredUser(
-      passwordOverride: wantsPasswordChange ? password : null,
-    );
-    await _persistAuth();
-    notifyListeners();
-    return null;
+    try {
+      await _profileApi.updateProfile(
+        fullName: fullName.trim(),
+        phoneNumber: phone.trim(),
+      );
+
+      _userName = fullName.trim();
+      _userPhone = phone.trim();
+
+      await _persistRegisteredUser(
+        passwordOverride: wantsPasswordChange ? password : null,
+      );
+      await _persistAuth();
+
+      notifyListeners();
+      return null;
+    } catch (e) {
+      debugPrint('Update profile API error: $e');
+      return 'Cập nhật hồ sơ thất bại. Vui lòng thử lại.';
+    }
   }
 
   Future<String?> updateAvatarFromPath(String pickedPath) async {
     if (!_isLoggedIn || _userEmail == null) {
       return 'Bạn cần đăng nhập để cập nhật ảnh.';
     }
+
     try {
-      final saved = await AvatarStorageService.saveAvatar(
-        pickedPath,
-        _userEmail!,
+      final file = File(pickedPath);
+      final bytes = await file.readAsBytes();
+      final fileSize = bytes.length;
+      final ext = p.extension(pickedPath).toLowerCase();
+
+      final contentType = ext == '.png' ? 'image/png' : 'image/jpeg';
+
+      final presigned = await _uploadApi.generateUploadUrl(
+        GenerateUploadUrlRequest(
+          purposeCode: 'AVATAR',
+          fileName: p.basename(pickedPath),
+          contentType: contentType,
+          fileSize: fileSize,
+        ),
       );
-      _userAvatar = saved;
-      await _persistRegisteredUser();
+
+      await _uploadApi.uploadFileToS3(
+        uploadUrl: presigned.uploadUrl,
+        bytes: bytes,
+        contentType: contentType,
+      );
+
+      final avatarUrl = presigned.fileUrl;
+
+      await _profileApi.updateAvatar(avatarUrl: avatarUrl);
+
+      _userAvatar = avatarUrl;
+
       await _persistAuth();
       notifyListeners();
+
       return null;
-    } catch (_) {
-      return 'Không thể lưu ảnh đại diện. Vui lòng thử lại.';
+    } catch (e) {
+      debugPrint('Update avatar error: $e');
+      return 'Không thể cập nhật ảnh đại diện. Vui lòng thử lại.';
     }
   }
 
@@ -465,13 +612,13 @@ class AppState extends ChangeNotifier {
 
   BundlePriceQuote getBundleQuote(String bundleId) {
     final bundle = ChemicalData.bundles.firstWhere(
-      (b) => b.id == bundleId,
+          (b) => b.id == bundleId,
       orElse: () => throw Exception('Bundle not found'),
     );
     return BundlePricing.calculate(
       bundle,
       isCardOwned,
-      (id) => getCardById(id)?.price ?? 0,
+          (id) => getCardById(id)?.price ?? 0,
     );
   }
 
@@ -552,6 +699,27 @@ class AppState extends ChangeNotifier {
     await _persistShop();
     notifyListeners();
     return true;
+  }
+
+  Future<bool> createBankPayment({
+    required String itemId,
+    required String itemType,
+    required String proofImageUrl,
+  }) async {
+    try {
+      final request = CreatePaymentRequest(
+        itemId: itemId,
+        itemType: itemType,
+        proofImageUrl: proofImageUrl,
+      );
+
+      await _paymentApi.createPayment(request);
+
+      return true;
+    } catch (e) {
+      debugPrint('Create bank payment error: $e');
+      return false;
+    }
   }
 
   Future<bool> purchaseBundle(String bundleId,
