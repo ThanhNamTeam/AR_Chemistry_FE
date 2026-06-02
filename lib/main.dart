@@ -48,6 +48,7 @@ import 'presentation/ai_chat/providers/ai_fab_visibility.dart';
 import 'presentation/ai_chat/providers/chat_provider.dart';
 import 'presentation/ai_chat/screens/ai_chat_screen.dart';
 import 'presentation/shared/widgets/user_portal_ai_overlay.dart';
+import 'presentation/mini_game/screens/mini_game_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -163,6 +164,7 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
       AppRoutes.adminHome: (_) => const AdminHomeScreen(),
       AppRoutes.portalProfile: (_) => const PortalProfileScreen(),
       AppRoutes.quizList: (_) => const StudentQuizListScreen(),
+      AppRoutes.miniGame: (_) => const MiniGameScreen(),
     };
   }
 
