@@ -4,6 +4,7 @@ $ProjectRoot = Split-Path -Parent $PSScriptRoot
 $GradleFile = Join-Path $ProjectRoot 'unityLibrary\build.gradle'
 $UnityManifestFile = Join-Path $ProjectRoot 'unityLibrary\src\main\AndroidManifest.xml'
 $AppManifestFile = Join-Path $ProjectRoot 'android\app\src\main\AndroidManifest.xml'
+$AndroidGradlePropertiesFile = Join-Path $ProjectRoot 'android\gradle.properties'
 
 function Write-Status($Message) {
     Write-Host "[UNITY_EXPORT_PATCH] $Message"
@@ -18,6 +19,99 @@ function Require-File($Path) {
 function Save-Utf8NoBom($Path, $Text) {
     $Encoding = New-Object System.Text.UTF8Encoding($false)
     [System.IO.File]::WriteAllText($Path, $Text, $Encoding)
+}
+
+function Get-JavaMajorVersion($JavaExe) {
+    if (-not (Test-Path -LiteralPath $JavaExe)) {
+        return 0
+    }
+
+    $VersionOutput = & cmd.exe /c "`"$JavaExe`" -version 2>&1" | Out-String
+    if ($VersionOutput -match 'version "([^"]+)"') {
+        $Version = $Matches[1]
+        if ($Version.StartsWith('1.')) {
+            $Parts = $Version.Split('.')
+            if ($Parts.Length -gt 1) {
+                return [int]$Parts[1]
+            }
+        }
+
+        $MajorText = $Version.Split('.')[0]
+        return [int]$MajorText
+    }
+
+    return 0
+}
+
+function Test-Jdk11OrNewer($JdkPath) {
+    if ([string]::IsNullOrWhiteSpace($JdkPath)) {
+        return $false
+    }
+
+    $JavaExe = Join-Path $JdkPath 'bin\java.exe'
+    return (Get-JavaMajorVersion $JavaExe) -ge 11
+}
+
+function Find-AndroidStudioJbr {
+    $Candidates = New-Object System.Collections.Generic.List[string]
+
+    if (-not [string]::IsNullOrWhiteSpace($env:ANDROID_STUDIO_ROOT)) {
+        $Candidates.Add((Join-Path $env:ANDROID_STUDIO_ROOT 'jbr'))
+    }
+
+    if (-not [string]::IsNullOrWhiteSpace($env:ProgramFiles)) {
+        $Candidates.Add((Join-Path $env:ProgramFiles 'Android\Android Studio\jbr'))
+    }
+
+    $ProgramFilesX86 = [Environment]::GetFolderPath('ProgramFilesX86')
+    if (-not [string]::IsNullOrWhiteSpace($ProgramFilesX86)) {
+        $Candidates.Add((Join-Path $ProgramFilesX86 'Android\Android Studio\jbr'))
+    }
+
+    if (-not [string]::IsNullOrWhiteSpace($env:LOCALAPPDATA)) {
+        $Candidates.Add((Join-Path $env:LOCALAPPDATA 'Programs\Android Studio\jbr'))
+    }
+
+    if (-not [string]::IsNullOrWhiteSpace($env:JAVA_HOME)) {
+        $Candidates.Add($env:JAVA_HOME)
+    }
+
+    foreach ($Candidate in $Candidates) {
+        if (Test-Jdk11OrNewer $Candidate) {
+            return (Resolve-Path -LiteralPath $Candidate).Path
+        }
+    }
+
+    throw 'Could not find a JDK 11+ install. Set ANDROID_STUDIO_ROOT to Android Studio, or set JAVA_HOME to a JDK 11+ path.'
+}
+
+function Set-GradleJavaHome {
+    Require-File $AndroidGradlePropertiesFile
+    $JdkPath = (Find-AndroidStudioJbr) -replace '\\', '/'
+    $Text = Get-Content -LiteralPath $AndroidGradlePropertiesFile -Raw
+    $Line = "org.gradle.java.home=$JdkPath"
+
+    if ($Text -match '(?m)^org\.gradle\.java\.home=') {
+        $Text = $Text -replace '(?m)^org\.gradle\.java\.home=.*$', $Line
+    } else {
+        if (-not $Text.EndsWith("`n")) {
+            $Text += "`r`n"
+        }
+        $Text += "$Line`r`n"
+    }
+
+    Save-Utf8NoBom $AndroidGradlePropertiesFile $Text
+    Write-Status "Set Android Gradle JDK: $JdkPath"
+}
+
+function Test-GradleJavaHomePinned {
+    $Text = Get-Content -LiteralPath $AndroidGradlePropertiesFile -Raw
+    if ($Text -notmatch '(?m)^org\.gradle\.java\.home=(.+)$') {
+        return $false
+    }
+
+    $JdkPath = $Matches[1] -replace '/', '\'
+    return Test-Jdk11OrNewer $JdkPath
 }
 
 function Patch-Gradle {
@@ -122,6 +216,7 @@ function Test-PatchState {
     $GradleText = Get-Content -LiteralPath $GradleFile -Raw
     $UnityManifestText = Get-Content -LiteralPath $UnityManifestFile -Raw
     $AppManifestText = Get-Content -LiteralPath $AppManifestFile -Raw
+    $AndroidGradlePropertiesText = Get-Content -LiteralPath $AndroidGradlePropertiesFile -Raw
 
     $Checks = @(
         @{ Name = 'unity-classes.jar excluded from runtime fileTree'; Ok = $GradleText -match "exclude:\s*\['unity-classes\.jar'\]" },
@@ -131,7 +226,8 @@ function Test-PatchState {
         @{ Name = 'IL2CPP profiler args removed'; Ok = $GradleText -notmatch '--profiler-report|--profiler-output-file' },
         @{ Name = 'Unity standalone launcher activity removed'; Ok = $UnityManifestText -notmatch 'UnityPlayerActivity|android\.intent\.action\.MAIN|android\.intent\.category\.LAUNCHER' },
         @{ Name = 'Flutter app manifest declares camera feature'; Ok = $AppManifestText -match 'android\.hardware\.camera' },
-        @{ Name = 'Flutter app manifest declares autofocus feature'; Ok = $AppManifestText -match 'android\.hardware\.camera\.autofocus' }
+        @{ Name = 'Flutter app manifest declares autofocus feature'; Ok = $AppManifestText -match 'android\.hardware\.camera\.autofocus' },
+        @{ Name = 'Android Gradle JDK pinned to JDK 11+'; Ok = Test-GradleJavaHomePinned }
     )
 
     $Failed = $Checks | Where-Object { -not $_.Ok }
@@ -146,6 +242,7 @@ function Test-PatchState {
 }
 
 Set-Location $ProjectRoot
+Set-GradleJavaHome
 Patch-Gradle
 Patch-AppManifest
 Patch-UnityManifest
