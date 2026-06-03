@@ -1,4 +1,6 @@
 import 'package:ar_chemistry_visual/presentation/quiz/providers/student_quiz_provider.dart';
+import 'package:ar_chemistry_visual/presentation/quiz/screens/student_quiz_attempt_detail_screen.dart';
+import 'package:ar_chemistry_visual/presentation/quiz/screens/student_quiz_history_screen.dart';
 import 'package:ar_chemistry_visual/presentation/quiz/screens/student_quiz_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -163,6 +165,8 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
       AppRoutes.adminHome: (_) => const AdminHomeScreen(),
       AppRoutes.portalProfile: (_) => const PortalProfileScreen(),
       AppRoutes.quizList: (_) => const StudentQuizListScreen(),
+      AppRoutes.quizHistory: (_) => const StudentQuizHistoryScreen(),
+      AppRoutes.quizAttemptDetail: (_) => const StudentQuizAttemptDetailScreen(),
     };
   }
 

@@ -4,33 +4,52 @@ import 'package:provider/provider.dart';
 import '../../../routes/app_routes.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../providers/student_quiz_provider.dart';
-import '../../../domain/models/student_published_quiz_model.dart';
+import '../../../domain/models/student_quiz_attempt_history_model.dart';
 
-class StudentQuizListScreen extends StatefulWidget {
-  const StudentQuizListScreen({super.key});
+class StudentQuizHistoryScreen extends StatefulWidget {
+  const StudentQuizHistoryScreen({super.key});
 
   @override
-  State<StudentQuizListScreen> createState() => _StudentQuizListScreenState();
+  State<StudentQuizHistoryScreen> createState() =>
+      _StudentQuizHistoryScreenState();
 }
 
-class _StudentQuizListScreenState extends State<StudentQuizListScreen> {
+class _StudentQuizHistoryScreenState extends State<StudentQuizHistoryScreen> {
+  String? _quizCode;
+  String? _quizTitle;
+  bool _initialized = false;
+
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (_initialized) return;
+    _initialized = true;
+
+    final args = ModalRoute.of(context)?.settings.arguments;
+
+    if (args is Map) {
+      _quizCode = args['quizCode']?.toString();
+      _quizTitle = args['quizTitle']?.toString();
+    }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<StudentQuizProvider>().loadPublishedQuizzes();
+      context.read<StudentQuizProvider>().loadAttemptHistory(
+        quizCode: _quizCode,
+      );
     });
   }
 
   Future<void> _refresh() async {
-    await context.read<StudentQuizProvider>().loadPublishedQuizzes();
+    await context.read<StudentQuizProvider>().loadAttemptHistory(
+      quizCode: _quizCode,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<StudentQuizProvider>();
-    final quizzes = provider.publishedQuizzes;
+    final attempts = provider.attemptHistory;
 
     return Scaffold(
       backgroundColor: AppColors.backgroundDark,
@@ -41,7 +60,10 @@ class _StudentQuizListScreenState extends State<StudentQuizListScreen> {
         child: SafeArea(
           child: Column(
             children: [
-              _Header(onBack: () => Navigator.pop(context)),
+              _Header(
+                title: _quizTitle ?? 'Lịch sử làm quiz',
+                onBack: () => Navigator.pop(context),
+              ),
               Expanded(
                 child: RefreshIndicator(
                   onRefresh: _refresh,
@@ -49,7 +71,7 @@ class _StudentQuizListScreenState extends State<StudentQuizListScreen> {
                     padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
                     children: [
                       Text(
-                        'Quiz đã publish',
+                        'Lịch sử làm bài',
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.w800,
@@ -59,7 +81,9 @@ class _StudentQuizListScreenState extends State<StudentQuizListScreen> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Chọn một bài quiz để bắt đầu luyện tập.',
+                        _quizTitle == null
+                            ? 'Các lần làm quiz gần đây của bạn.'
+                            : 'Các lần làm quiz: $_quizTitle',
                         style: TextStyle(
                           fontSize: 13,
                           color: AppColors.textSecondary,
@@ -69,42 +93,31 @@ class _StudentQuizListScreenState extends State<StudentQuizListScreen> {
                       ),
                       const SizedBox(height: 18),
 
-                      if (provider.loadingPublishedQuizzes && quizzes.isEmpty)
+                      if (provider.loadingAttemptHistory && attempts.isEmpty)
                         const Padding(
                           padding: EdgeInsets.only(top: 40),
                           child: Center(child: CircularProgressIndicator()),
                         )
-                      else if (provider.publishedQuizzesError != null)
+                      else if (provider.attemptHistoryError != null)
                         _ErrorCard(
-                          message: provider.publishedQuizzesError!,
+                          message: provider.attemptHistoryError!,
                           onRetry: _refresh,
                         )
-                      else if (quizzes.isEmpty)
+                      else if (attempts.isEmpty)
                           const _EmptyCard()
                         else
-                          ...quizzes.map(
-                                (quiz) => _PublishedQuizCard(
-                              quiz: quiz,
-                              onStart: () {
+                          ...attempts.map(
+                                (attempt) => _AttemptHistoryCard(
+                              attempt: attempt,
+                              onTap: () {
                                 Navigator.pushNamed(
                                   context,
-                                  AppRoutes.quiz,
+                                  AppRoutes.quizAttemptDetail,
                                   arguments: {
-                                    'lessonCode': quiz.lessonCode,
-                                    'lessonTitle': quiz.lessonTitle,
+                                    'attemptCode': attempt.attemptCode,
                                   },
                                 );
                               },
-                                  onViewHistory: () {
-                                    Navigator.pushNamed(
-                                      context,
-                                      AppRoutes.quizHistory,
-                                      arguments: {
-                                        'quizCode': quiz.quizCode,
-                                        'quizTitle': quiz.quizTitle,
-                                      },
-                                    );
-                                  },
                             ),
                           ),
                     ],
@@ -120,9 +133,13 @@ class _StudentQuizListScreenState extends State<StudentQuizListScreen> {
 }
 
 class _Header extends StatelessWidget {
+  final String title;
   final VoidCallback onBack;
 
-  const _Header({required this.onBack});
+  const _Header({
+    required this.title,
+    required this.onBack,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -151,13 +168,14 @@ class _Header extends StatelessWidget {
           const SizedBox(width: 14),
           Expanded(
             child: Text(
-              'Quiz:',
+              title,
               style: TextStyle(
-                fontSize: 22,
+                fontSize: 20,
                 fontWeight: FontWeight.w700,
                 color: AppColors.textPrimary,
                 fontFamily: 'Inter',
               ),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ],
@@ -166,19 +184,24 @@ class _Header extends StatelessWidget {
   }
 }
 
-class _PublishedQuizCard extends StatelessWidget {
-  final StudentPublishedQuizModel quiz;
-  final VoidCallback onStart;
-  final VoidCallback onViewHistory;
+class _AttemptHistoryCard extends StatelessWidget {
+  final StudentQuizAttemptHistoryModel attempt;
+  final VoidCallback onTap;
 
-  const _PublishedQuizCard({
-    required this.quiz,
-    required this.onStart,
-    required this.onViewHistory,
+  const _AttemptHistoryCard({
+    required this.attempt,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
+    final percent = attempt.totalQuestions == 0
+        ? 0.0
+        : attempt.correctCount / attempt.totalQuestions;
+
+    final percentText = '${(percent * 100).round()}%';
+    final submittedText = _formatDateTime(attempt.submittedAt);
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -196,95 +219,127 @@ class _PublishedQuizCard extends StatelessWidget {
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              _Badge(text: '${quiz.questionCount} câu'),
-              const SizedBox(width: 8),
-              _Badge(text: 'Published'),
-              const Spacer(),
-              Icon(
-                Icons.quiz_outlined,
-                size: 18,
-                color: AppColors.primary,
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Text(
-            quiz.quizTitle,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w800,
-              color: AppColors.textPrimary,
-              fontFamily: 'Inter',
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(18),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                _Badge(text: attempt.status),
+                const SizedBox(width: 8),
+                _Badge(text: percentText),
+                const Spacer(),
+                Icon(
+                  Icons.history,
+                  size: 18,
+                  color: AppColors.primary,
+                ),
+              ],
             ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            quiz.lessonTitle,
-            style: TextStyle(
-              fontSize: 13,
-              color: AppColors.subtitleAccent,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          if (quiz.chapter != null && quiz.chapter!.isNotEmpty) ...[
-            const SizedBox(height: 4),
+            const SizedBox(height: 12),
             Text(
-              quiz.chapter!,
-              maxLines: 2,
+              attempt.quizTitle,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w800,
+                color: AppColors.textPrimary,
+                fontFamily: 'Inter',
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              attempt.lessonTitle,
+              style: TextStyle(
+                fontSize: 13,
+                color: AppColors.subtitleAccent,
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                _ScoreBox(
+                  label: 'Điểm',
+                  value: '${attempt.score}/${attempt.totalQuestions}',
+                ),
+                const SizedBox(width: 10),
+                _ScoreBox(
+                  label: 'Đúng',
+                  value: '${attempt.correctCount}',
+                ),
+                const SizedBox(width: 10),
+                _ScoreBox(
+                  label: 'Thời gian',
+                  value: submittedText,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _formatDateTime(DateTime? value) {
+    if (value == null) return '-';
+
+    final day = value.day.toString().padLeft(2, '0');
+    final month = value.month.toString().padLeft(2, '0');
+    final hour = value.hour.toString().padLeft(2, '0');
+    final minute = value.minute.toString().padLeft(2, '0');
+
+    return '$day/$month $hour:$minute';
+  }
+}
+
+class _ScoreBox extends StatelessWidget {
+  final String label;
+  final String value;
+
+  const _ScoreBox({
+    required this.label,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+        decoration: BoxDecoration(
+          color: AppColors.primary.withOpacity(0.08),
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: AppColors.primary.withOpacity(0.16),
+          ),
+        ),
+        child: Column(
+          children: [
+            Text(
+              value,
+              maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                fontSize: 12,
-                color: AppColors.textSecondary,
+                color: AppColors.textPrimary,
+                fontSize: 13,
+                fontWeight: FontWeight.w800,
                 fontFamily: 'Inter',
-                height: 1.35,
+              ),
+            ),
+            const SizedBox(height: 3),
+            Text(
+              label,
+              style: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 10,
+                fontFamily: 'Inter',
               ),
             ),
           ],
-          const SizedBox(height: 14),
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: onViewHistory,
-                  icon: const Icon(Icons.history, size: 18),
-                  label: const Text('Lịch sử'),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.accentText,
-                    side: BorderSide(
-                      color: AppColors.primary.withOpacity(0.35),
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 13),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: ElevatedButton.icon(
-                  onPressed: onStart,
-                  icon: const Icon(Icons.play_arrow_rounded),
-                  label: const Text('Làm quiz'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 13),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -344,7 +399,7 @@ class _ErrorCard extends StatelessWidget {
           Icon(Icons.error_outline, color: AppColors.error, size: 38),
           const SizedBox(height: 10),
           Text(
-            'Không tải được danh sách quiz',
+            'Không tải được lịch sử',
             style: TextStyle(
               color: AppColors.textPrimary,
               fontSize: 15,
@@ -391,13 +446,13 @@ class _EmptyCard extends StatelessWidget {
       child: Column(
         children: [
           Icon(
-            Icons.quiz_outlined,
+            Icons.history,
             size: 52,
             color: AppColors.primary,
           ),
           const SizedBox(height: 12),
           Text(
-            'Chưa có quiz nào',
+            'Chưa có lịch sử',
             style: TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w800,
@@ -407,7 +462,7 @@ class _EmptyCard extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            'Hiện chưa có quiz nào được publish.',
+            'Bạn chưa làm quiz này lần nào.',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 13,

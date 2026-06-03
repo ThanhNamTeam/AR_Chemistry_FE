@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../../domain/models/staff_lesson_content_model.dart';
+import '../../domain/models/staff_quiz_attempt_detail_model.dart';
+import '../../domain/models/staff_quiz_attempt_model.dart';
 import '../../domain/models/staff_quiz_detail_model.dart';
 import '../../domain/models/staff_quiz_summary_model.dart';
 import '../constants/api_constants.dart';
@@ -208,6 +210,73 @@ class StaffQuizManagementApi {
 
     throw Exception(
       'Publish quiz failed: ${response.statusCode} - ${response.body}',
+    );
+  }
+
+  Future<PageResponse<StaffQuizAttemptModel>> getQuizAttempts({
+    int page = 0,
+    int size = 10,
+  }) async {
+    final token = await AuthTokenService.getValidAccessToken();
+
+    if (token == null || token.isEmpty) {
+      throw Exception('User is not signed in, cannot load quiz attempts');
+    }
+
+    final response = await http.get(
+      Uri.parse(
+        ApiConstants.staffQuizAttemptsUrl(
+          page: page,
+          size: size,
+        ),
+      ),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    ).timeout(ApiConstants.timeout);
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final json = jsonDecode(response.body) as Map<String, dynamic>;
+      final data = json['data'] as Map<String, dynamic>;
+
+      return PageResponse<StaffQuizAttemptModel>.fromJson(
+        data,
+            (item) => StaffQuizAttemptModel.fromJson(item),
+      );
+    }
+
+    throw Exception(
+      'Load quiz attempts failed: ${response.statusCode} - ${response.body}',
+    );
+  }
+
+  Future<StaffQuizAttemptDetailModel> getQuizAttemptDetail({
+    required String attemptCode,
+  }) async {
+    final token = await AuthTokenService.getValidAccessToken();
+
+    if (token == null || token.isEmpty) {
+      throw Exception('User is not signed in, cannot load quiz attempt detail');
+    }
+
+    final response = await http.get(
+      Uri.parse(ApiConstants.staffQuizAttemptDetailUrl(attemptCode)),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    ).timeout(ApiConstants.timeout);
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final json = jsonDecode(response.body) as Map<String, dynamic>;
+      final data = json['data'] as Map<String, dynamic>;
+
+      return StaffQuizAttemptDetailModel.fromJson(data);
+    }
+
+    throw Exception(
+      'Load quiz attempt detail failed: ${response.statusCode} - ${response.body}',
     );
   }
 }

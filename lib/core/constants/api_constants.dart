@@ -3,7 +3,7 @@ class ApiConstants {
   /// --dart-define=API_BASE_URL=http://192.168.1.13:8080/api/v1
   static const String baseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://192.168.1.14:8080/api/v1',
+    defaultValue: 'http://192.168.11.177:8080/api/v1',
   );
 
   static const Duration timeout = Duration(seconds: 8);
@@ -17,6 +17,27 @@ class ApiConstants {
   // staff quiz management
   static const String staffQuizManagementPath = '/staff/quiz-management';
   static const String staffQuizImportPath = '/staff/quiz-import';
+
+  //staff quiz attempt
+  static const String staffQuizAttemptsPath = '/staff/quiz-attempts';
+
+  static String staffQuizAttemptsUrl({
+    int page = 0,
+    int size = 10,
+  }) {
+    final uri = Uri.parse('$baseUrl$staffQuizAttemptsPath').replace(
+      queryParameters: {
+        'page': page.toString(),
+        'size': size.toString(),
+      },
+    );
+
+    return uri.toString();
+  }
+
+  static String staffQuizAttemptDetailUrl(String attemptCode) {
+    return '$baseUrl$staffQuizAttemptsPath/$attemptCode';
+  }
 
   //student
   static const String studentPath = '/student';
@@ -35,6 +56,26 @@ class ApiConstants {
 
   static String get studentPublishedQuizzesUrl {
     return '$baseUrl$studentPath/quizzes/published';
+  }
+
+  static String studentQuizAttemptsUrl({
+    String? quizCode,
+    int page = 0,
+    int size = 10,
+  }) {
+    final uri = Uri.parse('$baseUrl$studentPath/quiz-attempts').replace(
+      queryParameters: {
+        'page': page.toString(),
+        'size': size.toString(),
+        if (quizCode != null && quizCode.isNotEmpty) 'quizCode': quizCode,
+      },
+    );
+
+    return uri.toString();
+  }
+
+  static String studentQuizAttemptDetailUrl(String attemptCode) {
+    return '$baseUrl$studentPath/quiz-attempts/$attemptCode';
   }
 
   // feedbacks

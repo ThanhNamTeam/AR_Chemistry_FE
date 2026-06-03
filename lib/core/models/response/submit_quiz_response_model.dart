@@ -1,10 +1,12 @@
 class SubmitQuizResponseModel {
+  final String? attemptCode;
   final int score;
   final int total;
   final int correctCount;
   final List<QuestionResultModel> results;
 
   const SubmitQuizResponseModel({
+    this.attemptCode,
     required this.score,
     required this.total,
     required this.correctCount,
@@ -15,6 +17,7 @@ class SubmitQuizResponseModel {
     final rawResults = json['results'] as List<dynamic>? ?? [];
 
     return SubmitQuizResponseModel(
+      attemptCode: json['attemptCode'] as String?,
       score: json['score'] as int? ?? 0,
       total: json['total'] as int? ?? 0,
       correctCount: json['correctCount'] as int? ?? 0,

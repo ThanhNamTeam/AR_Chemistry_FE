@@ -10,12 +10,14 @@ class StaffDashboardTab extends StatelessWidget {
   final VoidCallback onOpenFeedback;
   final VoidCallback onOpenPayment;
   final VoidCallback onOpenQuiz;
+  final VoidCallback onOpenQuizResults;
 
   const StaffDashboardTab({
     super.key,
     required this.onOpenFeedback,
     required this.onOpenPayment,
     required this.onOpenQuiz,
+    required this.onOpenQuizResults,
   });
 
   @override
@@ -110,6 +112,17 @@ class StaffDashboardTab extends StatelessWidget {
                     '${staff.pendingQuizzes.length} ${l10n.pendingQuizzes}',
                 color: AppColors.secondary,
                 onTap: onOpenQuiz,
+              ),
+              Divider(
+                color: AppColors.primary.withOpacity(0.12),
+                height: 20,
+              ),
+              _QuickActionTile(
+                icon: Icons.analytics_outlined,
+                label: 'Kết quả quiz',
+                subtitle: 'Xem điểm và lịch sử làm bài của học sinh',
+                color: AppColors.accent,
+                onTap: onOpenQuizResults,
               ),
             ],
           ),
