@@ -5,6 +5,7 @@ $GradleFile = Join-Path $ProjectRoot 'unityLibrary\build.gradle'
 $UnityManifestFile = Join-Path $ProjectRoot 'unityLibrary\src\main\AndroidManifest.xml'
 $AppManifestFile = Join-Path $ProjectRoot 'android\app\src\main\AndroidManifest.xml'
 $AndroidGradlePropertiesFile = Join-Path $ProjectRoot 'android\gradle.properties'
+$UnityGradlePropertiesFile = Join-Path $ProjectRoot 'unityLibrary\gradle.properties'
 
 function Write-Status($Message) {
     Write-Host "[UNITY_EXPORT_PATCH] $Message"
@@ -114,6 +115,44 @@ function Test-GradleJavaHomePinned {
     return Test-Jdk11OrNewer $JdkPath
 }
 
+function Get-PropertyValue($Text, $Name) {
+    $Pattern = '(?m)^' + [regex]::Escape($Name) + '=(.+)$'
+    if ($Text -match $Pattern) {
+        return $Matches[1].Trim()
+    }
+
+    throw "Missing required Gradle property: $Name"
+}
+
+function Set-PropertyLine($Text, $Name, $Value) {
+    $Line = "$Name=$Value"
+    $Pattern = '(?m)^' + [regex]::Escape($Name) + '=.*$'
+    if ($Text -match $Pattern) {
+        return $Text -replace $Pattern, $Line
+    }
+
+    if (-not $Text.EndsWith("`n")) {
+        $Text += "`r`n"
+    }
+
+    return $Text + "$Line`r`n"
+}
+
+function Patch-UnityGradleProperties {
+    Require-File $AndroidGradlePropertiesFile
+    Require-File $UnityGradlePropertiesFile
+
+    $AndroidText = Get-Content -LiteralPath $AndroidGradlePropertiesFile -Raw
+    $UnityText = Get-Content -LiteralPath $UnityGradlePropertiesFile -Raw
+
+    foreach ($Name in @('unity.androidSdkPath', 'unity.androidNdkPath', 'unity.androidNdkVersion')) {
+        $UnityText = Set-PropertyLine $UnityText $Name (Get-PropertyValue $AndroidText $Name)
+    }
+
+    Save-Utf8NoBom $UnityGradlePropertiesFile $UnityText
+    Write-Status 'Patched unityLibrary/gradle.properties Android SDK/NDK paths'
+}
+
 function Patch-Gradle {
     Require-File $GradleFile
     $Text = Get-Content -LiteralPath $GradleFile -Raw
@@ -217,12 +256,17 @@ function Test-PatchState {
     $UnityManifestText = Get-Content -LiteralPath $UnityManifestFile -Raw
     $AppManifestText = Get-Content -LiteralPath $AppManifestFile -Raw
     $AndroidGradlePropertiesText = Get-Content -LiteralPath $AndroidGradlePropertiesFile -Raw
+    $UnityGradlePropertiesText = Get-Content -LiteralPath $UnityGradlePropertiesFile -Raw
+    $PinnedUnityNdkPath = Get-PropertyValue $AndroidGradlePropertiesText 'unity.androidNdkPath'
+    $PinnedUnityNdkVersion = Get-PropertyValue $AndroidGradlePropertiesText 'unity.androidNdkVersion'
 
     $Checks = @(
         @{ Name = 'unity-classes.jar excluded from runtime fileTree'; Ok = $GradleText -match "exclude:\s*\['unity-classes\.jar'\]" },
         @{ Name = 'unity-classes.jar added as compileOnly'; Ok = $GradleText -match "compileOnly\s+files\('libs/unity-classes\.jar'\)" },
         @{ Name = 'NDK path comes from Gradle property'; Ok = $GradleText -match 'ndkPath\s+project\.property\("unity\.androidNdkPath"\)\.toString\(\)' },
         @{ Name = 'NDK version comes from Gradle property'; Ok = $GradleText -match 'ndkVersion\s+project\.property\("unity\.androidNdkVersion"\)\.toString\(\)' },
+        @{ Name = 'Unity library Gradle NDK path matches pinned Unity NDK'; Ok = (Get-PropertyValue $UnityGradlePropertiesText 'unity.androidNdkPath') -eq $PinnedUnityNdkPath },
+        @{ Name = 'Unity library Gradle NDK version matches pinned Unity NDK'; Ok = (Get-PropertyValue $UnityGradlePropertiesText 'unity.androidNdkVersion') -eq $PinnedUnityNdkVersion },
         @{ Name = 'IL2CPP profiler args removed'; Ok = $GradleText -notmatch '--profiler-report|--profiler-output-file' },
         @{ Name = 'Unity standalone launcher activity removed'; Ok = $UnityManifestText -notmatch 'UnityPlayerActivity|android\.intent\.action\.MAIN|android\.intent\.category\.LAUNCHER' },
         @{ Name = 'Flutter app manifest declares camera feature'; Ok = $AppManifestText -match 'android\.hardware\.camera' },
@@ -243,6 +287,7 @@ function Test-PatchState {
 
 Set-Location $ProjectRoot
 Set-GradleJavaHome
+Patch-UnityGradleProperties
 Patch-Gradle
 Patch-AppManifest
 Patch-UnityManifest
