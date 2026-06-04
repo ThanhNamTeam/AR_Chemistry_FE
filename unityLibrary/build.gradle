@@ -3,8 +3,8 @@ apply from: '../shared/keepUnitySymbols.gradle'
 apply from: '../shared/common.gradle'
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'], exclude: ['unity-classes.jar'])
     compileOnly files('libs/unity-classes.jar')
+    implementation fileTree(dir: 'libs', include: ['*.jar'], exclude: ['unity-classes.jar'])
     implementation(name: 'VuforiaEngine', ext:'aar')
 }
 
@@ -12,7 +12,7 @@ android {
     namespace "com.unity3d.player"
     ndkPath project.property("unity.androidNdkPath").toString()
     ndkVersion project.property("unity.androidNdkVersion").toString()
-    compileSdk 37
+    compileSdk 36
     buildToolsVersion "36.0.0"
 
     compileOptions {
@@ -23,11 +23,9 @@ android {
     defaultConfig {
         consumerProguardFiles "proguard-unity.txt"
         minSdk 29
-        //noinspection OldTargetApi
         targetSdk 36
 
         ndk {
-            //noinspection ChromeOsAbiSupport
             abiFilters "arm64-v8a"
             debugSymbolLevel "none"
         }
@@ -65,7 +63,6 @@ tasks.register('buildIl2Cpp') {
         outputs.file getIl2CppSymbolPath(workingDir, abi)
     }
     doLast {
-        // skipIl2CppBuild used for testing purposes
         if (project.hasProperty("skipIl2CppBuild")) {
             println("Skipping il2cpp build, creating dummy files.")
             archs.each { arch, abi ->
@@ -107,11 +104,11 @@ def getSdkDir() {
     return local.getProperty('sdk.dir')
 }
 
-static def getIl2CppOutputPath(String workingDir, String abi) {
+def getIl2CppOutputPath(String workingDir, String abi) {
     return "${workingDir}/src/main/jniLibs/${abi}/libil2cpp.so";
 }
 
-static def getIl2CppSymbolPath(String workingDir, String abi) {
+def getIl2CppSymbolPath(String workingDir, String abi) {
     return "${workingDir}/symbols/${abi}/libil2cpp.so";
 }
 

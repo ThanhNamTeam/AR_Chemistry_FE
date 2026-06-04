@@ -29,4 +29,5 @@ class AppRoutes {
   static const String quizList = '/quiz-list';
   static const String quizHistory = '/quiz-history';
   static const String quizAttemptDetail = '/quiz-attempt-detail';
+  static const String miniGame = '/mini-game';
 }
