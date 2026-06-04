@@ -3,7 +3,7 @@ class ApiConstants {
   /// --dart-define=API_BASE_URL=http://192.168.1.13:8080/api/v1
   static const String baseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://192.168.11.177:8080/api/v1',
+    defaultValue: 'http://172.18.193.225:8080/api/v1',
   );
 
   static const Duration timeout = Duration(seconds: 8);
