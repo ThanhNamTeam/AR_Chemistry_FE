@@ -4,6 +4,8 @@ import '../../../core/api/student_quiz_api.dart';
 import '../../../core/models/request/submit_quiz_request_model.dart';
 import '../../../core/models/response/submit_quiz_response_model.dart';
 import '../../../domain/models/student_published_quiz_model.dart';
+import '../../../domain/models/student_quiz_attempt_detail_model.dart';
+import '../../../domain/models/student_quiz_attempt_history_model.dart';
 import '../../../domain/models/student_quiz_detail_model.dart';
 import '../../../domain/models/student_quiz_summary_model.dart';
 
@@ -18,6 +20,25 @@ class StudentQuizProvider extends ChangeNotifier {
   bool _loadingSummary = false;
   bool _loadingQuestions = false;
   bool _submitting = false;
+
+  StudentQuizAttemptDetailModel? _attemptDetail;
+  bool _loadingAttemptDetail = false;
+  String? _attemptDetailError;
+
+  StudentQuizAttemptDetailModel? get attemptDetail => _attemptDetail;
+  bool get loadingAttemptDetail => _loadingAttemptDetail;
+  String? get attemptDetailError => _attemptDetailError;
+
+  List<StudentQuizAttemptHistoryModel> _attemptHistory = [];
+  bool _loadingAttemptHistory = false;
+  String? _attemptHistoryError;
+
+  List<StudentQuizAttemptHistoryModel> get attemptHistory =>
+      List.unmodifiable(_attemptHistory);
+
+  bool get loadingAttemptHistory => _loadingAttemptHistory;
+
+  String? get attemptHistoryError => _attemptHistoryError;
 
   List<StudentPublishedQuizModel> _publishedQuizzes = [];
   bool _loadingPublishedQuizzes = false;
@@ -62,6 +83,49 @@ class StudentQuizProvider extends ChangeNotifier {
     final total = totalQuestions;
     if (total == 0) return false;
     return answeredCount == total;
+  }
+
+  Future<void> loadAttemptDetail(String attemptCode) async {
+    _loadingAttemptDetail = true;
+    _attemptDetailError = null;
+    _attemptDetail = null;
+    notifyListeners();
+
+    try {
+      _attemptDetail = await _studentQuizApi.getQuizAttemptDetail(
+        attemptCode: attemptCode,
+      );
+    } catch (e) {
+      _attemptDetailError = e.toString();
+    } finally {
+      _loadingAttemptDetail = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> loadAttemptHistory({
+    String? quizCode,
+    int page = 0,
+    int size = 10,
+  }) async {
+    _loadingAttemptHistory = true;
+    _attemptHistoryError = null;
+    notifyListeners();
+
+    try {
+      final result = await _studentQuizApi.getQuizAttemptHistory(
+        quizCode: quizCode,
+        page: page,
+        size: size,
+      );
+
+      _attemptHistory = result.items;
+    } catch (e) {
+      _attemptHistoryError = e.toString();
+    } finally {
+      _loadingAttemptHistory = false;
+      notifyListeners();
+    }
   }
 
   Future<void> loadPublishedQuizByLesson(String lessonCode) async {

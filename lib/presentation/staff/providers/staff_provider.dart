@@ -6,6 +6,8 @@ import '../../../core/models/request/generate_upload_url_request.dart';
 import '../../../core/models/request/start_quiz_import_request.dart';
 import '../../../core/storage/feedback_storage_service.dart';
 import '../../../domain/models/staff_lesson_content_model.dart';
+import '../../../domain/models/staff_quiz_attempt_detail_model.dart';
+import '../../../domain/models/staff_quiz_attempt_model.dart';
 import '../../../domain/models/staff_quiz_detail_model.dart';
 import '../../../domain/models/staff_quiz_summary_model.dart';
 import '../../../domain/models/feedback_model.dart';
@@ -65,6 +67,28 @@ class StaffProvider extends ChangeNotifier {
 
   bool _importingQuizCsv = false;
   String? _quizImportError;
+
+  List<StaffQuizAttemptModel> _quizAttempts = [];
+  bool _loadingQuizAttempts = false;
+  String? _quizAttemptsError;
+
+  StaffQuizAttemptDetailModel? _selectedQuizAttemptDetail;
+  bool _loadingQuizAttemptDetail = false;
+  String? _quizAttemptDetailError;
+
+  List<StaffQuizAttemptModel> get quizAttempts =>
+      List.unmodifiable(_quizAttempts);
+
+  bool get loadingQuizAttempts => _loadingQuizAttempts;
+
+  String? get quizAttemptsError => _quizAttemptsError;
+
+  StaffQuizAttemptDetailModel? get selectedQuizAttemptDetail =>
+      _selectedQuizAttemptDetail;
+
+  bool get loadingQuizAttemptDetail => _loadingQuizAttemptDetail;
+
+  String? get quizAttemptDetailError => _quizAttemptDetailError;
 
   String? _selectedLessonContent;
   bool _loadingLessonContent = false;
@@ -169,6 +193,55 @@ class StaffProvider extends ChangeNotifier {
     await loadLessonQuizOverviews();
 
     _loading = false;
+    notifyListeners();
+  }
+
+  Future<void> loadQuizAttempts({
+    int page = 0,
+    int size = 10,
+  }) async {
+    _loadingQuizAttempts = true;
+    _quizAttemptsError = null;
+    notifyListeners();
+
+    try {
+      final result = await _staffQuizManagementApi.getQuizAttempts(
+        page: page,
+        size: size,
+      );
+
+      _quizAttempts = result.items;
+    } catch (e) {
+      _quizAttemptsError = e.toString();
+    } finally {
+      _loadingQuizAttempts = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> loadQuizAttemptDetail(String attemptCode) async {
+    _loadingQuizAttemptDetail = true;
+    _quizAttemptDetailError = null;
+    _selectedQuizAttemptDetail = null;
+    notifyListeners();
+
+    try {
+      _selectedQuizAttemptDetail =
+      await _staffQuizManagementApi.getQuizAttemptDetail(
+        attemptCode: attemptCode,
+      );
+    } catch (e) {
+      _quizAttemptDetailError = e.toString();
+    } finally {
+      _loadingQuizAttemptDetail = false;
+      notifyListeners();
+    }
+  }
+
+  void clearQuizAttemptDetail() {
+    _selectedQuizAttemptDetail = null;
+    _quizAttemptDetailError = null;
+    _loadingQuizAttemptDetail = false;
     notifyListeners();
   }
 

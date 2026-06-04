@@ -7,12 +7,12 @@ import '../../../domain/models/app_portal.dart';
 import '../../../routes/app_routes.dart';
 import '../../auth/providers/role_session_provider.dart';
 import '../../../core/portal/portal_scope.dart';
-import '../../home/providers/theme_provider.dart';
 import '../../shared/widgets/portal/portal_shell.dart';
 import '../providers/staff_provider.dart';
 import '../widgets/staff_dashboard_tab.dart';
 import '../widgets/staff_feedback_tab.dart';
 import '../widgets/staff_payment_tab.dart';
+import '../widgets/staff_quiz_results_tab.dart';
 import '../widgets/staff_quiz_tab.dart';
 
 class StaffHomeScreen extends StatefulWidget {
@@ -81,16 +81,23 @@ class _StaffHomeScreenState extends State<StaffHomeScreen> {
           activeIcon: Icons.quiz_rounded,
           label: l10n.quizPipeline,
         ),
+        PortalNavItem(
+          icon: Icons.analytics_outlined,
+          activeIcon: Icons.analytics_rounded,
+          label: 'Kết quả quiz',
+        ),
       ],
       pages: [
         StaffDashboardTab(
           onOpenFeedback: () => setState(() => _index = 1),
           onOpenPayment: () => setState(() => _index = 2),
           onOpenQuiz: () => setState(() => _index = 3),
+          onOpenQuizResults: () => setState(() => _index = 4),
         ),
         const StaffFeedbackTab(),
         const StaffPaymentTab(),
         const StaffQuizTab(),
+        const StaffQuizResultsTab(),
       ],
     );
   }

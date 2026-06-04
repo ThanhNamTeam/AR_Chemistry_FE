@@ -73,3 +73,6 @@ app.*.map.json
 **/*.unity3d
 **/*.resource
 **/*.resS
+
+# Local machine configuration
+local.properties
