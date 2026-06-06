@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/api/library_api.dart';
+import '../../../core/api/reaction_api.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/l10n/locale_provider.dart';
 import '../../../core/storage/avatar_storage_service.dart';
@@ -29,6 +31,53 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final ImagePicker _imagePicker = ImagePicker();
   bool _pickingAvatar = false;
+
+  final LibraryApi _libraryApi = LibraryApi();
+  final ReactionApi _reactionApi = ReactionApi();
+
+  bool _isLoadingSummary = true;
+  int _unlockedCards = 0;
+  int _totalCards = 0;
+  int _totalReactions = 0;
+  double _libraryProgress = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfileSummary();
+  }
+
+  Future<void> _loadProfileSummary() async {
+    setState(() {
+      _isLoadingSummary = true;
+    });
+
+    try {
+      final results = await Future.wait([
+        _libraryApi.getLibrarySummary(),
+        _reactionApi.getReactionSummary(),
+      ]);
+
+      final librarySummary = results[0] as dynamic;
+      final reactionSummary = results[1] as dynamic;
+
+      if (!mounted) return;
+
+      setState(() {
+        _unlockedCards = librarySummary.unlockedCards;
+        _totalCards = librarySummary.totalCards;
+        _libraryProgress = librarySummary.libraryProgress;
+        _totalReactions = reactionSummary.totalReactions;
+        _isLoadingSummary = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+
+      setState(() {
+        _isLoadingSummary = false;
+      });
+    }
+  }
 
   Future<void> _pickAvatar() async {
     if (_pickingAvatar) return;
@@ -319,14 +368,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           _StatCard(
                             icon: Icons.menu_book_outlined,
                             label: l10n.cardsUnlocked,
-                            value: '${state.unlockedCount}/${state.totalCards}',
+                            value: _isLoadingSummary ? '...' : '$_unlockedCards/$_totalCards',
                             color: AppColors.primary,
                           ),
                           const SizedBox(width: 12),
                           _StatCard(
                             icon: Icons.science_outlined,
                             label: l10n.experiments,
-                            value: '${state.experimentsCount}',
+                            value: _isLoadingSummary ? '...' : '$_totalReactions',
                             color: AppColors.secondary,
                           ),
                         ],
@@ -352,7 +401,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         fontSize: 12,
                                         fontFamily: 'Inter')),
                                 Text(
-                                    '${(state.libraryProgress * 100).round()}%',
+                                    '${(_libraryProgress * 100).round()}%',
                                     style: TextStyle(
                                         color: AppColors.accentText,
                                         fontWeight: FontWeight.w700,
@@ -363,7 +412,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ClipRRect(
                               borderRadius: BorderRadius.circular(8),
                               child: LinearProgressIndicator(
-                                value: state.libraryProgress,
+                                value: _libraryProgress.clamp(0.0, 1.0),
                                 minHeight: 8,
                                 backgroundColor:
                                     AppColors.primary.withOpacity(0.15),
@@ -389,8 +438,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       _MenuItem(
                         icon: Icons.menu_book_outlined,
                         label: l10n.myLibrary,
-                        subtitle: l10n.cardsUnlockedSubtitle(
-                            state.unlockedCards.length),
+                        subtitle: l10n.cardsUnlockedSubtitle(_unlockedCards),
                         color: AppColors.primary,
                         onTap: () =>
                             Navigator.pushNamed(context, AppRoutes.library),

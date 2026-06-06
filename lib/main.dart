@@ -1,3 +1,4 @@
+import 'package:ar_chemistry_visual/presentation/inventory/screens/substance_detail_screen.dart';
 import 'package:ar_chemistry_visual/presentation/quiz/providers/student_quiz_provider.dart';
 import 'package:ar_chemistry_visual/presentation/quiz/screens/student_quiz_attempt_detail_screen.dart';
 import 'package:ar_chemistry_visual/presentation/quiz/screens/student_quiz_history_screen.dart';
@@ -179,6 +180,18 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
         builder: (_) => const ResultScreen(),
       );
     }
+
+    if (settings.name == AppRoutes.substanceDetail) {
+      final substanceId = settings.arguments as String;
+
+      return MaterialPageRoute(
+        settings: settings,
+        builder: (_) => SubstanceDetailScreen(
+          substanceId: substanceId,
+        ),
+      );
+    }
+
     return null;
   }
 }

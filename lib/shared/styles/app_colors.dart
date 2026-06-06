@@ -155,4 +155,45 @@ class AppColors {
   static Color get shadowCard => isLight
       ? Colors.black.withOpacity(0.06)
       : AppColors.primary.withOpacity(0.06);
+
+  static Color substanceStateColor(String? state) {
+    switch (state?.toUpperCase()) {
+      case 'SOLID':
+        return const Color(0xFF8B5CF6);
+      case 'LIQUID':
+        return const Color(0xFF38BDF8);
+      case 'GAS':
+        return amber;
+      case 'AQUEOUS':
+        return secondary;
+      default:
+        return primary;
+    }
+  }
+
+  static LinearGradient substanceStateGradient(String? state) {
+    final color = substanceStateColor(state);
+
+    return LinearGradient(
+      colors: [
+        color,
+        Color.lerp(color, backgroundDark, isLight ? 0.12 : 0.28)!,
+      ],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    );
+  }
+
+  static Color substanceStateSurface(String? state) {
+    final color = substanceStateColor(state);
+
+    return color.withOpacity(isLight ? 0.12 : 0.16);
+  }
+
+  static Color substanceStateBorder(String? state) {
+    final color = substanceStateColor(state);
+
+    return color.withOpacity(isLight ? 0.35 : 0.45);
+  }
 }
+

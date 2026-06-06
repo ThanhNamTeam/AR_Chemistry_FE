@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../core/api/ar_access_api.dart';
 import '../../../core/storage/avatar_storage_service.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../../shared/widgets/knowledge_points_badge.dart';
@@ -22,6 +23,82 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late AnimationController _pulse1;
   late AnimationController _pulse2;
+  final ArAccessApi _arAccessApi = ArAccessApi();
+  bool _checkingArAccess = false;
+
+  Future<void> _openARScanner() async {
+    if (_checkingArAccess) return;
+
+    setState(() {
+      _checkingArAccess = true;
+    });
+
+    try {
+      final access = await _arAccessApi.getMyArAccess();
+
+      if (!mounted) return;
+
+      if (access.canScanAR) {
+        Navigator.pushNamed(context, AppRoutes.scan);
+      } else {
+        _showArAccessDialog(access.message);
+      }
+    } catch (e) {
+      if (!mounted) return;
+
+      _showArAccessDialog(
+        'Không thể kiểm tra quyền quét AR. Vui lòng thử lại.',
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _checkingArAccess = false;
+        });
+      }
+    }
+  }
+
+  void _showArAccessDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        backgroundColor: AppColors.backgroundDark,
+        title: const Text(
+          'Không thể quét AR',
+          style: TextStyle(
+            color: Colors.white,
+            fontFamily: 'Inter',
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        content: Text(
+          message.isNotEmpty
+              ? message
+              : 'Bạn cần kích hoạt mã kit hoặc mua gói AR 30 Days để quét AR.',
+          style: TextStyle(
+            color: AppColors.textSecondary,
+            fontFamily: 'Inter',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Đóng'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+
+              // Tạm thời đẩy sang packages.
+              // Sau này nếu có màn activate kit riêng thì đổi route tại đây.
+              Navigator.pushNamed(context, AppRoutes.packages);
+            },
+            child: const Text('Kích hoạt / Mua gói'),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   void initState() {
@@ -237,7 +314,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 32),
           child: GestureDetector(
-            onTap: () => Navigator.pushNamed(context, AppRoutes.scan),
+            onTap: _checkingArAccess ? null : _openARScanner,
             child: AnimatedBuilder(
               animation: _pulse1,
               builder: (_, child) => Container(
@@ -268,11 +345,21 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.view_in_ar, color: Colors.white, size: 28),
-                    SizedBox(width: 12),
+                    if (_checkingArAccess)
+                      const SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.4,
+                          color: Colors.white,
+                        ),
+                      )
+                    else
+                      const Icon(Icons.view_in_ar, color: Colors.white, size: 28),
+                    const SizedBox(width: 12),
                     Text(
-                      'Start AR Experiment',
-                      style: TextStyle(
+                      _checkingArAccess ? 'Checking access...' : 'Start AR Experiment',
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
