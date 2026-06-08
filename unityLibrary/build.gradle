@@ -11,8 +11,8 @@ dependencies {
 
 android {
     namespace "com.unity3d.player"
-    ndkPath "D:\\Unity\\Editors\\6000.4.7f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\NDK"
-    ndkVersion "27.2.12479018"
+    ndkPath project.property("unity.androidNdkPath").toString()
+    ndkVersion project.property("unity.androidNdkVersion").toString()
     compileSdk 36
     buildToolsVersion "36.0.0"
 

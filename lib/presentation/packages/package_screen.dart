@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 
 import '../../../../shared/styles/app_colors.dart';
 import '../../../../shared/widgets/knowledge_points_badge.dart';
+import '../../core/api/ar_access_api.dart';
+import '../../routes/app_routes.dart';
 import '../home/providers/app_state.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -18,6 +20,8 @@ class PackageScreen extends StatefulWidget {
 class _PackageScreenState extends State<PackageScreen> {
   bool _isLoading = false;
   bool _showQRModal = false;
+  final ArAccessApi _arAccessApi = ArAccessApi();
+  bool _isPurchasing = false;
 
   String? _selectedPackageId;
   String? _selectedPackageName;
@@ -132,6 +136,61 @@ class _PackageScreenState extends State<PackageScreen> {
         ),
       ),
     );
+  }
+
+
+  Future<void> _fakePurchaseAr30Days() async {
+    if (_isPurchasing) return;
+
+    setState(() {
+      _isPurchasing = true;
+    });
+
+    try {
+      final access = await _arAccessApi.fakePurchaseAr30Days();
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            access.message.isNotEmpty
+                ? access.message
+                : 'Mua gói AR 30 Days thành công.',
+            style: const TextStyle(fontFamily: 'Inter'),
+          ),
+          backgroundColor: AppColors.secondary,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      );
+
+      Navigator.pushNamed(context, AppRoutes.scan);
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text(
+            'Mua gói test thất bại. Vui lòng thử lại.',
+            style: TextStyle(fontFamily: 'Inter'),
+          ),
+          backgroundColor: AppColors.error,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isPurchasing = false;
+        });
+      }
+    }
   }
 
   Future<void> _pickProofImage(AppState state) async {
@@ -289,11 +348,7 @@ class _PackageScreenState extends State<PackageScreen> {
                               package.durationDays,
                             ),
                             price: package.price,
-                            onTap: () => _openQR(
-                              packageId: package.id,
-                              packageName: package.name,
-                              price: package.price,
-                            ),
+                            onTap: _isPurchasing ? () {} : _fakePurchaseAr30Days,
                           ),
                         );
                       },
@@ -453,7 +508,7 @@ class _PackageCard extends StatelessWidget {
                   ),
                   SizedBox(width: 8),
                   Text(
-                    'Pay with Bank',
+                    'Buy AR 30 Days',
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w600,

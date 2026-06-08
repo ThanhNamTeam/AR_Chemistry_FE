@@ -3,7 +3,7 @@ class ApiConstants {
   /// --dart-define=API_BASE_URL=http://192.168.1.13:8080/api/v1
   static const String baseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://172.18.193.225:8080/api/v1',
+    defaultValue: 'http://192.168.1.7:8080/api/v1',
   );
 
   static const Duration timeout = Duration(seconds: 8);
@@ -58,6 +58,46 @@ class ApiConstants {
     return '$baseUrl$studentPath/quizzes/published';
   }
 
+  //access ar
+  static const String mePath = '/users';
+
+  static String get myArAccessUrl {
+    return '$baseUrl$mePath/ar-access';
+  }
+
+  // fake payment
+  static const String devFakePurchasePath = '/dev/fake-purchase';
+
+  static String get fakePurchaseAr30DaysUrl {
+    return '$baseUrl$devFakePurchasePath/ar-30-days';
+  }
+
+  // inventory
+  static const String inventoryPath = '/inventory';
+
+  static String inventorySubstanceDetailUrl(String substanceId) {
+    return '$baseUrl$inventoryPath/substances/$substanceId/detail';
+  }
+
+  static String get activateKitUrl {
+    return '$baseUrl$inventoryPath/activate-kit';
+  }
+
+  static String inventoryMeUrl({
+    int page = 0,
+    int size = 20,
+  }) {
+    final uri = Uri.parse('$baseUrl$inventoryPath/me').replace(
+      queryParameters: {
+        'page': page.toString(),
+        'size': size.toString(),
+        'sort': 'acquiredAt,desc',
+      },
+    );
+
+    return uri.toString();
+  }
+
   static String studentQuizAttemptsUrl({
     String? quizCode,
     int page = 0,
@@ -76,6 +116,35 @@ class ApiConstants {
 
   static String studentQuizAttemptDetailUrl(String attemptCode) {
     return '$baseUrl$studentPath/quiz-attempts/$attemptCode';
+  }
+
+  // library
+  static const String libraryPath = '/library';
+
+  static String libraryCardsUrl({
+    int page = 0,
+    int size = 30,
+  }) {
+    final uri = Uri.parse('$baseUrl$libraryPath/cards').replace(
+      queryParameters: {
+        'page': page.toString(),
+        'size': size.toString(),
+        'sort': 'formula,asc',
+      },
+    );
+
+    return uri.toString();
+  }
+
+  static String get librarySummaryUrl {
+    return '$baseUrl$libraryPath/summary';
+  }
+
+// reactions
+  static const String reactionsPath = '/reactions/definitions';
+
+  static String get reactionSummaryUrl {
+    return '$baseUrl$reactionsPath/summary';
   }
 
   // feedbacks
