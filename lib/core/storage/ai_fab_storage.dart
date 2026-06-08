@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AiFabStorage {
   static const _xKey = 'ai_fab_x_fraction';
   static const _yKey = 'ai_fab_y_fraction';
+  static const _enabledKey = 'ai_fab_user_enabled';
 
   Future<({double x, double y})?> loadPosition() async {
     final prefs = await SharedPreferences.getInstance();
@@ -16,5 +17,15 @@ class AiFabStorage {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setDouble(_xKey, x.clamp(0.0, 1.0));
     await prefs.setDouble(_yKey, y.clamp(0.0, 1.0));
+  }
+
+  Future<bool> loadEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_enabledKey) ?? true;
+  }
+
+  Future<void> saveEnabled(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_enabledKey, value);
   }
 }

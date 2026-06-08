@@ -88,33 +88,81 @@ class _MiniGameLearningScreenState extends State<MiniGameLearningScreen>
   }
 
   Widget _buildTabBar() {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-      decoration: BoxDecoration(
-        color: AppColors.backgroundMid,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.primary.withOpacity(0.15)),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+      child: Container(
+        height: 44,
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          color: AppColors.backgroundMid,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.primary.withOpacity(0.15)),
+        ),
+        child: Row(
+          children: [
+            _SegmentTab(label: 'Khối lượng', index: 0, controller: _tab),
+            _SegmentTab(label: 'Hóa trị', index: 1, controller: _tab),
+            _SegmentTab(label: 'Nguyên tố', index: 2, controller: _tab),
+          ],
+        ),
       ),
-      child: TabBar(
-        controller: _tab,
-        indicator: BoxDecoration(
-          gradient: AppColors.primaryGradient,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        indicatorPadding: const EdgeInsets.all(3),
-        dividerColor: Colors.transparent,
-        labelColor: Colors.white,
-        unselectedLabelColor: AppColors.textSecondary,
-        labelStyle: const TextStyle(
-          fontSize: 11,
-          fontWeight: FontWeight.w600,
-          fontFamily: 'Inter',
-        ),
-        tabs: const [
-          Tab(text: 'Khối lượng'),
-          Tab(text: 'Hóa trị'),
-          Tab(text: 'Nguyên tố'),
-        ],
+    );
+  }
+}
+
+class _SegmentTab extends StatelessWidget {
+  const _SegmentTab({
+    required this.label,
+    required this.index,
+    required this.controller,
+  });
+
+  final String label;
+  final int index;
+  final TabController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: AnimatedBuilder(
+        animation: controller,
+        builder: (context, _) {
+          final selected = controller.index == index;
+          return GestureDetector(
+            onTap: () => controller.animateTo(index),
+            behavior: HitTestBehavior.opaque,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeOut,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                gradient: selected ? AppColors.primaryGradient : null,
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: selected
+                    ? [
+                        BoxShadow(
+                          color: AppColors.primary.withOpacity(0.25),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ]
+                    : null,
+              ),
+              child: Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: 'Inter',
+                  color: selected ? Colors.white : AppColors.textSecondary,
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -416,7 +464,7 @@ class _ElementExplorerTabState extends State<_ElementExplorerTab> {
               crossAxisCount: 4,
               crossAxisSpacing: 8,
               mainAxisSpacing: 8,
-              childAspectRatio: 0.85,
+              childAspectRatio: 1.05,
             ),
             itemCount: filtered.length,
             itemBuilder: (_, i) => _ElementTile(
@@ -471,7 +519,7 @@ class _ElementTile extends StatelessWidget {
                 element.atomicMassStr,
                 style: TextStyle(
                   color: AppColors.textSecondary,
-                  fontSize: 8,
+                  fontSize: 9,
                   fontFamily: 'Inter',
                 ),
               ),
@@ -479,21 +527,25 @@ class _ElementTile extends StatelessWidget {
               element.symbol,
               style: TextStyle(
                 color: accent,
-                fontSize: 18,
+                fontSize: 16,
                 fontWeight: FontWeight.w800,
                 fontFamily: 'Inter',
               ),
             ),
-            Text(
-              element.nameVi,
-              style: TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 8,
-                fontFamily: 'Inter',
+            const SizedBox(height: 2),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: Text(
+                element.nameVi,
+                style: TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 9,
+                  fontFamily: 'Inter',
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
               ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
             ),
           ],
         ),

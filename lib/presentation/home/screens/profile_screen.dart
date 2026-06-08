@@ -11,6 +11,7 @@ import '../../../core/l10n/locale_provider.dart';
 import '../../../core/storage/avatar_storage_service.dart';
 import '../../../domain/models/app_portal.dart';
 import '../../../shared/styles/app_colors.dart';
+import '../../ai_chat/providers/ai_fab_visibility.dart';
 import '../../shared/widgets/profile_language_section.dart';
 import '../../shared/widgets/profile_theme_section.dart';
 import '../../../shared/widgets/knowledge_points_badge.dart';
@@ -430,6 +431,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 24),
                 const ProfileThemeSection(portal: AppPortal.user),
                 const SizedBox(height: 24),
+                const _ChatSettingsSection(),
+                const SizedBox(height: 24),
 
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -637,6 +640,101 @@ class _MenuItem extends StatelessWidget {
                 color: AppColors.textSecondary, size: 20),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _ChatSettingsSection extends StatelessWidget {
+  const _ChatSettingsSection();
+
+  @override
+  Widget build(BuildContext context) {
+    final fabVisibility = context.watch<AiFabVisibility>();
+    final enabled = fabVisibility.userEnabled;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 4, bottom: 10),
+            child: Text(
+              'Cài đặt trợ lý',
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textSecondary,
+                fontFamily: 'Inter',
+                letterSpacing: 0.5,
+              ),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            decoration: BoxDecoration(
+              color: AppColors.cardSurface,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: AppColors.cardBorder.withOpacity(0.4)),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    Icons.smart_toy_outlined,
+                    color: AppColors.primary,
+                    size: 22,
+                  ),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Trợ lý AI',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textPrimary,
+                          fontFamily: 'Inter',
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        enabled
+                            ? 'Nút trợ lý đang hiển thị trên màn hình'
+                            : 'Nút trợ lý đang bị ẩn',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: enabled
+                              ? AppColors.primary.withOpacity(0.85)
+                              : AppColors.textSecondary,
+                          fontFamily: 'Inter',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Switch(
+                  value: enabled,
+                  onChanged: (value) => fabVisibility.setUserEnabled(value),
+                  activeColor: AppColors.primary,
+                  activeTrackColor: AppColors.primary.withOpacity(0.3),
+                  inactiveThumbColor: AppColors.textSecondary,
+                  inactiveTrackColor: AppColors.textSecondary.withOpacity(0.2),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
