@@ -47,6 +47,7 @@ dependencies:
   mime: ^2.0.0
   package_info_plus: ^9.0.0
   device_info_plus: ^12.4.0
+  flutter_dotenv: ^6.0.1
   gal: ^2.3.1
   permission_handler: ^11.0.0
 
@@ -66,6 +67,7 @@ flutter_launcher_icons:
 flutter:
   uses-material-design: true
   assets:
+    - .env
     - assets/images/payment-qr.jpg
     - assets/icon/app_icon.jpg
 
