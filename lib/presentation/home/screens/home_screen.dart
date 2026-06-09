@@ -172,82 +172,103 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Widget _buildHeader(AppState state) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
-      child: Row(
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Welcome back,',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: AppColors.textSecondary,
-                    fontFamily: 'Inter',
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  state.displayName,
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
-                    fontFamily: 'Inter',
-                  ),
-                ),
-              ],
-            ),
-          ),
-          KnowledgePointsBadge(points: state.knowledgePoints),
-          const SizedBox(width: 8),
-          GestureDetector(
-            onTap: () => Navigator.pushNamed(context, AppRoutes.packages),
-            child: Container(
-              height: 40,
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              decoration: BoxDecoration(
-                gradient: AppColors.amberGradient,
-                borderRadius: BorderRadius.circular(999),
-                border: Border.all(
-                  color: AppColors.amberLight.withOpacity(0.7),
-                  width: 1.2,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.amberLight.withOpacity(0.35),
-                    blurRadius: 18,
-                    spreadRadius: 1,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: const [
-                  Icon(
-                    Icons.workspace_premium,
-                    color: Colors.white,
-                    size: 17,
-                  ),
-                  SizedBox(width: 5),
-                  Text(
-                    'Upgrade',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w800,
-                      fontFamily: 'Inter',
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Welcome back,',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: AppColors.textSecondary,
+                        fontFamily: 'Inter',
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 4),
+                    Text(
+                      state.displayName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary,
+                        fontFamily: 'Inter',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 12),
+              _buildProfileAvatar(state),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              KnowledgePointsBadge(
+                points: state.knowledgePoints,
+                compact: true,
+              ),
+              const SizedBox(width: 8),
+              _buildUpgradeButton(),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUpgradeButton() {
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(context, AppRoutes.packages),
+      child: Container(
+        height: 34,
+        padding: const EdgeInsets.symmetric(horizontal: 14),
+        decoration: BoxDecoration(
+          gradient: AppColors.amberGradient,
+          borderRadius: BorderRadius.circular(999),
+          border: Border.all(
+            color: AppColors.amberLight.withOpacity(0.7),
+            width: 1.2,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.amberLight.withOpacity(0.3),
+              blurRadius: 12,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            Icon(
+              Icons.workspace_premium,
+              color: Colors.white,
+              size: 16,
+            ),
+            SizedBox(width: 5),
+            Text(
+              'Upgrade',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.w800,
+                fontFamily: 'Inter',
               ),
             ),
-          ),
-          const SizedBox(width: 12),
-          _buildProfileAvatar(state),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -267,8 +288,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, AppRoutes.profile),
       child: Container(
-        width: 40,
-        height: 40,
+        width: 44,
+        height: 44,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           gradient: hasAvatar ? null : AppColors.cyanEmeraldGradient,

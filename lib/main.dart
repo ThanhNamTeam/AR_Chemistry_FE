@@ -12,6 +12,7 @@ import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 
 import 'amplifyconfiguration.dart';
 
+import 'core/config/env_config.dart';
 import 'core/l10n/app_localizations.dart';
 import 'core/l10n/locale_provider.dart';
 import 'presentation/admin/providers/admin_provider.dart';
@@ -56,6 +57,7 @@ import 'presentation/mini_game/screens/mini_game_screen.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await EnvConfig.load();
   await _configureAmplify();
 
   AppColors.applyTheme(

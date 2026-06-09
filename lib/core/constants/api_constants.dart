@@ -1,11 +1,8 @@
-class ApiConstants {
-  /// Backend base URL — truyền bằng dart-define:
-  /// --dart-define=API_BASE_URL=http://192.168.1.13:8080/api/v1
-  static const String baseUrl = String.fromEnvironment(
-    'API_BASE_URL',
-    defaultValue: 'http://192.168.1.7:8080/api/v1',
-  );
+import '../config/env_config.dart';
 
+class ApiConstants {
+  /// Backend base URL — cấu hình trong `.env` hoặc `--dart-define=API_BASE_URL=...`
+  static String get baseUrl => EnvConfig.apiBaseUrl;
   static const Duration timeout = Duration(seconds: 8);
 
   // paths

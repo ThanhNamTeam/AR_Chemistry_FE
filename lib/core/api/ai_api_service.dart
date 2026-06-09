@@ -168,7 +168,8 @@ class AiApiService {
     }
     if (e.type == DioExceptionType.connectionError) {
       return AiApiException(
-        'Không kết nối được backend (${ApiConstants.baseUrl}). Kiểm tra mạng và API_BASE_URL.',      );
+        'Không kết nối được backend (${ApiConstants.baseUrl}). '
+        'Kiểm tra mạng và API_BASE_URL trong file .env.',);
     }
     return AiApiException(e.message ?? 'Lỗi mạng không xác định.');
   }
