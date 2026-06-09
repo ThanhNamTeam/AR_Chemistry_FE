@@ -31,4 +31,5 @@ class AppRoutes {
   static const String quizAttemptDetail = '/quiz-attempt-detail';
   static const String miniGame = '/mini-game';
   static const String substanceDetail = '/substance-detail';
+  static const String mySingleCards = '/my-single-cards';
 }
