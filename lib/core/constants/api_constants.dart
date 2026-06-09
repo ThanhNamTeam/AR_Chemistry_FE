@@ -184,6 +184,15 @@ class ApiConstants {
     return '$baseUrl$staffQuizManagementPath/quizzes/$quizCode/publish';
   }
 
+  // single-cards
+  static final String singleCardsUrl = '$baseUrl/single-cards';
+
+  static String fakeBuySingleCardUrl =
+      '$baseUrl/single-card-purchases/fake-buy';
+
+  static String mySingleCardPurchasesUrl =
+      '$baseUrl/single-card-purchases/my';
+
 
   /// Khi chưa cấu hình BE, lưu feedback cục bộ.
   static bool get useLocalFallback => baseUrl.contains('example.com');

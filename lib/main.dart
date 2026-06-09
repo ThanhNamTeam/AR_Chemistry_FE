@@ -59,6 +59,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await EnvConfig.load();
+  debugPrint('API_BASE_URL = ${EnvConfig.apiBaseUrl}');
   await _configureAmplify();
 
   AppColors.applyTheme(
