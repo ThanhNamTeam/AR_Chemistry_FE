@@ -47,6 +47,8 @@ dependencies:
   mime: ^2.0.0
   package_info_plus: ^9.0.0
   device_info_plus: ^12.4.0
+  gal: ^2.3.1
+  permission_handler: ^11.0.0
 
 dev_dependencies:
   flutter_test:

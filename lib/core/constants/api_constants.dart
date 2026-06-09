@@ -3,7 +3,7 @@ class ApiConstants {
   /// --dart-define=API_BASE_URL=http://192.168.1.13:8080/api/v1
   static const String baseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://192.168.1.7:8080/api/v1',
+    defaultValue: 'http://172.18.193.225:8080/api/v1',
   );
 
   static const Duration timeout = Duration(seconds: 8);
@@ -187,6 +187,14 @@ class ApiConstants {
     return '$baseUrl$staffQuizManagementPath/quizzes/$quizCode/publish';
   }
 
+  // single-cards
+  static const String singleCardsUrl = '$baseUrl/single-cards';
+
+  static const String fakeBuySingleCardUrl =
+      '$baseUrl/single-card-purchases/fake-buy';
+
+  static const String mySingleCardPurchasesUrl =
+      '$baseUrl/single-card-purchases/my';
 
   /// Khi chưa cấu hình BE, lưu feedback cục bộ.
   static bool get useLocalFallback => baseUrl.contains('example.com');
