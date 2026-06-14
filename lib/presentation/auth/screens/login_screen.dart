@@ -21,6 +21,9 @@ import '../../../routes/app_routes.dart';
 import '../../home/providers/app_state.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import '../widgets/auth_appearance_sheet.dart';
+import '../widgets/auth_app_logo_badge.dart';
+import '../widgets/cyber_beam_border.dart';
+import '../widgets/cyber_login_frame.dart';
 import '../../../core/l10n/app_localizations.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -525,29 +528,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
             child: const AuthSettingsButton(),
           ),
           const SizedBox(height: 16),
-          Container(
-            padding: const EdgeInsets.all(4),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                  color: AppColors.primary.withOpacity(0.5), width: 1.5),
-              gradient: LinearGradient(colors: [
-                AppColors.primary.withOpacity(0.2),
-                AppColors.accent.withOpacity(0.2),
-              ]),
-            ),
-            child: Container(
-              width: 72,
-              height: 72,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: AppColors.primaryGradient,
-              ),
-              child: const Center(
-                child: Icon(Icons.science, size: 32, color: Colors.white),
-              ),
-            ),
-          ),
+          const AuthAppLogoBadge(),
           const SizedBox(height: 20),
           Text(l10n.appName,
               style: TextStyle(
@@ -562,19 +543,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                   color: AppColors.subtitleAccent,
                   fontFamily: 'Inter')),
           const SizedBox(height: 36),
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: AppColors.cardSurface,
-              borderRadius: BorderRadius.circular(24),
-              border: Border.all(
-                  color: AppColors.primary.withOpacity(0.3), width: 1.5),
-              boxShadow: [
-                BoxShadow(
-                    color: AppColors.primary.withOpacity(0.1),
-                    blurRadius: 30),
-              ],
-            ),
+          CyberLoginFrame(
             child: Form(
               key: _loginKey,
               child: Column(
@@ -622,10 +591,12 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                     ),
                   ),
                   const SizedBox(height: 16),
-                  GradientPrimaryButton(
-                    label: _loggingIn ? l10n.loggingIn : l10n.loginButton,
-                    loading: _loggingIn,
-                    onTap: _loggingIn ? null : _login,
+                  CyberBeamBorder(
+                    child: GradientPrimaryButton(
+                      label: _loggingIn ? l10n.loggingIn : l10n.loginButton,
+                      loading: _loggingIn,
+                      onTap: _loggingIn ? null : _login,
+                    ),
                   ),
                 ],
               ),
@@ -649,41 +620,43 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                     color: AppColors.textSecondary.withOpacity(0.3))),
           ]),
           const SizedBox(height: 16),
-          PressableScale(
-            onTap: _googleLoading ? null : _loginGoogle,
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey.shade300),
-              ),
-              child: _googleLoading
-                  ? const Center(
-                      child: SizedBox(
-                        width: 22,
-                        height: 22,
-                        child: CircularProgressIndicator(strokeWidth: 2),
+          CyberBeamBorder(
+            child: PressableScale(
+              onTap: _googleLoading ? null : _loginGoogle,
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: _googleLoading
+                    ? const Center(
+                        child: SizedBox(
+                          width: 22,
+                          height: 22,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      )
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('G',
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xFF4285F4))),
+                          SizedBox(width: 10),
+                          Text(l10n.continueWithGoogle,
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black87,
+                                  fontFamily: 'Inter')),
+                        ],
                       ),
-                    )
-                  : Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('G',
-                            style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                                color: Color(0xFF4285F4))),
-                        SizedBox(width: 10),
-                        Text(l10n.continueWithGoogle,
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black87,
-                                fontFamily: 'Inter')),
-                      ],
-                    ),
+              ),
             ),
           ),
           const SizedBox(height: 24),

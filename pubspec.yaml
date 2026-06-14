@@ -68,6 +68,11 @@ flutter:
   uses-material-design: true
   assets:
     - .env
+    - assets/images/Cyber.png
+    - assets/images/Light.png
+    - assets/images/Ocean.png
+    - assets/images/Galaxy.png
+    - assets/images/Forest.png
     - assets/images/payment-qr.jpg
     - assets/icon/app_icon.jpg
 
