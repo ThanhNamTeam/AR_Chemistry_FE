@@ -12,6 +12,7 @@ import '../../../routes/app_routes.dart';
 import '../../home/providers/app_state.dart';
 import '../../../core/portal/portal_scope.dart';
 import '../../home/providers/theme_provider.dart';
+import '../widgets/themed_home_background.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -22,7 +23,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late AnimationController _pulse1;
-  late AnimationController _pulse2;
   final ArAccessApi _arAccessApi = ArAccessApi();
   bool _checkingArAccess = false;
 
@@ -107,10 +107,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       vsync: this,
       duration: const Duration(seconds: 2),
     )..repeat(reverse: true);
-    _pulse2 = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 2500),
-    )..repeat(reverse: true);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       activatePortal(context, AppPortal.user);
       _showWelcomeMessage();
@@ -138,7 +134,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   void dispose() {
     _pulse1.dispose();
-    _pulse2.dispose();
     super.dispose();
   }
 
@@ -149,23 +144,20 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
     return Scaffold(
       backgroundColor: AppColors.backgroundDark,
-      body: Container(
-        decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
-        child: Stack(
-          children: [
-            // Bg blobs
-            _buildBlobs(),
-            SafeArea(
-              child: Column(
-                children: [
-                  _buildHeader(state),
-                  Expanded(child: _buildBody()),
-                  _buildBottomNav(),
-                ],
-              ),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          const ThemedHomeBackground(),
+          SafeArea(
+            child: Column(
+              children: [
+                _buildHeader(state),
+                Expanded(child: _buildBody()),
+                _buildBottomNav(),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -325,15 +317,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Widget _buildBody() {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // Test tube visual
-        _buildLabVisual(),
-        const SizedBox(height: 48),
-
-        // AR button
+        const Spacer(flex: 4),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32),
+          padding: const EdgeInsets.symmetric(horizontal: 56),
           child: GestureDetector(
             onTap: _checkingArAccess ? null : _openARScanner,
             child: AnimatedBuilder(
@@ -346,7 +333,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       color: AppColors.primary.withOpacity(
                         0.3 + 0.2 * _pulse1.value,
                       ),
-                      blurRadius: 24 + 12 * _pulse1.value,
+                      blurRadius: 16 + 8 * _pulse1.value,
                     ),
                   ],
                 ),
@@ -354,35 +341,36 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               ),
               child: Container(
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 20),
+                padding: const EdgeInsets.symmetric(vertical: 13, horizontal: 20),
                 decoration: BoxDecoration(
                   gradient: AppColors.cyanEmeraldGradient,
                   borderRadius: BorderRadius.circular(999),
                   border: Border.all(
                     color: AppColors.primary.withOpacity(0.5),
-                    width: 1.5,
+                    width: 1.2,
                   ),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     if (_checkingArAccess)
                       const SizedBox(
-                        width: 24,
-                        height: 24,
+                        width: 20,
+                        height: 20,
                         child: CircularProgressIndicator(
-                          strokeWidth: 2.4,
+                          strokeWidth: 2.2,
                           color: Colors.white,
                         ),
                       )
                     else
-                      const Icon(Icons.view_in_ar, color: Colors.white, size: 28),
-                    const SizedBox(width: 12),
+                      const Icon(Icons.view_in_ar, color: Colors.white, size: 22),
+                    const SizedBox(width: 8),
                     Text(
                       _checkingArAccess ? 'Checking access...' : 'Start AR Experiment',
                       style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 18,
+                        fontSize: 15,
                         fontWeight: FontWeight.w700,
                         fontFamily: 'Inter',
                       ),
@@ -393,154 +381,25 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             ),
           ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 40),
+          padding: const EdgeInsets.symmetric(horizontal: 40),
           child: Text(
             'Scan chemical flashcards to witness amazing reactions in augmented reality',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 13,
-              color: AppColors.textSecondary,
+              fontWeight: FontWeight.w600,
+              color: AppColors.isLight
+                  ? AppColors.textPrimary
+                  : Colors.white,
               fontFamily: 'Inter',
               height: 1.5,
             ),
           ),
         ),
+        const SizedBox(height: 24),
       ],
-    );
-  }
-
-  Widget _buildLabVisual() {
-    return SizedBox(
-      height: 200,
-      child: Stack(
-        alignment: Alignment.bottomCenter,
-        children: [
-          // Glow under tubes
-          Positioned(
-            bottom: 0,
-            child: AnimatedBuilder(
-              animation: _pulse1,
-              builder: (_, __) => Container(
-                width: 220,
-                height: 20,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(999),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primary.withOpacity(
-                        0.15 + 0.1 * _pulse1.value,
-                      ),
-                      blurRadius: 30,
-                      spreadRadius: 10,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              _buildTube(60, 110, AppColors.primary, 0.0),
-              const SizedBox(width: 20),
-              _buildTube(72, 148, AppColors.accent, 0.5),
-              const SizedBox(width: 20),
-              _buildTube(60, 96, AppColors.secondary, 1.0),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTube(double w, double h, Color color, double delay) {
-    return AnimatedBuilder(
-      animation: _pulse2,
-      builder: (_, __) {
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            // Mouth ring
-            Container(
-              width: w * 0.55,
-              height: w * 0.55,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: color.withOpacity(0.6), width: 2),
-                color: AppColors.backgroundDark,
-              ),
-            ),
-            // Tube body
-            Container(
-              width: w,
-              height: h,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [color.withOpacity(0.3), color.withOpacity(0.6)],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(999),
-                  bottomRight: Radius.circular(999),
-                ),
-                border: Border.all(color: color.withOpacity(0.5), width: 1.5),
-                boxShadow: [
-                  BoxShadow(
-                    color: color.withOpacity(0.1 + 0.1 * _pulse2.value),
-                    blurRadius: 16,
-                  ),
-                ],
-              ),
-              child: Stack(
-                children: [
-                  Positioned(
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    height: h * 0.6,
-                    child: AnimatedBuilder(
-                      animation: _pulse2,
-                      builder: (_, __) => Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              color.withOpacity(0.4 + 0.3 * _pulse2.value),
-                              color,
-                            ],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                          ),
-                          borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(999),
-                            bottomRight: Radius.circular(999),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  // Shine
-                  Positioned(
-                    top: 10,
-                    left: 6,
-                    child: Container(
-                      width: 6,
-                      height: h * 0.5,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(3),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        );
-      },
     );
   }
 
@@ -592,46 +451,4 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildBlobs() {
-    return IgnorePointer(
-      child: Stack(
-        children: [
-          Positioned(
-            top: 80,
-            left: 10,
-            child: AnimatedBuilder(
-              animation: _pulse1,
-              builder: (_, __) => Container(
-                width: 200,
-                height: 200,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.primary.withOpacity(
-                    0.04 + 0.03 * _pulse1.value,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: 80,
-            right: 10,
-            child: AnimatedBuilder(
-              animation: _pulse2,
-              builder: (_, __) => Container(
-                width: 260,
-                height: 260,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.secondary.withOpacity(
-                    0.04 + 0.03 * _pulse2.value,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
