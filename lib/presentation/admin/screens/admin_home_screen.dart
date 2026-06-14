@@ -7,12 +7,12 @@ import '../../../domain/models/app_portal.dart';
 import '../../../routes/app_routes.dart';
 import '../../auth/providers/role_session_provider.dart';
 import '../../../core/portal/portal_scope.dart';
-import '../../home/providers/theme_provider.dart';
 import '../../shared/widgets/portal/portal_shell.dart';
 import '../providers/admin_provider.dart';
 import '../widgets/admin_chemicals_tab.dart';
 import '../widgets/admin_combos_tab.dart';
 import '../widgets/admin_dashboard_tab.dart';
+import '../widgets/admin_kits_tab.dart';
 import '../widgets/admin_reactions_tab.dart';
 import '../widgets/admin_top_sales_tab.dart';
 
@@ -29,9 +29,9 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
   @override
   void initState() {
     super.initState();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       activatePortal(context, AppPortal.admin);
-      context.read<AdminProvider>().initialize();
     });
   }
 
@@ -55,7 +55,17 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
       roleBadge: l10n.roleAdmin,
       userEmail: email,
       selectedIndex: _index,
-      onTabSelected: (i) => setState(() => _index = i),
+      onTabSelected: (i) {
+        setState(() => _index = i);
+
+        if (i == 1) {
+          context.read<AdminProvider>().loadSubstances();
+        }
+
+        if (i == 2) {
+          context.read<AdminProvider>().loadKits();
+        }
+      },
       onProfile: () =>
           Navigator.pushNamed(context, AppRoutes.portalProfile),
       onLogout: _logout,
@@ -69,6 +79,11 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
           icon: Icons.science_outlined,
           activeIcon: Icons.science_rounded,
           label: l10n.navChemicals,
+        ),
+        PortalNavItem(
+          icon: Icons.inventory_2_outlined,
+          activeIcon: Icons.inventory_2_rounded,
+          label: l10n.navKits,
         ),
         PortalNavItem(
           icon: Icons.biotech_outlined,
@@ -89,6 +104,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
       pages: const [
         AdminDashboardTab(),
         AdminChemicalsTab(),
+        AdminKitsTab(),
         AdminReactionsTab(),
         AdminTopSalesTab(),
         AdminCombosTab(),

@@ -6,8 +6,12 @@ import 'package:path/path.dart' as p;
 
 
 import '../../../core/api/chemical_card_api.dart';
+import '../../../core/api/single_card_api.dart';
 import '../../../core/models/response/card_bundle_response.dart';
 import '../../../core/models/response/chemical_card_response.dart';
+import '../../../core/models/response/my_single_card_purchase_response.dart';
+import '../../../core/models/response/single_card_purchase_response.dart';
+import '../../../core/models/response/single_card_shop_response.dart';
 import '../../../core/storage/avatar_storage_service.dart';
 import '../../../core/storage/local_storage_service.dart';
 import '../../../domain/models/account_setup_model.dart';
@@ -41,6 +45,21 @@ class AppState extends ChangeNotifier {
   final ProfileApi _profileApi = ProfileApi();
   final ChemicalCardApi _chemicalCardApi = ChemicalCardApi();
 
+  final SingleCardApi _singleCardApi = SingleCardApi();
+  final List<MySingleCardPurchaseResponse> _mySingleCards = [];
+  bool _loadingMySingleCards = false;
+  String? _mySingleCardsError;
+  int _mySingleCardsPage = 0;
+  bool _mySingleCardsLast = false;
+
+  List<MySingleCardPurchaseResponse> get mySingleCards =>
+      List.unmodifiable(_mySingleCards);
+
+  bool get loadingMySingleCards => _loadingMySingleCards;
+
+  String? get mySingleCardsError => _mySingleCardsError;
+
+  bool get mySingleCardsLast => _mySingleCardsLast;
   bool _initialized = false;
   bool _isLoading = false;
 
@@ -83,6 +102,14 @@ class AppState extends ChangeNotifier {
   int _shopChemicalCardsPage = 0;
   bool _shopChemicalCardsLast = false;
 
+  final List<SingleCardShopResponse> _shopSingleCards = [];
+  bool _loadingShopSingleCards = false;
+  String? _shopSingleCardsError;
+  int _shopSingleCardsPage = 0;
+  bool _shopSingleCardsLast = false;
+
+  SingleCardPurchaseResponse? _lastSingleCardPurchase;
+
   final List<CardBundleResponse> _shopCardBundles = [];
   bool _loadingShopCardBundles = false;
   String? _shopCardBundlesError;
@@ -98,6 +125,18 @@ class AppState extends ChangeNotifier {
   String? get shopChemicalCardsError => _shopChemicalCardsError;
 
   bool get shopChemicalCardsLast => _shopChemicalCardsLast;
+
+  List<SingleCardShopResponse> get shopSingleCards =>
+      List.unmodifiable(_shopSingleCards);
+
+  bool get loadingShopSingleCards => _loadingShopSingleCards;
+
+  String? get shopSingleCardsError => _shopSingleCardsError;
+
+  bool get shopSingleCardsLast => _shopSingleCardsLast;
+
+  SingleCardPurchaseResponse? get lastSingleCardPurchase =>
+      _lastSingleCardPurchase;
 
   //bundle
   List<CardBundleResponse> get shopCardBundles =>
@@ -168,6 +207,48 @@ class AppState extends ChangeNotifier {
 
     _initialized = true;
     notifyListeners();
+  }
+
+  Future<bool> loadMySingleCards({
+    bool refresh = false,
+  }) async {
+    if (_loadingMySingleCards) return false;
+
+    if (refresh) {
+      _mySingleCards.clear();
+      _mySingleCardsPage = 0;
+      _mySingleCardsLast = false;
+      _mySingleCardsError = null;
+      notifyListeners();
+    }
+
+    if (_mySingleCardsLast) return true;
+
+    _loadingMySingleCards = true;
+    _mySingleCardsError = null;
+    notifyListeners();
+
+    try {
+      final page = await _singleCardApi.getMySingleCardPurchases(
+        page: _mySingleCardsPage,
+        size: 20,
+      );
+
+      _mySingleCards.addAll(page.items);
+      _mySingleCardsPage = page.page + 1;
+      _mySingleCardsLast = page.last;
+
+      notifyListeners();
+      return true;
+    } catch (e) {
+      debugPrint('Load my single cards error: $e');
+      _mySingleCardsError = e.toString();
+      notifyListeners();
+      return false;
+    } finally {
+      _loadingMySingleCards = false;
+      notifyListeners();
+    }
   }
 
   Future<void> loadProfileFromBackend() async {
@@ -247,6 +328,62 @@ class AppState extends ChangeNotifier {
     }
   }
 
+  Future<bool> loadShopSingleCards({
+    bool refresh = false,
+  }) async {
+    if (_loadingShopSingleCards) return false;
+
+    if (refresh) {
+      _shopSingleCards.clear();
+      _shopSingleCardsPage = 0;
+      _shopSingleCardsLast = false;
+      _shopSingleCardsError = null;
+      notifyListeners();
+    }
+
+    if (_shopSingleCardsLast) return true;
+
+    _loadingShopSingleCards = true;
+    _shopSingleCardsError = null;
+    notifyListeners();
+
+    try {
+      final page = await _singleCardApi.getSingleCards(
+        page: _shopSingleCardsPage,
+        size: 20,
+      );
+
+      _shopSingleCards.addAll(page.items);
+      _shopSingleCardsPage = page.page + 1;
+      _shopSingleCardsLast = page.last;
+
+      notifyListeners();
+      return true;
+    } catch (e) {
+      debugPrint('Load shop single cards error: $e');
+      _shopSingleCardsError = e.toString();
+      notifyListeners();
+      return false;
+    } finally {
+      _loadingShopSingleCards = false;
+      notifyListeners();
+    }
+  }
+
+  Future<SingleCardPurchaseResponse?> fakeBuySingleCard(String singleCardId) async {
+    try {
+      final purchase = await _singleCardApi.fakeBuySingleCard(singleCardId);
+
+      _lastSingleCardPurchase = purchase;
+
+      notifyListeners();
+      return purchase;
+    } catch (e) {
+      debugPrint('Fake buy single card error: $e');
+      return null;
+    }
+  }
+
   Future<bool> loadShopCardBundles({
     bool refresh = false,
   }) async {
@@ -298,6 +435,12 @@ class AppState extends ChangeNotifier {
 
   Future<void> _resetShopStateInMemory() async {
     _knowledgePoints = defaultKnowledgePoints;
+    _shopSingleCards.clear();
+    _shopSingleCardsPage = 0;
+    _shopSingleCardsLast = false;
+    _shopSingleCardsError = null;
+    _loadingShopSingleCards = false;
+    _lastSingleCardPurchase = null;
     _applyUnlockedIds(defaultStarterUnlocked);
     _myBag.clear();
     _cart.clear();
@@ -605,6 +748,12 @@ class AppState extends ChangeNotifier {
     final card = getCardById(cardId);
     if (card == null) return false;
     return card.isUnlocked || isInMyBag(cardId);
+  }
+
+  bool isSingleCardOwned(String singleCardId) {
+    return _mySingleCards.any(
+          (p) => p.singleCardId == singleCardId && p.active,
+    );
   }
 
   List<ChemicalCardModel> get shopCatalogCards =>

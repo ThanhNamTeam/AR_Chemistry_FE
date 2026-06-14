@@ -184,6 +184,113 @@ class ApiConstants {
     return '$baseUrl$staffQuizManagementPath/quizzes/$quizCode/publish';
   }
 
+  // single-cards
+  static final String singleCardsUrl = '$baseUrl/single-cards';
+
+  static String fakeBuySingleCardUrl =
+      '$baseUrl/single-card-purchases/fake-buy';
+
+  static String mySingleCardPurchasesUrl =
+      '$baseUrl/single-card-purchases/my';
+
+  // admin substances
+  static const String adminSubstancesPath = '/substances';
+
+  static String adminSubstancesUrl({
+    int page = 0,
+    int size = 200,
+    String sort = 'formula,asc',
+    bool? active,
+    String? chemicalGroup,
+    String? type,
+    bool? includedInFullKit,
+  }) {
+    final uri = Uri.parse('$baseUrl$adminSubstancesPath').replace(
+      queryParameters: {
+        'page': page.toString(),
+        'size': size.toString(),
+        'sort': sort,
+        if (active != null) 'active': active.toString(),
+        if (chemicalGroup != null && chemicalGroup.isNotEmpty)
+          'chemicalGroup': chemicalGroup,
+        if (type != null && type.isNotEmpty) 'type': type,
+        if (includedInFullKit != null)
+          'includedInFullKit': includedInFullKit.toString(),
+      },
+    );
+
+    return uri.toString();
+  }
+
+  static String adminSubstanceActiveUrl(String id) {
+    return '$baseUrl$adminSubstancesPath/$id/active';
+  }
+
+  static String adminSubstanceIncludedInFullKitUrl(String id) {
+    return '$baseUrl$adminSubstancesPath/$id/included-in-full-kit';
+  }
+
+  static String adminSubstanceDetailUrl(String id) {
+    return '$baseUrl$adminSubstancesPath/$id';
+  }
+
+  static String adminSubstanceByFormulaUrl(String formula) {
+    return '$baseUrl$adminSubstancesPath/formula/$formula';
+  }
+
+  //Kits
+  static const String adminKitsPath = '/kits';
+
+  static String get adminKitsUrl {
+    return '$baseUrl$adminKitsPath';
+  }
+
+  static String adminKitDetailUrl(String id) {
+    return '$baseUrl$adminKitsPath/$id';
+  }
+
+  //generate activation code
+  static const String activationCodesPath = '/activation-codes';
+
+  static String get generateActivationCodesUrl {
+    return '$baseUrl$activationCodesPath/generate';
+  }
+
+  static String activationCodesUrl({
+    int page = 0,
+    int size = 20,
+    String sort = 'createdAt,asc',
+    String? kitId,
+    String? status,
+    String? usedByUserId,
+  }) {
+    final uri = Uri.parse('$baseUrl$activationCodesPath').replace(
+      queryParameters: {
+        'page': page.toString(),
+        'size': size.toString(),
+        'sort': sort,
+        if (kitId != null && kitId.isNotEmpty) 'kitId': kitId,
+        if (status != null && status.isNotEmpty) 'status': status,
+        if (usedByUserId != null && usedByUserId.isNotEmpty)
+          'usedByUserId': usedByUserId,
+      },
+    );
+
+    return uri.toString();
+  }
+
+  static String activationCodeByCodeUrl(String code) {
+    return '$baseUrl$activationCodesPath/code/$code';
+  }
+
+  static String kitByCodeUrl(String code) {
+    return '$baseUrl$adminKitsPath/code/$code';
+  }
+
+  static String activationCodeStatusUrl(String id) {
+    return '$baseUrl$activationCodesPath/$id/status';
+  }
+
 
   /// Khi chưa cấu hình BE, lưu feedback cục bộ.
   static bool get useLocalFallback => baseUrl.contains('example.com');

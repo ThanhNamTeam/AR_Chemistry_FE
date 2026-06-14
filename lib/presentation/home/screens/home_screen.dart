@@ -25,80 +25,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late AnimationController _pulse1;
   final ArAccessApi _arAccessApi = ArAccessApi();
   bool _checkingArAccess = false;
+  late AnimationController _pulse2;
 
   Future<void> _openARScanner() async {
-    if (_checkingArAccess) return;
-
-    setState(() {
-      _checkingArAccess = true;
-    });
-
-    try {
-      final access = await _arAccessApi.getMyArAccess();
-
-      if (!mounted) return;
-
-      if (access.canScanAR) {
-        Navigator.pushNamed(context, AppRoutes.scan);
-      } else {
-        _showArAccessDialog(access.message);
-      }
-    } catch (e) {
-      if (!mounted) return;
-
-      _showArAccessDialog(
-        'Không thể kiểm tra quyền quét AR. Vui lòng thử lại.',
-      );
-    } finally {
-      if (mounted) {
-        setState(() {
-          _checkingArAccess = false;
-        });
-      }
-    }
+    Navigator.pushNamed(context, AppRoutes.scan);
   }
 
-  void _showArAccessDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        backgroundColor: AppColors.backgroundDark,
-        title: const Text(
-          'Không thể quét AR',
-          style: TextStyle(
-            color: Colors.white,
-            fontFamily: 'Inter',
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        content: Text(
-          message.isNotEmpty
-              ? message
-              : 'Bạn cần kích hoạt mã kit hoặc mua gói AR 30 Days để quét AR.',
-          style: TextStyle(
-            color: AppColors.textSecondary,
-            fontFamily: 'Inter',
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Đóng'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
 
-              // Tạm thời đẩy sang packages.
-              // Sau này nếu có màn activate kit riêng thì đổi route tại đây.
-              Navigator.pushNamed(context, AppRoutes.packages);
-            },
-            child: const Text('Kích hoạt / Mua gói'),
-          ),
-        ],
-      ),
-    );
-  }
 
   @override
   void initState() {
@@ -322,7 +255,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 56),
           child: GestureDetector(
-            onTap: _checkingArAccess ? null : _openARScanner,
+            onTap: _openARScanner,
             child: AnimatedBuilder(
               animation: _pulse1,
               builder: (_, child) => Container(
@@ -350,7 +283,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     width: 1.2,
                   ),
                 ),
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -366,9 +299,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     else
                       const Icon(Icons.view_in_ar, color: Colors.white, size: 22),
                     const SizedBox(width: 8),
+                    Icon(Icons.view_in_ar, color: Colors.white, size: 28),
+                    SizedBox(width: 12),
                     Text(
-                      _checkingArAccess ? 'Checking access...' : 'Start AR Experiment',
-                      style: const TextStyle(
+                      'Start AR Experiment',
+                      style: TextStyle(
                         color: Colors.white,
                         fontSize: 15,
                         fontWeight: FontWeight.w700,

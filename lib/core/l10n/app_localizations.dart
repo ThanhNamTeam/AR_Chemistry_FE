@@ -98,6 +98,8 @@ class AppLocalizations {
   String get adminPortal => isVi ? 'Admin Portal' : 'Admin Portal';
   String get navOverview => isVi ? 'Tổng quan' : 'Overview';
   String get navChemicals => isVi ? 'Chất' : 'Chemicals';
+  String get navKits => isVi ? "Hộp kit" : "Kits";
+  String get navActivationCode => isVi ? 'Mã kích hoạt' : 'Activation Code';
   String get navReactions => isVi ? 'PTHH' : 'Reactions';
   String get navTopSales => isVi ? 'Top bán' : 'Top sales';
   String get navCombos => isVi ? 'Combo' : 'Combos';
