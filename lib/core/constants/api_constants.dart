@@ -238,6 +238,10 @@ class ApiConstants {
     return '$baseUrl$adminSubstancesPath/formula/$formula';
   }
 
+  static String get createAdminSubstanceUrl {
+    return '$baseUrl$adminSubstancesPath';
+  }
+
   //Kits
   static const String adminKitsPath = '/kits';
 
@@ -290,6 +294,37 @@ class ApiConstants {
   static String activationCodeStatusUrl(String id) {
     return '$baseUrl$activationCodesPath/$id/status';
   }
+
+  // admin reactions
+  static const String adminReactionsPath = '/admin';
+
+  static String adminReactionsUrl({
+    int page = 0,
+    int size = 20,
+    String sort = 'code,asc',
+    bool? active,
+  }) {
+    final uri = Uri.parse('$baseUrl$adminReactionsPath/reactions').replace(
+      queryParameters: {
+        'page': page.toString(),
+        'size': size.toString(),
+        'sort': sort,
+        if (active != null) 'active': active.toString(),
+      },
+    );
+
+    return uri.toString();
+  }
+
+  static String get createAdminReactionUrl {
+    return '$baseUrl$adminReactionsPath/reactions';
+  }
+
+  static String adminReactionActiveUrl(String id) {
+    return '$baseUrl$adminReactionsPath/reactions/$id/active';
+  }
+
+
 
 
   /// Khi chưa cấu hình BE, lưu feedback cục bộ.

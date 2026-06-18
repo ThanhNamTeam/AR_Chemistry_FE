@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../constants/api_constants.dart';
+import '../models/request/create_substance_request.dart';
 import '../models/response/page_response.dart';
 import '../../domain/models/chemical_substance_model.dart';
 import '../services/auth_token_service.dart';
@@ -120,5 +121,54 @@ class AdminSubstanceApi {
     throw Exception(
       'Update substance full kit flag failed: ${response.statusCode} - ${response.body}',
     );
+  }
+
+  Future<ChemicalSubstanceModel> createSubstance(
+      CreateSubstanceRequest request,
+      ) async {
+    final token = await AuthTokenService.getValidAccessToken();
+
+    if (token == null || token.isEmpty) {
+      throw Exception('User is not signed in, cannot create substance');
+    }
+
+    final response = await http.post(
+      Uri.parse(ApiConstants.createAdminSubstanceUrl),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(request.toJson()),
+    ).timeout(ApiConstants.timeout);
+
+    final body = _decodeResponseBody(response.body);
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final data = body['data'] ?? body;
+
+      return ChemicalSubstanceModel.fromJson(
+        Map<String, dynamic>.from(data),
+      );
+    }
+
+    final message = body['message']?.toString();
+
+    throw Exception(
+      message != null && message.isNotEmpty
+          ? message
+          : 'Create substance failed (${response.statusCode})',
+    );
+  }
+
+  Map<String, dynamic> _decodeResponseBody(String responseBody) {
+    if (responseBody.isEmpty) return {};
+
+    final decoded = jsonDecode(responseBody);
+
+    if (decoded is Map<String, dynamic>) {
+      return decoded;
+    }
+
+    return {};
   }
 }

@@ -6,6 +6,7 @@ import '../../../domain/models/chemical_substance_model.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../shared/widgets/portal/portal_widgets.dart';
 import '../providers/admin_provider.dart';
+import 'admin_create_substance_screen.dart';
 
 class AdminChemicalsTab extends StatefulWidget {
   const AdminChemicalsTab({super.key});
@@ -66,7 +67,18 @@ class _AdminChemicalsTabState extends State<AdminChemicalsTab> {
                 ),
               ),
               FilledButton.icon(
-                onPressed: () => _showAddDialog(context, l10n),
+                onPressed: () async {
+                  final created = await Navigator.push<bool>(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const AdminCreateSubstanceScreen(),
+                    ),
+                  );
+
+                  if (created == true && context.mounted) {
+                    context.read<AdminProvider>().loadSubstances(force: true);
+                  }
+                },
                 icon: const Icon(Icons.add, size: 18),
                 label: Text(l10n.addChemical),
                 style: FilledButton.styleFrom(
