@@ -304,7 +304,7 @@ class ApiConstants {
     String sort = 'code,asc',
     bool? active,
   }) {
-    final uri = Uri.parse('$baseUrl$adminReactionsPath/reactions').replace(
+    final uri = Uri.parse('$baseUrl/reactions').replace(
       queryParameters: {
         'page': page.toString(),
         'size': size.toString(),
