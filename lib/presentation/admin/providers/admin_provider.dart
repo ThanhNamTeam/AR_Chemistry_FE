@@ -2,7 +2,9 @@ import 'package:flutter/foundation.dart';
 
 import '../../../core/api/admin_activation_code_api.dart';
 import '../../../core/api/admin_kit_api.dart';
+import '../../../core/api/admin_reaction_api.dart';
 import '../../../core/models/request/create_kit_request.dart';
+import '../../../core/models/request/create_reaction_definition_request.dart';
 import '../../../core/models/request/generate_activation_codes_request.dart';
 import '../../../core/models/request/update_activation_code_status_request.dart';
 import '../../../domain/models/activation_code_model.dart';
@@ -10,6 +12,7 @@ import '../../../domain/models/chemical_card_model.dart';
 import '../../../domain/models/chemical_substance_model.dart';
 import '../../../core/api/admin_substance_api.dart';
 import '../../../domain/models/kit_model.dart';
+import '../../../domain/models/reaction_definition_model.dart';
 
 enum StatsPeriod { day, week, month }
 
@@ -40,6 +43,12 @@ class RevenuePoint {
 class AdminProvider extends ChangeNotifier {
   String _substanceFilter = 'ALL';
   String get substanceFilter => _substanceFilter;
+
+  final Set<String> _updatingReactionIds = {};
+
+  bool isUpdatingReactionStatus(String id) {
+    return _updatingReactionIds.contains(id);
+  }
 
   bool _isLoadingKitDetail = false;
 
@@ -95,6 +104,28 @@ class AdminProvider extends ChangeNotifier {
 
   int _activationCodePage = 0;
   String _activationCodeStatusFilter = 'ALL';
+
+  final AdminReactionApi _reactionApi = AdminReactionApi();
+
+  bool _isCreatingReaction = false;
+  bool get isCreatingReaction => _isCreatingReaction;
+
+  List<ReactionDefinitionModel> _reactions = [];
+  bool _isLoadingReactions = false;
+  bool _isLoadingMoreReactions = false;
+  bool _hasMoreReactions = true;
+  String? _reactionsError;
+
+  int _reactionsPage = 0;
+  final int _reactionsSize = 20;
+  bool? _reactionActiveFilter;
+
+  List<ReactionDefinitionModel> get reactions => List.unmodifiable(_reactions);
+  bool get isLoadingReactions => _isLoadingReactions;
+  bool get isLoadingMoreReactions => _isLoadingMoreReactions;
+  bool get hasMoreReactions => _hasMoreReactions;
+  String? get reactionsError => _reactionsError;
+  bool? get reactionActiveFilter => _reactionActiveFilter;
 
   List<ActivationCodeModel> get activationCodes => _activationCodes;
   bool get isLoadingActivationCodes => _isLoadingActivationCodes;
@@ -206,26 +237,6 @@ class AdminProvider extends ChangeNotifier {
   List<ChemicalCardModel> get catalogCards => ChemicalData.cards;
   List<BundleModel> get bundles => ChemicalData.bundles;
 
-  final List<Map<String, String>> _reactions = [
-    {
-      'id': 'r1',
-      'name': 'H₂ + O₂ → H₂O',
-      'topic': 'Tổng hợp nước',
-    },
-    {
-      'id': 'r2',
-      'name': 'Na + Cl₂ → NaCl',
-      'topic': 'Muối ăn',
-    },
-    {
-      'id': 'r3',
-      'name': 'CH₄ + O₂ → CO₂ + H₂O',
-      'topic': 'Đốt cháy',
-    },
-  ];
-
-  List<Map<String, String>> get reactions => List.unmodifiable(_reactions);
-
   void setPeriod(StatsPeriod p) {
     _period = p;
     notifyListeners();
@@ -248,6 +259,119 @@ class AdminProvider extends ChangeNotifier {
       _isLoadingKitDetail = false;
       notifyListeners();
     }
+  }
+
+  Future<void> updateReactionActive({
+    required String id,
+    required bool active,
+  }) async {
+    if (_updatingReactionIds.contains(id)) return;
+
+    _updatingReactionIds.add(id);
+    _reactionsError = null;
+    notifyListeners();
+
+    try {
+      final updated = await _reactionApi.updateReactionActive(
+        id: id,
+        active: active,
+      );
+
+      _reactions = _reactions
+          .map((item) => item.id == id ? updated : item)
+          .toList();
+
+      if (_reactionActiveFilter != null &&
+          updated.active != _reactionActiveFilter) {
+        _reactions = _reactions.where((item) => item.id != id).toList();
+      }
+    } catch (e) {
+      _reactionsError = e.toString();
+      debugPrint('UPDATE_REACTION_ACTIVE_ERROR: $e');
+      rethrow;
+    } finally {
+      _updatingReactionIds.remove(id);
+      notifyListeners();
+    }
+  }
+
+  Future<void> loadReactionsForAdmin({
+    bool? active,
+    bool force = false,
+  }) async {
+    if (_isLoadingReactions) return;
+
+    if (!force &&
+        _reactions.isNotEmpty &&
+        _reactionActiveFilter == active) {
+      return;
+    }
+
+    _reactionActiveFilter = active;
+    _isLoadingReactions = true;
+    _reactionsError = null;
+    _reactionsPage = 0;
+    _hasMoreReactions = true;
+    notifyListeners();
+
+    try {
+      final page = await _reactionApi.getReactionsForAdmin(
+        page: _reactionsPage,
+        size: _reactionsSize,
+        active: active,
+      );
+
+      _reactions = page.items;
+      _hasMoreReactions = page.hasNext;
+      _reactionsPage = page.page + 1;
+    } catch (e) {
+      _reactionsError = e.toString();
+      debugPrint('LOAD_REACTIONS_FOR_ADMIN_ERROR: $e');
+    } finally {
+      _isLoadingReactions = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> loadMoreReactionsForAdmin() async {
+    if (_isLoadingReactions) return;
+    if (_isLoadingMoreReactions) return;
+    if (!_hasMoreReactions) return;
+
+    _isLoadingMoreReactions = true;
+    _reactionsError = null;
+    notifyListeners();
+
+    try {
+      final page = await _reactionApi.getReactionsForAdmin(
+        page: _reactionsPage,
+        size: _reactionsSize,
+        active: _reactionActiveFilter,
+      );
+
+      _reactions = [
+        ..._reactions,
+        ...page.items,
+      ];
+
+      _hasMoreReactions = page.hasNext;
+      _reactionsPage = page.page + 1;
+    } catch (e) {
+      _reactionsError = e.toString();
+      debugPrint('LOAD_MORE_REACTIONS_FOR_ADMIN_ERROR: $e');
+    } finally {
+      _isLoadingMoreReactions = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> changeReactionActiveFilter(bool? active) async {
+    if (_reactionActiveFilter == active && _reactions.isNotEmpty) return;
+
+    await loadReactionsForAdmin(
+      active: active,
+      force: true,
+    );
   }
 
   Future<void> loadActivationCodes({bool force = false}) async {
@@ -535,13 +659,28 @@ class AdminProvider extends ChangeNotifier {
     }
   }
 
-  void addReaction(String name, String topic) {
-    _reactions.add({
-      'id': 'r_${DateTime.now().millisecondsSinceEpoch}',
-      'name': name,
-      'topic': topic,
-    });
+  Future<void> addReaction(CreateReactionDefinitionRequest request) async {
+    if (_isCreatingReaction) return;
+
+    _isCreatingReaction = true;
+    _reactionsError = null;
     notifyListeners();
+
+    try {
+      final created = await _reactionApi.createReaction(request);
+
+      if (_reactionActiveFilter == null ||
+          _reactionActiveFilter == created.active) {
+        _reactions = [created, ..._reactions];
+      }
+    } catch (e) {
+      _reactionsError = e.toString();
+      debugPrint('CREATE_REACTION_ERROR: $e');
+      rethrow;
+    } finally {
+      _isCreatingReaction = false;
+      notifyListeners();
+    }
   }
 
   void addBundleSale({
