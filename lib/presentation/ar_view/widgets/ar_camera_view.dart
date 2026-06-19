@@ -5,7 +5,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_unity_widget_2/flutter_unity_widget_2.dart';
+import 'package:dio/dio.dart';
 
+import '../../../core/api/reaction_check_api.dart';
 import '../../../routes/app_routes.dart';
 import '../../../shared/styles/app_colors.dart';
 
@@ -330,6 +332,11 @@ class ARUnitySession extends ChangeNotifier {
   bool _lifecycleTransitionInFlight = false;
   DateTime? _lastRetryAt;
   String? _lastHostRectLogKey;
+  final ReactionCheckApi _reactionCheckApi = ReactionCheckApi();
+  CancelToken? _reactionCheckCancelToken;
+  int? _latestReactionRequestId;
+  int? _latestTrackingGeneration;
+  String? _latestTrackingSignature;
 
   bool? permissionGranted;
   bool unityCreated = false;
@@ -520,6 +527,98 @@ class ARUnitySession extends ChangeNotifier {
 
   void onUnityMessage(dynamic message) {
     _log('unityMessage ${_formatUnityMessage(message)}');
+    unawaited(_handleReactionCheckMessage(message));
+  }
+
+  Future<void> _handleReactionCheckMessage(dynamic rawMessage) async {
+    try {
+      final decoded = rawMessage is String
+          ? jsonDecode(rawMessage)
+          : rawMessage;
+      if (decoded is! Map || decoded['type'] != 'reaction_check_requested') {
+        return;
+      }
+
+      final requestId = decoded['requestId'];
+      final generation = decoded['trackingGeneration'];
+      final signature = decoded['trackingSignature'];
+      final rawPayloads = decoded['qrPayloads'];
+      if (requestId is! int ||
+          generation is! int ||
+          signature is! String ||
+          rawPayloads is! List) {
+        throw const FormatException('Invalid reaction-check request metadata');
+      }
+
+      final qrPayloads = rawPayloads.whereType<String>().toList(
+        growable: false,
+      );
+      _reactionCheckCancelToken?.cancel('superseded');
+      final cancelToken = CancelToken();
+      _reactionCheckCancelToken = cancelToken;
+      _latestReactionRequestId = requestId;
+      _latestTrackingGeneration = generation;
+      _latestTrackingSignature = signature;
+
+      try {
+        final result = await _reactionCheckApi.check(
+          qrPayloads: qrPayloads,
+          cancelToken: cancelToken,
+        );
+        if (!_isLatestReactionRequest(requestId, generation, signature)) return;
+        await _sendReactionCheckResult(<String, Object?>{
+          'requestId': requestId,
+          'trackingGeneration': generation,
+          'trackingSignature': signature,
+          'result': result.toBridgeJson(),
+        });
+      } on ReactionCheckFailure catch (failure) {
+        if (failure.type == ReactionCheckFailureType.cancelled ||
+            !_isLatestReactionRequest(requestId, generation, signature)) {
+          return;
+        }
+        await _sendReactionCheckResult(<String, Object?>{
+          'requestId': requestId,
+          'trackingGeneration': generation,
+          'trackingSignature': signature,
+          'error': <String, Object?>{
+            'code': failure.code,
+            'message': failure.message,
+          },
+        });
+      }
+    } catch (error, stackTrace) {
+      _log('reactionCheckBridgeError $error');
+      _log('reactionCheckBridgeStack $stackTrace');
+    }
+  }
+
+  bool _isLatestReactionRequest(
+    int requestId,
+    int generation,
+    String signature,
+  ) {
+    return _latestReactionRequestId == requestId &&
+        _latestTrackingGeneration == generation &&
+        _latestTrackingSignature == signature;
+  }
+
+  Future<void> _sendReactionCheckResult(Map<String, Object?> payload) async {
+    final controller = _controller;
+    if (controller == null) return;
+    await controller.postMessage(
+      'FlutterBridge',
+      'ReceiveReactionCheckResult',
+      jsonEncode(payload),
+    );
+  }
+
+  void cancelReactionCheck({String reason = 'scannerClosed'}) {
+    _reactionCheckCancelToken?.cancel(reason);
+    _reactionCheckCancelToken = null;
+    _latestReactionRequestId = null;
+    _latestTrackingGeneration = null;
+    _latestTrackingSignature = null;
   }
 
   Future<void> sendOrientationToUnity(String orientation) async {
