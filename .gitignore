@@ -79,3 +79,6 @@ local.properties
 
 # Environment (IP backend thay đổi theo WiFi — xem .env.example)
 .env
+
+android/key.properties
+android/app/*.jks
