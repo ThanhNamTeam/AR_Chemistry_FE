@@ -2130,6 +2130,46 @@ struct DynamicProxyMetaObject_1_t8A51DEA007329026320E2A85377E65C6B0B37B6C  : pub
 {
 	DynamicProxy_1_t661DB77C4AE681C9389A61777E363AD91182ADEF* ____proxy;
 };
+struct ElementCount_tAED0D8766D4D61690A1111AC931ACA42DE8F13EA 
+{
+	int32_t ___uniqueCount;
+	int32_t ___unfoundCount;
+};
+struct ElementCount_tB5ABF4ACED337501C26C43FFD9F6FBB0CE3483AA 
+{
+	int32_t ___uniqueCount;
+	int32_t ___unfoundCount;
+};
+struct ElementCount_t3AD73026D628CC2E3870B932F0E964182DA3AC08 
+{
+	int32_t ___uniqueCount;
+	int32_t ___unfoundCount;
+};
+struct ElementCount_tDC1CC93BCADF2DE75BF9DC6BED0EB14E70C9BD95 
+{
+	int32_t ___uniqueCount;
+	int32_t ___unfoundCount;
+};
+struct ElementCount_t29C15B1C88986C3AC6DE53448FEDB70F587E3274 
+{
+	int32_t ___uniqueCount;
+	int32_t ___unfoundCount;
+};
+struct ElementCount_t0459DCE4620B57B4A9A0B5CBB4686676EF501FD9 
+{
+	int32_t ___uniqueCount;
+	int32_t ___unfoundCount;
+};
+struct ElementCount_tACEFCAA43DAE9F379C31ABFBD2664B4BF9A04A3A 
+{
+	int32_t ___uniqueCount;
+	int32_t ___unfoundCount;
+};
+struct ElementCount_t86E429CA4DE6B6E59BE5A0601768F5C6318A0455 
+{
+	int32_t ___uniqueCount;
+	int32_t ___unfoundCount;
+};
 struct EmptyData_t3ADF94D95DAB6657C31C89FBD83359BCC8B247EC 
 {
 	union
@@ -33556,6 +33596,70 @@ IL2CPP_EXTERN_C IL2CPP_METHOD_ATTR void DynamicProxy_1__ctor_m1228BC6F2A872A3A59
 		return;
 	}
 }
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
 #ifdef __clang__
 #pragma clang diagnostic pop
 #endif

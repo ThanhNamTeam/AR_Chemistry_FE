@@ -130,6 +130,7 @@ class _ScanScreenState extends State<ScanScreen>
     if (!_scannerActive) return;
     final token = ++_uiModeToken;
     _scannerActive = false;
+    _session.cancelReactionCheck();
     debugPrint('[AR_UNITY_TIMING] ScanScreen portraitRestored');
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     if (token != _uiModeToken || _scannerActive) return;
