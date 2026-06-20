@@ -10,6 +10,8 @@ class ChemicalCardModel {
   final Color color;
   final int price;
   final CardCategory category;
+  final String? frontImageUrl;
+  final String? backImageUrl;
   bool isUnlocked;
 
   ChemicalCardModel({
@@ -20,6 +22,8 @@ class ChemicalCardModel {
     required this.color,
     required this.price,
     this.category = CardCategory.element,
+    this.frontImageUrl,
+    this.backImageUrl,
     this.isUnlocked = false,
   });
 }

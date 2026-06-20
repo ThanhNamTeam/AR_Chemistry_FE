@@ -10,6 +10,7 @@ import '../../../core/models/response/single_card_purchase_response.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../../shared/widgets/knowledge_points_badge.dart';
 import '../../../shared/widgets/chemical_card_widget.dart';
+import '../../../shared/widgets/flash_card_flip_view.dart';
 import '../../../routes/app_routes.dart';
 import '../../home/providers/app_state.dart';
 import '../../home/providers/theme_provider.dart';
@@ -279,18 +280,20 @@ class _ShopScreenState extends State<ShopScreen> {
     final state = context.watch<AppState>();
     final catalog = state.shopSingleCards
         .map((card) => ChemicalCardModel(
-      id: card.id,
-      symbol: card.substanceFormula,
-      name: (card.substanceVietnameseName != null &&
-          card.substanceVietnameseName!.isNotEmpty)
-          ? card.substanceVietnameseName!
-          : card.substanceName,
-      atomicNumber: 0,
-      color: AppColors.primary,
-      price: card.price,
-      category: CardCategory.element,
-      isUnlocked: state.isSingleCardOwned(card.id),
-    ))
+              id: card.id,
+              symbol: card.substanceFormula,
+              name: (card.substanceVietnameseName != null &&
+                      card.substanceVietnameseName!.isNotEmpty)
+                  ? card.substanceVietnameseName!
+                  : card.substanceName,
+              atomicNumber: 0,
+              color: AppColors.primary,
+              price: card.price,
+              category: CardCategory.element,
+              isUnlocked: state.isSingleCardOwned(card.id),
+              frontImageUrl: card.frontImageUrl,
+              backImageUrl: card.backImageUrl,
+            ))
         .toList();
     final bundles = state.shopCardBundles;
 
@@ -1000,59 +1003,15 @@ class _SingleCardShopTile extends StatelessWidget {
           Expanded(
             child: Stack(
               children: [
-                Container(
-                  width: double.infinity,
-                  margin: const EdgeInsets.fromLTRB(14, 14, 14, 8),
-                  decoration: BoxDecoration(
-                    gradient: owned
-                        ? AppColors.cyanEmeraldGradient
-                        : LinearGradient(
-                      colors: [
-                        AppColors.backgroundMid.withOpacity(0.95),
-                        AppColors.backgroundBlue.withOpacity(0.72),
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: owned
-                          ? AppColors.secondaryLight.withOpacity(0.45)
-                          : AppColors.primary.withOpacity(0.18),
-                    ),
-                  ),
-                  child: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          card.symbol,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: owned ? Colors.white : AppColors.textPrimary,
-                            fontSize: card.symbol.length > 4 ? 34 : 44,
-                            fontWeight: FontWeight.w900,
-                            fontFamily: 'Inter',
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: Text(
-                            card.name,
-                            textAlign: TextAlign.center,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: owned
-                                  ? Colors.white.withOpacity(0.9)
-                                  : AppColors.textSecondary,
-                              fontSize: 12,
-                              fontFamily: 'Inter',
-                            ),
-                          ),
-                        ),
-                      ],
+                Positioned.fill(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(14, 14, 14, 8),
+                    child: FlashCardFlipView(
+                      substanceFormula: card.symbol,
+                      substanceName: card.name,
+                      frontImageUrl: card.frontImageUrl,
+                      backImageUrl: card.backImageUrl,
+                      borderRadius: BorderRadius.circular(20),
                     ),
                   ),
                 ),
@@ -1066,11 +1025,19 @@ class _SingleCardShopTile extends StatelessWidget {
                         vertical: 5,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.18),
+                        color: const Color(0xFF059669),
                         borderRadius: BorderRadius.circular(999),
                         border: Border.all(
-                          color: Colors.white.withOpacity(0.35),
+                          color: const Color(0xFF047857),
+                          width: 1.2,
                         ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.22),
+                            blurRadius: 6,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
                       ),
                       child: const Row(
                         mainAxisSize: MainAxisSize.min,
@@ -1086,8 +1053,9 @@ class _SingleCardShopTile extends StatelessWidget {
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 10,
-                              fontWeight: FontWeight.w700,
+                              fontWeight: FontWeight.w800,
                               fontFamily: 'Inter',
+                              letterSpacing: 0.2,
                             ),
                           ),
                         ],
