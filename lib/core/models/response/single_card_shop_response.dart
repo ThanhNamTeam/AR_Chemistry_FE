@@ -14,6 +14,8 @@ class SingleCardShopResponse {
   final String substanceFormula;
   final String substanceName;
   final String? substanceVietnameseName;
+  final String? frontImageUrl;
+  final String? backImageUrl;
 
   SingleCardShopResponse({
     required this.id,
@@ -28,6 +30,8 @@ class SingleCardShopResponse {
     required this.substanceFormula,
     required this.substanceName,
     this.substanceVietnameseName,
+    this.frontImageUrl,
+    this.backImageUrl,
   });
 
   factory SingleCardShopResponse.fromJson(Map<String, dynamic> json) {
@@ -44,6 +48,8 @@ class SingleCardShopResponse {
       substanceFormula: json['substanceFormula'] ?? '',
       substanceName: json['substanceName'] ?? '',
       substanceVietnameseName: json['substanceVietnameseName'],
+      frontImageUrl: json['frontImageUrl'] as String?,
+      backImageUrl: json['backImageUrl'] as String?,
     );
   }
 
