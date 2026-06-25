@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/api/ar_access_api.dart';
-import '../../../core/services/ar_asset_downloader.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/storage/avatar_storage_service.dart';
 import '../../../shared/styles/app_colors.dart';
@@ -41,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       if (!mounted) return;
 
       if (access.canScanAR) {
-        Navigator.pushNamed(context, AppRoutes.scan);
+        Navigator.pushNamed(context, AppRoutes.arAssetLoading);
       } else {
         _showArAccessDialog(access.message);
       }
@@ -49,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       if (!mounted) return;
 
       _showArAccessDialog(
-        'Không thể kiểm tra quyền quét AR. Vui lòng thử lại.',
+        AppLocalizations.of(context).arAccessCheckFailed,
       );
     } finally {
       if (mounted) {
@@ -61,13 +60,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   void _showArAccessDialog(String message) {
+    final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
         backgroundColor: AppColors.backgroundDark,
-        title: const Text(
-          'Không thể quét AR',
-          style: TextStyle(
+        title: Text(
+          l10n.cannotScanAr,
+          style: const TextStyle(
             color: Colors.white,
             fontFamily: 'Inter',
             fontWeight: FontWeight.w700,
@@ -76,7 +76,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         content: Text(
           message.isNotEmpty
               ? message
-              : 'Bạn cần kích hoạt mã kit hoặc mua gói AR 30 Days để quét AR.',
+              : l10n.arAccessRequiredMessage,
           style: TextStyle(
             color: AppColors.textSecondary,
             fontFamily: 'Inter',
@@ -85,14 +85,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Đóng'),
+            child: Text(l10n.close),
           ),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
               Navigator.pushNamed(context, AppRoutes.packages);
             },
-            child: const Text('Kích hoạt / Mua gói'),
+            child: Text(l10n.activateOrBuyPackage),
           ),
         ],
       ),
@@ -162,6 +162,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Widget _buildHeader(AppState state) {
+    final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
       child: Column(
@@ -175,7 +176,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Welcome back,',
+                      l10n.welcomeBack,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -220,6 +221,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Widget _buildUpgradeButton() {
+    final l10n = AppLocalizations.of(context);
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, AppRoutes.packages),
       child: Container(
@@ -242,16 +244,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
-          children: const [
-            Icon(
+          children: [
+            const Icon(
               Icons.workspace_premium,
               color: Colors.white,
               size: 16,
             ),
-            SizedBox(width: 5),
+            const SizedBox(width: 5),
             Text(
-              'Upgrade',
-              style: TextStyle(
+              l10n.upgrade,
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 12,
                 fontWeight: FontWeight.w800,
@@ -315,6 +317,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Widget _buildBody() {
+    final l10n = AppLocalizations.of(context);
     return Column(
       children: [
         const Spacer(flex: 4),
@@ -366,7 +369,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       const Icon(Icons.view_in_ar, color: Colors.white, size: 22),
                     const SizedBox(width: 8),
                     Text(
-                      _checkingArAccess ? 'Checking access...' : 'Start AR Experiment',
+                      _checkingArAccess ? l10n.checkingAccess : l10n.startArExperiment,
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 15,
@@ -384,7 +387,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 40),
           child: Text(
-            'Scan chemical flashcards to witness amazing reactions in augmented reality',
+            l10n.homeArDescription,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 13,
@@ -403,12 +406,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Widget _buildBottomNav() {
+    final l10n = AppLocalizations.of(context);
     final items = [
-      (Icons.menu_book_outlined, 'Library', AppRoutes.library),
-      (Icons.store_outlined, 'Shop', AppRoutes.shop),
-      (Icons.shopping_cart_outlined, 'Cart', AppRoutes.cart),
-      (Icons.quiz_outlined, 'Quiz', AppRoutes.quizList),
-      (Icons.extension_outlined, 'Mini Game', AppRoutes.miniGame),
+      (Icons.menu_book_outlined, l10n.navLibrary, AppRoutes.library),
+      (Icons.store_outlined, l10n.shop, AppRoutes.shop),
+      (Icons.shopping_cart_outlined, l10n.navCart, AppRoutes.cart),
+      (Icons.quiz_outlined, l10n.navQuiz, AppRoutes.quizList),
+      (Icons.extension_outlined, l10n.navMiniGame, AppRoutes.miniGame),
     ];
 
     return Container(

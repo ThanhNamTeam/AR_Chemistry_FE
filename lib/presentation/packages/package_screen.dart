@@ -364,7 +364,7 @@ class _PackageCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
+    final l10n = AppLocalizations.of(context);
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -463,18 +463,18 @@ class _PackageCard extends StatelessWidget {
                 gradient: AppColors.primaryGradient,
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: const Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.credit_card,
                     color: Colors.white,
                     size: 18,
                   ),
-                  SizedBox(width: 8),
+                  const SizedBox(width: 8),
                   Text(
-                    'Buy AR 30 Days',
-                    style: TextStyle(
+                    l10n.buyAr30Days, // hoặc key khác
+                    style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
                       fontFamily: 'Inter',
