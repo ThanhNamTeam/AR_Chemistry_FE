@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/api/ar_access_api.dart';
+import '../../../core/services/ar_asset_downloader.dart';
 import '../../../core/storage/avatar_storage_service.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../../shared/widgets/knowledge_points_badge.dart';
@@ -39,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       if (!mounted) return;
 
       if (access.canScanAR) {
-        Navigator.pushNamed(context, AppRoutes.scan);
+        Navigator.pushNamed(context, AppRoutes.arAssetLoading);
       } else {
         _showArAccessDialog(access.message);
       }

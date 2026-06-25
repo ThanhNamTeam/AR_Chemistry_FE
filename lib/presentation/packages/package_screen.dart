@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../shared/styles/app_colors.dart';
@@ -22,6 +21,9 @@ class PackageScreen extends StatefulWidget {
 class _PackageScreenState extends State<PackageScreen> {
   bool _isLoading = false;
   bool _isPurchasing = false;
+
+  ProductDetails? _googlePlayProduct;
+  String _googlePlayPriceText = 'Đang tải giá...';
 
   final InAppPurchase _inAppPurchase = InAppPurchase.instance;
   final PaymentApi _paymentApi = PaymentApi();
@@ -57,6 +59,35 @@ class _PackageScreenState extends State<PackageScreen> {
 
       if (!mounted) return;
       setState(() => _isLoading = false);
+    });
+  }
+
+  Future<void> _loadGooglePlayProduct() async {
+    final available = await _inAppPurchase.isAvailable();
+
+    if (!available) {
+      setState(() {
+        _googlePlayPriceText = 'Google Play không khả dụng';
+      });
+      return;
+    }
+
+    final response = await _inAppPurchase.queryProductDetails({
+      _googlePlayProductId,
+    });
+
+    if (response.productDetails.isEmpty) {
+      setState(() {
+        _googlePlayPriceText = 'Không tìm thấy giá';
+      });
+      return;
+    }
+
+    final product = response.productDetails.first;
+
+    setState(() {
+      _googlePlayProduct = product;
+      _googlePlayPriceText = product.price;
     });
   }
 
@@ -279,7 +310,7 @@ class _PackageScreenState extends State<PackageScreen> {
                             duration: _getDurationText(
                               package.durationDays,
                             ),
-                            price: package.price,
+                            priceText: _googlePlayPriceText,
                             onTap: _isPurchasing
                                 ? () {}
                                 : () => _buyPackageWithGooglePlay(_googlePlayProductId),
@@ -302,23 +333,20 @@ class _PackageCard extends StatelessWidget {
   final String title;
   final String subtitle;
   final String duration;
-  final int price;
+  final String priceText;
   final VoidCallback onTap;
 
   const _PackageCard({
     required this.title,
     required this.subtitle,
     required this.duration,
-    required this.price,
+    required this.priceText,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final priceText = NumberFormat.currency(
-      locale: 'vi_VN',
-      symbol: 'VND',
-    ).format(price);
+
 
     return Container(
       padding: const EdgeInsets.all(20),

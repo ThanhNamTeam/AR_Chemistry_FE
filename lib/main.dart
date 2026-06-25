@@ -1,3 +1,4 @@
+import 'package:ar_chemistry_visual/presentation/ar_view/screens/ar_asset_loading_screen.dart';
 import 'package:ar_chemistry_visual/presentation/feedback/screens/my_feedbacks_screen.dart';
 import 'package:ar_chemistry_visual/presentation/home/screens/my_single_cards_screen.dart';
 import 'package:ar_chemistry_visual/presentation/inventory/screens/substance_detail_screen.dart';
@@ -177,7 +178,7 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
       AppRoutes.miniGame: (_) => const MiniGameScreen(),
       AppRoutes.mySingleCards: (_) => const MySingleCardsScreen(),
       AppRoutes.myFeedbacks: (_) => const MyFeedbacksScreen(),
-
+      AppRoutes.arAssetLoading: (_) => const ArAssetLoadingScreen(),
     };
   }
 

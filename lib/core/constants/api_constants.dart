@@ -55,6 +55,13 @@ class ApiConstants {
     return '$baseUrl$studentPath/quizzes/published';
   }
 
+  // ar assets
+  static const String arAssetsPath = '/ar-assets';
+
+  static String get latestArAssetsUrl {
+    return '$baseUrl$arAssetsPath/latest';
+  }
+
   //access ar
   static const String mePath = '/users';
 
