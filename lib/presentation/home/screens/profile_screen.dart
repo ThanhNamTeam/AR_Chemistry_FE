@@ -437,7 +437,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const ProfileThemeSection(portal: AppPortal.user),
                 const SizedBox(height: 24),
                 const _ChatSettingsSection(),
-                const SizedBox(height: 24),
+                const SizedBox(height: 10),
 
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -495,10 +495,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         onTap: () =>
                             Navigator.pushNamed(context, AppRoutes.feedback),
                       ),
+                      const SizedBox(height: 10),
                       _MenuItem(
                         icon: Icons.history_outlined,
-                        label: 'Feedback của tôi',
-                        subtitle: 'Xem trạng thái phản hồi',
+                        label: l10n.myFeedbacks,
+                        subtitle: l10n.myFeedbacksSubtitle,
                         color: AppColors.secondary,
                         onTap: () => Navigator.pushNamed(
                           context,
@@ -673,6 +674,7 @@ class _ChatSettingsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final fabVisibility = context.watch<AiFabVisibility>();
     final enabled = fabVisibility.userEnabled;
 
@@ -684,7 +686,7 @@ class _ChatSettingsSection extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(left: 4, bottom: 10),
             child: Text(
-              'Cài đặt trợ lý',
+              l10n.assistantSettings,
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
@@ -722,7 +724,7 @@ class _ChatSettingsSection extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Trợ lý AI',
+                        l10n.aiAssistant,
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
@@ -733,8 +735,8 @@ class _ChatSettingsSection extends StatelessWidget {
                       const SizedBox(height: 2),
                       Text(
                         enabled
-                            ? 'Nút trợ lý đang hiển thị trên màn hình'
-                            : 'Nút trợ lý đang bị ẩn',
+                            ? l10n.assistantFabVisible
+                            : l10n.assistantFabHidden,
                         style: TextStyle(
                           fontSize: 12,
                           color: enabled

@@ -17,6 +17,8 @@ import 'package:intl/intl.dart';
 
 import 'package:image_picker/image_picker.dart';
 
+import '../../../core/l10n/app_localizations.dart';
+
 class ShopScreen extends StatefulWidget {
   const ShopScreen({super.key});
 
@@ -46,8 +48,9 @@ class _ShopScreenState extends State<ShopScreen> {
   }
 
   Future<void> _saveQrToGallery(String? qrImageUrl) async {
+    final l10n = AppLocalizations.of(context);
     if (qrImageUrl == null || qrImageUrl.isEmpty) {
-      _showToast('QR image is not available', isError: true);
+      _showToast(l10n.qrImageNotAvailable, isError: true);
       return;
     }
 
@@ -56,7 +59,7 @@ class _ShopScreenState extends State<ShopScreen> {
       if (!hasAccess) {
         final granted = await Gal.requestAccess();
         if (!granted) {
-          _showToast('Storage permission denied', isError: true);
+          _showToast(l10n.storagePermissionDenied, isError: true);
           return;
         }
       }
@@ -70,14 +73,15 @@ class _ShopScreenState extends State<ShopScreen> {
 
       await Gal.putImage(filePath);
 
-      _showToast('QR saved to gallery');
+      _showToast(l10n.qrSavedToGallery);
     } catch (e) {
       debugPrint('Save QR error: $e');
-      _showToast('Save QR failed', isError: true);
+      _showToast(l10n.saveQrFailed, isError: true);
     }
   }
 
   void _showPurchasedQrDialog(SingleCardPurchaseResponse purchase) {
+    final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
@@ -105,7 +109,7 @@ class _ShopScreenState extends State<ShopScreen> {
               )
             else
               Text(
-                'QR image is not available.',
+                l10n.qrImageNotAvailable,
                 style: TextStyle(
                   color: AppColors.textSecondary,
                   fontFamily: 'Inter',
@@ -113,7 +117,7 @@ class _ShopScreenState extends State<ShopScreen> {
               ),
             const SizedBox(height: 12),
             Text(
-              'QR Content: ${purchase.qrContent}',
+              '${l10n.qrContentLabel}${purchase.qrContent}',
               style: TextStyle(
                 color: AppColors.textSecondary,
                 fontFamily: 'Inter',
@@ -123,7 +127,7 @@ class _ShopScreenState extends State<ShopScreen> {
             Text(
               purchase.expiredAt == null
                   ? ''
-                  : 'Expires at: ${DateFormat('dd/MM/yyyy HH:mm').format(purchase.expiredAt!)}',
+                  : '${l10n.expiresAtLabel}${DateFormat('dd/MM/yyyy HH:mm').format(purchase.expiredAt!)}',
               style: TextStyle(
                 color: AppColors.textSecondary,
                 fontFamily: 'Inter',
@@ -134,11 +138,11 @@ class _ShopScreenState extends State<ShopScreen> {
         actions: [
           TextButton(
             onPressed: () => _saveQrToGallery(purchase.qrImageUrl),
-            child: const Text('Save QR'),
+            child: Text(l10n.saveQr),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
+            child: Text(l10n.close),
           ),
         ],
       ),
@@ -162,19 +166,21 @@ class _ShopScreenState extends State<ShopScreen> {
 
     if (!mounted) return;
 
+    final l10n = AppLocalizations.of(context);
     if (purchase == null) {
-      _showToast('Buy single card failed', isError: true);
+      _showToast(l10n.buySingleCardFailed, isError: true);
       return;
     }
 
-    _showToast('Card purchased successfully!');
+    _showToast(l10n.cardPurchasedSuccess);
     _showPurchasedQrDialog(purchase);
   }
 
   Future<void> _buyWithPoints(
       AppState state, String id, int price, String type) async {
+    final l10n = AppLocalizations.of(context);
     if (state.knowledgePoints < price) {
-      _showToast('Not enough Knowledge Points', isError: true);
+      _showToast(l10n.notEnoughKnowledgePoints, isError: true);
       return;
     }
 
@@ -186,10 +192,10 @@ class _ShopScreenState extends State<ShopScreen> {
 
     if (ok) {
       _showToast(type == 'CHEMICAL_CARD'
-          ? 'Card purchased! Check your bag.'
-          : 'Bundle added to your bag!');
+          ? l10n.cardPurchasedCheckBag
+          : l10n.bundleAddedToBag);
     } else {
-      _showToast('Not enough Knowledge Points', isError: true);
+      _showToast(l10n.notEnoughKnowledgePoints, isError: true);
     }
   }
 
@@ -222,7 +228,7 @@ class _ShopScreenState extends State<ShopScreen> {
     if (!mounted) return;
 
     if (fileUrl == null) {
-      _showToast('Upload proof image failed', isError: true);
+      _showToast(AppLocalizations.of(context).uploadProofImageFailed, isError: true);
       return;
     }
 
@@ -230,7 +236,7 @@ class _ShopScreenState extends State<ShopScreen> {
       _proofImageUrl = fileUrl;
     });
 
-    _showToast('Proof image uploaded successfully');
+    _showToast(AppLocalizations.of(context).proofImageUploadedSuccess);
   }
 
   void _openQR(String id, int price, String type) {
@@ -248,7 +254,7 @@ class _ShopScreenState extends State<ShopScreen> {
     if (_selectedId == null) return;
 
     if (_proofImageUrl == null || _proofImageUrl!.isEmpty) {
-      _showToast('Please upload payment proof image first', isError: true);
+      _showToast(AppLocalizations.of(context).uploadPaymentProofFirst, isError: true);
       return;
     }
 
@@ -260,14 +266,15 @@ class _ShopScreenState extends State<ShopScreen> {
 
     if (!mounted) return;
 
+    final l10n = AppLocalizations.of(context);
     if (!ok) {
-      _showToast('Create payment failed', isError: true);
+      _showToast(l10n.createPaymentFailed, isError: true);
       return;
     }
 
     setState(() => _showQRModal = false);
 
-    _showToast('Payment submitted. Please wait for staff approval.');
+    _showToast(l10n.paymentSubmittedWaitApproval);
 
     Navigator.pushNamed(context, AppRoutes.paymentSuccess);
   }
@@ -276,6 +283,7 @@ class _ShopScreenState extends State<ShopScreen> {
   Widget build(BuildContext context) {
     context.watch<ThemeProvider>();
     final state = context.watch<AppState>();
+    final l10n = AppLocalizations.of(context);
     final catalog = state.shopSingleCards
 
         .map((card) => ChemicalCardModel(
@@ -328,7 +336,7 @@ class _ShopScreenState extends State<ShopScreen> {
                         ),
                         const SizedBox(width: 14),
                         Expanded(
-                          child: Text('Shop',
+                          child: Text(l10n.shop,
                               style: TextStyle(
                                   fontSize: 22,
                                   fontWeight: FontWeight.w700,
@@ -388,7 +396,7 @@ class _ShopScreenState extends State<ShopScreen> {
                               Icon(Icons.inventory_2_outlined,
                                   color: AppColors.primary, size: 20),
                               const SizedBox(width: 8),
-                              Text('Bundle Packs',
+                              Text(l10n.bundlePacks,
                                   style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.w700,
@@ -404,7 +412,7 @@ class _ShopScreenState extends State<ShopScreen> {
                                   border: Border.all(
                                       color: AppColors.secondary.withOpacity(0.4)),
                                 ),
-                                child: Text('Up to 20% off',
+                                child: Text(l10n.upTo20PercentOff,
                                     style: TextStyle(
                                         fontSize: 11,
                                         color: AppColors.emphasisPositive,
@@ -449,7 +457,7 @@ class _ShopScreenState extends State<ShopScreen> {
                                       ? () async {
                                     final ok = await state.addBundleToCart(b.id);
                                     if (ok) {
-                                      _showToast('Bundle added to cart!');
+                                      _showToast(l10n.bundleAddedToCart);
                                     }
                                   }
                                       : null,
@@ -460,7 +468,7 @@ class _ShopScreenState extends State<ShopScreen> {
 
                           const SizedBox(height: 8),
                           Text(
-                            'Single Cards',
+                            l10n.singleCards,
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w700,
@@ -543,6 +551,7 @@ class _BundleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final cards = bundle.cards;
     final canBuy = bundle.purchasable;
 
@@ -579,7 +588,7 @@ class _BundleCard extends StatelessWidget {
                             color: AppColors.textPrimary,
                             fontFamily: 'Inter')),
                     const SizedBox(height: 4),
-                    Text('${bundle.cards.length} cards included',
+                    Text(l10n.cardsIncluded(bundle.cards.length),
                         style: TextStyle(
                             fontSize: 12,
                             color: AppColors.textSecondary,
@@ -621,7 +630,7 @@ class _BundleCard extends StatelessWidget {
                     const SizedBox(height: 2),
                   ],
                   Text(
-                    canBuy ? '${bundle.discountedPrice} KP' : 'Owned',
+                    canBuy ? '${bundle.discountedPrice} KP' : l10n.owned,
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
@@ -667,7 +676,7 @@ class _BundleCard extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          owned ? 'Owned' : card.name,
+                          owned ? l10n.owned : card.name,
                           style: TextStyle(
                             fontSize: 10,
                             color: AppColors.textSecondary,
@@ -699,7 +708,7 @@ class _BundleCard extends StatelessWidget {
                       children: [
                         Icon(Icons.auto_awesome, color: Colors.white, size: 16),
                         SizedBox(width: 6),
-                        Text('Buy with Points',
+                        Text(l10n.buyWithPoints,
                             style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600,
@@ -726,7 +735,7 @@ class _BundleCard extends StatelessWidget {
                           Icon(Icons.credit_card,
                               color: Colors.white, size: 16),
                           SizedBox(width: 6),
-                          Text('Pay with Bank',
+                          Text(l10n.payWithBank,
                               style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w600,
@@ -756,7 +765,7 @@ class _BundleCard extends StatelessWidget {
                     Icon(Icons.add_shopping_cart,
                         color: AppColors.accentText, size: 18),
                     SizedBox(width: 8),
-                    Text('Add Bundle to Cart',
+                    Text(l10n.addBundleToCart,
                         style: TextStyle(
                             color: AppColors.accentText,
                             fontWeight: FontWeight.w600,
@@ -793,7 +802,7 @@ class _QRModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
+    final l10n = AppLocalizations.of(context);
     final qrUrl =
         'https://img.vietqr.io/image/'
         'VCB-1031285717-print.png'
@@ -813,7 +822,7 @@ class _QRModal extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('VNPay Payment',
+              Text(l10n.vnpayPayment,
                   style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
@@ -831,7 +840,7 @@ class _QRModal extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              Text('Scan QR code to pay',
+              Text(l10n.scanQrCodeToPay,
                   style: TextStyle(
                       fontSize: 12,
                       color: Colors.black54,
@@ -847,17 +856,17 @@ class _QRModal extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    _InfoRow('Receiver', 'Chemistry AR'),
+                    _InfoRow(l10n.receiver, 'Chemistry AR'),
                     const SizedBox(height: 6),
                     _InfoRow(
-                      'Amount',
+                      l10n.amount,
                       NumberFormat.currency(
                         locale: 'vi_VN',
                         symbol: 'VND',
                       ).format(price),
                     ),
                     const SizedBox(height: 6),
-                    _InfoRow('Content', transferCode),
+                    _InfoRow(l10n.transferContent, transferCode),
                   ],
                 ),
               ),
@@ -873,8 +882,8 @@ class _QRModal extends StatelessWidget {
                   ),
                   label: Text(
                     proofImageUrl == null
-                        ? 'Upload payment proof'
-                        : 'Payment proof selected',
+                        ? l10n.uploadPaymentProof
+                        : l10n.paymentProofSelected,
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
@@ -905,7 +914,7 @@ class _QRModal extends StatelessWidget {
                   child: Text(
                     proofImageUrl == null
                         ? 'Upload proof image first'
-                        : 'Confirm Payment',
+                        : l10n.confirmPayment,
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
@@ -926,7 +935,7 @@ class _QRModal extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
                   ),
-                  child: Text('Cancel',
+                  child: Text(l10n.cancel,
                       style: TextStyle(
                           color: Colors.black87,
                           fontWeight: FontWeight.w600,
@@ -978,6 +987,7 @@ class _SingleCardShopTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final borderColor = owned
         ? AppColors.secondary.withOpacity(0.55)
         : AppColors.primary.withOpacity(0.35);
@@ -1021,9 +1031,9 @@ class _SingleCardShopTile extends StatelessWidget {
                           color: const Color(0xFF059669),
                           borderRadius: BorderRadius.circular(999),
                         ),
-                        child: const Text(
-                          'Owned',
-                          style: TextStyle(
+                        child: Text(
+                          l10n.owned,
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 10,
                             fontWeight: FontWeight.w800,
@@ -1067,7 +1077,7 @@ class _SingleCardShopTile extends StatelessWidget {
                   ),
                   const SizedBox(width: 6),
                   Text(
-                    'Available',
+                    l10n.available,
                     style: TextStyle(
                       color: AppColors.emphasisPositive,
                       fontSize: 12,
@@ -1100,18 +1110,18 @@ class _SingleCardShopTile extends StatelessWidget {
                       gradient: AppColors.primaryGradient,
                       borderRadius: BorderRadius.circular(14),
                     ),
-                    child: const Row(
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.shopping_bag_outlined,
                           color: Colors.white,
                           size: 16,
                         ),
-                        SizedBox(width: 6),
+                        const SizedBox(width: 6),
                         Text(
-                          'Buy Now',
-                          style: TextStyle(
+                          l10n.buyNow,
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 12,
                             fontWeight: FontWeight.w700,

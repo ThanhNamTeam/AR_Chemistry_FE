@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/l10n/app_localizations.dart';
 import '../../../routes/app_routes.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../home/providers/theme_provider.dart';
@@ -46,6 +47,7 @@ class _QuizScreenState extends State<QuizScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     context.watch<ThemeProvider>();
     final quizProvider = context.watch<StudentQuizProvider>();
 
@@ -57,7 +59,7 @@ class _QuizScreenState extends State<QuizScreen> {
           child: Column(
             children: [
               _QuizHeader(
-                title: _lessonTitle ?? 'Quiz',
+                title: _lessonTitle ?? l10n.navQuiz,
                 onBack: () => Navigator.pop(context),
               ),
               Expanded(
@@ -71,12 +73,13 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   Widget _buildBody(BuildContext context, StudentQuizProvider provider) {
+    final l10n = AppLocalizations.of(context);
     if (_lessonCode == null || _lessonCode!.isEmpty) {
       return _EmptyState(
         icon: Icons.error_outline,
-        title: 'Không tìm thấy bài học',
-        message: 'Màn hình quiz cần lessonCode để tải quiz.',
-        actionLabel: 'Về Home',
+        title: l10n.lessonNotFound,
+        message: l10n.quizRequiresLessonCode,
+        actionLabel: l10n.goHome,
         onAction: () => _goHome(context),
       );
     }
@@ -88,9 +91,9 @@ class _QuizScreenState extends State<QuizScreen> {
     if (provider.summaryError != null) {
       return _EmptyState(
         icon: Icons.error_outline,
-        title: 'Không tải được quiz',
+        title: l10n.cannotLoadQuiz,
         message: provider.summaryError!,
-        actionLabel: 'Thử lại',
+        actionLabel: l10n.tryAgain,
         onAction: () {
           context
               .read<StudentQuizProvider>()
@@ -102,9 +105,9 @@ class _QuizScreenState extends State<QuizScreen> {
     if (!provider.hasQuiz) {
       return _EmptyState(
         icon: Icons.quiz_outlined,
-        title: 'Chưa có quiz',
-        message: 'Bài học này hiện chưa có quiz đã publish.',
-        actionLabel: 'Về Home',
+        title: l10n.noQuiz,
+        message: l10n.lessonNoPublishedQuiz,
+        actionLabel: l10n.goHome,
         onAction: () => _goHome(context),
       );
     }
@@ -192,6 +195,7 @@ class _QuizIntro extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final quiz = provider.quizSummary!;
 
     return Center(
@@ -268,8 +272,8 @@ class _QuizIntro extends StatelessWidget {
                       : const Icon(Icons.play_arrow_rounded),
                   label: Text(
                     provider.loadingQuestions
-                        ? 'Đang tải...'
-                        : 'Bắt đầu làm quiz',
+                        ? l10n.loading
+                        : l10n.startQuiz,
                   ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
@@ -305,6 +309,7 @@ class _QuizQuestionList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final quiz = provider.quizDetail!;
     final questions = quiz.questions;
 
@@ -358,7 +363,7 @@ class _QuizQuestionList extends StatelessWidget {
               child: CircularProgressIndicator(strokeWidth: 2),
             )
                 : const Icon(Icons.check_circle_outline),
-            label: Text(provider.submitting ? 'Đang nộp...' : 'Nộp bài'),
+            label: Text(provider.submitting ? l10n.submitting : l10n.submitQuiz),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.success,
               foregroundColor: Colors.white,
@@ -408,6 +413,7 @@ class _QuestionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final options = _parseOptions(question.optionsJson);
 
     return Container(
@@ -455,7 +461,7 @@ class _QuestionCard extends StatelessWidget {
             ...['TRUE', 'FALSE'].map(
                   (answer) => _AnswerOption(
                 label: answer,
-                text: answer == 'TRUE' ? 'Đúng' : 'Sai',
+                text: answer == 'TRUE' ? l10n.trueAnswer : l10n.falseAnswer,
                 selected: selectedAnswer == answer,
                 onTap: () => onSelectAnswer(answer),
               ),
@@ -476,7 +482,7 @@ class _QuestionCard extends StatelessWidget {
             TextField(
               onChanged: onSelectAnswer,
               decoration: InputDecoration(
-                hintText: 'Nhập đáp án của bạn',
+                hintText: l10n.enterYourAnswer,
                 hintStyle: TextStyle(
                   color: AppColors.textSecondary,
                   fontFamily: 'Inter',
@@ -567,6 +573,7 @@ class _QuizResultView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final result = provider.submitResult!;
 
     return ListView(
@@ -596,8 +603,8 @@ class _QuizResultView extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 4),
-              const Text(
-                'Kết quả bài làm',
+              Text(
+                l10n.quizResult,
                 style: TextStyle(
                   fontSize: 14,
                   color: Colors.white,
@@ -624,8 +631,8 @@ class _QuizResultView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  r.correct ? 'Đúng' : 'Sai',
+                  Text(
+                  r.correct ? l10n.correct : l10n.incorrect,
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w700,

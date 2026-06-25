@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/l10n/app_localizations.dart';
 import '../../../routes/app_navigation.dart';
 import '../../../routes/app_routes.dart';
 import '../../../shared/styles/app_colors.dart';
@@ -32,15 +33,16 @@ class _PaymentPageState extends State<PaymentPage> {
   }
 
   Future<void> _payWithPoints(AppState state) async {
+    final l10n = AppLocalizations.of(context);
     final total = state.cartTotalPrice;
     if (state.knowledgePoints < total) {
-      _toast('Not enough Knowledge Points', error: true);
+      _toast(l10n.notEnoughKnowledgePoints, error: true);
       return;
     }
     final ok = await state.checkoutCart('points');
     if (!mounted) return;
     if (ok) {
-      _toast('Payment successful!');
+      _toast(l10n.paymentSuccessToast);
       await Future.delayed(const Duration(seconds: 1));
       if (mounted) {
         AppNavigation.openMyBag(context);
@@ -62,6 +64,7 @@ class _PaymentPageState extends State<PaymentPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final state = context.watch<AppState>();
     final items = state.cart;
     final total = state.cartTotalPrice;
@@ -95,7 +98,7 @@ class _PaymentPageState extends State<PaymentPage> {
                         ),
                         const SizedBox(width: 14),
                         Expanded(
-                          child: Text('Payment',
+                          child: Text(l10n.paymentTitle,
                               style: TextStyle(
                                   fontSize: 22,
                                   fontWeight: FontWeight.w700,
@@ -109,7 +112,7 @@ class _PaymentPageState extends State<PaymentPage> {
                   Expanded(
                     child: items.isEmpty
                         ? Center(
-                            child: Text('Cart is empty',
+                            child: Text(l10n.cartEmpty,
                                 style: TextStyle(
                                     color: AppColors.textSecondary,
                                     fontFamily: 'Inter')),
@@ -163,13 +166,13 @@ class _PaymentPageState extends State<PaymentPage> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text('Total',
+                                    Text(l10n.total,
                                         style: TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.w700,
                                             color: AppColors.textPrimary,
                                             fontFamily: 'Inter')),
-                                    Text('$total KP',
+                                    Text(l10n.knowledgePoints(total),
                                         style: TextStyle(
                                             fontSize: 22,
                                             fontWeight: FontWeight.w700,
@@ -186,7 +189,7 @@ class _PaymentPageState extends State<PaymentPage> {
                     child: Column(
                       children: [
                         _PayButton(
-                          label: 'Pay with Knowledge Points',
+                          label: l10n.payWithKnowledgePoints,
                           icon: Icons.auto_awesome,
                           gradient: AppColors.amberGradient,
                           onTap: items.isEmpty
@@ -195,7 +198,7 @@ class _PaymentPageState extends State<PaymentPage> {
                         ),
                         const SizedBox(height: 12),
                         _PayButton(
-                          label: 'Pay with Bank (VNPay)',
+                          label: l10n.payWithBankVnpay,
                           icon: Icons.credit_card,
                           gradient: AppColors.primaryGradient,
                           onTap: items.isEmpty ? null : _payWithBank,
@@ -234,6 +237,7 @@ class _CartRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
@@ -257,7 +261,7 @@ class _CartRow extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                     fontFamily: 'Inter')),
           ),
-          Text('$price KP',
+          Text(l10n.knowledgePoints(price),
               style: TextStyle(
                   color: AppColors.amberLight,
                   fontWeight: FontWeight.w700,
@@ -325,6 +329,7 @@ class _QRModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
 
     final transferCode =
         'CHEM_${DateTime.now().millisecondsSinceEpoch}';
@@ -349,7 +354,7 @@ class _QRModal extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('VNPay Payment',
+              Text(l10n.vnpayPayment,
                   style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
@@ -379,14 +384,14 @@ class _QRModal extends StatelessWidget {
                   children: [
 
                     _InfoRow(
-                      'Receiver',
+                      l10n.receiver,
                       'NGUYEN HOAI AN',
                     ),
 
                     const SizedBox(height: 6),
 
                     _InfoRow(
-                      'Amount',
+                      l10n.amount,
                       NumberFormat.currency(
                         locale: 'vi_VN',
                         symbol: 'VND',
@@ -396,7 +401,7 @@ class _QRModal extends StatelessWidget {
                     const SizedBox(height: 6),
 
                     _InfoRow(
-                      'Content',
+                      l10n.transferContent,
                       transferCode,
                     ),
                   ],
@@ -407,10 +412,10 @@ class _QRModal extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: onConfirm,
-                  child: Text('Confirm Payment'),
+                  child: Text(l10n.confirmPayment),
                 ),
               ),
-              TextButton(onPressed: onCancel, child: Text('Cancel')),
+              TextButton(onPressed: onCancel, child: Text(l10n.cancel)),
             ],
           ),
         ),

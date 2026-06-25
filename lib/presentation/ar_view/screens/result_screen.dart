@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../core/l10n/app_localizations.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../../shared/widgets/knowledge_points_badge.dart';
 import '../../../routes/app_routes.dart';
@@ -50,6 +51,7 @@ class _ResultScreenState extends State<ResultScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final state = context.watch<AppState>();
     final args = ModalRoute.of(context)?.settings.arguments;
     List<String> scannedIds = [];
@@ -70,14 +72,14 @@ class _ResultScreenState extends State<ResultScreen>
               Icon(Icons.error_outline,
                   color: AppColors.textSecondary, size: 56),
               const SizedBox(height: 16),
-              Text('No experiment data found',
+              Text(l10n.noExperimentData,
                   style: TextStyle(
                       color: AppColors.textPrimary,
                       fontSize: 16,
                       fontFamily: 'Inter')),
               const SizedBox(height: 24),
               _PrimaryButton(
-                label: 'Go to Scan',
+                label: l10n.goToScan,
                 onTap: () => Navigator.pushReplacementNamed(
                     context, AppRoutes.scan),
               ),
@@ -145,7 +147,7 @@ class _ResultScreenState extends State<ResultScreen>
                     child: Row(
                       children: [
                         Expanded(
-                          child: Text('Experiment Result',
+                          child: Text(l10n.experimentResult,
                               style: TextStyle(
                                   fontSize: 22,
                                   fontWeight: FontWeight.w700,
@@ -194,8 +196,8 @@ class _ResultScreenState extends State<ResultScreen>
                           Row(
                             children: [
                               Expanded(
-                                child: _PrimaryButton(
-                                  label: 'New Experiment',
+                                child:                               _PrimaryButton(
+                                  label: l10n.newExperiment,
                                   onTap: () => Navigator.pushReplacementNamed(
                                       context, AppRoutes.scan),
                                 ),
@@ -225,7 +227,7 @@ class _ResultScreenState extends State<ResultScreen>
                                             color: AppColors.textPrimary,
                                             size: 20),
                                         SizedBox(width: 8),
-                                        Text('Home',
+                                        Text(l10n.home,
                                             style: TextStyle(
                                                 color: AppColors.textPrimary,
                                                 fontSize: 15,
@@ -352,6 +354,7 @@ class _ResultScreenState extends State<ResultScreen>
   }
 
   Widget _buildPointsCard(int points) {
+    final l10n = AppLocalizations.of(context);
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
@@ -365,7 +368,7 @@ class _ResultScreenState extends State<ResultScreen>
       ),
       child: Column(
         children: [
-          Text('Knowledge Points Earned',
+          Text(l10n.knowledgePointsEarned,
               style: TextStyle(
                   color: AppColors.textAmber,
                   fontSize: 13,
@@ -383,7 +386,7 @@ class _ResultScreenState extends State<ResultScreen>
             children: [
               Icon(Icons.auto_awesome, color: AppColors.amber, size: 16),
               SizedBox(width: 6),
-              Text('Keep experimenting to earn more!',
+              Text(l10n.keepExperimentingEarnMore,
                   style: TextStyle(
                       color: AppColors.amberLight,
                       fontSize: 12,

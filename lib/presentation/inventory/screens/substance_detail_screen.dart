@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/api/inventory_api.dart';
+import '../../../core/l10n/app_localizations.dart';
 import '../../../core/models/response/substance_detail_response.dart';
 import '../../../shared/styles/app_colors.dart';
 
@@ -56,6 +57,7 @@ class _SubstanceDetailScreenState extends State<SubstanceDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: AppColors.backgroundDark,
       body: Container(
@@ -90,7 +92,7 @@ class _SubstanceDetailScreenState extends State<SubstanceDetailScreen> {
                     const SizedBox(width: 14),
                     Expanded(
                       child: Text(
-                        'Substance Detail',
+                        l10n.substanceDetail,
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.w700,
@@ -116,6 +118,7 @@ class _SubstanceDetailScreenState extends State<SubstanceDetailScreen> {
   }
 
   Widget _buildBody() {
+    final l10n = AppLocalizations.of(context);
     if (_isLoading) {
       return const Center(
         child: CircularProgressIndicator(),
@@ -135,7 +138,7 @@ class _SubstanceDetailScreenState extends State<SubstanceDetailScreen> {
           ),
           const SizedBox(height: 16),
           Text(
-            'Cannot load substance detail',
+            l10n.cannotLoadSubstanceDetail,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 18,
@@ -167,7 +170,7 @@ class _SubstanceDetailScreenState extends State<SubstanceDetailScreen> {
         children: [
           const SizedBox(height: 140),
           Text(
-            'No detail found',
+            l10n.noDetailFound,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: AppColors.textSecondary,
@@ -185,13 +188,13 @@ class _SubstanceDetailScreenState extends State<SubstanceDetailScreen> {
         _HeroCard(detail: detail),
         const SizedBox(height: 16),
         _InfoSection(
-          title: 'Basic Information',
+          title: l10n.basicInformation,
           children: [
-            _InfoRow(label: 'Name', value: detail.name),
-            _InfoRow(label: 'Vietnamese Name', value: detail.vietnameseName),
-            _InfoRow(label: 'Formula', value: detail.formula),
-            _InfoRow(label: 'Chemical Group', value: detail.chemicalGroup),
-            _InfoRow(label: 'State', value: detail.state),
+            _InfoRow(label: l10n.name, value: detail.name),
+            _InfoRow(label: l10n.vietnameseName, value: detail.vietnameseName),
+            _InfoRow(label: l10n.formula, value: detail.formula),
+            _InfoRow(label: l10n.chemicalGroup, value: detail.chemicalGroup),
+            _InfoRow(label: l10n.state, value: detail.state),
           ],
         ),
         const SizedBox(height: 16),
@@ -201,11 +204,11 @@ class _SubstanceDetailScreenState extends State<SubstanceDetailScreen> {
           _CompoundDetailSection(compound: detail.compoundDetail!)
         else
           _InfoSection(
-            title: 'Substance Detail',
-            children: const [
+            title: l10n.substanceDetail,
+            children: [
               _InfoRow(
-                label: 'Status',
-                value: 'No detail available',
+                label: l10n.statusLabel,
+                value: l10n.noDetailAvailable,
               ),
             ],
           ),
@@ -332,31 +335,32 @@ class _ElementDetailSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return _InfoSection(
-      title: 'Element Detail',
+      title: l10n.elementDetail,
       children: [
         _InfoRow(
-          label: 'Atomic Number',
+          label: l10n.atomicNumber,
           value: element.atomicNumber?.toString(),
         ),
         _InfoRow(
-          label: 'Symbol',
+          label: l10n.symbolLabel,
           value: element.symbol,
         ),
         _InfoRow(
-          label: 'Periodic Category',
+          label: l10n.periodicCategory,
           value: element.periodicCategory,
         ),
         _InfoRow(
-          label: 'Atomic Mass',
+          label: l10n.atomicMass,
           value: element.atomicMass?.toString(),
         ),
         _InfoRow(
-          label: 'Period',
+          label: l10n.period,
           value: element.period?.toString(),
         ),
         _InfoRow(
-          label: 'Group',
+          label: l10n.groupLabel,
           value: element.groupNumber?.toString(),
         ),
       ],
@@ -373,32 +377,33 @@ class _CompoundDetailSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return _InfoSection(
-      title: 'Compound Detail',
+      title: l10n.compoundDetail,
       children: [
         _InfoRow(
-          label: 'IUPAC Name',
+          label: l10n.iupacName,
           value: compound.iupacName,
         ),
         _InfoRow(
-          label: 'CAS Number',
+          label: l10n.casNumber,
           value: compound.casNumber,
         ),
         _InfoRow(
-          label: 'Compound Class',
+          label: l10n.compoundClass,
           value: compound.compoundClass,
         ),
         _InfoRow(
-          label: 'Usage Note',
+          label: l10n.usageNote,
           value: compound.usageNote,
         ),
         _InfoRow(
-          label: 'Reaction Product Only',
-          value: compound.reactionProductOnly ? 'Yes' : 'No',
+          label: l10n.reactionProductOnly,
+          value: compound.reactionProductOnly ? l10n.yes : l10n.no,
         ),
         _InfoRow(
-          label: 'Physical In Kit',
-          value: compound.physicalInKit ? 'Yes' : 'No',
+          label: l10n.physicalInKit,
+          value: compound.physicalInKit ? l10n.yes : l10n.no,
         ),
       ],
     );
