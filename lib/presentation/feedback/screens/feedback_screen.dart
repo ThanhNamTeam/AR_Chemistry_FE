@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/api/feedback_api_service.dart';
+import '../../../core/l10n/app_localizations.dart';
 import '../../../core/models/request/feedback_request.dart';
 import '../../../core/services/app_device_info_service.dart';
 import '../../../domain/models/feedback_model.dart';
@@ -53,6 +54,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
+    final l10n = AppLocalizations.of(context);
     setState(() => _submitting = true);
 
     try {
@@ -83,9 +85,9 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text(
-            'Gửi phản hồi thành công. Cảm ơn bạn!',
-            style: TextStyle(fontFamily: 'Inter'),
+          content: Text(
+            l10n.feedbackSubmitSuccess,
+            style: const TextStyle(fontFamily: 'Inter'),
           ),
           backgroundColor: AppColors.success,
           behavior: SnackBarBehavior.floating,
@@ -102,7 +104,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Không gửi được phản hồi. Vui lòng thử lại.',
+            l10n.feedbackSubmitFailed,
             style: TextStyle(fontFamily: 'Inter'),
           ),
           backgroundColor: AppColors.error,
@@ -115,6 +117,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     context.watch<ThemeProvider>();
 
     return Scaffold(
@@ -170,7 +173,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Text(
-                          'Loại phản hồi',
+                          l10n.feedbackType,
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w500,
@@ -222,29 +225,29 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                         ),
                         const SizedBox(height: 20),
                         CustomTextField(
-                          label: 'Tiêu đề',
-                          hint: 'VD: Lỗi hiển thị quiz',
+                          label: l10n.feedbackTitle,
+                          hint: l10n.feedbackTitleHint,
                           controller: _titleCtrl,
                           prefixIcon: Icons.title,
                           validator: (v) => v == null || v.trim().isEmpty
-                              ? 'Bắt buộc'
+                              ? l10n.requiredField
                               : null,
                         ),
                         const SizedBox(height: 16),
                         CustomTextField(
-                          label: 'Nội dung',
-                          hint: 'Mô tả chi tiết lỗi hoặc trải nghiệm...',
+                          label: l10n.feedbackContentLabel,
+                          hint: l10n.feedbackContentHint,
                           controller: _contentCtrl,
                           prefixIcon: Icons.notes_outlined,
                           maxLines: 5,
                           minLines: 4,
                           validator: (v) => v == null || v.trim().isEmpty
-                              ? 'Bắt buộc'
+                              ? l10n.requiredField
                               : null,
                         ),
                         const SizedBox(height: 20),
                         Text(
-                          'Ảnh minh họa (tùy chọn)',
+                          l10n.illustrationImageOptional,
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w500,
@@ -307,7 +310,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                                       ),
                                       const SizedBox(height: 8),
                                       Text(
-                                        'Chạm để tải ảnh lên',
+                                        l10n.tapToUploadImage,
                                         style: TextStyle(
                                           fontSize: 12,
                                           color: AppColors.textSecondary,
@@ -335,7 +338,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'Gửi ẩn danh',
+                                      l10n.sendAnonymously,
                                       style: TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.w600,
@@ -346,8 +349,8 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                                     const SizedBox(height: 4),
                                     Text(
                                       _anonymous
-                                          ? 'Staff sẽ không thấy email/tên của bạn.'
-                                          : 'Staff sẽ thấy thông tin tài khoản của bạn.',
+                                          ? l10n.anonymousOnHint
+                                          : l10n.anonymousOffHint,
                                       style: TextStyle(
                                         fontSize: 11,
                                         color: AppColors.textSecondary,
@@ -385,9 +388,9 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                                         color: Colors.white,
                                       ),
                                     )
-                                  : const Text(
-                                      'Gửi phản hồi',
-                                      style: TextStyle(
+                                  : Text(
+                                      l10n.submitFeedback,
+                                      style: const TextStyle(
                                         color: Colors.white,
                                         fontSize: 16,
                                         fontWeight: FontWeight.w600,

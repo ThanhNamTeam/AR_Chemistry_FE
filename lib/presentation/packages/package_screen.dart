@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../shared/styles/app_colors.dart';
 import '../../../../shared/widgets/knowledge_points_badge.dart';
+import '../../core/l10n/app_localizations.dart';
 import '../../core/api/payment_api.dart';
 import '../../routes/app_routes.dart';
 import '../home/providers/app_state.dart';
@@ -47,7 +48,11 @@ class _PackageScreenState extends State<PackageScreen> {
         if (!mounted) return;
         setState(() => _isPurchasing = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Purchase error: $error')),
+          SnackBar(
+            content: Text(
+              '${AppLocalizations.of(context).purchaseError}: $error',
+            ),
+          ),
         );
       },
     );
@@ -98,7 +103,9 @@ class _PackageScreenState extends State<PackageScreen> {
 
     if (productId.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Google Product ID is empty')),
+        SnackBar(
+          content: Text(AppLocalizations.of(context).googleProductIdEmpty),
+        ),
       );
       return;
     }
@@ -109,13 +116,15 @@ class _PackageScreenState extends State<PackageScreen> {
       final available = await _inAppPurchase.isAvailable();
 
       if (!available) {
-        throw Exception('Google Play Billing is not available');
+        throw Exception(AppLocalizations.of(context).googlePlayBillingUnavailable);
       }
 
       final response = await _inAppPurchase.queryProductDetails({productId});
 
       if (response.notFoundIDs.isNotEmpty || response.productDetails.isEmpty) {
-        throw Exception('Product not found on Google Play: $productId');
+        throw Exception(
+          AppLocalizations.of(context).productNotFoundOnGooglePlay(productId),
+        );
       }
 
       final product = response.productDetails.first;
@@ -131,7 +140,7 @@ class _PackageScreenState extends State<PackageScreen> {
       setState(() => _isPurchasing = false);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Mua gói thất bại: $e')),
+        SnackBar(content: Text('${AppLocalizations.of(context).purchasePackageFailed}: $e')),
       );
     }
   }
@@ -152,7 +161,7 @@ class _PackageScreenState extends State<PackageScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              purchase.error?.message ?? 'Thanh toán thất bại',
+              purchase.error?.message ?? AppLocalizations.of(context).paymentFailed,
             ),
           ),
         );
@@ -180,7 +189,7 @@ class _PackageScreenState extends State<PackageScreen> {
               content: Text(
                 access.message.isNotEmpty
                     ? access.message
-                    : 'Mua gói thành công',
+                    : AppLocalizations.of(context).purchasePackageSuccess,
               ),
             ),
           );
@@ -194,34 +203,41 @@ class _PackageScreenState extends State<PackageScreen> {
           setState(() => _isPurchasing = false);
 
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Verify Google Play thất bại: $e')),
+            SnackBar(
+              content: Text(
+                '${AppLocalizations.of(context).verifyGooglePlayFailed}: $e',
+              ),
+            ),
           );
         }
       }
     }
   }
 
-  String _getPackageSubtitle(String packageType) {
+  String _getPackageSubtitle(BuildContext context, String packageType) {
+    final l10n = AppLocalizations.of(context);
     switch (packageType) {
       case 'PREMIUM_BASIC':
-        return 'Unlock basic premium features';
+        return l10n.premiumBasicSubtitle;
       case 'PREMIUM_FULL':
-        return 'Unlock all premium features';
+        return l10n.premiumFullSubtitle;
       case 'AR_LIFETIME':
-        return 'Permanent AR access';
+        return l10n.arLifetimeSubtitle;
       default:
         return packageType;
     }
   }
 
   String _getDurationText(int durationDays) {
-    if (durationDays >= 99999) return 'Lifetime';
+    final l10n = AppLocalizations.of(context);
+    if (durationDays >= 99999) return l10n.lifetime;
     return '$durationDays days';
   }
 
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final state = context.watch<AppState>();
     final packages = state.packages;
 
@@ -261,7 +277,7 @@ class _PackageScreenState extends State<PackageScreen> {
                         const SizedBox(width: 14),
                         Expanded(
                           child: Text(
-                            'Upgrade Packages',
+                            l10n.upgradePackages,
                             style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.w700,
@@ -285,7 +301,7 @@ class _PackageScreenState extends State<PackageScreen> {
                         : packages.isEmpty
                         ? Center(
                       child: Text(
-                        'No packages available',
+                        l10n.noPackagesAvailable,
                         style: TextStyle(
                           color: AppColors.textSecondary,
                           fontFamily: 'Inter',
@@ -305,6 +321,7 @@ class _PackageScreenState extends State<PackageScreen> {
                           child: _PackageCard(
                             title: package.name,
                             subtitle: _getPackageSubtitle(
+                              context,
                               package.packageType,
                             ),
                             duration: _getDurationText(

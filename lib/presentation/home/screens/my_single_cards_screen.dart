@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/l10n/app_localizations.dart';
 import '../../../core/models/response/my_single_card_purchase_response.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../home/providers/app_state.dart';
@@ -51,8 +52,10 @@ class _MySingleCardsScreenState extends State<MySingleCardsScreen> {
   Future<void> _saveQrToGallery(String? qrImageUrl) async {
     if (_savingQr) return;
 
+    final l10n = AppLocalizations.of(context);
+
     if (qrImageUrl == null || qrImageUrl.isEmpty) {
-      _showToast('QR image is not available', isError: true);
+      _showToast(l10n.qrImageNotAvailable, isError: true);
       return;
     }
 
@@ -67,7 +70,7 @@ class _MySingleCardsScreenState extends State<MySingleCardsScreen> {
         final granted = await Gal.requestAccess();
 
         if (!granted) {
-          _showToast('Storage permission denied', isError: true);
+          _showToast(l10n.storagePermissionDenied, isError: true);
           return;
         }
       }
@@ -81,16 +84,16 @@ class _MySingleCardsScreenState extends State<MySingleCardsScreen> {
 
       final file = File(filePath);
       if (!await file.exists()) {
-        _showToast('Download QR failed', isError: true);
+        _showToast(l10n.downloadQrFailed, isError: true);
         return;
       }
 
       await Gal.putImage(filePath);
 
-      _showToast('QR saved to gallery');
+      _showToast(l10n.qrSavedToGallery);
     } catch (e) {
       debugPrint('Save QR error: $e');
-      _showToast('Save QR failed', isError: true);
+      _showToast(l10n.saveQrFailed, isError: true);
     } finally {
       if (mounted) {
         setState(() {
@@ -101,6 +104,7 @@ class _MySingleCardsScreenState extends State<MySingleCardsScreen> {
   }
 
   void _showQrDialog(MySingleCardPurchaseResponse card) {
+    final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
@@ -112,7 +116,7 @@ class _MySingleCardsScreenState extends State<MySingleCardsScreen> {
           ),
         ),
         title: Text(
-          card.singleCardName ?? 'AR Card',
+          card.singleCardName ?? l10n.arCard,
           style: TextStyle(
             color: AppColors.textPrimary,
             fontFamily: 'Inter',
@@ -131,17 +135,17 @@ class _MySingleCardsScreenState extends State<MySingleCardsScreen> {
                   height: 230,
                   fit: BoxFit.cover,
                   errorBuilder: (_, __, ___) => _QrFallbackBox(
-                    text: 'Cannot load QR image',
+                    text: l10n.cannotLoadQrImage,
                   ),
                 ),
               )
             else
-              const _QrFallbackBox(
-                text: 'QR image is not available',
+              _QrFallbackBox(
+                text: l10n.qrImageNotAvailable,
               ),
             const SizedBox(height: 14),
             Text(
-              'QR Content: ${card.qrContent ?? ''}',
+              '${l10n.qrContentLabel}${card.qrContent ?? ''}',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: AppColors.textSecondary,
@@ -163,11 +167,11 @@ class _MySingleCardsScreenState extends State<MySingleCardsScreen> {
               child: CircularProgressIndicator(strokeWidth: 2),
             )
                 : const Icon(Icons.download),
-            label: const Text('Save QR'),
+            label: Text(l10n.saveQr),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
+            child: Text(l10n.close),
           ),
         ],
       ),
@@ -209,6 +213,7 @@ class _MySingleCardsScreenState extends State<MySingleCardsScreen> {
   }
 
   Widget _buildHeader(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
       child: Row(
@@ -234,7 +239,7 @@ class _MySingleCardsScreenState extends State<MySingleCardsScreen> {
           const SizedBox(width: 14),
           Expanded(
             child: Text(
-              'My AR Cards',
+              l10n.myArCards,
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
@@ -267,6 +272,7 @@ class _MySingleCardsScreenState extends State<MySingleCardsScreen> {
       AppState state,
       List<MySingleCardPurchaseResponse> cards,
       ) {
+    final l10n = AppLocalizations.of(context);
     if (state.loadingMySingleCards && cards.isEmpty) {
       return const Center(
         child: CircularProgressIndicator(),
@@ -285,7 +291,7 @@ class _MySingleCardsScreenState extends State<MySingleCardsScreen> {
           ),
           const SizedBox(height: 18),
           Text(
-            'Bạn chưa mua card AR lẻ nào.',
+            l10n.noSingleArCardsPurchased,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: AppColors.textPrimary,
@@ -296,7 +302,7 @@ class _MySingleCardsScreenState extends State<MySingleCardsScreen> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Các card AR lẻ đã mua sẽ xuất hiện tại đây để bạn xem hạn dùng và tải lại QR.',
+            l10n.singleArCardsEmptyHint,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: AppColors.textSecondary,
@@ -344,17 +350,18 @@ class _MySingleCardTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final active = card.active;
 
     final expiredText = card.expiredAt == null
-        ? 'Không rõ hạn'
+        ? l10n.expiryUnknown
         : DateFormat('dd/MM/yyyy HH:mm').format(card.expiredAt!);
 
     final formula = card.substanceFormula ?? '?';
     final name = card.substanceVietnameseName != null &&
         card.substanceVietnameseName!.isNotEmpty
         ? card.substanceVietnameseName!
-        : card.substanceName ?? card.singleCardName ?? 'AR Card';
+        : card.substanceName ?? card.singleCardName ?? l10n.arCard;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -463,7 +470,7 @@ class _MySingleCardTile extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        active ? 'Còn hạn' : 'Đã hết hạn',
+                        active ? l10n.stillActive : l10n.expired,
                         style: TextStyle(
                           color: active
                               ? AppColors.emphasisPositive
@@ -559,6 +566,7 @@ class _LoadMoreButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return GestureDetector(
       onTap: loading ? null : onTap,
       child: Container(
@@ -579,7 +587,7 @@ class _LoadMoreButton extends StatelessWidget {
             child: CircularProgressIndicator(strokeWidth: 2),
           )
               : Text(
-            'Load more',
+            l10n.loadMore,
             style: TextStyle(
               color: AppColors.accentText,
               fontWeight: FontWeight.w700,

@@ -1,6 +1,7 @@
 // AR Screen - placeholder for actual AR implementation
 // This file is ready for integration with ARCore/ARKit
 import 'package:flutter/material.dart';
+import '../../../core/l10n/app_localizations.dart';
 import '../../../shared/styles/app_colors.dart';
 
 class ARScreen extends StatelessWidget {
@@ -8,6 +9,7 @@ class ARScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: Colors.black,
       body: Stack(
@@ -38,14 +40,14 @@ class ARScreen extends StatelessWidget {
                       color: AppColors.primary, size: 56),
                 ),
                 const SizedBox(height: 24),
-                Text('AR Camera',
+                Text(l10n.arCamera,
                     style: TextStyle(
                         color: AppColors.textPrimary,
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
                         fontFamily: 'Inter')),
                 const SizedBox(height: 8),
-                Text('ARCore/ARKit integration ready',
+                Text(l10n.arCoreReady,
                     style: TextStyle(
                         color: AppColors.textSecondary,
                         fontSize: 13,

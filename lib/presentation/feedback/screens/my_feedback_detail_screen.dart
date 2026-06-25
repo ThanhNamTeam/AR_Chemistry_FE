@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/api/feedback_api_service.dart';
+import '../../../core/l10n/app_localizations.dart';
 import '../../../domain/models/admin_feedback_model.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../../shared/widgets/portal_scaffold.dart';
@@ -46,9 +47,10 @@ class _MyFeedbackDetailScreenState extends State<MyFeedbackDetailScreen> {
 
       setState(() => _loading = false);
 
+      final l10n = AppLocalizations.of(context);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Không tải được chi tiết feedback: $e'),
+          content: Text(l10n.cannotLoadFeedbackDetail('$e')),
           backgroundColor: AppColors.error,
         ),
       );
@@ -57,17 +59,18 @@ class _MyFeedbackDetailScreenState extends State<MyFeedbackDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final f = _feedback;
 
     return PortalScaffold(
-      title: 'Chi tiết feedback',
+      title: l10n.feedbackDetailTitle,
       showBack: true,
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : f == null
           ? Center(
         child: Text(
-          'Không tìm thấy feedback',
+          l10n.feedbackNotFound,
           style: TextStyle(
             color: AppColors.textSecondary,
             fontFamily: 'Inter',
@@ -126,7 +129,7 @@ class _MyFeedbackDetailScreenState extends State<MyFeedbackDetailScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Phản hồi từ hệ thống',
+                    l10n.systemReplyTitle,
                     style: TextStyle(
                       color: AppColors.textPrimary,
                       fontSize: 15,
@@ -137,7 +140,7 @@ class _MyFeedbackDetailScreenState extends State<MyFeedbackDetailScreen> {
                   const SizedBox(height: 8),
                   Text(
                     f.staffReply == null || f.staffReply!.isEmpty
-                        ? 'Hệ thống sẽ phản hồi trong thời gian sớm nhất.'
+                        ? l10n.systemReplyPending
                         : f.staffReply!,
                     style: TextStyle(
                       color: AppColors.textSecondary,
@@ -163,6 +166,8 @@ class _InfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
@@ -174,19 +179,34 @@ class _InfoCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _InfoRow(label: 'Người gửi', value: feedback.displayName ?? 'Unknow'),
-          _InfoRow(label: 'Ẩn danh', value: feedback.anonymous ? 'Có' : 'Không'),
-          _InfoRow(label: 'Loại', value: feedback.type),
-          _InfoRow(label: 'Trạng thái', value: feedback.status),
-          _InfoRow(label: 'Độ ưu tiên', value: feedback.priority),
+          _InfoRow(
+            label: l10n.sender,
+            value: feedback.displayName ?? l10n.unknown,
+          ),
+          _InfoRow(
+            label: l10n.anonymous,
+            value: feedback.anonymous ? l10n.yes : l10n.no,
+          ),
+          _InfoRow(label: l10n.typeLabel, value: feedback.type),
+          _InfoRow(label: l10n.statusLabel, value: feedback.status),
+          _InfoRow(label: l10n.priorityLabel, value: feedback.priority),
           if (feedback.appVersion != null && feedback.appVersion!.isNotEmpty)
-            _InfoRow(label: 'App version', value: feedback.appVersion!),
+            _InfoRow(
+              label: l10n.appVersionLabel,
+              value: feedback.appVersion!,
+            ),
           if (feedback.deviceInfo != null && feedback.deviceInfo!.isNotEmpty)
-            _InfoRow(label: 'Thiết bị', value: feedback.deviceInfo!),
+            _InfoRow(label: l10n.deviceLabel, value: feedback.deviceInfo!),
           if (feedback.createdAt != null)
-            _InfoRow(label: 'Ngày gửi', value: feedback.createdAt.toString()),
+            _InfoRow(
+              label: l10n.sentDateLabel,
+              value: feedback.createdAt.toString(),
+            ),
           if (feedback.updatedAt != null)
-            _InfoRow(label: 'Cập nhật', value: feedback.updatedAt.toString()),
+            _InfoRow(
+              label: l10n.updatedDateLabel,
+              value: feedback.updatedAt.toString(),
+            ),
         ],
       ),
     );

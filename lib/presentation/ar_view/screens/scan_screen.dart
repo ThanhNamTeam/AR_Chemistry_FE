@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../core/l10n/app_localizations.dart';
 import '../../../core/services/orientation_lock_service.dart';
 import '../../../routes/app_routes.dart';
 import '../../../shared/styles/app_colors.dart';
@@ -289,6 +290,7 @@ class _UnityScannerLoadingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return DecoratedBox(
       decoration: const BoxDecoration(
         gradient: RadialGradient(
@@ -322,10 +324,10 @@ class _UnityScannerLoadingView extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 28),
-              const Text(
-                'Powered by Unity Engine',
+              Text(
+                l10n.poweredByUnity,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 22,
                   fontWeight: FontWeight.w700,
@@ -334,7 +336,7 @@ class _UnityScannerLoadingView extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                'Preparing AR scanner...',
+                l10n.preparingArScanner,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white.withValues(alpha: 0.64),
@@ -357,6 +359,7 @@ class _ScannerBackButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return SafeArea(
       child: Align(
         alignment: Alignment.topLeft,
@@ -367,7 +370,7 @@ class _ScannerBackButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(14),
             clipBehavior: Clip.antiAlias,
             child: IconButton(
-              tooltip: 'Back',
+              tooltip: l10n.back,
               onPressed: onPressed,
               icon: const Icon(Icons.arrow_back, color: Colors.white),
             ),
@@ -383,6 +386,7 @@ class _UnityScannerErrorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return DecoratedBox(
       decoration: const BoxDecoration(color: Colors.black),
       child: Center(
@@ -397,10 +401,10 @@ class _UnityScannerErrorView extends StatelessWidget {
                 size: 56,
               ),
               const SizedBox(height: 20),
-              const Text(
-                'Unable to start AR',
+              Text(
+                l10n.unableToStartAr,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 24,
                   fontWeight: FontWeight.w800,
@@ -409,7 +413,7 @@ class _UnityScannerErrorView extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                'The Unity engine could not initialize on this device.',
+                l10n.unityInitFailed,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.white.withValues(alpha: 0.68),

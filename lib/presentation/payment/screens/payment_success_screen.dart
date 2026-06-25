@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/l10n/app_localizations.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../../routes/app_navigation.dart';
 import '../../../routes/app_routes.dart';
@@ -39,6 +40,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: AppColors.backgroundDark,
       body: Container(
@@ -78,7 +80,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
                   opacity: _fade,
                   child: Column(
                     children: [
-                      Text('Payment Successful!',
+                      Text(l10n.paymentSuccessful,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontSize: 26,
@@ -87,7 +89,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
                               fontFamily: 'Inter')),
                       const SizedBox(height: 12),
                       Text(
-                          'Your chemical cards have been added to your collection. Start experimenting!',
+                          l10n.paymentSuccessDescription,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontSize: 14,
@@ -117,7 +119,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
                               Icon(Icons.home_outlined,
                                   color: Colors.white, size: 20),
                               SizedBox(width: 10),
-                              Text('Back to Home',
+                              Text(l10n.backToHome,
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 16,
@@ -145,7 +147,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
                               Icon(Icons.shopping_bag_outlined,
                                   color: AppColors.primary, size: 20),
                               SizedBox(width: 10),
-                              Text('Đi đến túi ngay',
+                              Text(l10n.goToBagNow,
                                   style: TextStyle(
                                       color: AppColors.textPrimary,
                                       fontSize: 16,

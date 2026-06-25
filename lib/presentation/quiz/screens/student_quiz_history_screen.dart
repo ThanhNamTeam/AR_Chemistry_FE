@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/l10n/app_localizations.dart';
 import '../../../routes/app_routes.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../providers/student_quiz_provider.dart';
@@ -48,6 +49,7 @@ class _StudentQuizHistoryScreenState extends State<StudentQuizHistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final provider = context.watch<StudentQuizProvider>();
     final attempts = provider.attemptHistory;
 
@@ -61,7 +63,7 @@ class _StudentQuizHistoryScreenState extends State<StudentQuizHistoryScreen> {
           child: Column(
             children: [
               _Header(
-                title: _quizTitle ?? 'Lịch sử làm quiz',
+                title: _quizTitle ?? l10n.quizHistoryTitle,
                 onBack: () => Navigator.pop(context),
               ),
               Expanded(
@@ -71,7 +73,7 @@ class _StudentQuizHistoryScreenState extends State<StudentQuizHistoryScreen> {
                     padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
                     children: [
                       Text(
-                        'Lịch sử làm bài',
+                        l10n.quizHistorySection,
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.w800,
@@ -82,8 +84,8 @@ class _StudentQuizHistoryScreenState extends State<StudentQuizHistoryScreen> {
                       const SizedBox(height: 8),
                       Text(
                         _quizTitle == null
-                            ? 'Các lần làm quiz gần đây của bạn.'
-                            : 'Các lần làm quiz: $_quizTitle',
+                            ? l10n.quizHistoryRecent
+                            : l10n.quizHistoryFor(_quizTitle!),
                         style: TextStyle(
                           fontSize: 13,
                           color: AppColors.textSecondary,
@@ -104,7 +106,7 @@ class _StudentQuizHistoryScreenState extends State<StudentQuizHistoryScreen> {
                           onRetry: _refresh,
                         )
                       else if (attempts.isEmpty)
-                          const _EmptyCard()
+                          _EmptyCard(l10n: l10n)
                         else
                           ...attempts.map(
                                 (attempt) => _AttemptHistoryCard(
@@ -195,6 +197,7 @@ class _AttemptHistoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final percent = attempt.totalQuestions == 0
         ? 0.0
         : attempt.correctCount / attempt.totalQuestions;
@@ -262,17 +265,17 @@ class _AttemptHistoryCard extends StatelessWidget {
             Row(
               children: [
                 _ScoreBox(
-                  label: 'Điểm',
+                  label: l10n.scoreLabel,
                   value: '${attempt.score}/${attempt.totalQuestions}',
                 ),
                 const SizedBox(width: 10),
                 _ScoreBox(
-                  label: 'Đúng',
+                  label: l10n.correctLabel,
                   value: '${attempt.correctCount}',
                 ),
                 const SizedBox(width: 10),
                 _ScoreBox(
-                  label: 'Thời gian',
+                  label: l10n.timeLabel,
                   value: submittedText,
                 ),
               ],
@@ -385,6 +388,7 @@ class _ErrorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -399,7 +403,7 @@ class _ErrorCard extends StatelessWidget {
           Icon(Icons.error_outline, color: AppColors.error, size: 38),
           const SizedBox(height: 10),
           Text(
-            'Không tải được lịch sử',
+            l10n.cannotLoadHistory,
             style: TextStyle(
               color: AppColors.textPrimary,
               fontSize: 15,
@@ -421,7 +425,7 @@ class _ErrorCard extends StatelessWidget {
           OutlinedButton.icon(
             onPressed: onRetry,
             icon: const Icon(Icons.refresh),
-            label: const Text('Thử lại'),
+            label: Text(l10n.tryAgain),
           ),
         ],
       ),
@@ -430,7 +434,9 @@ class _ErrorCard extends StatelessWidget {
 }
 
 class _EmptyCard extends StatelessWidget {
-  const _EmptyCard();
+  final AppLocalizations l10n;
+
+  const _EmptyCard({required this.l10n});
 
   @override
   Widget build(BuildContext context) {
@@ -452,7 +458,7 @@ class _EmptyCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            'Chưa có lịch sử',
+            l10n.noHistoryYet,
             style: TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w800,
@@ -462,7 +468,7 @@ class _EmptyCard extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            'Bạn chưa làm quiz này lần nào.',
+            l10n.noQuizAttemptsYet,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 13,

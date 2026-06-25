@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../shared/styles/app_colors.dart';
+import '../../../core/l10n/app_localizations.dart';
+import '../../../shared/styles/app_colors.dart';
 import '../models/game_models.dart';
 import 'mini_game_review_screen.dart';
 
@@ -85,6 +86,7 @@ class _MiniGamePlayScreenState extends State<MiniGamePlayScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final total = widget.questions.length;
     final progress = (_current + 1) / total;
 
@@ -101,17 +103,17 @@ class _MiniGamePlayScreenState extends State<MiniGamePlayScreen>
                   child: Column(
                     children: [
                       const SizedBox(height: 24),
-                      _buildQuestionCard(),
+                      _buildQuestionCard(l10n),
                       const SizedBox(height: 24),
                       _buildChoices(),
                       const SizedBox(height: 24),
-                      if (_answered) _buildFeedbackBanner(),
+                      if (_answered) _buildFeedbackBanner(l10n),
                       const SizedBox(height: 24),
                     ],
                   ),
                 ),
               ),
-              _buildBottomBar(),
+              _buildBottomBar(l10n),
             ],
           ),
         ),
@@ -178,7 +180,7 @@ class _MiniGamePlayScreenState extends State<MiniGamePlayScreen>
   bool get _isPoemFill =>
       question.type == QuestionType.a || question.type == QuestionType.g;
 
-  Widget _buildQuestionCard() {
+  Widget _buildQuestionCard(AppLocalizations l10n) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -198,7 +200,7 @@ class _MiniGamePlayScreenState extends State<MiniGamePlayScreen>
           Row(
             children: [
               Text(
-                'Câu ${_current + 1}',
+                l10n.questionNumber(_current + 1),
                 style: TextStyle(
                   color: AppColors.primary,
                   fontSize: 12,
@@ -224,7 +226,7 @@ class _MiniGamePlayScreenState extends State<MiniGamePlayScreen>
                           size: 11, color: AppColors.amberLight),
                       const SizedBox(width: 4),
                       Text(
-                        'Điền vào bài thơ',
+                        l10n.fillInPoem,
                         style: TextStyle(
                           color: AppColors.amberLight,
                           fontSize: 10,
@@ -272,7 +274,7 @@ class _MiniGamePlayScreenState extends State<MiniGamePlayScreen>
             ),
             const SizedBox(height: 12),
             Text(
-              'Điền vào chỗ trống (___) trong đoạn thơ trên:',
+              l10n.fillBlankInstruction,
               style: TextStyle(
                 color: AppColors.textSecondary,
                 fontSize: 12,
@@ -429,11 +431,11 @@ class _MiniGamePlayScreenState extends State<MiniGamePlayScreen>
     );
   }
 
-  Widget _buildFeedbackBanner() {
+  Widget _buildFeedbackBanner(AppLocalizations l10n) {
     final correct = _selected == question.correctAnswer;
     final color = correct ? AppColors.success : AppColors.error;
     final icon = correct ? Icons.check_circle : Icons.cancel;
-    final title = correct ? 'Chính xác!' : 'Chưa đúng!';
+    final title = correct ? l10n.exactAnswer : l10n.wrongAnswer;
 
     return FadeTransition(
       opacity: _feedbackAnim,
@@ -466,7 +468,7 @@ class _MiniGamePlayScreenState extends State<MiniGamePlayScreen>
             if (!correct) ...[
               const SizedBox(height: 6),
               Text(
-                'Đáp án đúng: ${question.correctAnswer}',
+                l10n.correctAnswerLabel(question.correctAnswer),
                 style: TextStyle(
                   color: AppColors.success,
                   fontSize: 13,
@@ -491,7 +493,7 @@ class _MiniGamePlayScreenState extends State<MiniGamePlayScreen>
     );
   }
 
-  Widget _buildBottomBar() {
+  Widget _buildBottomBar(AppLocalizations l10n) {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
       decoration: BoxDecoration(
@@ -512,7 +514,7 @@ class _MiniGamePlayScreenState extends State<MiniGamePlayScreen>
             elevation: 0,
           ),
           child: Text(
-            isLastQuestion && _answered ? 'Xem kết quả' : 'Tiếp theo →',
+            isLastQuestion && _answered ? l10n.viewResults : '${l10n.next} →',
             style: const TextStyle(
               color: Colors.white,
               fontSize: 15,
@@ -526,24 +528,25 @@ class _MiniGamePlayScreenState extends State<MiniGamePlayScreen>
   }
 
   void _showExitDialog() {
+    final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
         backgroundColor: AppColors.backgroundMid,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Text(
-          'Thoát khỏi quiz?',
+          l10n.exitQuizTitle,
           style: TextStyle(color: AppColors.textPrimary, fontFamily: 'Inter'),
         ),
         content: Text(
-          'Tiến trình hiện tại sẽ không được lưu.',
+          l10n.exitQuizMessage,
           style:
               TextStyle(color: AppColors.textSecondary, fontFamily: 'Inter'),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Hủy',
+            child: Text(l10n.cancel,
                 style: TextStyle(
                     color: AppColors.textSecondary, fontFamily: 'Inter')),
           ),
@@ -552,7 +555,7 @@ class _MiniGamePlayScreenState extends State<MiniGamePlayScreen>
               Navigator.pop(context);
               Navigator.pop(context);
             },
-            child: Text('Thoát',
+            child: Text(l10n.exit,
                 style:
                     TextStyle(color: AppColors.error, fontFamily: 'Inter')),
           ),

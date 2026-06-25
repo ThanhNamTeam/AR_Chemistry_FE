@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/api/feedback_api_service.dart';
+import '../../../core/l10n/app_localizations.dart';
 import '../../../domain/models/admin_feedback_list_model.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../../shared/widgets/portal_scaffold.dart';
@@ -42,9 +43,10 @@ class _MyFeedbacksScreenState extends State<MyFeedbacksScreen> {
 
       setState(() => _loading = false);
 
+      final l10n = AppLocalizations.of(context);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Không tải được feedback: $e'),
+          content: Text(l10n.cannotLoadFeedback('$e')),
           backgroundColor: AppColors.error,
         ),
       );
@@ -69,15 +71,17 @@ class _MyFeedbacksScreenState extends State<MyFeedbacksScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return PortalScaffold(
-      title: 'Feedback của tôi',
+      title: l10n.myFeedbacks,
       showBack: true,
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _items.isEmpty
           ? Center(
         child: Text(
-          'Bạn chưa gửi feedback nào',
+          l10n.myFeedbacksEmpty,
           style: TextStyle(
             color: AppColors.textSecondary,
             fontFamily: 'Inter',
@@ -145,7 +149,7 @@ class _MyFeedbacksScreenState extends State<MyFeedbacksScreen> {
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        'Loại: ${f.type}',
+                        l10n.typeWithValue(f.type),
                         style: TextStyle(
                           color: AppColors.textSecondary,
                           fontSize: 12,

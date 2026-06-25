@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../shared/styles/app_colors.dart';
+import '../../../core/l10n/app_localizations.dart';
+import '../../../shared/styles/app_colors.dart';
 import '../models/game_models.dart';
 import 'mini_game_screen.dart';
 
@@ -19,14 +20,15 @@ class MiniGameReviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
         child: SafeArea(
           child: Column(
             children: [
-              _buildHeader(context),
-              _buildScoreBanner(),
+              _buildHeader(context, l10n),
+              _buildScoreBanner(l10n),
               Expanded(
                 child: ListView.builder(
                   padding: const EdgeInsets.fromLTRB(20, 8, 20, 100),
@@ -37,7 +39,7 @@ class MiniGameReviewScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              _buildBottomActions(context),
+              _buildBottomActions(context, l10n),
             ],
           ),
         ),
@@ -45,7 +47,7 @@ class MiniGameReviewScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, AppLocalizations l10n) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
       child: Row(
@@ -71,7 +73,7 @@ class MiniGameReviewScreen extends StatelessWidget {
           ),
           const SizedBox(width: 12),
           Text(
-            'Kết quả',
+            l10n.results,
             style: TextStyle(
               color: AppColors.textPrimary,
               fontSize: 20,
@@ -102,19 +104,19 @@ class MiniGameReviewScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildScoreBanner() {
+  Widget _buildScoreBanner(AppLocalizations l10n) {
     final pct = (_percent * 100).round();
     Color scoreColor;
     String message;
     if (pct >= 80) {
       scoreColor = AppColors.success;
-      message = 'Xuất sắc! 🎉';
+      message = l10n.excellent;
     } else if (pct >= 60) {
       scoreColor = AppColors.warning;
-      message = 'Khá tốt! Cố gắng hơn nhé.';
+      message = l10n.goodJob;
     } else {
       scoreColor = AppColors.error;
-      message = 'Cần ôn tập thêm!';
+      message = l10n.needReview;
     }
 
     return Container(
@@ -152,14 +154,14 @@ class MiniGameReviewScreen extends StatelessWidget {
                 const SizedBox(height: 6),
                 _ScoreRow(
                   icon: Icons.check_circle_outline,
-                  label: 'Đúng',
+                  label: l10n.correct,
                   value: '$_correct câu',
                   color: AppColors.success,
                 ),
                 const SizedBox(height: 4),
                 _ScoreRow(
                   icon: Icons.cancel_outlined,
-                  label: 'Sai',
+                  label: l10n.incorrect,
                   value: '${answers.length - _correct} câu',
                   color: AppColors.error,
                 ),
@@ -171,7 +173,7 @@ class MiniGameReviewScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBottomActions(BuildContext context) {
+  Widget _buildBottomActions(BuildContext context, AppLocalizations l10n) {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
       decoration: BoxDecoration(
@@ -195,7 +197,7 @@ class MiniGameReviewScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 14),
               ),
               child: Text(
-                'Về menu',
+                l10n.backToMenu,
                 style: TextStyle(
                   color: AppColors.primary,
                   fontFamily: 'Inter',
@@ -218,8 +220,8 @@ class MiniGameReviewScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 elevation: 0,
               ),
-              child: const Text(
-                'Chơi lại',
+              child: Text(
+                l10n.playAgain,
                 style: TextStyle(
                   color: Colors.white,
                   fontFamily: 'Inter',
@@ -341,6 +343,7 @@ class _ReviewItemState extends State<_ReviewItem> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final a = widget.answer;
     final correct = a.isCorrect;
     final borderColor = correct
@@ -414,7 +417,8 @@ class _ReviewItemState extends State<_ReviewItem> {
                             const SizedBox(width: 4),
                             Expanded(
                               child: Text(
-                                'Bạn chọn: ${a.selectedAnswer ?? "Bỏ qua"}',
+                                l10n.yourAnswer(
+                                    a.selectedAnswer ?? l10n.skippedAnswer),
                                 style: TextStyle(
                                   color: iconColor,
                                   fontSize: 12,
@@ -427,7 +431,7 @@ class _ReviewItemState extends State<_ReviewItem> {
                         if (!correct) ...[
                           const SizedBox(height: 2),
                           Text(
-                            'Đáp án đúng: ${a.question.correctAnswer}',
+                            l10n.correctAnswerLabel(a.question.correctAnswer),
                             style: TextStyle(
                               color: AppColors.success,
                               fontSize: 12,
@@ -461,7 +465,7 @@ class _ReviewItemState extends State<_ReviewItem> {
                 children: [
                   _InfoRow(
                     icon: Icons.auto_stories_outlined,
-                    label: 'Bài thơ:',
+                    label: l10n.poemLabel,
                     value: a.question.poemLine,
                     valueColor: AppColors.textCyan,
                     italic: true,
@@ -469,7 +473,7 @@ class _ReviewItemState extends State<_ReviewItem> {
                   const SizedBox(height: 8),
                   _InfoRow(
                     icon: Icons.lightbulb_outline,
-                    label: 'Giải thích:',
+                    label: l10n.explanationLabel,
                     value: a.question.explanation,
                     valueColor: AppColors.textSecondary,
                   ),

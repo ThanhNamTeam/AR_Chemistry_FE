@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/l10n/app_localizations.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../home/providers/theme_provider.dart';
 import '../providers/chat_provider.dart';
@@ -127,6 +128,7 @@ class _AiChatPanelState extends State<AiChatPanel> {
   }
 
   Widget _buildAppBar(ChatProvider chat) {
+    final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 4, 16, 8),
       child: Row(
@@ -142,7 +144,7 @@ class _AiChatPanelState extends State<AiChatPanel> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Gia sư Hóa học AI',
+                  l10n.aiChemistryTutor,
                   style: TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.w700,
@@ -152,8 +154,8 @@ class _AiChatPanelState extends State<AiChatPanel> {
                 ),
                 Text(
                   chat.sending
-                      ? 'Đang suy nghĩ...'
-                      : 'Hỏi về hóa học, phản ứng, nguyên tố',
+                      ? l10n.aiThinking
+                      : l10n.aiChatSubtitle,
                   style: TextStyle(
                     fontSize: 12,
                     color: AppColors.textSecondary,
@@ -212,6 +214,7 @@ class _AiChatPanelState extends State<AiChatPanel> {
   }
 
   Widget _buildMessageArea(ChatProvider chat) {
+    final l10n = AppLocalizations.of(context);
     if (chat.loadingHistory) {
       return Center(
         child: Column(
@@ -220,7 +223,7 @@ class _AiChatPanelState extends State<AiChatPanel> {
             const CircularProgressIndicator(),
             const SizedBox(height: 12),
             Text(
-              'Đang tải hội thoại...',
+              l10n.loadingConversation,
               style: TextStyle(
                 color: AppColors.textSecondary,
                 fontFamily: 'Inter',
@@ -250,6 +253,7 @@ class _AiChatPanelState extends State<AiChatPanel> {
   }
 
   Widget _buildWelcome(ChatProvider chat) {
+    final l10n = AppLocalizations.of(context);
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -265,7 +269,7 @@ class _AiChatPanelState extends State<AiChatPanel> {
           ),
           const SizedBox(height: 20),
           Text(
-            'Xin chào! Tôi là trợ lý hóa học',
+            l10n.aiWelcomeTitle,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 20,
@@ -276,7 +280,7 @@ class _AiChatPanelState extends State<AiChatPanel> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Hỏi về công thức, phản ứng, bảng tuần hoàn hoặc bài tập AR.',
+            l10n.aiWelcomeSubtitle,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 13,
@@ -304,6 +308,7 @@ class _AiChatPanelState extends State<AiChatPanel> {
   }
 
   Widget _buildInputBar(ChatProvider chat) {
+    final l10n = AppLocalizations.of(context);
     final canSend = !chat.sending && _inputCtrl.text.trim().isNotEmpty;
     final bottom = MediaQuery.paddingOf(context).bottom;
 
@@ -329,7 +334,7 @@ class _AiChatPanelState extends State<AiChatPanel> {
                 fontSize: 15,
               ),
               decoration: InputDecoration(
-                hintText: 'Nhập câu hỏi hóa học...',
+                hintText: l10n.aiChatInputHint,
                 hintStyle: TextStyle(
                   color: AppColors.textSecondary,
                   fontFamily: 'Inter',

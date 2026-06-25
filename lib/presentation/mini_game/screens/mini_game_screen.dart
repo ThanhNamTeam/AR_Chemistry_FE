@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../shared/styles/app_colors.dart';
+import '../../../core/l10n/app_localizations.dart';
+import '../../../shared/styles/app_colors.dart';
 import '../models/game_models.dart';
 import '../data/question_generator.dart';
 import 'mini_game_play_screen.dart';
@@ -11,28 +12,29 @@ class MiniGameScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
         child: SafeArea(
           child: Column(
             children: [
-              _buildHeader(context),
+              _buildHeader(context, l10n),
               Expanded(
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     children: [
                       const SizedBox(height: 24),
-                      _buildHeroSection(),
+                      _buildHeroSection(l10n),
                       const SizedBox(height: 32),
-                      _buildSectionLabel('Chế độ chơi'),
+                      _buildSectionLabel(l10n.gameMode),
                       const SizedBox(height: 12),
                       _buildPlayCard(context),
                       const SizedBox(height: 16),
                       _buildLearnCard(context),
                       const SizedBox(height: 32),
-                      _buildStatsRow(),
+                      _buildStatsRow(l10n),
                       const SizedBox(height: 32),
                     ],
                   ),
@@ -45,7 +47,7 @@ class MiniGameScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, AppLocalizations l10n) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       child: Row(
@@ -65,7 +67,7 @@ class MiniGameScreen extends StatelessWidget {
           ),
           const SizedBox(width: 12),
           Text(
-            'Mini Game Hóa Học',
+            l10n.miniGameChemistryTitle,
             style: TextStyle(
               color: AppColors.textPrimary,
               fontSize: 20,
@@ -88,7 +90,7 @@ class MiniGameScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHeroSection() {
+  Widget _buildHeroSection(AppLocalizations l10n) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24),
@@ -111,7 +113,7 @@ class MiniGameScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Kiểm tra kiến thức\nHóa học của bạn!',
+                  l10n.testYourKnowledge,
                   style: TextStyle(
                     color: AppColors.textPrimary,
                     fontSize: 18,
@@ -122,7 +124,7 @@ class MiniGameScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  '300+ câu hỏi • 10 loại câu hỏi\nKhối lượng nguyên tử & Hóa trị',
+                  l10n.miniGameHeroSubtitle,
                   style: TextStyle(
                     color: AppColors.textSecondary,
                     fontSize: 12,
@@ -157,6 +159,7 @@ class MiniGameScreen extends StatelessWidget {
   }
 
   Widget _buildPlayCard(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return GestureDetector(
       onTap: () => _showDifficultyDialog(context),
       child: Container(
@@ -192,7 +195,7 @@ class MiniGameScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Chơi Quiz',
+                    l10n.playQuiz,
                     style: TextStyle(
                       color: AppColors.textPrimary,
                       fontSize: 17,
@@ -202,7 +205,7 @@ class MiniGameScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Trả lời câu hỏi trắc nghiệm về bảng tuần hoàn',
+                    l10n.playQuizDesc,
                     style: TextStyle(
                       color: AppColors.textSecondary,
                       fontSize: 12,
@@ -220,6 +223,7 @@ class MiniGameScreen extends StatelessWidget {
   }
 
   Widget _buildLearnCard(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return GestureDetector(
       onTap: () => Navigator.push(
         context,
@@ -258,7 +262,7 @@ class MiniGameScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Học Bài Thơ',
+                    l10n.learnPoem,
                     style: TextStyle(
                       color: AppColors.textPrimary,
                       fontSize: 17,
@@ -268,7 +272,7 @@ class MiniGameScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Đọc bài thơ hóa học và khám phá bảng nguyên tố',
+                    l10n.learnPoemDesc,
                     style: TextStyle(
                       color: AppColors.textSecondary,
                       fontSize: 12,
@@ -285,28 +289,28 @@ class MiniGameScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStatsRow() {
+  Widget _buildStatsRow(AppLocalizations l10n) {
     final total = QuestionGenerator.getAllQuestions().length;
     return Row(
       children: [
         _StatTile(
           icon: Icons.quiz_outlined,
           value: '$total+',
-          label: 'Câu hỏi',
+          label: l10n.questionsLabel,
           color: AppColors.primary,
         ),
         const SizedBox(width: 12),
         _StatTile(
           icon: Icons.category_outlined,
           value: '10',
-          label: 'Loại câu hỏi',
+          label: l10n.questionTypesLabel,
           color: AppColors.accent,
         ),
         const SizedBox(width: 12),
         _StatTile(
           icon: Icons.science_outlined,
           value: '35',
-          label: 'Nguyên tố',
+          label: l10n.elementsLabel,
           color: AppColors.secondary,
         ),
       ],
@@ -398,6 +402,7 @@ class _DifficultySheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Container(
       decoration: BoxDecoration(
         color: AppColors.backgroundMid,
@@ -418,7 +423,7 @@ class _DifficultySheet extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           Text(
-            'Chọn độ khó',
+            l10n.chooseDifficulty,
             style: TextStyle(
               color: AppColors.textPrimary,
               fontSize: 18,
@@ -445,6 +450,7 @@ class _DifficultyTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final c = difficulty.color;
     return GestureDetector(
       onTap: onTap,
@@ -471,7 +477,7 @@ class _DifficultyTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  difficulty.label,
+                  _difficultyLabel(l10n),
                   style: TextStyle(
                     color: AppColors.textPrimary,
                     fontSize: 15,
@@ -480,7 +486,7 @@ class _DifficultyTile extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  difficulty.description,
+                  _difficultyDescription(l10n),
                   style: TextStyle(
                     color: AppColors.textSecondary,
                     fontSize: 12,
@@ -505,6 +511,28 @@ class _DifficultyTile extends StatelessWidget {
         return Icons.sentiment_neutral_outlined;
       case GameDifficulty.hard:
         return Icons.whatshot_outlined;
+    }
+  }
+
+  String _difficultyLabel(AppLocalizations l10n) {
+    switch (difficulty) {
+      case GameDifficulty.easy:
+        return l10n.difficultyEasy;
+      case GameDifficulty.medium:
+        return l10n.difficultyMedium;
+      case GameDifficulty.hard:
+        return l10n.difficultyHard;
+    }
+  }
+
+  String _difficultyDescription(AppLocalizations l10n) {
+    switch (difficulty) {
+      case GameDifficulty.easy:
+        return l10n.difficultyEasyDesc;
+      case GameDifficulty.medium:
+        return l10n.difficultyMediumDesc;
+      case GameDifficulty.hard:
+        return l10n.difficultyHardDesc;
     }
   }
 }
