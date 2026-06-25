@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 import '../../../core/storage/ai_fab_storage.dart';
 import '../../../shared/styles/app_colors.dart';
+import 'ai_chat_icon.dart';
 import 'ai_chat_modal.dart';
 
 /// Nút tròn kiểu đa nhiệm iPhone: chạm mở chat, nhấn giữ + kéo đổi vị trí.
@@ -224,74 +225,7 @@ class _IosStyleFab extends StatelessWidget {
             ),
           ],
         ),
-        child: ClipOval(
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      AppColors.cardBg.withValues(alpha: 0.96),
-                      AppColors.backgroundMid,
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.25),
-                    width: 1.2,
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 10,
-                top: 12,
-                child: _miniCard(0.82, AppColors.primary),
-              ),
-              Positioned(
-                left: 16,
-                top: 16,
-                child: _miniCard(0.72, AppColors.accent),
-              ),
-              Positioned(
-                left: 22,
-                top: 20,
-                child: _miniCard(1.0, AppColors.secondary),
-              ),
-              Center(
-                child: Container(
-                  width: 26,
-                  height: 26,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: AppColors.cyanEmeraldGradient,
-                  ),
-                  child: const Icon(
-                    Icons.science_rounded,
-                    color: Colors.white,
-                    size: 16,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _miniCard(double scale, Color color) {
-    return Transform.scale(
-      scale: scale,
-      child: Container(
-        width: 22,
-        height: 28,
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.55),
-          borderRadius: BorderRadius.circular(5),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.35)),
-        ),
+        child: AiChatIcon(size: AiFloatingAssistant.fabSize),
       ),
     );
   }

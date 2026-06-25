@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../home/providers/theme_provider.dart';
 import '../providers/chat_provider.dart';
+import 'ai_chat_icon.dart';
 import 'chat_message_bubble.dart';
 import 'conversation_drawer.dart';
 
@@ -134,15 +135,7 @@ class _AiChatPanelState extends State<AiChatPanel> {
             onPressed: widget.onClose,
             icon: Icon(Icons.close_rounded, color: AppColors.textPrimary),
           ),
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: AppColors.cyanEmeraldGradient,
-            ),
-            child: const Icon(Icons.science, color: Colors.white, size: 22),
-          ),
+          const AiChatIcon(size: 40),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
