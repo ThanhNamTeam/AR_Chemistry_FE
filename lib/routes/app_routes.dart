@@ -32,4 +32,5 @@ class AppRoutes {
   static const String miniGame = '/mini-game';
   static const String substanceDetail = '/substance-detail';
   static const String mySingleCards = '/my-single-cards';
+  static const String myFeedbacks = '/my-feedbacks';
 }

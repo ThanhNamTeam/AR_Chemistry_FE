@@ -48,26 +48,47 @@ class _FeedbackCard extends StatelessWidget {
     FeedbackType.bug => AppColors.error,
     FeedbackType.uiUx => AppColors.amber,
     FeedbackType.featureRequest => AppColors.secondary,
-    FeedbackType.performance => throw UnimplementedError(),
-    FeedbackType.contentError => throw UnimplementedError(),
-    FeedbackType.question => throw UnimplementedError(),
-    FeedbackType.other => throw UnimplementedError(),
+    FeedbackType.performance => AppColors.primary,
+    FeedbackType.contentError => AppColors.error,
+    FeedbackType.question => AppColors.secondary,
+    FeedbackType.other => AppColors.textSecondary,
+  };
+
+  Color _priorityColor(String priority) => switch (priority) {
+    'LOW' => AppColors.textSecondary,
+    'MEDIUM' => AppColors.secondary,
+    'HIGH' => AppColors.amber,
+    'URGENT' => AppColors.error,
+    _ => AppColors.textSecondary,
+  };
+
+  Color _statusColor(String status) => switch (status) {
+    'OPEN' => AppColors.amber,
+    'IN_PROGRESS' => AppColors.primary,
+    'RESOLVED' => AppColors.success,
+    'REJECTED' => AppColors.error,
+    _ => AppColors.textSecondary,
   };
 
   @override
   Widget build(BuildContext context) {
     final f = feedback;
-    final hasResponse = f.staffResponse != null;
 
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => StaffFeedbackDetailScreen(feedbackId: f.id),
-          ),
-        ),
+        onTap: () async {
+          final changed = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => StaffFeedbackDetailScreen(feedbackId: f.id),
+            ),
+          );
+
+          if (changed == true && context.mounted) {
+            await context.read<StaffProvider>().initialize();
+          }
+        },
         borderRadius: BorderRadius.circular(20),
         child: PortalGlassCard(
           padding: const EdgeInsets.all(16),
@@ -78,17 +99,16 @@ class _FeedbackCard extends StatelessWidget {
               Row(
                 children: [
                   PortalBadge(text: f.type.label, color: _typeColor(f.type)),
+                  const SizedBox(width: 8),
+                  PortalBadge(
+                    text: f.priority,
+                    color: _priorityColor(f.priority),
+                  ),
                   const Spacer(),
-                  if (hasResponse)
-                    PortalBadge(
-                      text: l10n.respondedBadge,
-                      color: AppColors.success,
-                    )
-                  else
-                    PortalBadge(
-                      text: l10n.awaitingResponse,
-                      color: AppColors.amber,
-                    ),
+                  PortalBadge(
+                    text: f.status,
+                    color: _statusColor(f.status),
+                  ),
                 ],
               ),
               const SizedBox(height: 12),
@@ -103,8 +123,8 @@ class _FeedbackCard extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               Text(
-                f.content,
-                maxLines: 2,
+                'Người gửi: ${f.reporterName ?? "Ẩn danh"}',
+                maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: 13,
@@ -123,9 +143,7 @@ class _FeedbackCard extends StatelessWidget {
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
-                      f.anonymous
-                          ? l10n.anonymous
-                          : '${f.reporterName ?? "User"} · ${f.reporterEmail ?? ""}',
+                      f.reporterName ?? 'Ẩn danh',
                       style: TextStyle(
                         fontSize: 11,
                         color: AppColors.subtitleAccent,

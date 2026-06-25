@@ -147,6 +147,42 @@ class ApiConstants {
   // feedbacks
   static String get feedbackUrl => '$baseUrl$feedbackPath';
 
+  static String feedbacksUrl({
+    int page = 0,
+    int size = 10,
+    String sort = 'createdAt,desc',
+  }) {
+    final uri = Uri.parse('$baseUrl$feedbackPath').replace(
+      queryParameters: {
+        'page': page.toString(),
+        'size': size.toString(),
+        'sort': sort,
+      },
+    );
+
+    return uri.toString();
+  }
+
+  static String feedbackDetailUrl(String feedbackId) {
+    final uri = Uri.parse('$baseUrl$feedbackPath/details').replace(
+      queryParameters: {
+        'feedbackId': feedbackId,
+      },
+    );
+
+    return uri.toString();
+  }
+
+  static String handleFeedbackUrl(String feedbackId) {
+    final uri = Uri.parse('$baseUrl$feedbackPath/handle').replace(
+      queryParameters: {
+        'feedbackId': feedbackId,
+      },
+    );
+
+    return uri.toString();
+  }
+
   // AI
   static String get aiChatUrl => '$baseUrl$aiPath/chat';
   static String get aiConversationsUrl => '$baseUrl$aiPath/conversations';

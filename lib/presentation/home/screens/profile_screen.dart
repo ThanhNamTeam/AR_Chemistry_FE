@@ -495,6 +495,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         onTap: () =>
                             Navigator.pushNamed(context, AppRoutes.feedback),
                       ),
+                      _MenuItem(
+                        icon: Icons.history_outlined,
+                        label: 'Feedback của tôi',
+                        subtitle: 'Xem trạng thái phản hồi',
+                        color: AppColors.secondary,
+                        onTap: () => Navigator.pushNamed(
+                          context,
+                          AppRoutes.myFeedbacks,
+                        ),
+                      ),
                       const SizedBox(height: 24),
                       GestureDetector(
                         onTap: () async {

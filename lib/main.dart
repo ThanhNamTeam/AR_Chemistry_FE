@@ -1,3 +1,4 @@
+import 'package:ar_chemistry_visual/presentation/feedback/screens/my_feedbacks_screen.dart';
 import 'package:ar_chemistry_visual/presentation/home/screens/my_single_cards_screen.dart';
 import 'package:ar_chemistry_visual/presentation/inventory/screens/substance_detail_screen.dart';
 import 'package:ar_chemistry_visual/presentation/quiz/providers/student_quiz_provider.dart';
@@ -175,6 +176,8 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
       AppRoutes.quizAttemptDetail: (_) => const StudentQuizAttemptDetailScreen(),
       AppRoutes.miniGame: (_) => const MiniGameScreen(),
       AppRoutes.mySingleCards: (_) => const MySingleCardsScreen(),
+      AppRoutes.myFeedbacks: (_) => const MyFeedbacksScreen(),
+
     };
   }
 

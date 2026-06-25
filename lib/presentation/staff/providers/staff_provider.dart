@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+import '../../../core/api/feedback_api_service.dart';
 import '../../../core/api/staff_quiz_management_api.dart';
 import '../../../core/api/upload_api.dart';
 import '../../../core/models/request/generate_upload_url_request.dart';
@@ -25,6 +26,8 @@ class StaffFeedbackItem {
   final String? reporterEmail;
   final String? staffResponse;
   final DateTime submittedAt;
+  final String status;
+  final String priority;
 
   StaffFeedbackItem({
     required this.id,
@@ -37,31 +40,36 @@ class StaffFeedbackItem {
     this.reporterEmail,
     this.staffResponse,
     required this.submittedAt,
+    required this.status,
+    required this.priority,
   });
 
   StaffFeedbackItem copyWith({String? staffResponse}) => StaffFeedbackItem(
-        id: id,
-        title: title,
-        content: content,
-        type: type,
-        anonymous: anonymous,
-        imageUrl: imageUrl,
-        reporterName: reporterName,
-        reporterEmail: reporterEmail,
-        staffResponse: staffResponse ?? this.staffResponse,
-        submittedAt: submittedAt,
-      );
+    id: id,
+    title: title,
+    content: content,
+    type: type,
+    anonymous: anonymous,
+    imageUrl: imageUrl,
+    reporterName: reporterName,
+    reporterEmail: reporterEmail,
+    staffResponse: staffResponse ?? this.staffResponse,
+    submittedAt: submittedAt,
+    status: status,
+    priority: priority,
+  );
 }
 
 class StaffProvider extends ChangeNotifier {
-  final FeedbackStorageService _feedbackStorage = FeedbackStorageService();
 
   List<StaffFeedbackItem> _feedbacks = [];
   List<QuizDraftModel> _quizDrafts = [];
   bool _loading = false;
 
+  final FeedbackApiService _feedbackApi = FeedbackApiService();
+
   final StaffQuizManagementApi _staffQuizManagementApi =
-  StaffQuizManagementApi();
+      StaffQuizManagementApi();
 
   final UploadApi _uploadApi = UploadApi();
 
@@ -98,13 +106,17 @@ class StaffProvider extends ChangeNotifier {
   String? _publishQuizError;
 
   bool get publishingQuiz => _publishingQuiz;
+
   String? get publishQuizError => _publishQuizError;
 
   String? get selectedLessonContent => _selectedLessonContent;
+
   bool get loadingLessonContent => _loadingLessonContent;
+
   String? get lessonContentError => _lessonContentError;
 
   bool get importingQuizCsv => _importingQuizCsv;
+
   String? get quizImportError => _quizImportError;
 
   List<StaffLessonQuizOverviewModel> _lessonQuizOverviews = [];
@@ -121,7 +133,9 @@ class StaffProvider extends ChangeNotifier {
   String? _lessonPromptError;
 
   StaffLessonQuizPromptModel? get selectedLessonPrompt => _selectedLessonPrompt;
+
   bool get loadingLessonPrompt => _loadingLessonPrompt;
+
   String? get lessonPromptError => _lessonPromptError;
 
   StaffQuizDetailModel? _selectedQuizDetail;
@@ -151,33 +165,39 @@ class StaffProvider extends ChangeNotifier {
   String? get lessonQuizOverviewError => _lessonQuizOverviewError;
 
   List<StaffFeedbackItem> get feedbacks => List.unmodifiable(_feedbacks);
+
   List<QuizDraftModel> get quizDrafts => List.unmodifiable(_quizDrafts);
-  List<QuizDraftModel> get pendingQuizzes =>
-      _quizDrafts.where((q) => q.status == QuizDraftStatus.pendingReview).toList();
+
+  List<QuizDraftModel> get pendingQuizzes => _quizDrafts
+      .where((q) => q.status == QuizDraftStatus.pendingReview)
+      .toList();
+
   bool get isLoading => _loading;
 
   int get totalFeedbacks => _feedbacks.length;
+
   int get awaitingResponseCount =>
       _feedbacks.where((f) => f.staffResponse == null).length;
+
   int get respondedCount =>
       _feedbacks.where((f) => f.staffResponse != null).length;
-  int get approvedQuizzesCount => _quizDrafts
-      .where((q) => q.status == QuizDraftStatus.approved)
-      .length;
-  int get rejectedQuizzesCount => _quizDrafts
-      .where((q) => q.status == QuizDraftStatus.rejected)
-      .length;
+
+  int get approvedQuizzesCount =>
+      _quizDrafts.where((q) => q.status == QuizDraftStatus.approved).length;
+
+  int get rejectedQuizzesCount =>
+      _quizDrafts.where((q) => q.status == QuizDraftStatus.rejected).length;
 
   /// Mock weekly feedback volume for dashboard chart.
   List<({String label, double value})> get feedbackTrendWeek => const [
-        (label: 'T2', value: 4),
-        (label: 'T3', value: 7),
-        (label: 'T4', value: 5),
-        (label: 'T5', value: 9),
-        (label: 'T6', value: 6),
-        (label: 'T7', value: 3),
-        (label: 'CN', value: 2),
-      ];
+    (label: 'T2', value: 4),
+    (label: 'T3', value: 7),
+    (label: 'T4', value: 5),
+    (label: 'T5', value: 9),
+    (label: 'T6', value: 6),
+    (label: 'T7', value: 3),
+    (label: 'CN', value: 2),
+  ];
 
   List<StaffFeedbackItem> get recentFeedbacks {
     final sorted = List<StaffFeedbackItem>.from(_feedbacks)
@@ -196,10 +216,7 @@ class StaffProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> loadQuizAttempts({
-    int page = 0,
-    int size = 10,
-  }) async {
+  Future<void> loadQuizAttempts({int page = 0, int size = 10}) async {
     _loadingQuizAttempts = true;
     _quizAttemptsError = null;
     notifyListeners();
@@ -226,10 +243,8 @@ class StaffProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _selectedQuizAttemptDetail =
-      await _staffQuizManagementApi.getQuizAttemptDetail(
-        attemptCode: attemptCode,
-      );
+      _selectedQuizAttemptDetail = await _staffQuizManagementApi
+          .getQuizAttemptDetail(attemptCode: attemptCode);
     } catch (e) {
       _quizAttemptDetailError = e.toString();
     } finally {
@@ -344,10 +359,10 @@ class StaffProvider extends ChangeNotifier {
   }
 
   Future<void> loadQuizDetail(
-      String quizCode, {
-        int page = 0,
-        int size = 10,
-      }) async {
+    String quizCode, {
+    int page = 0,
+    int size = 10,
+  }) async {
     _loadingQuizDetail = true;
     _quizDetailError = null;
     notifyListeners();
@@ -388,10 +403,7 @@ class StaffProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> loadLessonQuizOverviews({
-    int page = 0,
-    int size = 20,
-  }) async {
+  Future<void> loadLessonQuizOverviews({int page = 0, int size = 20}) async {
     _loadingLessonQuizOverviews = true;
     _lessonQuizOverviewError = null;
     notifyListeners();
@@ -412,64 +424,29 @@ class StaffProvider extends ChangeNotifier {
   }
 
   Future<void> _loadFeedbacks() async {
-    final raw = await _feedbackStorage.getSubmissions();
-    final items = <StaffFeedbackItem>[];
+    final result = await _feedbackApi.getFeedbacksForStaff(page: 0, size: 50);
 
-    for (var i = 0; i < raw.length; i++) {
-      final m = raw[i];
-      final typeStr = m['type'] as String? ?? 'BUG';
+    _feedbacks = result.items.map((f) {
       final type = FeedbackType.values.firstWhere(
-        (t) => t.apiValue == typeStr,
+        (t) => t.apiValue == f.type,
         orElse: () => FeedbackType.bug,
       );
-      items.add(StaffFeedbackItem(
-        id: 'fb_$i',
-        title: m['title'] as String? ?? 'Không tiêu đề',
-        content: m['content'] as String? ?? '',
+
+      return StaffFeedbackItem(
+        id: f.id,
+        title: f.title,
+        content: '',
         type: type,
-        anonymous: m['anonymous'] as bool? ?? false,
-        imageUrl: m['imageUrl'] as String?,
-        reporterName: m['reporterName'] as String?,
-        reporterEmail: m['reporterEmail'] as String?,
-        staffResponse: m['staffResponse'] as String?,
-        submittedAt: DateTime.tryParse(m['submittedAt'] as String? ?? '') ??
-            DateTime.now(),
-      ));
-    }
-
-    if (items.isEmpty) {
-      items.addAll(_mockFeedbacks());
-    }
-
-    _feedbacks = items;
-  }
-
-  List<StaffFeedbackItem> _mockFeedbacks() => [
-        StaffFeedbackItem(
-          id: 'mock_1',
-          title: 'Lỗi hiển thị quiz',
-          content: 'Khó hiển thị quiz trên màn hình nhỏ.',
-          type: FeedbackType.bug,
-          anonymous: false,
-          reporterName: 'Nam',
-          reporterEmail: 'user@example.com',
-          submittedAt: DateTime.now().subtract(const Duration(hours: 2)),
-        ),
-        StaffFeedbackItem(
-          id: 'mock_2',
-          title: 'Trải nghiệm mua thẻ',
-          content: 'Muốn có thêm combo giá tốt hơn.',
-          type: FeedbackType.uiUx,
-          anonymous: true,
-          submittedAt: DateTime.now().subtract(const Duration(days: 1)),
-        ),
-      ];
-
-  Future<void> submitFeedbackResponse(String id, String response) async {
-    final idx = _feedbacks.indexWhere((f) => f.id == id);
-    if (idx < 0) return;
-    _feedbacks[idx] = _feedbacks[idx].copyWith(staffResponse: response);
-    notifyListeners();
+        anonymous: f.anonymous,
+        imageUrl: null,
+        reporterName: f.displayName,
+        reporterEmail: null,
+        staffResponse: f.status == 'RESOLVED' ? 'resolved' : null,
+        submittedAt: f.createdAt ?? DateTime.now(),
+        status: f.status,
+        priority: f.priority,
+      );
+    }).toList();
   }
 
   Future<void> simulateDocumentUpload(String fileName) async {
@@ -499,8 +476,10 @@ class StaffProvider extends ChangeNotifier {
   void _updateQuiz(String id, QuizDraftStatus status, String? note) {
     final idx = _quizDrafts.indexWhere((q) => q.id == id);
     if (idx < 0) return;
-    _quizDrafts[idx] =
-        _quizDrafts[idx].copyWith(status: status, staffNote: note);
+    _quizDrafts[idx] = _quizDrafts[idx].copyWith(
+      status: status,
+      staffNote: note,
+    );
     notifyListeners();
   }
 
