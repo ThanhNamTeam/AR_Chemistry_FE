@@ -58,4 +58,5 @@ flutter {
 
 dependencies {
     implementation(project(":flutter_unity_widget_2"))
+    implementation("com.android.billingclient:billing-ktx:7.1.1")
 }

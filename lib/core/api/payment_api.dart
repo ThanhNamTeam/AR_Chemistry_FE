@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 
 import '../constants/api_constants.dart';
 import '../models/request/create_payment_request.dart';
+import '../models/response/ar_access_response.dart';
 import '../models/response/page_response.dart';
 import '../models/response/payment_response.dart';
 
@@ -102,6 +103,30 @@ class PaymentApi {
 
     throw Exception(
       'Approve payment failed: ${response.statusCode} - ${response.body}',
+    );
+  }
+
+  Future<ArAccessResponse> verifyGooglePlayPurchase({
+    required String productId,
+    required String purchaseToken,
+  }) async {
+    final response = await http.post(
+      Uri.parse(ApiConstants.verifyGooglePlayPurchaseUrl),
+      headers: await _authHeaders(json: true),
+      body: jsonEncode({
+        'productId': productId,
+        'purchaseToken': purchaseToken,
+      }),
+    );
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final json = jsonDecode(response.body);
+
+      return ArAccessResponse.fromJson(json['data'] ?? json);
+    }
+
+    throw Exception(
+      'Verify Google Play failed: ${response.statusCode} - ${response.body}',
     );
   }
 }

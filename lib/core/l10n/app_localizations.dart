@@ -56,6 +56,9 @@ class AppLocalizations {
   String get myBag => isVi ? 'Túi đồ' : 'My Bag';
   String get myBagSubtitle =>
       isVi ? 'Xem thẻ đã mua' : 'View your purchased cards';
+  String get cardPurchased => isVi ? 'Card AR đã mua' : 'AR Card purchased';
+  String get cardPurchasedSubtitle => isVi ? 'Xem các card AR lẻ đã mua và tải lại QR' :
+  'View your purchased individual AR cards and reload the QR code';
   String get shop => isVi ? 'Cửa hàng' : 'Shop';
   String get shopSubtitle =>
       isVi ? 'Mua thẻ hóa học mới' : 'Buy new chemical cards';
@@ -102,6 +105,7 @@ class AppLocalizations {
   String get navActivationCode => isVi ? 'Mã kích hoạt' : 'Activation Code';
   String get navReactions => isVi ? 'PTHH' : 'Reactions';
   String get navTopSales => isVi ? 'Top bán' : 'Top sales';
+  String get navCardsAr => isVi ? 'Thẻ AR' : 'AR Cards';
   String get navCombos => isVi ? 'Combo' : 'Combos';
   String get awaitingResponse =>
       isVi ? 'Chờ phản hồi' : 'Awaiting response';

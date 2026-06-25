@@ -193,6 +193,38 @@ class ApiConstants {
   static String mySingleCardPurchasesUrl =
       '$baseUrl/single-card-purchases/my';
 
+  // admin chemical cards
+  static const String adminChemicalCardsPath = '/chemical-cards';
+
+  static String adminChemicalCardsUrl({
+    int page = 0,
+    int size = 20,
+    String sort = 'cardCode,asc',
+    bool? active,
+    String? substanceId,
+  }) {
+    final uri = Uri.parse('$baseUrl$adminChemicalCardsPath').replace(
+      queryParameters: {
+        'page': page.toString(),
+        'size': size.toString(),
+        'sort': sort,
+        if (active != null) 'active': active.toString(),
+        if (substanceId != null && substanceId.isNotEmpty)
+          'substanceId': substanceId,
+      },
+    );
+
+    return uri.toString();
+  }
+
+  static String adminChemicalCardImageUploadUrl(String id) {
+    return '$baseUrl$adminChemicalCardsPath/$id/images/upload-url';
+  }
+
+  static String adminChemicalCardActiveUrl(String id) {
+    return '$baseUrl$adminChemicalCardsPath/$id/active';
+  }
+
   // admin substances
   static const String adminSubstancesPath = '/substances';
 
@@ -295,8 +327,14 @@ class ApiConstants {
     return '$baseUrl$activationCodesPath/$id/status';
   }
 
+  // google play billing
+  static const String googlePlayPaymentPath = '/payments/google-play';
+
+  static String get verifyGooglePlayPurchaseUrl {
+    return '$baseUrl$googlePlayPaymentPath/verify';
+  }
+
   // admin reactions
-  static const String adminReactionsPath = '/admin';
 
   static String adminReactionsUrl({
     int page = 0,
@@ -317,15 +355,12 @@ class ApiConstants {
   }
 
   static String get createAdminReactionUrl {
-    return '$baseUrl$adminReactionsPath/reactions';
+    return '$baseUrl/reactions';
   }
 
   static String adminReactionActiveUrl(String id) {
-    return '$baseUrl$adminReactionsPath/reactions/$id/active';
+    return '$baseUrl/reactions/$id/active';
   }
-
-
-
 
   /// Khi chưa cấu hình BE, lưu feedback cục bộ.
   static bool get useLocalFallback => baseUrl.contains('example.com');

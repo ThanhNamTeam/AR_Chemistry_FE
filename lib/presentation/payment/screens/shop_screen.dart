@@ -3,13 +3,11 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:gal/gal.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import '../../../core/models/response/card_bundle_response.dart';
 import '../../../core/models/response/single_card_purchase_response.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../../shared/widgets/knowledge_points_badge.dart';
-import '../../../shared/widgets/chemical_card_widget.dart';
 import '../../../shared/widgets/flash_card_flip_view.dart';
 import '../../../routes/app_routes.dart';
 import '../../home/providers/app_state.dart';
@@ -279,6 +277,7 @@ class _ShopScreenState extends State<ShopScreen> {
     context.watch<ThemeProvider>();
     final state = context.watch<AppState>();
     final catalog = state.shopSingleCards
+
         .map((card) => ChemicalCardModel(
               id: card.id,
               symbol: card.substanceFormula,
@@ -487,7 +486,7 @@ class _ShopScreenState extends State<ShopScreen> {
                                 crossAxisCount: 2,
                                 crossAxisSpacing: 12,
                                 mainAxisSpacing: 12,
-                                childAspectRatio: 0.64,
+                                childAspectRatio: 0.72,
                               ),
                               itemCount: catalog.length,
                               itemBuilder: (ctx, i) {
@@ -988,86 +987,59 @@ class _SingleCardShopTile extends StatelessWidget {
         color: AppColors.cardSurface,
         borderRadius: BorderRadius.circular(22),
         border: Border.all(color: borderColor, width: 1.4),
-        boxShadow: [
-          BoxShadow(
-            color: owned
-                ? AppColors.secondary.withOpacity(0.10)
-                : AppColors.primary.withOpacity(0.08),
-            blurRadius: 18,
-            offset: const Offset(0, 8),
-          ),
-        ],
       ),
       child: Column(
         children: [
-          Expanded(
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(14, 14, 14, 8),
-                    child: FlashCardFlipView(
-                      substanceFormula: card.symbol,
-                      substanceName: card.name,
-                      frontImageUrl: card.frontImageUrl,
-                      backImageUrl: card.backImageUrl,
-                      borderRadius: BorderRadius.circular(20),
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: AspectRatio(
+              aspectRatio: 1.55,
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: FlashCardFlipView(
+                        substanceFormula: card.symbol,
+                        substanceName: card.name,
+                        frontImageUrl: card.frontImageUrl,
+                        backImageUrl: card.backImageUrl,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                     ),
                   ),
-                ),
-                if (owned)
-                  Positioned(
-                    top: 22,
-                    right: 22,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 9,
-                        vertical: 5,
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF059669),
-                        borderRadius: BorderRadius.circular(999),
-                        border: Border.all(
-                          color: const Color(0xFF047857),
-                          width: 1.2,
+                  if (owned)
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
                         ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.22),
-                            blurRadius: 6,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: const Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.check_circle,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF059669),
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        child: const Text(
+                          'Owned',
+                          style: TextStyle(
                             color: Colors.white,
-                            size: 14,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w800,
+                            fontFamily: 'Inter',
                           ),
-                          SizedBox(width: 4),
-                          Text(
-                            'Owned',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 10,
-                              fontWeight: FontWeight.w800,
-                              fontFamily: 'Inter',
-                              letterSpacing: 0.2,
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
           ),
+
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.fromLTRB(12, 10, 12, 14),
+            padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
             decoration: BoxDecoration(
               border: Border(
                 top: BorderSide(
@@ -1077,7 +1049,7 @@ class _SingleCardShopTile extends StatelessWidget {
             ),
             child: owned
                 ? Container(
-              padding: const EdgeInsets.symmetric(vertical: 13),
+              padding: const EdgeInsets.symmetric(vertical: 11),
               decoration: BoxDecoration(
                 color: AppColors.secondary.withOpacity(0.14),
                 borderRadius: BorderRadius.circular(14),
@@ -1091,14 +1063,14 @@ class _SingleCardShopTile extends StatelessWidget {
                   Icon(
                     Icons.check_circle_outline,
                     color: AppColors.emphasisPositive,
-                    size: 18,
+                    size: 17,
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 6),
                   Text(
                     'Available',
                     style: TextStyle(
                       color: AppColors.emphasisPositive,
-                      fontSize: 13,
+                      fontSize: 12,
                       fontWeight: FontWeight.w700,
                       fontFamily: 'Inter',
                     ),
@@ -1107,22 +1079,23 @@ class _SingleCardShopTile extends StatelessWidget {
               ),
             )
                 : Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   '${card.price} KP',
                   style: TextStyle(
                     color: AppColors.textAmber,
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: FontWeight.w800,
                     fontFamily: 'Inter',
                   ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 8),
                 GestureDetector(
                   onTap: onBuy,
                   child: Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    padding: const EdgeInsets.symmetric(vertical: 10),
                     decoration: BoxDecoration(
                       gradient: AppColors.primaryGradient,
                       borderRadius: BorderRadius.circular(14),
@@ -1133,14 +1106,14 @@ class _SingleCardShopTile extends StatelessWidget {
                         Icon(
                           Icons.shopping_bag_outlined,
                           color: Colors.white,
-                          size: 17,
+                          size: 16,
                         ),
-                        SizedBox(width: 7),
+                        SizedBox(width: 6),
                         Text(
                           'Buy Now',
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 13,
+                            fontSize: 12,
                             fontWeight: FontWeight.w700,
                             fontFamily: 'Inter',
                           ),

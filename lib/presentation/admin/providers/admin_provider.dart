@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import '../../../core/api/admin_activation_code_api.dart';
+import '../../../core/api/admin_chemical_card_api.dart';
 import '../../../core/api/admin_kit_api.dart';
 import '../../../core/api/admin_reaction_api.dart';
 import '../../../core/models/request/create_kit_request.dart';
@@ -8,6 +9,7 @@ import '../../../core/models/request/create_reaction_definition_request.dart';
 import '../../../core/models/request/generate_activation_codes_request.dart';
 import '../../../core/models/request/update_activation_code_status_request.dart';
 import '../../../domain/models/activation_code_model.dart';
+import '../../../domain/models/admin_chemical_card_model.dart';
 import '../../../domain/models/chemical_card_model.dart';
 import '../../../domain/models/chemical_substance_model.dart';
 import '../../../core/api/admin_substance_api.dart';
@@ -101,6 +103,23 @@ class AdminProvider extends ChangeNotifier {
   bool _isLoadingMoreActivationCodes = false;
   bool _hasMoreActivationCodes = true;
   bool _isUpdatingActivationCodeStatus = false;
+
+  final AdminChemicalCardApi _chemicalCardApi = AdminChemicalCardApi();
+
+  List<AdminChemicalCardModel> _chemicalCards = [];
+  bool _isLoadingChemicalCards = false;
+  bool _isLoadingMoreChemicalCards = false;
+  bool _hasMoreChemicalCards = true;
+  String? _chemicalCardsError;
+
+  int _chemicalCardsPage = 0;
+  final int _chemicalCardsSize = 20;
+
+  List<AdminChemicalCardModel> get chemicalCards => List.unmodifiable(_chemicalCards);
+  bool get isLoadingChemicalCards => _isLoadingChemicalCards;
+  bool get isLoadingMoreChemicalCards => _isLoadingMoreChemicalCards;
+  bool get hasMoreChemicalCards => _hasMoreChemicalCards;
+  String? get chemicalCardsError => _chemicalCardsError;
 
   int _activationCodePage = 0;
   String _activationCodeStatusFilter = 'ALL';
@@ -257,6 +276,100 @@ class AdminProvider extends ChangeNotifier {
       return await _kitApi.getKitByCode(code);
     } finally {
       _isLoadingKitDetail = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> loadChemicalCards({
+    bool force = false,
+  }) async {
+    if (_isLoadingChemicalCards) return;
+
+    if (!force && _chemicalCards.isNotEmpty) {
+      return;
+    }
+
+    _isLoadingChemicalCards = true;
+    _chemicalCardsError = null;
+    _chemicalCardsPage = 0;
+    _hasMoreChemicalCards = true;
+    notifyListeners();
+
+    try {
+      final page = await _chemicalCardApi.getCardsForAdmin(
+        page: _chemicalCardsPage,
+        size: _chemicalCardsSize,
+      );
+
+      _chemicalCards = page.items;
+      _hasMoreChemicalCards = page.hasNext;
+      _chemicalCardsPage = page.page + 1;
+    } catch (e) {
+      _chemicalCardsError = e.toString();
+      debugPrint('LOAD_CHEMICAL_CARDS_ERROR: $e');
+    } finally {
+      _isLoadingChemicalCards = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> uploadChemicalCardImages({
+    required String cardId,
+    required List<int> frontBytes,
+    required int frontSize,
+    required List<int> backBytes,
+    required int backSize,
+  }) async {
+    final result = await _chemicalCardApi.generateCardImageUploadUrl(
+      id: cardId,
+      frontContentType: 'image/png',
+      frontFileSize: frontSize,
+      backContentType: 'image/png',
+      backFileSize: backSize,
+    );
+
+    await _chemicalCardApi.uploadFileToS3(
+      uploadUrl: result['frontUploadUrl'].toString(),
+      bytes: frontBytes,
+      contentType: 'image/png',
+    );
+
+    await _chemicalCardApi.uploadFileToS3(
+      uploadUrl: result['backUploadUrl'].toString(),
+      bytes: backBytes,
+      contentType: 'image/png',
+    );
+
+    await loadChemicalCards(force: true);
+  }
+
+  Future<void> loadMoreChemicalCards() async {
+    if (_isLoadingChemicalCards) return;
+    if (_isLoadingMoreChemicalCards) return;
+    if (!_hasMoreChemicalCards) return;
+
+    _isLoadingMoreChemicalCards = true;
+    _chemicalCardsError = null;
+    notifyListeners();
+
+    try {
+      final page = await _chemicalCardApi.getCardsForAdmin(
+        page: _chemicalCardsPage,
+        size: _chemicalCardsSize,
+      );
+
+      _chemicalCards = [
+        ..._chemicalCards,
+        ...page.items,
+      ];
+
+      _hasMoreChemicalCards = page.hasNext;
+      _chemicalCardsPage = page.page + 1;
+    } catch (e) {
+      _chemicalCardsError = e.toString();
+      debugPrint('LOAD_MORE_CHEMICAL_CARDS_ERROR: $e');
+    } finally {
+      _isLoadingMoreChemicalCards = false;
       notifyListeners();
     }
   }

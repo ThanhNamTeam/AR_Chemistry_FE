@@ -1,13 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../shared/styles/app_colors.dart';
 import '../../../../shared/widgets/knowledge_points_badge.dart';
-import '../../core/api/ar_access_api.dart';
+import '../../core/api/payment_api.dart';
 import '../../routes/app_routes.dart';
 import '../home/providers/app_state.dart';
-import 'package:image_picker/image_picker.dart';
 
 
 class PackageScreen extends StatefulWidget {
@@ -19,19 +21,34 @@ class PackageScreen extends StatefulWidget {
 
 class _PackageScreenState extends State<PackageScreen> {
   bool _isLoading = false;
-  bool _showQRModal = false;
-  final ArAccessApi _arAccessApi = ArAccessApi();
   bool _isPurchasing = false;
 
-  String? _selectedPackageId;
-  String? _selectedPackageName;
-  int _selectedPrice = 0;
-  String? _transferCode;
-  String? _proofImageUrl;
+  final InAppPurchase _inAppPurchase = InAppPurchase.instance;
+  final PaymentApi _paymentApi = PaymentApi();
+  static const String _googlePlayProductId = 'ar_access_30_days';
+
+  StreamSubscription<List<PurchaseDetails>>? _purchaseSub;
+
+  @override
+  void dispose() {
+    _purchaseSub?.cancel();
+    super.dispose();
+  }
 
   @override
   void initState() {
     super.initState();
+
+    _purchaseSub = _inAppPurchase.purchaseStream.listen(
+      _handlePurchaseUpdates,
+      onError: (error) {
+        if (!mounted) return;
+        setState(() => _isPurchasing = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Purchase error: $error')),
+        );
+      },
+    );
 
     Future.microtask(() async {
       setState(() => _isLoading = true);
@@ -43,19 +60,114 @@ class _PackageScreenState extends State<PackageScreen> {
     });
   }
 
-  void _openQR({
-    required String packageId,
-    required String packageName,
-    required int price,
-  }) {
-    setState(() {
-      _selectedPackageId = packageId;
-      _selectedPackageName = packageName;
-      _selectedPrice = price;
-      _transferCode = 'CHEM_${DateTime.now().millisecondsSinceEpoch}';
-      _proofImageUrl = null;
-      _showQRModal = true;
-    });
+
+
+  Future<void> _buyPackageWithGooglePlay(String productId) async {
+    if (_isPurchasing) return;
+
+    if (productId.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Google Product ID is empty')),
+      );
+      return;
+    }
+
+    setState(() => _isPurchasing = true);
+
+    try {
+      final available = await _inAppPurchase.isAvailable();
+
+      if (!available) {
+        throw Exception('Google Play Billing is not available');
+      }
+
+      final response = await _inAppPurchase.queryProductDetails({productId});
+
+      if (response.notFoundIDs.isNotEmpty || response.productDetails.isEmpty) {
+        throw Exception('Product not found on Google Play: $productId');
+      }
+
+      final product = response.productDetails.first;
+
+      final purchaseParam = PurchaseParam(productDetails: product);
+
+      await _inAppPurchase.buyNonConsumable(
+        purchaseParam: purchaseParam,
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      setState(() => _isPurchasing = false);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Mua gói thất bại: $e')),
+      );
+    }
+  }
+
+  Future<void> _handlePurchaseUpdates(
+      List<PurchaseDetails> purchases,
+      ) async {
+    for (final purchase in purchases) {
+      if (purchase.status == PurchaseStatus.pending) {
+        continue;
+      }
+
+      if (purchase.status == PurchaseStatus.error) {
+        if (!mounted) return;
+
+        setState(() => _isPurchasing = false);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              purchase.error?.message ?? 'Thanh toán thất bại',
+            ),
+          ),
+        );
+        continue;
+      }
+
+      if (purchase.status == PurchaseStatus.purchased ||
+          purchase.status == PurchaseStatus.restored) {
+        try {
+          final access = await _paymentApi.verifyGooglePlayPurchase(
+            productId: purchase.productID,
+            purchaseToken: purchase.verificationData.serverVerificationData,
+          );
+
+          if (purchase.pendingCompletePurchase) {
+            await _inAppPurchase.completePurchase(purchase);
+          }
+
+          if (!mounted) return;
+
+          setState(() => _isPurchasing = false);
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                access.message.isNotEmpty
+                    ? access.message
+                    : 'Mua gói thành công',
+              ),
+            ),
+          );
+
+          if (access.canScanAR) {
+            Navigator.pushNamed(context, AppRoutes.scan);
+          }
+        } catch (e) {
+          if (!mounted) return;
+
+          setState(() => _isPurchasing = false);
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Verify Google Play thất bại: $e')),
+          );
+        }
+      }
+    }
   }
 
   String _getPackageSubtitle(String packageType) {
@@ -76,186 +188,6 @@ class _PackageScreenState extends State<PackageScreen> {
     return '$durationDays days';
   }
 
-  Future<void> _confirmPayment(AppState state) async {
-    if (_selectedPackageId == null) return;
-
-    if (_proofImageUrl == null || _proofImageUrl!.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text(
-            'Please upload proof image first',
-            style: TextStyle(fontFamily: 'Inter'),
-          ),
-          backgroundColor: AppColors.error,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      );
-      return;
-    }
-
-    final ok = await state.createBankPayment(
-      itemId: _selectedPackageId!,
-      itemType: 'PACKAGE',
-      proofImageUrl: _proofImageUrl!,
-    );
-
-    if (!mounted) return;
-
-    if (!ok) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text(
-            'Create payment failed',
-            style: TextStyle(fontFamily: 'Inter'),
-          ),
-          backgroundColor: AppColors.error,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      );
-      return;
-    }
-
-    setState(() => _showQRModal = false);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text(
-          'Payment submitted. Please wait for staff approval.',
-          style: TextStyle(fontFamily: 'Inter'),
-        ),
-        backgroundColor: AppColors.secondary,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-      ),
-    );
-  }
-
-
-  Future<void> _fakePurchaseAr30Days() async {
-    if (_isPurchasing) return;
-
-    setState(() {
-      _isPurchasing = true;
-    });
-
-    try {
-      final access = await _arAccessApi.fakePurchaseAr30Days();
-
-      if (!mounted) return;
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            access.message.isNotEmpty
-                ? access.message
-                : 'Mua gói AR 30 Days thành công.',
-            style: const TextStyle(fontFamily: 'Inter'),
-          ),
-          backgroundColor: AppColors.secondary,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      );
-
-      Navigator.pushNamed(context, AppRoutes.scan);
-    } catch (e) {
-      if (!mounted) return;
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text(
-            'Mua gói test thất bại. Vui lòng thử lại.',
-            style: TextStyle(fontFamily: 'Inter'),
-          ),
-          backgroundColor: AppColors.error,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      );
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isPurchasing = false;
-        });
-      }
-    }
-  }
-
-  Future<void> _pickProofImage(AppState state) async {
-    final picker = ImagePicker();
-
-    final picked = await picker.pickImage(
-      source: ImageSource.gallery,
-      imageQuality: 80,
-    );
-
-    if (picked == null) return;
-
-    final bytes = await picked.readAsBytes();
-    final fileSize = bytes.length;
-    final fileName = picked.name;
-
-    final lowerName = fileName.toLowerCase();
-    final contentType = lowerName.endsWith('.png')
-        ? 'image/png'
-        : 'image/jpeg';
-
-    final fileUrl = await state.uploadPaymentProof(
-      fileName: fileName,
-      contentType: contentType,
-      fileSize: fileSize,
-      bytes: bytes,
-    );
-
-    if (!mounted) return;
-
-    if (fileUrl == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text(
-            'Upload proof image failed',
-            style: TextStyle(fontFamily: 'Inter'),
-          ),
-          backgroundColor: AppColors.error,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      );
-      return;
-    }
-
-    setState(() {
-      _proofImageUrl = fileUrl;
-    });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text(
-          'Proof image uploaded successfully',
-          style: TextStyle(fontFamily: 'Inter'),
-        ),
-        backgroundColor: AppColors.secondary,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -348,7 +280,9 @@ class _PackageScreenState extends State<PackageScreen> {
                               package.durationDays,
                             ),
                             price: package.price,
-                            onTap: _isPurchasing ? () {} : _fakePurchaseAr30Days,
+                            onTap: _isPurchasing
+                                ? () {}
+                                : () => _buyPackageWithGooglePlay(_googlePlayProductId),
                           ),
                         );
                       },
@@ -356,17 +290,6 @@ class _PackageScreenState extends State<PackageScreen> {
                   ),
                 ],
               ),
-
-              if (_showQRModal)
-                _PackageQRModal(
-                  packageName: _selectedPackageName ?? '',
-                  price: _selectedPrice,
-                  transferCode: _transferCode ?? '',
-                  proofImageUrl: _proofImageUrl,
-                  onPickProof: () => _pickProofImage(state),
-                  onConfirm: () => _confirmPayment(state),
-                  onCancel: () => setState(() => _showQRModal = false),
-                ),
             ],
           ),
         ),
@@ -521,218 +444,6 @@ class _PackageCard extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _PackageQRModal extends StatelessWidget {
-  final String packageName;
-  final int price;
-  final String transferCode;
-  final String? proofImageUrl;
-  final VoidCallback onPickProof;
-  final VoidCallback onConfirm;
-  final VoidCallback onCancel;
-
-  const _PackageQRModal({
-    required this.packageName,
-    required this.price,
-    required this.transferCode,
-    required this.proofImageUrl,
-    required this.onPickProof,
-    required this.onConfirm,
-    required this.onCancel,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final qrUrl =
-        'https://img.vietqr.io/image/'
-        'VCB-1031285717-print.png'
-        '?amount=$price'
-        '&addInfo=$transferCode'
-        '&accountName=NGUYEN%20HOAI%20AN';
-
-    return Container(
-      color: Colors.black.withOpacity(0.8),
-      child: Center(
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 24),
-          padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(24),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                packageName,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.black87,
-                  fontFamily: 'Inter',
-                ),
-              ),
-              const SizedBox(height: 20),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  qrUrl,
-                  width: 220,
-                  height: 220,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                'Scan QR code to pay',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.black54,
-                  fontFamily: 'Inter',
-                ),
-              ),
-              const SizedBox(height: 20),
-              Container(
-                padding: const EdgeInsets.all(14),
-                decoration: BoxDecoration(
-                  color: Colors.blue.shade50,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.blue.shade200),
-                ),
-                child: Column(
-                  children: [
-                    _InfoRow('Receiver', 'Chemistry AR'),
-                    const SizedBox(height: 6),
-                    _InfoRow(
-                      'Amount',
-                      NumberFormat.currency(
-                        locale: 'vi_VN',
-                        symbol: 'VND',
-                      ).format(price),
-                    ),
-                    const SizedBox(height: 6),
-                    _InfoRow('Content', transferCode),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: onPickProof,
-                  icon: Icon(
-                    proofImageUrl == null ? Icons.upload_file : Icons.check_circle,
-                    color: Colors.white,
-                    size: 18,
-                  ),
-                  label: Text(
-                    proofImageUrl == null
-                        ? 'Upload proof image'
-                        : 'Proof image uploaded',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'Inter',
-                    ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: proofImageUrl == null
-                        ? Colors.orange.shade700
-                        : Colors.green.shade700,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: proofImageUrl == null ? null : onConfirm,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: proofImageUrl == null
-                        ? Colors.grey.shade400
-                        : Colors.blue.shade700,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: const Text(
-                    'Confirm Payment',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'Inter',
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: onCancel,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey.shade100,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: const Text(
-                    'Cancel',
-                    style: TextStyle(
-                      color: Colors.black87,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'Inter',
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _InfoRow extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _InfoRow(this.label, this.value);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 12,
-            color: Colors.black54,
-            fontFamily: 'Inter',
-          ),
-        ),
-        Text(
-          value,
-          style: const TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: Colors.black87,
-            fontFamily: 'Inter',
-          ),
-        ),
-      ],
     );
   }
 }

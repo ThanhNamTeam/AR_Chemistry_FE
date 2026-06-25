@@ -463,8 +463,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       const SizedBox(height: 10),
                       _MenuItem(
                         icon: Icons.qr_code_2_outlined,
-                        label: 'Card AR đã mua',
-                        subtitle: 'Xem các card AR lẻ đã mua và tải lại QR',
+                        label: l10n.cardPurchased,
+                        subtitle: l10n.cardPurchasedSubtitle,
                         color: AppColors.primary,
                         onTap: () => Navigator.pushNamed(context, AppRoutes.mySingleCards),
                       ),

@@ -9,8 +9,8 @@ import '../../auth/providers/role_session_provider.dart';
 import '../../../core/portal/portal_scope.dart';
 import '../../shared/widgets/portal/portal_shell.dart';
 import '../providers/admin_provider.dart';
+import '../widgets/admin_cards_tab.dart';
 import '../widgets/admin_chemicals_tab.dart';
-import '../widgets/admin_combos_tab.dart';
 import '../widgets/admin_dashboard_tab.dart';
 import '../widgets/admin_kits_tab.dart';
 import '../widgets/admin_reactions_tab.dart';
@@ -65,6 +65,10 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
         if (i == 2) {
           context.read<AdminProvider>().loadKits();
         }
+
+        if (i == 5) {
+          context.read<AdminProvider>().loadChemicalCards();
+        }
       },
       onProfile: () =>
           Navigator.pushNamed(context, AppRoutes.portalProfile),
@@ -96,9 +100,9 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
           label: l10n.navTopSales,
         ),
         PortalNavItem(
-          icon: Icons.local_offer_outlined,
-          activeIcon: Icons.local_offer_rounded,
-          label: l10n.navCombos,
+          icon: Icons.style_outlined,
+          activeIcon: Icons.style_rounded,
+          label: l10n.navCardsAr,
         ),
       ],
       pages: const [
@@ -107,7 +111,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
         AdminKitsTab(),
         AdminReactionsTab(),
         AdminTopSalesTab(),
-        AdminCombosTab(),
+        AdminCardsTab(),
       ],
     );
   }

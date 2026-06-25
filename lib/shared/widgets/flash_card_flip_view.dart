@@ -147,31 +147,37 @@ class _NetworkFace extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image.network(
-      url,
-      fit: BoxFit.cover,
-      width: double.infinity,
-      height: double.infinity,
-      errorBuilder: (context, error, stackTrace) => fallback,
-      loadingBuilder: (context, child, progress) {
-        if (progress == null) return child;
-        return Stack(
-          fit: StackFit.expand,
-          children: [
-            fallback,
-            Center(
-              child: CircularProgressIndicator(
-                value: progress.expectedTotalBytes != null
-                    ? progress.cumulativeBytesLoaded /
-                        progress.expectedTotalBytes!
-                    : null,
-                strokeWidth: 2,
-                color: const Color(0xFF1F5C38),
+    return Container(
+      color: Colors.white,
+      child: Image.network(
+        url,
+        fit: BoxFit.contain,
+        width: double.infinity,
+        height: double.infinity,
+        errorBuilder: (context, error, stackTrace) {
+          return fallback;
+        },
+        loadingBuilder: (context, child, progress) {
+          if (progress == null) return child;
+
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              fallback,
+              Center(
+                child: CircularProgressIndicator(
+                  value: progress.expectedTotalBytes != null
+                      ? progress.cumulativeBytesLoaded /
+                      progress.expectedTotalBytes!
+                      : null,
+                  strokeWidth: 2,
+                  color: const Color(0xFF1F5C38),
+                ),
               ),
-            ),
-          ],
-        );
-      },
+            ],
+          );
+        },
+      ),
     );
   }
 }
