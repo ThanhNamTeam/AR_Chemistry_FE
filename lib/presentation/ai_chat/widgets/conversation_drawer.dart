@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/l10n/app_localizations.dart';
 import '../../../domain/models/ai_chat_models.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../providers/chat_provider.dart';
@@ -173,13 +174,14 @@ class _ConversationList extends StatelessWidget {
     BuildContext context,
     ConversationSummary item,
   ) async {
+    final l10n = AppLocalizations.of(context);
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.cardBg,
-        title: const Text(
-          'Xóa cuộc trò chuyện?',
-          style: TextStyle(fontFamily: 'Inter', color: Colors.white),
+        title: Text(
+          l10n.deleteConversationTitle,
+          style: const TextStyle(fontFamily: 'Inter', color: Colors.white),
         ),
         content: Text(
           item.title,
@@ -191,12 +193,13 @@ class _ConversationList extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: Text('Hủy',
+            child: Text(l10n.cancel,
                 style: TextStyle(color: AppColors.textSecondary)),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: Text('Xóa', style: TextStyle(color: AppColors.error)),
+            child: Text(l10n.deleteAction,
+                style: TextStyle(color: AppColors.error)),
           ),
         ],
       ),

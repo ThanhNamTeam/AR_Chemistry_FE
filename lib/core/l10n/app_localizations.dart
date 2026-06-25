@@ -277,6 +277,435 @@ class AppLocalizations {
   String get errorGeneric =>
       isVi ? 'Đã xảy ra lỗi. Vui lòng thử lại.' : 'Something went wrong. Please try again.';
 
+  // —— Home screen ——
+  String get welcomeBack => isVi ? 'Chào mừng trở lại,' : 'Welcome back,';
+  String get upgrade => isVi ? 'Nâng cấp' : 'Upgrade';
+  String get checkingAccess => isVi ? 'Đang kiểm tra...' : 'Checking access...';
+  String get startArExperiment => isVi ? 'Bắt đầu thí nghiệm AR' : 'Start AR Experiment';
+  String get homeArDescription => isVi
+      ? 'Quét thẻ hóa học để xem phản ứng tuyệt vời trong thực tế ảo tăng cường'
+      : 'Scan chemical flashcards to witness amazing reactions in augmented reality';
+  String get cannotScanAr => isVi ? 'Không thể quét AR' : 'Cannot Scan AR';
+  String get arAccessCheckFailed => isVi
+      ? 'Không thể kiểm tra quyền quét AR. Vui lòng thử lại.'
+      : 'Unable to check AR access. Please try again.';
+  String get arAccessRequiredMessage => isVi
+      ? 'Bạn cần kích hoạt mã kit hoặc mua gói AR 30 Days để quét AR.'
+      : 'You need to activate a kit or purchase an AR 30 Days package to scan AR.';
+  String get activateOrBuyPackage => isVi ? 'Kích hoạt / Mua gói' : 'Activate / Buy Package';
+  String get navLibrary => isVi ? 'Thư viện' : 'Library';
+  String get navCart => isVi ? 'Giỏ hàng' : 'Cart';
+  String get navQuiz => isVi ? 'Quiz' : 'Quiz';
+  String get navMiniGame => isVi ? 'Mini Game' : 'Mini Game';
+
+  // —— Shop screen ——
+  String get bundlePacks => isVi ? 'Gói combo' : 'Bundle Packs';
+  String get upTo20PercentOff => isVi ? 'Giảm tới 20%' : 'Up to 20% off';
+  String get singleCards => isVi ? 'Thẻ đơn' : 'Single Cards';
+  String get owned => isVi ? 'Đã sở hữu' : 'Owned';
+  String get available => isVi ? 'Khả dụng' : 'Available';
+  String get buyNow => isVi ? 'Mua ngay' : 'Buy Now';
+  String get buyWithPoints => isVi ? 'Mua bằng điểm' : 'Buy with Points';
+  String get payWithBank => isVi ? 'Thanh toán ngân hàng' : 'Pay with Bank';
+  String get addBundleToCart => isVi ? 'Thêm combo vào giỏ' : 'Add Bundle to Cart';
+  String cardsIncluded(int n) => isVi ? '$n thẻ' : '$n cards included';
+  String get qrImageNotAvailable => isVi ? 'Ảnh QR không khả dụng' : 'QR image is not available';
+  String get saveQr => isVi ? 'Lưu QR' : 'Save QR';
+  String get close => isVi ? 'Đóng' : 'Close';
+  String get cancel => isVi ? 'Hủy' : 'Cancel';
+  String get qrContentLabel => isVi ? 'Nội dung QR: ' : 'QR Content: ';
+  String get expiresAtLabel => isVi ? 'Hết hạn: ' : 'Expires at: ';
+  String get storagePermissionDenied => isVi ? 'Quyền lưu trữ bị từ chối' : 'Storage permission denied';
+  String get qrSavedToGallery => isVi ? 'Đã lưu QR vào thư viện ảnh' : 'QR saved to gallery';
+  String get saveQrFailed => isVi ? 'Lưu QR thất bại' : 'Save QR failed';
+  String get buySingleCardFailed => isVi ? 'Mua thẻ thất bại' : 'Buy single card failed';
+  String get cardPurchasedSuccess => isVi ? 'Mua thẻ thành công!' : 'Card purchased successfully!';
+  String get notEnoughKnowledgePoints => isVi ? 'Không đủ điểm tri thức' : 'Not enough Knowledge Points';
+  String get cardPurchasedCheckBag => isVi ? 'Đã mua thẻ! Kiểm tra túi đồ.' : 'Card purchased! Check your bag.';
+  String get bundleAddedToBag => isVi ? 'Combo đã thêm vào túi đồ!' : 'Bundle added to your bag!';
+  String get uploadProofImageFailed => isVi ? 'Tải ảnh minh chứng thất bại' : 'Upload proof image failed';
+  String get proofImageUploadedSuccess => isVi ? 'Ảnh minh chứng đã tải lên' : 'Proof image uploaded successfully';
+  String get uploadPaymentProofFirst => isVi ? 'Vui lòng tải ảnh minh chứng trước' : 'Please upload payment proof image first';
+  String get createPaymentFailed => isVi ? 'Tạo thanh toán thất bại' : 'Create payment failed';
+  String get paymentSubmittedWaitApproval => isVi
+      ? 'Đã gửi thanh toán. Vui lòng chờ staff duyệt.'
+      : 'Payment submitted. Please wait for staff approval.';
+  String get bundleAddedToCart => isVi ? 'Combo đã thêm vào giỏ!' : 'Bundle added to cart!';
+  String get vnpayPayment => isVi ? 'Thanh toán VNPay' : 'VNPay Payment';
+  String get scanQrCodeToPay => isVi ? 'Quét mã QR để thanh toán' : 'Scan QR code to pay';
+  String get receiver => isVi ? 'Người nhận' : 'Receiver';
+  String get transferContent => isVi ? 'Nội dung' : 'Content';
+  String get uploadPaymentProof => isVi ? 'Tải ảnh minh chứng' : 'Upload payment proof';
+  String get paymentProofSelected => isVi ? 'Đã chọn ảnh minh chứng' : 'Payment proof selected';
+  String get confirmPayment => isVi ? 'Xác nhận thanh toán' : 'Confirm Payment';
+
+  // —— Cart screen ——
+  String get cart => isVi ? 'Giỏ hàng' : 'Cart';
+  String get cartCleared => isVi ? 'Đã xóa giỏ hàng' : 'Cart cleared';
+  String get clear => isVi ? 'Xóa' : 'Clear';
+  String get cartEmpty => isVi ? 'Giỏ hàng trống' : 'Your cart is empty';
+  String get cartEmptyHint => isVi ? 'Thêm thẻ hoặc combo từ cửa hàng' : 'Add cards or bundles from the shop';
+  String get goToShop => isVi ? 'Đến cửa hàng' : 'Go to Shop';
+  String get total => isVi ? 'Tổng cộng' : 'Total';
+  String get proceedToPayment => isVi ? 'Tiến hành thanh toán' : 'Proceed to Payment';
+  String get remove => isVi ? 'Xóa' : 'Remove';
+  String singleCardSubtitle(String symbol) => isVi ? 'Thẻ đơn · $symbol' : 'Single card · $symbol';
+  String bundleCartSubtitle(int count) => isVi ? 'Combo · $count thẻ' : 'Bundle · $count card(s)';
+
+  // —— Payment success ——
+  String get paymentSuccessful => isVi ? 'Thanh toán thành công!' : 'Payment Successful!';
+  String get paymentSuccessDescription => isVi
+      ? 'Thẻ hóa học đã được thêm vào bộ sưu tập. Bắt đầu thí nghiệm ngay!'
+      : 'Your chemical cards have been added to your collection. Start experimenting!';
+  String get backToHome => isVi ? 'Về trang chủ' : 'Back to Home';
+  String get goToBagNow => isVi ? 'Đi đến túi ngay' : 'Go to Bag Now';
+
+  // —— My AR Cards screen ——
+  String get myArCards => isVi ? 'Thẻ AR của tôi' : 'My AR Cards';
+  String get noSingleArCardsPurchased => isVi ? 'Bạn chưa mua card AR lẻ nào.' : 'No individual AR cards purchased yet.';
+  String get singleArCardsEmptyHint => isVi
+      ? 'Các card AR lẻ đã mua sẽ xuất hiện tại đây để bạn xem hạn dùng và tải lại QR.'
+      : 'Purchased individual AR cards will appear here for you to view expiry and reload QR.';
+  String get expiryUnknown => isVi ? 'Không rõ hạn' : 'Unknown expiry';
+  String get arCard => isVi ? 'Thẻ AR' : 'AR Card';
+  String get stillActive => isVi ? 'Còn hạn' : 'Active';
+  String get expired => isVi ? 'Đã hết hạn' : 'Expired';
+  String activeUntil(String date) => isVi ? 'Đến $date' : 'Until $date';
+  String expiredOn(String date) => isVi ? 'Hết hạn: $date' : 'Expired: $date';
+  String get loadMore => isVi ? 'Tải thêm' : 'Load more';
+  String get downloadQrFailed => isVi ? 'Tải QR thất bại' : 'Download QR failed';
+  String get cannotLoadQrImage => isVi ? 'Không thể tải ảnh QR' : 'Cannot load QR image';
+
+  // —— My Bag screen ——
+  String get myBagOwnedSubstances => isVi ? 'Chất hóa học đã sở hữu' : 'Your owned substances';
+  String itemCount(int n) => isVi ? '$n mục' : '$n items';
+  String get activate => isVi ? 'Kích hoạt' : 'Activate';
+  String get cannotLoadBag => isVi ? 'Không thể tải túi đồ' : 'Cannot load your bag';
+  String get tryAgain => isVi ? 'Thử lại' : 'Try Again';
+  String get bagEmpty => isVi ? 'Túi đồ trống' : 'Your bag is empty';
+  String get bagEmptyActivateHint => isVi
+      ? 'Kích hoạt kit để thêm chất vào túi đồ'
+      : 'Activate a kit to add substances to your bag';
+  String get activateKit => isVi ? 'Kích hoạt Kit' : 'Activate Kit';
+  String get inactive => isVi ? 'Không hoạt động' : 'Inactive';
+  String get enterActivationCode => isVi ? 'Vui lòng nhập mã kích hoạt' : 'Please enter activation code';
+  String get kitActivatedSuccess => isVi ? 'Kích hoạt kit thành công' : 'Kit activated successfully';
+  String get activateKitHint => isVi
+      ? 'Nhập mã in trên kit vật lý của bạn.'
+      : 'Enter the code printed on your physical kit.';
+  String get activationCodeExample => isVi ? 'VD: CHEM-ABCD-1234' : 'Example: CHEM-ABCD-1234';
+
+  // —— Substance detail screen ——
+  String get substanceDetail => isVi ? 'Chi tiết chất' : 'Substance Detail';
+  String get cannotLoadSubstanceDetail => isVi ? 'Không thể tải chi tiết chất' : 'Cannot load substance detail';
+  String get noDetailFound => isVi ? 'Không tìm thấy chi tiết' : 'No detail found';
+  String get basicInformation => isVi ? 'Thông tin cơ bản' : 'Basic Information';
+  String get elementDetail => isVi ? 'Chi tiết nguyên tố' : 'Element Detail';
+  String get compoundDetail => isVi ? 'Chi tiết hợp chất' : 'Compound Detail';
+  String get name => isVi ? 'Tên' : 'Name';
+  String get vietnameseName => isVi ? 'Tên tiếng Việt' : 'Vietnamese Name';
+  String get formula => isVi ? 'Công thức' : 'Formula';
+  String get chemicalGroup => isVi ? 'Nhóm hóa học' : 'Chemical Group';
+  String get state => isVi ? 'Trạng thái' : 'State';
+  String get atomicNumber => isVi ? 'Số hiệu nguyên tử' : 'Atomic Number';
+  String get symbolLabel => isVi ? 'Ký hiệu' : 'Symbol';
+  String get periodicCategory => isVi ? 'Phân loại tuần hoàn' : 'Periodic Category';
+  String get atomicMass => isVi ? 'Khối lượng nguyên tử' : 'Atomic Mass';
+  String get period => isVi ? 'Chu kỳ' : 'Period';
+  String get groupLabel => isVi ? 'Nhóm' : 'Group';
+  String get iupacName => isVi ? 'Tên IUPAC' : 'IUPAC Name';
+  String get casNumber => isVi ? 'Số CAS' : 'CAS Number';
+  String get compoundClass => isVi ? 'Lớp hợp chất' : 'Compound Class';
+  String get usageNote => isVi ? 'Ghi chú sử dụng' : 'Usage Note';
+  String get reactionProductOnly => isVi ? 'Chỉ là sản phẩm phản ứng' : 'Reaction Product Only';
+  String get physicalInKit => isVi ? 'Có trong kit vật lý' : 'Physical In Kit';
+  String get statusLabel => isVi ? 'Trạng thái' : 'Status';
+  String get noDetailAvailable => isVi ? 'Không có chi tiết' : 'No detail available';
+  String get yes => isVi ? 'Có' : 'Yes';
+  String get no => isVi ? 'Không' : 'No';
+
+  // —— AR Scan screen ——
+  String get poweredByUnity => isVi ? 'Được hỗ trợ bởi Unity Engine' : 'Powered by Unity Engine';
+  String get preparingArScanner => isVi ? 'Đang chuẩn bị máy quét AR...' : 'Preparing AR scanner...';
+  String get back => isVi ? 'Quay lại' : 'Back';
+  String get unableToStartAr => isVi ? 'Không thể khởi động AR' : 'Unable to start AR';
+  String get unityInitFailed => isVi
+      ? 'Unity Engine không thể khởi tạo trên thiết bị này.'
+      : 'The Unity engine could not initialize on this device.';
+
+  // —— AR Result screen ——
+  String get noExperimentData => isVi ? 'Không tìm thấy dữ liệu thí nghiệm' : 'No experiment data found';
+  String get goToScan => isVi ? 'Quay lại quét' : 'Go to Scan';
+  String get experimentResult => isVi ? 'Kết quả thí nghiệm' : 'Experiment Result';
+  String get newExperiment => isVi ? 'Thí nghiệm mới' : 'New Experiment';
+  String get home => isVi ? 'Trang chủ' : 'Home';
+  String get knowledgePointsEarned => isVi ? 'Điểm tri thức đạt được' : 'Knowledge Points Earned';
+  String get keepExperimentingEarnMore => isVi
+      ? 'Tiếp tục thí nghiệm để kiếm thêm điểm!'
+      : 'Keep experimenting to earn more!';
+
+  // —— Quiz screens ——
+  String get publishedQuizzes => isVi ? 'Quiz đã publish' : 'Published Quizzes';
+  String get selectQuizToPractice => isVi ? 'Chọn một bài quiz để bắt đầu luyện tập.' : 'Select a quiz to start practicing.';
+  String questionCountBadge(int n) => isVi ? '$n câu' : '$n questions';
+  String get published => isVi ? 'Đã publish' : 'Published';
+  String get historyLabel => isVi ? 'Lịch sử' : 'History';
+  String get startQuiz => isVi ? 'Làm quiz' : 'Start Quiz';
+  String get cannotLoadQuizList => isVi ? 'Không tải được danh sách quiz' : 'Cannot load quiz list';
+  String get noQuizzesYet => isVi ? 'Chưa có quiz nào' : 'No quizzes yet';
+  String get noPublishedQuizzesHint => isVi
+      ? 'Hiện chưa có quiz nào được publish.'
+      : 'No quizzes have been published yet.';
+  String get lessonNotFound => isVi ? 'Không tìm thấy bài học' : 'Lesson not found';
+  String get quizRequiresLessonCode => isVi
+      ? 'Màn hình quiz cần lessonCode để tải quiz.'
+      : 'Quiz screen requires a lessonCode to load.';
+  String get goHome => isVi ? 'Về Home' : 'Go Home';
+  String get cannotLoadQuiz => isVi ? 'Không tải được quiz' : 'Cannot load quiz';
+  String get noQuiz => isVi ? 'Chưa có quiz' : 'No quiz';
+  String get lessonNoPublishedQuiz => isVi
+      ? 'Bài học này hiện chưa có quiz đã publish.'
+      : 'This lesson has no published quiz yet.';
+  String questionCount(int n) => isVi ? '$n câu hỏi' : '$n questions';
+  String get loading => isVi ? 'Đang tải...' : 'Loading...';
+  String get submitting => isVi ? 'Đang nộp...' : 'Submitting...';
+  String get submitQuiz => isVi ? 'Nộp bài' : 'Submit Quiz';
+  String questionNumber(int n) => isVi ? 'Câu $n' : 'Question $n';
+  String get trueAnswer => isVi ? 'Đúng' : 'True';
+  String get falseAnswer => isVi ? 'Sai' : 'False';
+  String get enterYourAnswer => isVi ? 'Nhập đáp án của bạn' : 'Enter your answer';
+  String get quizResult => isVi ? 'Kết quả bài làm' : 'Quiz Result';
+  String get correct => isVi ? 'Đúng' : 'Correct';
+  String get incorrect => isVi ? 'Sai' : 'Incorrect';
+  String yourAnswer(String a) => isVi ? 'Bạn chọn: $a' : 'Your answer: $a';
+  String correctAnswerLabel(String a) => isVi ? 'Đáp án đúng: $a' : 'Correct answer: $a';
+  String answeredProgress(int answered, int total) => isVi
+      ? 'Đã trả lời $answered/$total'
+      : 'Answered $answered/$total';
+
+  // —— Feedback screen ——
+  String get feedbackSubmitSuccess => isVi
+      ? 'Gửi phản hồi thành công. Cảm ơn bạn!'
+      : 'Feedback submitted successfully. Thank you!';
+  String get feedbackSubmitFailed => isVi
+      ? 'Không gửi được phản hồi. Vui lòng thử lại.'
+      : 'Could not submit feedback. Please try again.';
+  String get feedbackType => isVi ? 'Loại phản hồi' : 'Feedback type';
+  String get feedbackTitle => isVi ? 'Tiêu đề' : 'Title';
+  String get feedbackTitleHint => isVi ? 'VD: Lỗi hiển thị quiz' : 'E.g: Quiz display error';
+  String get feedbackContentLabel => isVi ? 'Nội dung' : 'Content';
+  String get feedbackContentHint => isVi ? 'Mô tả chi tiết lỗi hoặc trải nghiệm...' : 'Describe the issue or your experience...';
+  String get illustrationImageOptional => isVi ? 'Ảnh minh họa (tùy chọn)' : 'Illustration image (optional)';
+  String get tapToUploadImage => isVi ? 'Chạm để tải ảnh lên' : 'Tap to upload image';
+  String get sendAnonymously => isVi ? 'Gửi ẩn danh' : 'Send anonymously';
+  String get anonymousOnHint => isVi ? 'Staff sẽ không thấy email/tên của bạn.' : 'Staff will not see your email/name.';
+  String get anonymousOffHint => isVi ? 'Staff sẽ thấy thông tin tài khoản của bạn.' : 'Staff will see your account information.';
+  String get submitFeedback => isVi ? 'Gửi phản hồi' : 'Submit Feedback';
+
+  // —— Package / Upgrade screen ——
+  String get upgradePackages => isVi ? 'Nâng cấp gói' : 'Upgrade Packages';
+  String get noPackagesAvailable => isVi ? 'Chưa có gói nào' : 'No packages available';
+  String get buyAr30Days => isVi ? 'Mua AR 30 ngày' : 'Buy AR 30 Days';
+  String get lifetime => isVi ? 'Vĩnh viễn' : 'Lifetime';
+  String durationDays(int n) => isVi ? '$n ngày' : '$n days';
+  String get purchaseError => isVi ? 'Lỗi mua hàng' : 'Purchase error';
+  String get googleProductIdEmpty => isVi ? 'Mã sản phẩm Google trống' : 'Google Product ID is empty';
+  String get googlePlayBillingUnavailable => isVi
+      ? 'Google Play Billing không khả dụng'
+      : 'Google Play Billing is not available';
+  String productNotFoundOnGooglePlay(String id) => isVi
+      ? 'Không tìm thấy sản phẩm trên Google Play: $id'
+      : 'Product not found on Google Play: $id';
+  String get purchasePackageFailed => isVi ? 'Mua gói thất bại' : 'Package purchase failed';
+  String get paymentFailed => isVi ? 'Thanh toán thất bại' : 'Payment failed';
+  String get purchasePackageSuccess => isVi ? 'Mua gói thành công' : 'Package purchased successfully';
+  String get verifyGooglePlayFailed => isVi ? 'Verify Google Play thất bại' : 'Google Play verification failed';
+
+  // —— AI Chat panel ——
+  String get aiChemistryTutor => isVi ? 'Gia sư Hóa học AI' : 'AI Chemistry Tutor';
+  String get aiThinking => isVi ? 'Đang suy nghĩ...' : 'Thinking...';
+  String get aiChatSubtitle => isVi
+      ? 'Hỏi về hóa học, phản ứng, nguyên tố'
+      : 'Ask about chemistry, reactions, elements';
+  String get loadingConversation => isVi ? 'Đang tải hội thoại...' : 'Loading conversation...';
+  String get aiWelcomeTitle => isVi ? 'Xin chào! Tôi là trợ lý hóa học' : 'Hello! I am your chemistry assistant';
+  String get aiWelcomeSubtitle => isVi
+      ? 'Hỏi về công thức, phản ứng, bảng tuần hoàn hoặc bài tập AR.'
+      : 'Ask about formulas, reactions, periodic table, or AR exercises.';
+  String get aiChatInputHint => isVi ? 'Nhập câu hỏi hóa học...' : 'Ask a chemistry question...';
+
+  // —— Profile screen extras ——
+  String get myFeedbacks => isVi ? 'Feedback của tôi' : 'My Feedbacks';
+  String get myFeedbacksSubtitle => isVi ? 'Xem trạng thái phản hồi' : 'View feedback status';
+  String get assistantSettings => isVi ? 'Cài đặt trợ lý' : 'Assistant Settings';
+  String get aiAssistant => isVi ? 'Trợ lý AI' : 'AI Assistant';
+  String get assistantFabVisible => isVi ? 'Nút trợ lý đang hiển thị trên màn hình' : 'Assistant button is visible on screen';
+  String get assistantFabHidden => isVi ? 'Nút trợ lý đang bị ẩn' : 'Assistant button is hidden';
+
+  String get myFeedbacksEmpty =>
+      isVi ? 'Bạn chưa gửi feedback nào' : 'You have not submitted any feedback yet';
+  String typeWithValue(String type) => isVi ? 'Loại: $type' : 'Type: $type';
+  String get feedbackNotFound =>
+      isVi ? 'Không tìm thấy feedback' : 'Feedback not found';
+  String get systemReplyTitle =>
+      isVi ? 'Phản hồi từ hệ thống' : 'System response';
+  String get systemReplyPending => isVi
+      ? 'Hệ thống sẽ phản hồi trong thời gian sớm nhất.'
+      : 'The system will respond as soon as possible.';
+  String get payWithKnowledgePoints => isVi
+      ? 'Thanh toán bằng điểm tri thức'
+      : 'Pay with Knowledge Points';
+  String get payWithBankVnpay =>
+      isVi ? 'Thanh toán ngân hàng (VNPay)' : 'Pay with Bank (VNPay)';
+
+  String get quizColon => 'Quiz:';
+
+  // —— Quiz history & attempt detail ——
+  String get quizHistoryTitle => isVi ? 'Lịch sử làm quiz' : 'Quiz history';
+  String get quizHistorySection => isVi ? 'Lịch sử làm bài' : 'Attempt history';
+  String get quizHistoryRecent => isVi
+      ? 'Các lần làm quiz gần đây của bạn.'
+      : 'Your recent quiz attempts.';
+  String quizHistoryFor(String title) =>
+      isVi ? 'Các lần làm quiz: $title' : 'Quiz attempts: $title';
+  String get scoreLabel => isVi ? 'Điểm' : 'Score';
+  String get correctLabel => isVi ? 'Đúng' : 'Correct';
+  String get timeLabel => isVi ? 'Thời gian' : 'Time';
+  String get cannotLoadHistory =>
+      isVi ? 'Không tải được lịch sử' : 'Cannot load history';
+  String get noHistoryYet => isVi ? 'Chưa có lịch sử' : 'No history yet';
+  String get noQuizAttemptsYet => isVi
+      ? 'Bạn chưa làm quiz này lần nào.'
+      : 'You have not attempted this quiz yet.';
+  String get attemptNotFound =>
+      isVi ? 'Không tìm thấy bài làm' : 'Attempt not found';
+  String get missingAttemptCode => isVi
+      ? 'Thiếu attemptCode để tải chi tiết.'
+      : 'Missing attemptCode to load detail.';
+  String get noData => isVi ? 'Không có dữ liệu' : 'No data';
+  String get attemptDetailNotFound => isVi
+      ? 'Không tìm thấy chi tiết bài làm.'
+      : 'Attempt detail not found.';
+  String get attemptDetailTitle => isVi ? 'Chi tiết bài làm' : 'Attempt detail';
+  String get yourChoiceLabel => isVi ? 'Bạn chọn' : 'Your choice';
+  String get correctAnswerShort => isVi ? 'Đáp án đúng' : 'Correct answer';
+  String get cannotLoadDetail =>
+      isVi ? 'Không tải được chi tiết' : 'Cannot load detail';
+
+  // —— Payment page ——
+  String get paymentTitle => isVi ? 'Thanh toán' : 'Payment';
+  String get paymentSuccessToast => isVi ? 'Thanh toán thành công!' : 'Payment successful!';
+  String knowledgePoints(int n) => '$n KP';
+
+  // —— Feedback list & detail ——
+  String cannotLoadFeedback(String e) =>
+      isVi ? 'Không tải được feedback: $e' : 'Cannot load feedback: $e';
+  String cannotLoadFeedbackDetail(String e) => isVi
+      ? 'Không tải được chi tiết feedback: $e'
+      : 'Cannot load feedback detail: $e';
+  String get feedbackDetailTitle => isVi ? 'Chi tiết feedback' : 'Feedback detail';
+  String get sender => isVi ? 'Người gửi' : 'Sender';
+  String get typeLabel => isVi ? 'Loại' : 'Type';
+  String get priorityLabel => isVi ? 'Độ ưu tiên' : 'Priority';
+  String get appVersionLabel => 'App version';
+  String get deviceLabel => isVi ? 'Thiết bị' : 'Device';
+  String get sentDateLabel => isVi ? 'Ngày gửi' : 'Sent date';
+  String get updatedDateLabel => isVi ? 'Cập nhật' : 'Updated';
+  String get unknown => isVi ? 'Không rõ' : 'Unknown';
+
+  // —— AI conversation drawer ——
+  String get deleteConversationTitle =>
+      isVi ? 'Xóa cuộc trò chuyện?' : 'Delete conversation?';
+  String get deleteAction => isVi ? 'Xóa' : 'Delete';
+
+  // —— Mini game ——
+  String get miniGameChemistryTitle =>
+      isVi ? 'Mini Game Hóa Học' : 'Chemistry Mini Game';
+  String get testYourKnowledge => isVi
+      ? 'Kiểm tra kiến thức\nHóa học của bạn!'
+      : 'Test your chemistry\nknowledge!';
+  String get gameMode => isVi ? 'Chế độ chơi' : 'Game mode';
+  String get playQuiz => isVi ? 'Chơi Quiz' : 'Play Quiz';
+  String get playQuizDesc => isVi
+      ? 'Trả lời câu hỏi trắc nghiệm về bảng tuần hoàn'
+      : 'Answer quiz questions about the periodic table';
+  String get learnPoem => isVi ? 'Học Bài Thơ' : 'Learn Poems';
+  String get learnPoemDesc => isVi
+      ? 'Đọc bài thơ hóa học và khám phá bảng nguyên tố'
+      : 'Read chemistry poems and explore the periodic table';
+  String get chooseDifficulty => isVi ? 'Chọn độ khó' : 'Choose difficulty';
+  String get questionsLabel => isVi ? 'Câu hỏi' : 'Questions';
+  String get questionTypesLabel => isVi ? 'Loại câu hỏi' : 'Question types';
+  String get elementsLabel => isVi ? 'Nguyên tố' : 'Elements';
+  String get exitQuizTitle => isVi ? 'Thoát khỏi quiz?' : 'Exit quiz?';
+  String get exitQuizMessage => isVi
+      ? 'Tiến trình hiện tại sẽ không được lưu.'
+      : 'Current progress will not be saved.';
+  String get exit => isVi ? 'Thoát' : 'Exit';
+  String get viewResults => isVi ? 'Xem kết quả' : 'View results';
+  String get exactAnswer => isVi ? 'Chính xác!' : 'Correct!';
+  String get wrongAnswer => isVi ? 'Chưa đúng!' : 'Not quite!';
+  String get fillInPoem => isVi ? 'Điền vào bài thơ' : 'Fill in the poem';
+  String get fillBlankInstruction => isVi
+      ? 'Điền vào chỗ trống (___) trong đoạn thơ trên:'
+      : 'Fill in the blank (___) in the poem above:';
+  String get results => isVi ? 'Kết quả' : 'Results';
+  String get excellent => isVi ? 'Xuất sắc! 🎉' : 'Excellent! 🎉';
+  String get goodJob =>
+      isVi ? 'Khá tốt! Cố gắng hơn nhé.' : 'Good job! Keep trying.';
+  String get needReview => isVi ? 'Cần ôn tập thêm!' : 'Need more review!';
+  String get backToMenu => isVi ? 'Về menu' : 'Back to menu';
+  String get playAgain => isVi ? 'Chơi lại' : 'Play again';
+  String get poemLabel => isVi ? 'Bài thơ:' : 'Poem:';
+  String get explanationLabel => isVi ? 'Giải thích:' : 'Explanation:';
+  String get skippedAnswer => isVi ? 'Bỏ qua' : 'Skipped';
+  String get learnPoemTitle => isVi ? 'Học Bài Thơ' : 'Learn Poems';
+  String get atomicMassTab => isVi ? 'Khối lượng' : 'Atomic mass';
+  String get valenceTab => isVi ? 'Hóa trị' : 'Valence';
+  String get elementsTab => isVi ? 'Nguyên tố' : 'Elements';
+  String get atomicMassPoemTitle =>
+      isVi ? 'Bài thơ Khối lượng Nguyên tử' : 'Atomic Mass Poem';
+  String get valencePoemTitle => isVi ? 'Bài thơ Hóa trị' : 'Valence Poem';
+  String get quickLookupTable => isVi ? 'Bảng tra cứu nhanh' : 'Quick lookup table';
+  String get valenceLookupTable => isVi ? 'Bảng tra cứu hóa trị' : 'Valence lookup table';
+  String get searchElementHint => isVi
+      ? 'Tìm nguyên tố (tên, ký hiệu)…'
+      : 'Search element (name, symbol)…';
+  String get atomicMassShort => isVi ? 'Khối lượng NTK' : 'Atomic mass';
+  String get valenceShort => isVi ? 'Hóa trị' : 'Valence';
+  String get atomicMassPoemLabel =>
+      isVi ? 'Bài thơ KL nguyên tử:' : 'Atomic mass poem:';
+  String get valencePoemLabel => isVi ? 'Bài thơ Hóa trị:' : 'Valence poem:';
+
+  String get miniGameHeroSubtitle => isVi
+      ? '300+ câu hỏi • 10 loại câu hỏi\nKhối lượng nguyên tử & Hóa trị'
+      : '300+ questions • 10 question types\nAtomic mass & Valence';
+  String get difficultyEasy => isVi ? 'Dễ' : 'Easy';
+  String get difficultyMedium => isVi ? 'Trung bình' : 'Medium';
+  String get difficultyHard => isVi ? 'Khó' : 'Hard';
+  String get difficultyEasyDesc => isVi ? '20 câu hỏi' : '20 questions';
+  String get difficultyMediumDesc => isVi ? '30 câu hỏi' : '30 questions';
+  String get difficultyHardDesc => isVi ? '40 câu hỏi' : '40 questions';
+
+  // —— AR camera screen ——
+  String get arCamera => isVi ? 'Camera AR' : 'AR Camera';
+  String get arCoreReady => isVi
+      ? 'ARCore/ARKit sẵn sàng tích hợp'
+      : 'ARCore/ARKit integration ready';
+
+  // —— Package subtitles ——
+  String get premiumBasicSubtitle => isVi
+      ? 'Mở khóa tính năng premium cơ bản'
+      : 'Unlock basic premium features';
+  String get premiumFullSubtitle => isVi
+      ? 'Mở khóa tất cả tính năng premium'
+      : 'Unlock all premium features';
+  String get arLifetimeSubtitle =>
+      isVi ? 'Truy cập AR vĩnh viễn' : 'Permanent AR access';
+
+  // —— Common ——
+  String get amount => isVi ? 'Số tiền' : 'Amount';
+
   String themeName(AppThemeKey key) {
     switch (key) {
       case AppThemeKey.dark:

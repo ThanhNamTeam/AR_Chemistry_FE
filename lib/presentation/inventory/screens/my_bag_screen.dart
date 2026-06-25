@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/l10n/app_localizations.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../../routes/app_navigation.dart';
 import '../../../routes/app_routes.dart';
@@ -124,6 +125,7 @@ class _MyBagScreenState extends State<MyBagScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final totalItems = _totalItems;
 
     return Scaffold(
@@ -161,7 +163,7 @@ class _MyBagScreenState extends State<MyBagScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'My Bag',
+                            l10n.myBag,
                             style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.w700,
@@ -170,7 +172,7 @@ class _MyBagScreenState extends State<MyBagScreen> {
                             ),
                           ),
                           Text(
-                            'Your owned substances',
+                            l10n.myBagOwnedSubstances,
                             style: TextStyle(
                               fontSize: 12,
                               color: AppColors.textSecondary,
@@ -221,18 +223,18 @@ class _MyBagScreenState extends State<MyBagScreen> {
                             ),
                           ],
                         ),
-                        child: const Row(
+                        child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.qr_code_2_rounded,
                               size: 14,
                               color: Colors.white,
                             ),
-                            SizedBox(width: 6),
+                            const SizedBox(width: 6),
                             Text(
-                              'Activate',
-                              style: TextStyle(
+                              l10n.activate,
+                              style: const TextStyle(
                                 fontSize: 12,
                                 color: Colors.white,
                                 fontWeight: FontWeight.w700,
@@ -260,6 +262,7 @@ class _MyBagScreenState extends State<MyBagScreen> {
   }
 
   Widget _buildBody(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -273,7 +276,7 @@ class _MyBagScreenState extends State<MyBagScreen> {
           Icon(Icons.error_outline, size: 56, color: AppColors.textSecondary),
           const SizedBox(height: 16),
           Text(
-            'Cannot load your bag',
+            l10n.cannotLoadBag,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 18,
@@ -305,9 +308,9 @@ class _MyBagScreenState extends State<MyBagScreen> {
                   gradient: AppColors.cyanEmeraldGradient,
                   borderRadius: BorderRadius.circular(14),
                 ),
-                child: const Text(
-                  'Try Again',
-                  style: TextStyle(
+                child: Text(
+                  l10n.tryAgain,
+                  style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
                     fontFamily: 'Inter',
@@ -353,6 +356,7 @@ class _MyBagScreenState extends State<MyBagScreen> {
   }
 
   Widget _buildEmpty(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return ListView(
       physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.all(24),
@@ -380,7 +384,7 @@ class _MyBagScreenState extends State<MyBagScreen> {
         ),
         const SizedBox(height: 20),
         Text(
-          'Your bag is empty',
+          l10n.bagEmpty,
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 18,
@@ -391,7 +395,7 @@ class _MyBagScreenState extends State<MyBagScreen> {
         ),
         const SizedBox(height: 8),
         Text(
-          'Activate a kit to add substances to your bag',
+          l10n.bagEmptyActivateHint,
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 13,
@@ -409,9 +413,9 @@ class _MyBagScreenState extends State<MyBagScreen> {
                 gradient: AppColors.cyanEmeraldGradient,
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: const Text(
-                'Activate Kit',
-                style: TextStyle(
+              child: Text(
+                l10n.activateKit,
+                style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w600,
                   fontFamily: 'Inter',
@@ -422,10 +426,10 @@ class _MyBagScreenState extends State<MyBagScreen> {
         ),
         const SizedBox(height: 12),
         Center(
-          child: GestureDetector(
+          child:           GestureDetector(
             onTap: () => Navigator.pushNamed(context, AppRoutes.shop),
             child: Text(
-              'Go to Shop',
+              l10n.goToShop,
               style: TextStyle(
                 color: AppColors.textSecondary,
                 fontSize: 13,
@@ -448,6 +452,7 @@ class _InventoryItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final subtitle = _buildSubtitle();
     final stateColor = AppColors.substanceStateColor(item.state);
     final stateGradient = AppColors.substanceStateGradient(item.state);
@@ -540,7 +545,7 @@ class _InventoryItemCard extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      item.active ? 'Available' : 'Inactive',
+                      item.active ? l10n.available : l10n.inactive,
                       style: TextStyle(
                         fontSize: 10,
                         color: item.active ? stateColor : AppColors.amberLight,
@@ -613,9 +618,11 @@ class _ActivateKitSheetState extends State<_ActivateKitSheet> {
 
     if (_isSubmitting) return;
 
+    final l10n = AppLocalizations.of(context);
+
     if (code.isEmpty) {
       setState(() {
-        _errorMessage = 'Please enter activation code';
+        _errorMessage = l10n.enterActivationCode;
       });
       return;
     }
@@ -635,7 +642,7 @@ class _ActivateKitSheetState extends State<_ActivateKitSheet> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            response.message ?? 'Kit activated successfully',
+            response.message ?? l10n.kitActivatedSuccess,
             style: const TextStyle(fontFamily: 'Inter'),
           ),
           backgroundColor: AppColors.secondary,
@@ -654,6 +661,7 @@ class _ActivateKitSheetState extends State<_ActivateKitSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
     return Padding(
@@ -711,7 +719,7 @@ class _ActivateKitSheetState extends State<_ActivateKitSheet> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Activate Kit',
+                          l10n.activateKit,
                           style: TextStyle(
                             color: AppColors.textPrimary,
                             fontSize: 18,
@@ -721,7 +729,7 @@ class _ActivateKitSheetState extends State<_ActivateKitSheet> {
                         ),
                         const SizedBox(height: 3),
                         Text(
-                          'Enter the code printed on your physical kit.',
+                          l10n.activateKitHint,
                           style: TextStyle(
                             color: AppColors.textSecondary,
                             fontSize: 12,
@@ -743,7 +751,7 @@ class _ActivateKitSheetState extends State<_ActivateKitSheet> {
                   fontFamily: 'Inter',
                 ),
                 decoration: InputDecoration(
-                  hintText: 'Example: CHEM-ABCD-1234',
+                  hintText: l10n.activationCodeExample,
                   hintStyle: TextStyle(
                     color: AppColors.textSecondary,
                     fontFamily: 'Inter',
@@ -824,10 +832,10 @@ class _ActivateKitSheetState extends State<_ActivateKitSheet> {
                       color: Colors.white,
                     ),
                   )
-                      : const Text(
-                    'Activate Kit',
+                      : Text(
+                    l10n.activateKit,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 15,
                       fontWeight: FontWeight.w800,

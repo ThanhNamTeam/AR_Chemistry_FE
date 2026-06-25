@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/l10n/app_localizations.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../providers/student_quiz_provider.dart';
 import '../../../domain/models/student_quiz_attempt_detail_model.dart';
@@ -48,6 +49,7 @@ class _StudentQuizAttemptDetailScreenState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final provider = context.watch<StudentQuizProvider>();
     final detail = provider.attemptDetail;
 
@@ -68,9 +70,9 @@ class _StudentQuizAttemptDetailScreenState
                     padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
                     children: [
                       if (_attemptCode == null || _attemptCode!.isEmpty)
-                        const _EmptyCard(
-                          title: 'Không tìm thấy bài làm',
-                          message: 'Thiếu attemptCode để tải chi tiết.',
+                        _EmptyCard(
+                          title: l10n.attemptNotFound,
+                          message: l10n.missingAttemptCode,
                         )
                       else if (provider.loadingAttemptDetail && detail == null)
                         const Padding(
@@ -83,9 +85,9 @@ class _StudentQuizAttemptDetailScreenState
                             onRetry: _refresh,
                           )
                         else if (detail == null)
-                            const _EmptyCard(
-                              title: 'Không có dữ liệu',
-                              message: 'Không tìm thấy chi tiết bài làm.',
+                            _EmptyCard(
+                              title: l10n.noData,
+                              message: l10n.attemptDetailNotFound,
                             )
                           else ...[
                               _SummaryCard(detail: detail),
@@ -113,6 +115,7 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
       child: Row(
@@ -138,7 +141,7 @@ class _Header extends StatelessWidget {
           const SizedBox(width: 14),
           Expanded(
             child: Text(
-              'Chi tiết bài làm',
+              l10n.attemptDetailTitle,
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
@@ -237,8 +240,9 @@ class _AnswerDetailCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final color = answer.correct ? AppColors.success : AppColors.error;
-    final label = answer.correct ? 'Đúng' : 'Sai';
+    final label = answer.correct ? l10n.correct : l10n.incorrect;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -263,7 +267,7 @@ class _AnswerDetailCard extends StatelessWidget {
           Row(
             children: [
               _Badge(
-                text: 'Câu ${answer.questionOrder ?? '-'}',
+                text: l10n.questionNumber(answer.questionOrder ?? 0),
                 color: AppColors.primary,
               ),
               const SizedBox(width: 8),
@@ -283,13 +287,13 @@ class _AnswerDetailCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           _InfoLine(
-            label: 'Bạn chọn',
+            label: l10n.yourChoiceLabel,
             value: answer.studentAnswer ?? '-',
             color: AppColors.textSecondary,
           ),
           const SizedBox(height: 6),
           _InfoLine(
-            label: 'Đáp án đúng',
+            label: l10n.correctAnswerShort,
             value: answer.correctAnswer ?? '-',
             color: AppColors.success,
           ),
@@ -395,6 +399,7 @@ class _ErrorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -409,7 +414,7 @@ class _ErrorCard extends StatelessWidget {
           Icon(Icons.error_outline, color: AppColors.error, size: 38),
           const SizedBox(height: 10),
           Text(
-            'Không tải được chi tiết',
+            l10n.cannotLoadDetail,
             style: TextStyle(
               color: AppColors.textPrimary,
               fontSize: 15,
@@ -431,7 +436,7 @@ class _ErrorCard extends StatelessWidget {
           OutlinedButton.icon(
             onPressed: onRetry,
             icon: const Icon(Icons.refresh),
-            label: const Text('Thử lại'),
+            label: Text(l10n.tryAgain),
           ),
         ],
       ),

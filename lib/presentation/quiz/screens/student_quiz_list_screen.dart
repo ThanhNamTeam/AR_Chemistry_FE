@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/l10n/app_localizations.dart';
 import '../../../routes/app_routes.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../providers/student_quiz_provider.dart';
@@ -29,6 +30,7 @@ class _StudentQuizListScreenState extends State<StudentQuizListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final provider = context.watch<StudentQuizProvider>();
     final quizzes = provider.publishedQuizzes;
 
@@ -49,7 +51,7 @@ class _StudentQuizListScreenState extends State<StudentQuizListScreen> {
                     padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
                     children: [
                       Text(
-                        'Quiz đã publish',
+                        l10n.publishedQuizzes,
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.w800,
@@ -59,7 +61,7 @@ class _StudentQuizListScreenState extends State<StudentQuizListScreen> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Chọn một bài quiz để bắt đầu luyện tập.',
+                        l10n.selectQuizToPractice,
                         style: TextStyle(
                           fontSize: 13,
                           color: AppColors.textSecondary,
@@ -126,6 +128,7 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
       child: Row(
@@ -151,7 +154,7 @@ class _Header extends StatelessWidget {
           const SizedBox(width: 14),
           Expanded(
             child: Text(
-              'Quiz:',
+              l10n.quizColon,
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
@@ -179,6 +182,7 @@ class _PublishedQuizCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -203,7 +207,7 @@ class _PublishedQuizCard extends StatelessWidget {
             children: [
               _Badge(text: '${quiz.questionCount} câu'),
               const SizedBox(width: 8),
-              _Badge(text: 'Published'),
+              _Badge(text: l10n.published),
               const Spacer(),
               Icon(
                 Icons.quiz_outlined,
@@ -253,7 +257,7 @@ class _PublishedQuizCard extends StatelessWidget {
                 child: OutlinedButton.icon(
                   onPressed: onViewHistory,
                   icon: const Icon(Icons.history, size: 18),
-                  label: const Text('Lịch sử'),
+                  label: Text(l10n.historyLabel),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.accentText,
                     side: BorderSide(
@@ -271,7 +275,7 @@ class _PublishedQuizCard extends StatelessWidget {
                 child: ElevatedButton.icon(
                   onPressed: onStart,
                   icon: const Icon(Icons.play_arrow_rounded),
-                  label: const Text('Làm quiz'),
+                  label: Text(l10n.startQuiz),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     foregroundColor: Colors.white,
@@ -330,6 +334,7 @@ class _ErrorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -344,7 +349,7 @@ class _ErrorCard extends StatelessWidget {
           Icon(Icons.error_outline, color: AppColors.error, size: 38),
           const SizedBox(height: 10),
           Text(
-            'Không tải được danh sách quiz',
+            l10n.cannotLoadQuizList,
             style: TextStyle(
               color: AppColors.textPrimary,
               fontSize: 15,
@@ -366,7 +371,7 @@ class _ErrorCard extends StatelessWidget {
           OutlinedButton.icon(
             onPressed: onRetry,
             icon: const Icon(Icons.refresh),
-            label: const Text('Thử lại'),
+            label: Text(l10n.tryAgain),
           ),
         ],
       ),
@@ -379,6 +384,7 @@ class _EmptyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Container(
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
@@ -397,7 +403,7 @@ class _EmptyCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            'Chưa có quiz nào',
+            l10n.noQuizzesYet,
             style: TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w800,
@@ -407,7 +413,7 @@ class _EmptyCard extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(
-            'Hiện chưa có quiz nào được publish.',
+            l10n.noPublishedQuizzesHint,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 13,

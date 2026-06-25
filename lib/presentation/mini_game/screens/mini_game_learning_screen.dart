@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../shared/styles/app_colors.dart';
+import '../../../core/l10n/app_localizations.dart';
+import '../../../shared/styles/app_colors.dart';
 import '../data/chemistry_data.dart';
 
 class MiniGameLearningScreen extends StatefulWidget {
@@ -29,18 +30,19 @@ class _MiniGameLearningScreenState extends State<MiniGameLearningScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
         child: SafeArea(
           child: Column(
             children: [
-              _buildHeader(context),
-              _buildTabBar(),
+              _buildHeader(context, l10n),
+              _buildTabBar(l10n),
               Expanded(
                 child: TabBarView(
                   controller: _tab,
-                  children: const [
+                  children: [
                     _AtomicMassPoemTab(),
                     _ValencePoemTab(),
                     _ElementExplorerTab(),
@@ -54,7 +56,7 @@ class _MiniGameLearningScreenState extends State<MiniGameLearningScreen>
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, AppLocalizations l10n) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       child: Row(
@@ -74,7 +76,7 @@ class _MiniGameLearningScreenState extends State<MiniGameLearningScreen>
           ),
           const SizedBox(width: 12),
           Text(
-            'Học Bài Thơ',
+            l10n.learnPoemTitle,
             style: TextStyle(
               color: AppColors.textPrimary,
               fontSize: 20,
@@ -87,7 +89,7 @@ class _MiniGameLearningScreenState extends State<MiniGameLearningScreen>
     );
   }
 
-  Widget _buildTabBar() {
+  Widget _buildTabBar(AppLocalizations l10n) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       child: Container(
@@ -100,9 +102,9 @@ class _MiniGameLearningScreenState extends State<MiniGameLearningScreen>
         ),
         child: Row(
           children: [
-            _SegmentTab(label: 'Khối lượng', index: 0, controller: _tab),
-            _SegmentTab(label: 'Hóa trị', index: 1, controller: _tab),
-            _SegmentTab(label: 'Nguyên tố', index: 2, controller: _tab),
+            _SegmentTab(label: l10n.atomicMassTab, index: 0, controller: _tab),
+            _SegmentTab(label: l10n.valenceTab, index: 1, controller: _tab),
+            _SegmentTab(label: l10n.elementsTab, index: 2, controller: _tab),
           ],
         ),
       ),
@@ -175,13 +177,14 @@ class _AtomicMassPoemTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _PoemTitle(
-            title: 'Bài thơ Khối lượng Nguyên tử',
+            title: l10n.atomicMassPoemTitle,
             subtitle: '34 nguyên tố • từ H đến Bi',
             icon: Icons.balance_outlined,
             color: AppColors.primary,
@@ -193,7 +196,7 @@ class _AtomicMassPoemTab extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           Text(
-            'Bảng tra cứu nhanh',
+            l10n.quickLookupTable,
             style: TextStyle(
               color: AppColors.textPrimary,
               fontSize: 15,
@@ -288,13 +291,14 @@ class _ValencePoemTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _PoemTitle(
-            title: 'Bài thơ Hóa trị',
+            title: l10n.valencePoemTitle,
             subtitle: '25 nguyên tố • quy tắc hóa trị',
             icon: Icons.link_outlined,
             color: AppColors.secondary,
@@ -306,7 +310,7 @@ class _ValencePoemTab extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           Text(
-            'Bảng tra cứu hóa trị',
+            l10n.valenceLookupTable,
             style: TextStyle(
               color: AppColors.textPrimary,
               fontSize: 15,
@@ -417,6 +421,7 @@ class _ElementExplorerTabState extends State<_ElementExplorerTab> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final all = ChemistryData.allElements;
     final filtered = _query.isEmpty
         ? all
@@ -445,7 +450,7 @@ class _ElementExplorerTabState extends State<_ElementExplorerTab> {
                   fontFamily: 'Inter',
                   fontSize: 14),
               decoration: InputDecoration(
-                hintText: 'Tìm nguyên tố (tên, ký hiệu)…',
+                hintText: l10n.searchElementHint,
                 hintStyle: TextStyle(
                     color: AppColors.textSecondary, fontSize: 13),
                 prefixIcon:
@@ -561,6 +566,7 @@ class _ElementDetailSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Container(
       decoration: BoxDecoration(
         color: AppColors.backgroundMid,
@@ -646,7 +652,7 @@ class _ElementDetailSheet extends StatelessWidget {
               if (element.hasAtomicMass)
                 Expanded(
                   child: _InfoCard(
-                    label: 'Khối lượng NTK',
+                    label: l10n.atomicMassShort,
                     value: '${element.atomicMassStr} đvC',
                     icon: Icons.balance_outlined,
                     color: AppColors.accent,
@@ -657,7 +663,7 @@ class _ElementDetailSheet extends StatelessWidget {
               if (element.hasValence)
                 Expanded(
                   child: _InfoCard(
-                    label: 'Hóa trị',
+                    label: l10n.valenceShort,
                     value: element.valenceStr,
                     icon: Icons.link_outlined,
                     color: element.hasMultipleValences
@@ -671,14 +677,14 @@ class _ElementDetailSheet extends StatelessWidget {
           // Poem lines
           if (element.atomicMassPoemLine.isNotEmpty)
             _PoemLineCard(
-              label: 'Bài thơ KL nguyên tử:',
+              label: l10n.atomicMassPoemLabel,
               line: element.atomicMassPoemLine,
               color: AppColors.primary,
             ),
           if (element.valencePoemLine.isNotEmpty) ...[
             const SizedBox(height: 8),
             _PoemLineCard(
-              label: 'Bài thơ Hóa trị:',
+              label: l10n.valencePoemLabel,
               line: element.valencePoemLine,
               color: AppColors.secondary,
             ),

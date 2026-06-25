@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../core/l10n/app_localizations.dart';
 import '../../../domain/models/cart_item_model.dart';
 import '../../../domain/models/chemical_card_model.dart';
 import '../../../shared/styles/app_colors.dart';
@@ -12,6 +13,7 @@ class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<AppState>();
+    final l10n = AppLocalizations.of(context);
     final items = state.cart;
     final total = state.cartTotalPrice;
 
@@ -42,7 +44,7 @@ class CartScreen extends StatelessWidget {
                     ),
                     const SizedBox(width: 14),
                     Expanded(
-                      child: Text('Cart',
+                      child: Text(l10n.cart,
                           style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.w700,
@@ -55,14 +57,14 @@ class CartScreen extends StatelessWidget {
                           state.clearCart();
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('Cart cleared',
+                              content: Text(l10n.cartCleared,
                                   style: TextStyle(fontFamily: 'Inter')),
                               backgroundColor: AppColors.error,
                               behavior: SnackBarBehavior.floating,
                             ),
                           );
                         },
-                        child: Text('Clear',
+                        child: Text(l10n.clear,
                             style: TextStyle(
                                 color: AppColors.error,
                                 fontSize: 13,
@@ -85,6 +87,7 @@ class CartScreen extends StatelessWidget {
   }
 
   Widget _buildEmpty(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -103,14 +106,14 @@ class CartScreen extends StatelessWidget {
                 color: AppColors.primary, size: 40),
           ),
           const SizedBox(height: 20),
-          Text('Your cart is empty',
+          Text(l10n.cartEmpty,
               style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
                   color: AppColors.textPrimary,
                   fontFamily: 'Inter')),
           const SizedBox(height: 8),
-          Text('Add cards or bundles from the shop',
+          Text(l10n.cartEmptyHint,
               style: TextStyle(
                   fontSize: 13,
                   color: AppColors.textSecondary,
@@ -124,7 +127,7 @@ class CartScreen extends StatelessWidget {
                 gradient: AppColors.cyanEmeraldGradient,
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: Text('Go to Shop',
+              child: Text(l10n.goToShop,
                   style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
@@ -142,6 +145,7 @@ class CartScreen extends StatelessWidget {
     List<CartItem> items,
     int total,
   ) {
+    final l10n = AppLocalizations.of(context);
     return Column(
       children: [
         Expanded(
@@ -194,7 +198,7 @@ class CartScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Total',
+                  Text(l10n.total,
                       style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
@@ -219,7 +223,7 @@ class CartScreen extends StatelessWidget {
                     gradient: AppColors.cyanEmeraldGradient,
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  child: Text('Proceed to Payment',
+                  child: Text(l10n.proceedToPayment,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           color: Colors.white,
@@ -255,6 +259,7 @@ class _CartCardRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -321,7 +326,7 @@ class _CartCardRow extends StatelessWidget {
                     Icon(Icons.delete_outline,
                         color: AppColors.error, size: 14),
                     SizedBox(width: 4),
-                    Text('Remove',
+                    Text(l10n.remove,
                         style: TextStyle(
                             color: AppColors.error,
                             fontSize: 11,
