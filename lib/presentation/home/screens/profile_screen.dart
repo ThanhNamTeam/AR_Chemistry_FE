@@ -432,12 +432,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                const ProfileLanguageSection(portal: AppPortal.user),
-                const SizedBox(height: 24),
+                ProfileLanguageSection(
+                  key: ValueKey(AppColors.isLight),
+                  portal: AppPortal.user,
+                ),                const SizedBox(height: 24),
                 const ProfileThemeSection(portal: AppPortal.user),
                 const SizedBox(height: 24),
-                const _ChatSettingsSection(),
-                const SizedBox(height: 10),
+                _ChatSettingsSection(
+                  key: ValueKey(AppColors.isLight),
+                ),                const SizedBox(height: 10),
 
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -670,7 +673,7 @@ class _MenuItem extends StatelessWidget {
 }
 
 class _ChatSettingsSection extends StatelessWidget {
-  const _ChatSettingsSection();
+  const _ChatSettingsSection({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -61,6 +61,7 @@ class _PackageScreenState extends State<PackageScreen> {
       setState(() => _isLoading = true);
 
       await context.read<AppState>().loadPackages();
+      await _loadGooglePlayProduct();
 
       if (!mounted) return;
       setState(() => _isLoading = false);
@@ -391,17 +392,13 @@ class _PackageCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  gradient: AppColors.amberGradient,
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: const Icon(
-                  Icons.workspace_premium,
-                  color: Colors.white,
-                  size: 26,
+              ClipRRect(
+                borderRadius: BorderRadius.circular(14),
+                child: Image.asset(
+                  'assets/images/ar_30_days.png',
+                  width: 56,
+                  height: 56,
+                  fit: BoxFit.cover,
                 ),
               ),
               const SizedBox(width: 14),
