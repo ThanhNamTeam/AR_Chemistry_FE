@@ -15,6 +15,7 @@ class ArAssetLoadingScreen extends StatefulWidget {
 class _ArAssetLoadingScreenState extends State<ArAssetLoadingScreen> {
   double _progress = 0;
   String _message = 'Preparing AR assets...';
+  bool _isExtracting = false;
 
   @override
   void initState() {
@@ -30,6 +31,7 @@ class _ArAssetLoadingScreenState extends State<ArAssetLoadingScreen> {
           setState(() {
             _progress = progress;
             _message = message;
+            _isExtracting = message.startsWith('Extracting');
           });
         },
       );
@@ -50,9 +52,9 @@ class _ArAssetLoadingScreenState extends State<ArAssetLoadingScreen> {
         _message = 'Failed to prepare AR assets. Please try again.';
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString())),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.toString())));
     }
   }
 
@@ -60,42 +62,56 @@ class _ArAssetLoadingScreenState extends State<ArAssetLoadingScreen> {
   Widget build(BuildContext context) {
     final percent = (_progress * 100).clamp(0, 100).toStringAsFixed(0);
 
-    return Scaffold(
-      backgroundColor: AppColors.backgroundDark,
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(28),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.view_in_ar, color: Colors.white, size: 64),
-              const SizedBox(height: 24),
-              Text(
-                _message,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  fontFamily: 'Inter',
+    return PopScope(
+      canPop: !_isExtracting,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop && _isExtracting) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Đang giải nén dữ liệu AR, vui lòng chờ hoàn tất.'),
+            ),
+          );
+        }
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.backgroundDark,
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(28),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.view_in_ar, color: Colors.white, size: 64),
+                const SizedBox(height: 24),
+                Text(
+                  _message,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    fontFamily: 'Inter',
+                  ),
                 ),
-              ),
-              const SizedBox(height: 24),
-              LinearProgressIndicator(value: _progress),
-              const SizedBox(height: 12),
-              Text(
-                '$percent%',
-                style: TextStyle(
-                  color: AppColors.textSecondary,
-                  fontFamily: 'Inter',
+                const SizedBox(height: 24),
+                LinearProgressIndicator(value: _progress),
+                const SizedBox(height: 12),
+                Text(
+                  '$percent%',
+                  style: TextStyle(
+                    color: AppColors.textSecondary,
+                    fontFamily: 'Inter',
+                  ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Cancel'),
-              ),
-            ],
+                const SizedBox(height: 20),
+                TextButton(
+                  onPressed: _isExtracting
+                      ? null
+                      : () => Navigator.pop(context),
+                  child: const Text('Cancel'),
+                ),
+              ],
+            ),
           ),
         ),
       ),
