@@ -15,12 +15,119 @@ import com.xraph.plugin.flutter_unity_widget.FlutterUnityActivity
 import com.xraph.plugin.flutter_unity_widget.UnityPlayerUtils
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
+import android.app.DownloadManager
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.IntentFilter
+import android.database.Cursor
+import android.net.Uri
+import android.os.Environment
+import java.io.File
 
 class MainActivity : FlutterUnityActivity() {
     private var pendingCameraPermissionResult: MethodChannel.Result? = null
     private val mainHandler = Handler(Looper.getMainLooper())
     private var orientationRequestToken: Int = 0
     private var scannerOrientationActive: Boolean = false
+
+    private fun startNativeDownload(url: String, fileName: String): Map<String, Any?> {
+        val safeFileName = fileName.substringAfterLast("/").ifBlank { "ar_assets.zip" }
+
+        val request = DownloadManager.Request(Uri.parse(url)).apply {
+            setTitle(safeFileName)
+            setDescription("Downloading AR assets")
+            setAllowedOverMetered(true)
+            setAllowedOverRoaming(true)
+            setNotificationVisibility(
+                DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED
+            )
+            setMimeType("application/zip")
+
+            setDestinationInExternalFilesDir(
+                this@MainActivity,
+                Environment.DIRECTORY_DOWNLOADS,
+                safeFileName,
+            )
+        }
+
+        val dm = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val downloadId = dm.enqueue(request)
+
+        val file = File(
+            getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS),
+            safeFileName,
+        )
+
+        return mapOf(
+            "downloadId" to downloadId,
+            "filePath" to file.absolutePath,
+        )
+    }
+
+    private fun queryNativeDownload(downloadId: Long): Map<String, Any?> {
+        val dm = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val query = DownloadManager.Query().setFilterById(downloadId)
+
+        val cursor: Cursor = dm.query(query) ?: return mapOf(
+            "exists" to false,
+            "status" to "not_found",
+            "bytesDownloaded" to 0L,
+            "totalBytes" to -1L,
+            "localUri" to null,
+            "reason" to null,
+        )
+
+        cursor.use {
+            if (!it.moveToFirst()) {
+                return mapOf(
+                    "exists" to false,
+                    "status" to "not_found",
+                    "bytesDownloaded" to 0L,
+                    "totalBytes" to -1L,
+                    "localUri" to null,
+                    "reason" to null,
+                )
+            }
+
+            val statusInt = it.getInt(
+                it.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS)
+            )
+
+            val bytesDownloaded = it.getLong(
+                it.getColumnIndexOrThrow(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR)
+            )
+
+            val totalBytes = it.getLong(
+                it.getColumnIndexOrThrow(DownloadManager.COLUMN_TOTAL_SIZE_BYTES)
+            )
+
+            val localUri = it.getString(
+                it.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI)
+            )
+
+            val reason = it.getInt(
+                it.getColumnIndexOrThrow(DownloadManager.COLUMN_REASON)
+            )
+
+            val status = when (statusInt) {
+                DownloadManager.STATUS_PENDING -> "pending"
+                DownloadManager.STATUS_RUNNING -> "running"
+                DownloadManager.STATUS_PAUSED -> "paused"
+                DownloadManager.STATUS_SUCCESSFUL -> "successful"
+                DownloadManager.STATUS_FAILED -> "failed"
+                else -> "unknown"
+            }
+
+            return mapOf(
+                "exists" to true,
+                "status" to status,
+                "bytesDownloaded" to bytesDownloaded,
+                "totalBytes" to totalBytes,
+                "localUri" to localUri,
+                "reason" to reason,
+            )
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         logHost("onCreate activity=${this::class.java.name}")
@@ -112,6 +219,49 @@ class MainActivity : FlutterUnityActivity() {
                     forceUnityFrameMatchParent("flutterForceUnityFullscreen:$flutterReason")
                     result.success(true)
                 }
+                else -> result.notImplemented()
+            }
+        }
+
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            DOWNLOAD_CHANNEL,
+        ).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "startDownload" -> {
+                    val url = call.argument<String>("url")
+                    val fileName = call.argument<String>("fileName") ?: "ar_assets.zip"
+
+                    if (url.isNullOrBlank()) {
+                        result.error("INVALID_URL", "url is empty", null)
+                        return@setMethodCallHandler
+                    }
+
+                    result.success(startNativeDownload(url, fileName))
+                }
+
+                "queryDownload" -> {
+                    val downloadId = call.argument<Number>("downloadId")?.toLong()
+                    if (downloadId == null) {
+                        result.error("INVALID_ID", "downloadId is null", null)
+                        return@setMethodCallHandler
+                    }
+
+                    result.success(queryNativeDownload(downloadId))
+                }
+
+                "removeDownload" -> {
+                    val downloadId = call.argument<Number>("downloadId")?.toLong()
+                    if (downloadId == null) {
+                        result.error("INVALID_ID", "downloadId is null", null)
+                        return@setMethodCallHandler
+                    }
+
+                    val dm = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+                    dm.remove(downloadId)
+                    result.success(true)
+                }
+
                 else -> result.notImplemented()
             }
         }
@@ -303,6 +453,7 @@ class MainActivity : FlutterUnityActivity() {
         private const val PERMISSIONS_CHANNEL = "ar_chemistry_visual/permissions"
         private const val ORIENTATION_CHANNEL = "ar_chemistry_visual/orientation"
         private const val UNITY_LAYOUT_CHANNEL = "ar_chemistry_visual/unity_layout"
+        private const val DOWNLOAD_CHANNEL = "ar_chemistry_visual/download_manager"
         private const val CAMERA_PERMISSION_REQUEST_CODE = 4101
     }
 }
