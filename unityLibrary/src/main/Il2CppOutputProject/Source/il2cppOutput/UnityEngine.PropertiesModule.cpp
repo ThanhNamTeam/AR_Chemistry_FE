@@ -10401,7 +10401,7 @@ IL_002b:
 		Type_t* L_8 = ___0_type;
 		NullCheck(L_8);
 		Type_t* L_9;
-		L_9 = VirtualFuncInvoker0< Type_t* >::Invoke(113, L_8);
+		L_9 = VirtualFuncInvoker0< Type_t* >::Invoke(114, L_8);
 		___0_type = L_9;
 	}
 
@@ -10411,7 +10411,7 @@ IL_0033:
 		Type_t* L_11 = ___0_type;
 		NullCheck(L_11);
 		Type_t* L_12;
-		L_12 = VirtualFuncInvoker0< Type_t* >::Invoke(113, L_11);
+		L_12 = VirtualFuncInvoker0< Type_t* >::Invoke(114, L_11);
 		il2cpp_codegen_runtime_class_init_inline(il2cpp_defaults.systemtype_class);
 		bool L_13;
 		L_13 = Type_op_Inequality_m83209C7BB3C05DFBEA3B6199B0BEFE8037301172(L_10, L_12, NULL);
@@ -14616,7 +14616,7 @@ IL_0193_1:
 				Type_t* L_48 = __this->___type;
 				NullCheck(L_48);
 				Type_t* L_49;
-				L_49 = VirtualFuncInvoker0< Type_t* >::Invoke(113, L_48);
+				L_49 = VirtualFuncInvoker0< Type_t* >::Invoke(114, L_48);
 				__this->___type = L_49;
 				Il2CppCodeGenWriteBarrier((void**)(&__this->___type), (void*)L_49);
 				Type_t* L_50 = __this->___type;

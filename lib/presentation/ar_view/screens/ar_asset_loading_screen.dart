@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import '../../../core/services/ar_asset_downloader.dart';
 import '../../../routes/app_routes.dart';
 import '../../../shared/styles/app_colors.dart';
+import '../widgets/ar_camera_view.dart';
 
 class ArAssetLoadingScreen extends StatefulWidget {
   const ArAssetLoadingScreen({super.key});
@@ -13,7 +14,7 @@ class ArAssetLoadingScreen extends StatefulWidget {
 
 class _ArAssetLoadingScreenState extends State<ArAssetLoadingScreen> {
   double _progress = 0;
-  String _message = 'Đang chuẩn bị dữ liệu AR...';
+  String _message = 'Preparing AR assets...';
 
   @override
   void initState() {
@@ -33,13 +34,20 @@ class _ArAssetLoadingScreenState extends State<ArAssetLoadingScreen> {
         },
       );
 
+      final markerPath = await ArAssetDownloader.getMarkerPath();
+      final reactionPath = await ArAssetDownloader.getReactionPath();
+      await ARUnitySession.instance.configureArAssetPaths(
+        markerPath: markerPath,
+        reactionPath: reactionPath,
+      );
+
       if (!mounted) return;
       Navigator.pushReplacementNamed(context, AppRoutes.scan);
     } catch (e) {
       if (!mounted) return;
 
       setState(() {
-        _message = 'Tải dữ liệu AR thất bại. Vui lòng thử lại.';
+        _message = 'Failed to prepare AR assets. Please try again.';
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -85,7 +93,7 @@ class _ArAssetLoadingScreenState extends State<ArAssetLoadingScreen> {
               const SizedBox(height: 20),
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text('Hủy'),
+                child: const Text('Cancel'),
               ),
             ],
           ),

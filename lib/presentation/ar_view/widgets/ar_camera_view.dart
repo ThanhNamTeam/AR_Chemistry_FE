@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
@@ -337,6 +337,8 @@ class ARUnitySession extends ChangeNotifier {
   int? _latestReactionRequestId;
   int? _latestTrackingGeneration;
   String? _latestTrackingSignature;
+  String? _arMarkerAssetPath;
+  String? _arReactionAssetPath;
 
   bool? permissionGranted;
   bool unityCreated = false;
@@ -492,6 +494,7 @@ class ARUnitySession extends ChangeNotifier {
     _controller = controller;
     unityCreated = true;
     _log('unityCreated');
+    unawaited(_sendArAssetPathsToUnity());
     unawaited(forceNativeUnityFullscreen(reason: 'unityCreated'));
     unawaited(_markReadyFromControllerIfLoaded(reason: 'attach'));
     unawaited(
@@ -601,6 +604,46 @@ class ARUnitySession extends ChangeNotifier {
     return _latestReactionRequestId == requestId &&
         _latestTrackingGeneration == generation &&
         _latestTrackingSignature == signature;
+  }
+
+  Future<void> configureArAssetPaths({
+    required String markerPath,
+    required String reactionPath,
+  }) async {
+    _arMarkerAssetPath = markerPath;
+    _arReactionAssetPath = reactionPath;
+    _log('arAssetPathsConfigured markerPath=$markerPath reactionPath=$reactionPath');
+    await _sendArAssetPathsToUnity();
+  }
+
+  Future<void> _sendArAssetPathsToUnity() async {
+    final controller = _controller;
+    final markerPath = _arMarkerAssetPath;
+    final reactionPath = _arReactionAssetPath;
+    if (controller == null || markerPath == null || reactionPath == null) {
+      _log('sendArAssetPaths skipped noControllerOrPaths');
+      return;
+    }
+
+    try {
+      await controller.postMessage(
+        'FlutterBridge',
+        'ConfigureArAssetPaths',
+        jsonEncode(<String, String>{
+          'markerPath': markerPath,
+          'reactionPath': reactionPath,
+        }),
+      );
+      _log('sendArAssetPaths sent');
+    } on PlatformException catch (error) {
+      _log(
+        'sendArAssetPaths error '
+        'code=${error.code} message=${error.message}',
+      );
+    } catch (error, stackTrace) {
+      _log('sendArAssetPaths unexpectedError $error');
+      _log('sendArAssetPaths stack $stackTrace');
+    }
   }
 
   Future<void> _sendReactionCheckResult(Map<String, Object?> payload) async {
@@ -1088,3 +1131,4 @@ class _UnityUnavailableView extends StatelessWidget {
     );
   }
 }
+

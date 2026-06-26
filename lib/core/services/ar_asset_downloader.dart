@@ -6,6 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../api/ar_asset_api.dart';
+import '../models/response/ar_asset_response.dart';
 
 class ArAssetDownloader {
   static const String _markerVersionKey = 'ar_marker_version';
@@ -14,19 +15,36 @@ class ArAssetDownloader {
   static Future<void> ensureReady({
     void Function(double progress, String message)? onProgress,
   }) async {
-    onProgress?.call(0.0, 'Đang kiểm tra dữ liệu AR...');
+    onProgress?.call(0.0, 'Checking AR assets...');
 
-    final latest = await ArAssetApi().getLatestArAssets();
     final prefs = await SharedPreferences.getInstance();
-
     final savedMarkerVersion = prefs.getInt(_markerVersionKey) ?? 0;
     final savedReactionVersion = prefs.getInt(_reactionVersionKey) ?? 0;
 
-    final needMarker = savedMarkerVersion != latest.markerVersion;
-    final needReaction = savedReactionVersion != latest.reactionVersion;
+    final hasMarkerCache = await _isValidExtractedFolder(
+      'markers',
+      savedMarkerVersion,
+    );
+    final hasReactionCache = await _isValidExtractedFolder(
+      'reactions',
+      savedReactionVersion,
+    );
+
+    final latest = await _getLatestOrUseCache(
+      hasMarkerCache: hasMarkerCache,
+      hasReactionCache: hasReactionCache,
+      onProgress: onProgress,
+    );
+    if (latest == null) return;
+    _validateLatestResponse(latest);
+
+    final needMarker =
+        savedMarkerVersion != latest.markerVersion || !hasMarkerCache;
+    final needReaction =
+        savedReactionVersion != latest.reactionVersion || !hasReactionCache;
 
     if (!needMarker && !needReaction) {
-      onProgress?.call(1.0, 'Dữ liệu AR đã sẵn sàng');
+      onProgress?.call(1.0, 'AR assets ready');
       return;
     }
 
@@ -40,6 +58,10 @@ class ArAssetDownloader {
         label: 'Marker',
         onProgress: onProgress,
       );
+
+      if (!await _isValidExtractedFolder('markers', latest.markerVersion)) {
+        throw StateError('Marker bundle extraction is incomplete');
+      }
 
       await prefs.setInt(_markerVersionKey, latest.markerVersion);
     }
@@ -55,10 +77,46 @@ class ArAssetDownloader {
         onProgress: onProgress,
       );
 
+      if (!await _isValidExtractedFolder('reactions', latest.reactionVersion)) {
+        throw StateError('Reaction bundle extraction is incomplete');
+      }
+
       await prefs.setInt(_reactionVersionKey, latest.reactionVersion);
     }
 
-    onProgress?.call(1.0, 'Hoàn tất tải dữ liệu AR');
+    onProgress?.call(1.0, 'AR assets ready');
+  }
+
+  static Future<ArAssetResponse?> _getLatestOrUseCache({
+    required bool hasMarkerCache,
+    required bool hasReactionCache,
+    void Function(double progress, String message)? onProgress,
+  }) async {
+    try {
+      return await ArAssetApi().getLatestArAssets();
+    } catch (_) {
+      if (hasMarkerCache && hasReactionCache) {
+        onProgress?.call(1.0, 'Using cached AR assets');
+        return null;
+      }
+
+      rethrow;
+    }
+  }
+
+  static void _validateLatestResponse(ArAssetResponse latest) {
+    if (latest.markerVersion <= 0) {
+      throw StateError('AR marker asset version is missing from API');
+    }
+    if (latest.reactionVersion <= 0) {
+      throw StateError('AR reaction asset version is missing from API');
+    }
+    if (latest.markerUrl.trim().isEmpty) {
+      throw StateError('AR marker asset URL is missing from API');
+    }
+    if (latest.reactionUrl.trim().isEmpty) {
+      throw StateError('AR reaction asset URL is missing from API');
+    }
   }
 
   static Future<void> _downloadAndExtract({
@@ -72,16 +130,18 @@ class ArAssetDownloader {
   }) async {
     final appDir = await getApplicationSupportDirectory();
     final targetDir = Directory('${appDir.path}/ar_assets/$folderName/v$version');
+    final tempDir = Directory(
+      '${appDir.path}/ar_assets/.tmp_${folderName}_v$version',
+    );
 
-    if (await targetDir.exists()) {
-      await targetDir.delete(recursive: true);
+    if (await tempDir.exists()) {
+      await tempDir.delete(recursive: true);
     }
+    await tempDir.create(recursive: true);
 
-    await targetDir.create(recursive: true);
+    final zipPath = '${tempDir.path}/bundle.zip';
 
-    final zipPath = '${targetDir.path}/bundle.zip';
-
-    onProgress?.call(startProgress, 'Đang tải $label...');
+    onProgress?.call(startProgress, 'Downloading $label...');
 
     await Dio().download(
       url,
@@ -95,21 +155,21 @@ class ArAssetDownloader {
 
         onProgress?.call(
           mappedProgress.clamp(0.0, 1.0),
-          'Đang tải $label...',
+          'Downloading $label...',
         );
       },
     );
 
     onProgress?.call(
       startProgress + (endProgress - startProgress) * 0.85,
-      'Đang giải nén $label...',
+      'Extracting $label...',
     );
 
     final inputStream = InputFileStream(zipPath);
     final archive = ZipDecoder().decodeStream(inputStream);
 
     for (final file in archive.files) {
-      final filePath = '${targetDir.path}/${file.name}';
+      final filePath = '${tempDir.path}/${file.name}';
 
       if (file.isFile) {
         final outFile = File(filePath);
@@ -123,7 +183,35 @@ class ArAssetDownloader {
     inputStream.close();
     await File(zipPath).delete();
 
-    onProgress?.call(endProgress, 'Đã chuẩn bị xong $label');
+    if (await targetDir.exists()) {
+      await targetDir.delete(recursive: true);
+    }
+    await tempDir.rename(targetDir.path);
+
+    onProgress?.call(endProgress, '$label ready');
+  }
+
+  static Future<bool> _isValidExtractedFolder(
+    String folderName,
+    int version,
+  ) async {
+    if (version <= 0) return false;
+
+    final appDir = await getApplicationSupportDirectory();
+    final baseDir = Directory('${appDir.path}/ar_assets/$folderName/v$version');
+    if (!await baseDir.exists()) return false;
+
+    final expectedChild = folderName == 'markers'
+        ? 'MarkerVisualBundles/Android'
+        : 'ReactionBundles/Android';
+    final expectedDir = Directory('${baseDir.path}/$expectedChild');
+    if (!await expectedDir.exists()) return false;
+
+    await for (final entity in expectedDir.list(recursive: false)) {
+      if (entity is File) return true;
+    }
+
+    return false;
   }
 
   static Future<String> getMarkerPath() async {

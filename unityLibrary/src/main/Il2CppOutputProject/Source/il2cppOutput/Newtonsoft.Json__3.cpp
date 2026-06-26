@@ -30223,7 +30223,7 @@ IL_007d:
 		L_13 = DataTableConverter_GetColumnDataType_mC43442E3804117313CB28095BA77533FDD22A7A2(L_12, NULL);
 		NullCheck(L_13);
 		Type_t* L_14;
-		L_14 = VirtualFuncInvoker0< Type_t* >::Invoke(120, L_13);
+		L_14 = VirtualFuncInvoker0< Type_t* >::Invoke(121, L_13);
 		return L_14;
 	}
 

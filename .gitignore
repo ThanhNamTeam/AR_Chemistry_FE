@@ -82,3 +82,7 @@ local.properties
 
 android/key.properties
 android/app/*.jks
+# Generated AR remote assets (upload to S3, do not commit)
+**/unityLibrary/src/main/assets/aa/
+**/Build/ARAssets/
+**/*.zip

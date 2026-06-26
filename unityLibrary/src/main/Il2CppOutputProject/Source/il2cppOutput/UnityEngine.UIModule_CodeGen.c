@@ -24,63 +24,94 @@ extern void CanvasGroup_get_interactable_Injected_mAA1CC785D5CB28E1CF9082AF9B211
 extern void CanvasGroup_get_blocksRaycasts_Injected_mD44A7E5D0D2F2AA7A92097F48B6A192DF13E2D0F (void);
 extern void CanvasGroup_get_ignoreParentGroups_Injected_m9E23B20E8E17811FAF2F8F2084FC3EA201C52E87 (void);
 extern void CanvasGroup_set_ignoreParentGroups_Injected_mE03CAAFC2BA21BBE0A57CAFEBADDA4D7B6499A38 (void);
+extern void CanvasRenderer_get_hasPopInstruction_m0E7A3F258D1DC37A25663941900442D1AC03BBF4 (void);
 extern void CanvasRenderer_set_hasPopInstruction_mDE56514A0B57434BCE041751AC7D889E9E0BD3FD (void);
 extern void CanvasRenderer_get_materialCount_mC1D89124EFE51534C3A43577FFA54117DA7083B9 (void);
 extern void CanvasRenderer_set_materialCount_m333926C78CD98557B86A8EAC66F47BD4DD4554C3 (void);
+extern void CanvasRenderer_get_popMaterialCount_m6BC8D4A6AF70D71D745771696DC80401E066128A (void);
 extern void CanvasRenderer_set_popMaterialCount_m050FF45A10F54F403BBC43AB7C3D919627922A50 (void);
 extern void CanvasRenderer_get_absoluteDepth_m1B5551330C58C020463F56DF65C40A49AEABFED5 (void);
 extern void CanvasRenderer_get_hasMoved_mB87D3AF4E79897CCB8C48A9287093A8E3012362A (void);
 extern void CanvasRenderer_get_cullTransparentMesh_m116BB768D49AC0068E6861A8F7F1A52A0DC5DC7C (void);
 extern void CanvasRenderer_set_cullTransparentMesh_m72093B655EFCCF35FE50C60258F0B1440BFD04BE (void);
+extern void CanvasRenderer_get_hasRectClipping_m8F65B14263E8ED755FE8D0973BC394E70A21C254 (void);
+extern void CanvasRenderer_get_relativeDepth_mECF808AD09F22B17815FBF449685CB4C718F9392 (void);
 extern void CanvasRenderer_get_cull_m48007D7CB40B3C0EC29F0CB316AFAC88748EF3D7 (void);
 extern void CanvasRenderer_set_cull_mA2A521F41185511CCFF6E2BFCD7B68B1DE3C0D9D (void);
+extern void CanvasRenderer_get_isMask_m4E94879385FCCF848FB3E7A78A8D1F54CC1474A6 (void);
+extern void CanvasRenderer_set_isMask_mBB2262077C0C609F3F815B00685DB154EA806DB9 (void);
 extern void CanvasRenderer_SetColor_mA65CB97B7C6673C0EA7A42BED93D22DD127C7BFA (void);
 extern void CanvasRenderer_GetColor_m16A530AA6D0A6ACB5A6C1DDCC17D259DA856EC70 (void);
 extern void CanvasRenderer_EnableRectClipping_mEE0DE5F753BACD2917366469CBFA21894F26759E (void);
+extern void CanvasRenderer_get_clippingSoftness_m49542BECC85D880778779E5A3626B002066DC7C9 (void);
 extern void CanvasRenderer_set_clippingSoftness_m5727572B7D9CB6906BB4635F98FB5805675C823C (void);
 extern void CanvasRenderer_DisableRectClipping_mEAD0277DF092A2CF7D2D421336BCB5C8FC84600C (void);
 extern void CanvasRenderer_SetMaterial_mBB733E272FB6A5B30C3B24F557AF5ED9EAC5DBD7 (void);
 extern void CanvasRenderer_GetMaterial_mDA3246B02DDDE378C3E6DED6263F6D989B0982A9 (void);
 extern void CanvasRenderer_SetPopMaterial_m9CE3CD36F79C60B5BBB4A67D6A422756F2E3EF75 (void);
+extern void CanvasRenderer_GetPopMaterial_mA33978C5AC280C21A17C370CCFE7528A1B29C431 (void);
 extern void CanvasRenderer_SetTexture_m8A670DA4B435058550D64A1B16CAB8E421F45AAC (void);
+extern void CanvasRenderer_GetSecondaryTextureCount_mC82BF1A178BF24D148D37AAF70E438E4990CEFEC (void);
 extern void CanvasRenderer_SetSecondaryTextureCount_mBA2A1E519023B9A09773A9092F46DBDD74A37FCA (void);
+extern void CanvasRenderer_GetSecondaryTextureName_mA4F8A3A0F71AD34BD4F46CA9299638EFA26F6812 (void);
+extern void CanvasRenderer_GetSecondaryTexture_mFA0978F8505BF1F6AA105F6F56F4331211F66857 (void);
 extern void CanvasRenderer_SetSecondaryTexture_m1C0332FADCB474B3001F3E7B63A459E76D9D4D65 (void);
 extern void CanvasRenderer_SetAlphaTexture_mB4EFE8A6962A88CA025D7A4DAB0CF76EED9AD5E3 (void);
 extern void CanvasRenderer_SetMesh_m1DF21BBC31233AC324BC08331BB542C619DC7543 (void);
+extern void CanvasRenderer_GetMesh_m6F3C208E577C8BAFC651057A78BF9E50A5F855C4 (void);
 extern void CanvasRenderer_Clear_m496D522F1DBD1037417E470CF2D4D9FD22F68E81 (void);
+extern void CanvasRenderer_GetAlpha_m19845F19FF0A2DA9EEE8F97474E3B85D295C4F05 (void);
+extern void CanvasRenderer_SetAlpha_m97E196A1CC718DE16300954D25B4125952D7632C (void);
+extern void CanvasRenderer_GetInheritedAlpha_m55E826F02D368D3510AE8B2EE42729CF167127F7 (void);
 extern void CanvasRenderer_SetMaterial_m445BACF01EF1997CBFCBB79AB64E09AF39860196 (void);
 extern void CanvasRenderer_GetMaterial_m42376FD7C07D8E1700FC3627D1DCF1AECCC47A1C (void);
+extern void CanvasRenderer_SplitUIVertexStreams_mE67558FF4F5F2B3D5F7B08EDCCCC494B34060CF7 (void);
 extern void CanvasRenderer_SplitUIVertexStreams_m6B0D82A693A3DA8E08C15BD06484A3AA2A371198 (void);
+extern void CanvasRenderer_CreateUIVertexStream_m37B0B4694046CBF679D7EF28E74A95B9D559225C (void);
 extern void CanvasRenderer_CreateUIVertexStream_mBA258E629C862A88FFC03765ADA29AFCD3F1F675 (void);
+extern void CanvasRenderer_AddUIVertexStream_m9A7D4EEE0971CF0AEA50540C3F2531FE2B9191AC (void);
 extern void CanvasRenderer_AddUIVertexStream_mD839C4D23B91E99AE2BD8F89C537FE62F5DB5DF5 (void);
+extern void CanvasRenderer_SetVertices_mFC6048D8A5BF42096E15F969498AD819B4B7FCC3 (void);
+extern void CanvasRenderer_SetVertices_m7A1C264F6A8B32938DE95F9B0E84D8BFD238A4D7 (void);
 extern void CanvasRenderer_SplitIndicesStreamsInternal_m1CAD8F8DFEBFE03778B72F1AD290CADBAFA63848 (void);
 extern void CanvasRenderer_SplitUIVertexStreamsInternal_mE0E7EF4A1B611F30DA5D236F81985154A2D2E50A (void);
 extern void CanvasRenderer_CreateUIVertexStreamInternal_mDCD7E8138A464984EA7F4CE942BA4C0E034B7296 (void);
 extern void CanvasRenderer__ctor_mE2E55BC433AB98B1AFD219076BAB594A155230CC (void);
+extern void CanvasRenderer_get_hasPopInstruction_Injected_m7AC03BB196A804156FE3E5B454D05DFF259616BC (void);
 extern void CanvasRenderer_set_hasPopInstruction_Injected_m07D53BC30938D0C48B15E4957C3D4BC6B31C474E (void);
 extern void CanvasRenderer_get_materialCount_Injected_mABEC6830C1C6C8F11D6372529B97EE4A6448B5FF (void);
 extern void CanvasRenderer_set_materialCount_Injected_mBD8C3393E32116A366E0AC7F30810A414ADC07E9 (void);
+extern void CanvasRenderer_get_popMaterialCount_Injected_mCA7011FF463F8E653C4B90017711690E1A50E3E8 (void);
 extern void CanvasRenderer_set_popMaterialCount_Injected_mC8CAAAD9469D9271EDB1713D908A09A5A5801F7C (void);
 extern void CanvasRenderer_get_absoluteDepth_Injected_m194C5BAE11AE2F0B95808BF6F3D91DFB96DC9073 (void);
 extern void CanvasRenderer_get_hasMoved_Injected_m9A29E286C7A0198C6C592425CFC668F7CEE38F35 (void);
 extern void CanvasRenderer_get_cullTransparentMesh_Injected_m8B2CB0F5A4BA6FA08FD6DB0364CC59FED848B2CF (void);
 extern void CanvasRenderer_set_cullTransparentMesh_Injected_mBDA76BBD6526A217921A365DFC69477DCD1AFEBC (void);
+extern void CanvasRenderer_get_hasRectClipping_Injected_mCBE0880AB1C90882B93901FB2375F0A0C6232384 (void);
+extern void CanvasRenderer_get_relativeDepth_Injected_m2EF9059A5071CDD09DC0FE2A5BEFD5A2474FAF98 (void);
 extern void CanvasRenderer_get_cull_Injected_mCB584F0C2AD8079DA0345A004B5D897970B5F412 (void);
 extern void CanvasRenderer_set_cull_Injected_mED3A8637C8032D9D579EDF920BA509A64B45165F (void);
 extern void CanvasRenderer_SetColor_Injected_mBF6E7EC764BD0752DCD1255A78A65C08B55A5448 (void);
 extern void CanvasRenderer_GetColor_Injected_mA88CC2C492E06158E302758CCEE788CE2BE67028 (void);
 extern void CanvasRenderer_EnableRectClipping_Injected_mEAE83CC88CD74992ADD84EC606C79B6D7FE0B2D7 (void);
+extern void CanvasRenderer_get_clippingSoftness_Injected_m5CCC4E9BB0A5CEFCE9816DE5670C04D93A43E426 (void);
 extern void CanvasRenderer_set_clippingSoftness_Injected_mEDBB839AE44CDCF5C92BE4289F92480E59E7F880 (void);
 extern void CanvasRenderer_DisableRectClipping_Injected_m7C1B57EFD8CCB01177190DF1E46A7A61DF7A9433 (void);
 extern void CanvasRenderer_SetMaterial_Injected_m1B28E9D99ADFE0A93D77668C2CFD3DA5FF80B45B (void);
 extern void CanvasRenderer_GetMaterial_Injected_m32B712EDFA5CABE5429305AEDDAC4CF4B78C4100 (void);
 extern void CanvasRenderer_SetPopMaterial_Injected_m74FF92F034816D38776C6D253D173F8C40B5D827 (void);
+extern void CanvasRenderer_GetPopMaterial_Injected_mF359B2EFCB4DEFF9058D365B4013FA062D7BE6D6 (void);
 extern void CanvasRenderer_SetTexture_Injected_mA36270047FFE4CA875C3C7A89CC4CD0E2BFC9AE0 (void);
+extern void CanvasRenderer_GetSecondaryTextureCount_Injected_mBF54830699E7F4D93BBFA13A21429A419554C558 (void);
 extern void CanvasRenderer_SetSecondaryTextureCount_Injected_m4F6BB57DFE8AB7C74CBE17E8027B8B82A850248B (void);
+extern void CanvasRenderer_GetSecondaryTextureName_Injected_mB6A896936F8607E5B89206A08F4576E2711FD2AB (void);
+extern void CanvasRenderer_GetSecondaryTexture_Injected_mDFA520E9CA35DC6E76277EAAEA3A106CF7369510 (void);
 extern void CanvasRenderer_SetSecondaryTexture_Injected_mA6F44B917B1BFF8513AFC6B4181EB8BD0E389368 (void);
 extern void CanvasRenderer_SetAlphaTexture_Injected_m65D98FE1D0DE8FEA97B90E34C1C8B45A27B394B7 (void);
 extern void CanvasRenderer_SetMesh_Injected_m6D6383DEF524EB92704E74D259A0B7DABF6B9C45 (void);
+extern void CanvasRenderer_GetMesh_Injected_m7F12A69C86EF2BA287AA7EE03838C4AC45C48170 (void);
 extern void CanvasRenderer_Clear_Injected_mA71BA1EF24EDA109E5F961CE0BDD455EF7B651CC (void);
+extern void CanvasRenderer_GetInheritedAlpha_Injected_m392D2F775E6E0396B3FF3600246C8770A1E3E704 (void);
 extern void RectTransformUtility_PixelAdjustPoint_mF772BC0CDB4D0B6BDB06DADEFB59B8CEEF920558 (void);
 extern void RectTransformUtility_PixelAdjustRect_mCE31ACDDCB3E4DA1B3BC5A095C31B0A520A019E6 (void);
 extern void RectTransformUtility_PointInRectangle_m1F51E20D39ABB84471007410F37EDE02C23E3D40 (void);
@@ -109,19 +140,34 @@ extern void Canvas_get_scaleFactor_m6B8D694A68376EE5E13D9B0B0F037E2E90C99921 (vo
 extern void Canvas_set_scaleFactor_m65383E2F466BC670568C9CC1D631FA63911DB095 (void);
 extern void Canvas_get_referencePixelsPerUnit_mE402D29BA765D8AC4BBBBA71A87BEBB8D398432A (void);
 extern void Canvas_set_referencePixelsPerUnit_m7114F49D5EAAA8FA40AA5A3191B02325FEBF9B30 (void);
+extern void Canvas_get_overridePixelPerfect_mB21AFBB874D36098315B886D943D2381E96CF2E6 (void);
+extern void Canvas_set_overridePixelPerfect_m09F509C6DD5D8BC7F356586E43CCACF727FB5352 (void);
+extern void Canvas_get_vertexColorAlwaysGammaSpace_m91260494D371AD94329E0B9F1C8C3D0E85A7AFAB (void);
+extern void Canvas_set_vertexColorAlwaysGammaSpace_mD697D399635AB3D38ECB2BFEB9066E998B44345C (void);
+extern void Canvas_get_useReflectionProbes_mFE0422EC371F0F91F162E16907723E5650D6D04F (void);
+extern void Canvas_set_useReflectionProbes_mAD5BCE6DC562BF8DE1839FED03DC6ADD192C9960 (void);
 extern void Canvas_get_pixelPerfect_mFD997D340F57D87C0307F92A9AA1155EF3DF7E75 (void);
+extern void Canvas_set_pixelPerfect_m4610F1B69D813E93BC21F06E0FC4981A509963A5 (void);
+extern void Canvas_get_planeDistance_mA37842426E220D0CDA03606E674B581F67BC3338 (void);
+extern void Canvas_set_planeDistance_m730278089C7546A512385305C1F250C6477C279E (void);
 extern void Canvas_get_renderOrder_m4BC79FD8062270F9848DFE38DE6CC578BBF7DFAC (void);
 extern void Canvas_get_overrideSorting_mF0E6E695650194B15D53BB544926756F370CF33B (void);
 extern void Canvas_set_overrideSorting_m155D936A457E7935683894150A0E5DBED2170F54 (void);
 extern void Canvas_get_sortingOrder_mFA9AC878A11BBEE1716CF7E7DF52E0AAC570C451 (void);
 extern void Canvas_set_sortingOrder_m70D89DB61A3C0589C0FAB525E613DE9D0C799AAC (void);
 extern void Canvas_get_targetDisplay_m2F2FCEA6885820E659F2F520991828DE54CCB6BF (void);
+extern void Canvas_set_targetDisplay_mE0E9078C5DBE321BF15B3F02D85FD255897ADA7B (void);
 extern void Canvas_get_sortingLayerID_m38FE23D0D6A2001F62CA24676298E95BEE968AB6 (void);
 extern void Canvas_set_sortingLayerID_m402DC8D59AAF66A6696BFE682D0B7AF489EA13FE (void);
+extern void Canvas_get_cachedSortingLayerValue_m10B2DDEC28AE6A70059D578457C2925AD433335A (void);
 extern void Canvas_get_additionalShaderChannels_m3039B1E9ADDCDC514E444A4BB56527FFAC3E6287 (void);
 extern void Canvas_set_additionalShaderChannels_m182712BE72B72BE41FAFE97F2FD79C2476132DB0 (void);
+extern void Canvas_get_sortingLayerName_mEBB0FD08B3B7763947CCB308B55AA3BFD9484B21 (void);
+extern void Canvas_set_sortingLayerName_m5812AF732B17DB18E574D41F9AB133B8798EC32D (void);
 extern void Canvas_get_rootCanvas_m74DEA02014963B54DF651BE14284BDAFDA61DDFE (void);
 extern void Canvas_get_renderingDisplaySize_mE6F90F0F91200179ED84C6F6905343909FAF6312 (void);
+extern void Canvas_get_updateRectTransformForStandalone_m33C2A93980448166E95A81F2D2C6734C3B6D12DE (void);
+extern void Canvas_set_updateRectTransformForStandalone_m6B1C28546090B34F25729089FB40AF9DD38CCB14 (void);
 extern void Canvas_get_externBeginRenderOverlays_m7C0F441E294B15AB12249CAC58E6EF9EB1903099 (void);
 extern void Canvas_set_externBeginRenderOverlays_m15382EED4DE4FD270EEAF103F066105E59ACAB03 (void);
 extern void Canvas_get_externRenderOverlaysBefore_m2F2E095C9C692FB560FD13D5C9EDFB4E75DBB278 (void);
@@ -131,8 +177,14 @@ extern void Canvas_set_externEndRenderOverlays_mA48664910ECE4995245902DDE755C5C1
 extern void Canvas_SetExternalCanvasEnabled_m13155750F26485027E5558C86AC55579B4CD7B6B (void);
 extern void Canvas_get_worldCamera_mD2FDE13B61A5213F4E64B40008EB0A8D2D07B853 (void);
 extern void Canvas_set_worldCamera_m007F7DABDB5A3A6BFB043E3500DA82A4D936EDD4 (void);
+extern void Canvas_get_normalizedSortingGridSize_mF7452EC8FC2EF133A2D2C9988620A3624828368E (void);
+extern void Canvas_set_normalizedSortingGridSize_mBFF42D7BE6330782C4D76B0E9EC5A8D60DB76078 (void);
+extern void Canvas_get_sortingGridNormalizedSize_m25ECF2311D0498FB9CF81665B1CA2047FD0A8550 (void);
+extern void Canvas_set_sortingGridNormalizedSize_mA9AC63EEC92AAA9479593B55D2E1A7402FF5D75E (void);
+extern void Canvas_GetDefaultCanvasTextMaterial_mEA05C0C7135284D5BA07056C9B19956356F04143 (void);
 extern void Canvas_GetDefaultCanvasMaterial_m7A0E204A9DC6A1390692788E37DBE7D8C6B71CD2 (void);
 extern void Canvas_GetETC1SupportedCanvasMaterial_mFABE1BCF145256FC155BD038DD44784E8832FAEA (void);
+extern void Canvas_UpdateCanvasRectTransform_m259CD24664F239C035EDA5158FA1D3D6405DB680 (void);
 extern void Canvas_ForceUpdateCanvases_m6ECDBC5E85ADA3301BB20611753C45769F15EB51 (void);
 extern void Canvas_SendPreWillRenderCanvases_mE397C15067BBE1B0C65D7A6FE94046B9AF375DD9 (void);
 extern void Canvas_SendWillRenderCanvases_m2DA2A7A53FCE4B746A17CD5F0FCE6B21B1B46779 (void);
@@ -148,30 +200,51 @@ extern void Canvas_get_scaleFactor_Injected_m0572D054BF805039C2F9B460E2BD2C077ED
 extern void Canvas_set_scaleFactor_Injected_mDE2F684F7391BCB7D6DF49229C67D7F911476950 (void);
 extern void Canvas_get_referencePixelsPerUnit_Injected_m7991F00B8C372B400BF2D8EC47627BB8546EBA40 (void);
 extern void Canvas_set_referencePixelsPerUnit_Injected_m5D5C7B8A579AB2DF7BC87CBD0EC35F34DA1D29C1 (void);
+extern void Canvas_get_overridePixelPerfect_Injected_m287D75A2AC9830CF9A41FCDAA62F7CA0FDB90704 (void);
+extern void Canvas_set_overridePixelPerfect_Injected_m80F020B247CC1CAADD038C70A6B4ACE81E87B225 (void);
+extern void Canvas_get_vertexColorAlwaysGammaSpace_Injected_m9852E733B04A1231AD0182E67A1F7036C3C663C4 (void);
+extern void Canvas_set_vertexColorAlwaysGammaSpace_Injected_mBF65E418A43830D2A5F1533B0A0F5DA93BD68729 (void);
+extern void Canvas_get_useReflectionProbes_Injected_m9669BDECAF6BBA6C2694D218AD475C83700F8531 (void);
+extern void Canvas_set_useReflectionProbes_Injected_mDCCDFCAA13E625C136745ECBFF9ACB6C0FD5790A (void);
 extern void Canvas_get_pixelPerfect_Injected_mF71B536C4D6158E5EC32789DD73CF329A90DBD5E (void);
+extern void Canvas_set_pixelPerfect_Injected_m13077ED9EA8EF29FB07B47675D22A55418B50D64 (void);
+extern void Canvas_get_planeDistance_Injected_m2CB22EDA4A768EC43592787962BCC7EC10CE6E9F (void);
+extern void Canvas_set_planeDistance_Injected_m8E8EABB45CCFFFF7B7E617F4A5B515A2557964EC (void);
 extern void Canvas_get_renderOrder_Injected_m0FD3B8BA4815A0E5A32709748DEAC1E7D26AFBCC (void);
 extern void Canvas_get_overrideSorting_Injected_m254545A661B4D5D72D0F9CFBDC1360A6D2183CE9 (void);
 extern void Canvas_set_overrideSorting_Injected_m8D1AF35DA1344FE539E55629268C2B1A32042391 (void);
 extern void Canvas_get_sortingOrder_Injected_mFEB7965326735311B0DB6B8D3A478F2096896815 (void);
 extern void Canvas_set_sortingOrder_Injected_m1CF44B038B42099D231420E3BB196072941E3458 (void);
 extern void Canvas_get_targetDisplay_Injected_m38E3655D55E4EE8C80282461CFD89937DF1E054F (void);
+extern void Canvas_set_targetDisplay_Injected_m619B4199396B00A52D4EF5A23E25422CC014B5F7 (void);
 extern void Canvas_get_sortingLayerID_Injected_m13994CAF9A9F1FB3F5122389666975B0F3963F2A (void);
 extern void Canvas_set_sortingLayerID_Injected_mA0C8C8BE2A7BE4ED422A88CD6D056B56EDE87A07 (void);
+extern void Canvas_get_cachedSortingLayerValue_Injected_m4CA41EBA7E47C1D650618E6A01CDA0E32986637F (void);
 extern void Canvas_get_additionalShaderChannels_Injected_m9C0C62C72E90B15DF1C4BDC479D57C1D9A24CBD4 (void);
 extern void Canvas_set_additionalShaderChannels_Injected_mD2C61B16032A292B5EF94E3DDAC0CEAE27E2B2EE (void);
+extern void Canvas_get_sortingLayerName_Injected_m20BBE98E1AD86AB6BED08F2D82CDF5A6C1854A6C (void);
+extern void Canvas_set_sortingLayerName_Injected_m533F30CBEB6C519BE8FEC7C5D255B5EB41BAE637 (void);
 extern void Canvas_get_rootCanvas_Injected_m6527811DFBA51360FBECDF5ACC822ACA93A816F3 (void);
 extern void Canvas_get_renderingDisplaySize_Injected_mB2EBF5D42D74DAF756662C294038800DB638287F (void);
+extern void Canvas_get_updateRectTransformForStandalone_Injected_m9B032D41C436E0EA67223BA74D0CB814D3FCF7DA (void);
+extern void Canvas_set_updateRectTransformForStandalone_Injected_mD04BA4A90CA3C51AA913F37E0279B8F448FD1270 (void);
 extern void Canvas_get_worldCamera_Injected_m20E7777614D7BF74FDEC974A328447BF988FBBA9 (void);
 extern void Canvas_set_worldCamera_Injected_m95271C7189974C4C764A9C5F28F030071E90E313 (void);
+extern void Canvas_get_normalizedSortingGridSize_Injected_m055666F4EA5CD8D3B470DD9441E2A1DB669D9647 (void);
+extern void Canvas_set_normalizedSortingGridSize_Injected_m3D96B13399DAFEC8F460CFB074E69344D2F89B68 (void);
+extern void Canvas_get_sortingGridNormalizedSize_Injected_m6960D742B0AC39BC8A2E2168C63538C639258E53 (void);
+extern void Canvas_set_sortingGridNormalizedSize_Injected_mFE09A91891907A95274A6C8D7BBD7C59ABD84200 (void);
+extern void Canvas_GetDefaultCanvasTextMaterial_Injected_m242A6B318BBECC3A7BBEEE17BBAE0F4AFB96C325 (void);
 extern void Canvas_GetDefaultCanvasMaterial_Injected_mEF1D8AB7FF2320B7E0C1EE8BE227A8A49590EA48 (void);
 extern void Canvas_GetETC1SupportedCanvasMaterial_Injected_mBF5025B70336B06070A5EA1D1F3B421D091ED722 (void);
+extern void Canvas_UpdateCanvasRectTransform_Injected_m3670CCAEF388CD39CA4EA373B176387119BE13F4 (void);
 extern void WillRenderCanvases__ctor_mD8174C0964F8864D65270FFCAF275BD0BAC8DCF3 (void);
 extern void WillRenderCanvases_Invoke_m47BAAC9AD2F84BF75E0021F436A6286C09A30566 (void);
 extern void UISystemProfilerApi_BeginSample_m6AF893A85204DA2129D9D3D75D8A6EDD329FA23E (void);
 extern void UISystemProfilerApi_EndSample_mAFBCEDF8073F3FB0E1644482D909F108DBE11F3D (void);
 extern void UISystemProfilerApi_AddMarker_mB0E292213D18AE3770165011E265A57B17FCF90B (void);
 extern void UISystemProfilerApi_AddMarker_Injected_m283D922C84E040D412F5DC712DE6C81FD05AC87E (void);
-static Il2CppMethodPointer s_methodPointers[165] = 
+static Il2CppMethodPointer s_methodPointers[238] = 
 {
 	EmbeddedAttribute__ctor_m37A70E7F80DD9C1B53D11461DBB2C72595A92F52,
 	RefSafetyRulesAttribute__ctor_m5B4CE39037F502458F7D7F02D7817575B0379E6C,
@@ -191,63 +264,94 @@ static Il2CppMethodPointer s_methodPointers[165] =
 	CanvasGroup_get_blocksRaycasts_Injected_mD44A7E5D0D2F2AA7A92097F48B6A192DF13E2D0F,
 	CanvasGroup_get_ignoreParentGroups_Injected_m9E23B20E8E17811FAF2F8F2084FC3EA201C52E87,
 	CanvasGroup_set_ignoreParentGroups_Injected_mE03CAAFC2BA21BBE0A57CAFEBADDA4D7B6499A38,
+	CanvasRenderer_get_hasPopInstruction_m0E7A3F258D1DC37A25663941900442D1AC03BBF4,
 	CanvasRenderer_set_hasPopInstruction_mDE56514A0B57434BCE041751AC7D889E9E0BD3FD,
 	CanvasRenderer_get_materialCount_mC1D89124EFE51534C3A43577FFA54117DA7083B9,
 	CanvasRenderer_set_materialCount_m333926C78CD98557B86A8EAC66F47BD4DD4554C3,
+	CanvasRenderer_get_popMaterialCount_m6BC8D4A6AF70D71D745771696DC80401E066128A,
 	CanvasRenderer_set_popMaterialCount_m050FF45A10F54F403BBC43AB7C3D919627922A50,
 	CanvasRenderer_get_absoluteDepth_m1B5551330C58C020463F56DF65C40A49AEABFED5,
 	CanvasRenderer_get_hasMoved_mB87D3AF4E79897CCB8C48A9287093A8E3012362A,
 	CanvasRenderer_get_cullTransparentMesh_m116BB768D49AC0068E6861A8F7F1A52A0DC5DC7C,
 	CanvasRenderer_set_cullTransparentMesh_m72093B655EFCCF35FE50C60258F0B1440BFD04BE,
+	CanvasRenderer_get_hasRectClipping_m8F65B14263E8ED755FE8D0973BC394E70A21C254,
+	CanvasRenderer_get_relativeDepth_mECF808AD09F22B17815FBF449685CB4C718F9392,
 	CanvasRenderer_get_cull_m48007D7CB40B3C0EC29F0CB316AFAC88748EF3D7,
 	CanvasRenderer_set_cull_mA2A521F41185511CCFF6E2BFCD7B68B1DE3C0D9D,
+	CanvasRenderer_get_isMask_m4E94879385FCCF848FB3E7A78A8D1F54CC1474A6,
+	CanvasRenderer_set_isMask_mBB2262077C0C609F3F815B00685DB154EA806DB9,
 	CanvasRenderer_SetColor_mA65CB97B7C6673C0EA7A42BED93D22DD127C7BFA,
 	CanvasRenderer_GetColor_m16A530AA6D0A6ACB5A6C1DDCC17D259DA856EC70,
 	CanvasRenderer_EnableRectClipping_mEE0DE5F753BACD2917366469CBFA21894F26759E,
+	CanvasRenderer_get_clippingSoftness_m49542BECC85D880778779E5A3626B002066DC7C9,
 	CanvasRenderer_set_clippingSoftness_m5727572B7D9CB6906BB4635F98FB5805675C823C,
 	CanvasRenderer_DisableRectClipping_mEAD0277DF092A2CF7D2D421336BCB5C8FC84600C,
 	CanvasRenderer_SetMaterial_mBB733E272FB6A5B30C3B24F557AF5ED9EAC5DBD7,
 	CanvasRenderer_GetMaterial_mDA3246B02DDDE378C3E6DED6263F6D989B0982A9,
 	CanvasRenderer_SetPopMaterial_m9CE3CD36F79C60B5BBB4A67D6A422756F2E3EF75,
+	CanvasRenderer_GetPopMaterial_mA33978C5AC280C21A17C370CCFE7528A1B29C431,
 	CanvasRenderer_SetTexture_m8A670DA4B435058550D64A1B16CAB8E421F45AAC,
+	CanvasRenderer_GetSecondaryTextureCount_mC82BF1A178BF24D148D37AAF70E438E4990CEFEC,
 	CanvasRenderer_SetSecondaryTextureCount_mBA2A1E519023B9A09773A9092F46DBDD74A37FCA,
+	CanvasRenderer_GetSecondaryTextureName_mA4F8A3A0F71AD34BD4F46CA9299638EFA26F6812,
+	CanvasRenderer_GetSecondaryTexture_mFA0978F8505BF1F6AA105F6F56F4331211F66857,
 	CanvasRenderer_SetSecondaryTexture_m1C0332FADCB474B3001F3E7B63A459E76D9D4D65,
 	CanvasRenderer_SetAlphaTexture_mB4EFE8A6962A88CA025D7A4DAB0CF76EED9AD5E3,
 	CanvasRenderer_SetMesh_m1DF21BBC31233AC324BC08331BB542C619DC7543,
+	CanvasRenderer_GetMesh_m6F3C208E577C8BAFC651057A78BF9E50A5F855C4,
 	CanvasRenderer_Clear_m496D522F1DBD1037417E470CF2D4D9FD22F68E81,
+	CanvasRenderer_GetAlpha_m19845F19FF0A2DA9EEE8F97474E3B85D295C4F05,
+	CanvasRenderer_SetAlpha_m97E196A1CC718DE16300954D25B4125952D7632C,
+	CanvasRenderer_GetInheritedAlpha_m55E826F02D368D3510AE8B2EE42729CF167127F7,
 	CanvasRenderer_SetMaterial_m445BACF01EF1997CBFCBB79AB64E09AF39860196,
 	CanvasRenderer_GetMaterial_m42376FD7C07D8E1700FC3627D1DCF1AECCC47A1C,
+	CanvasRenderer_SplitUIVertexStreams_mE67558FF4F5F2B3D5F7B08EDCCCC494B34060CF7,
 	CanvasRenderer_SplitUIVertexStreams_m6B0D82A693A3DA8E08C15BD06484A3AA2A371198,
+	CanvasRenderer_CreateUIVertexStream_m37B0B4694046CBF679D7EF28E74A95B9D559225C,
 	CanvasRenderer_CreateUIVertexStream_mBA258E629C862A88FFC03765ADA29AFCD3F1F675,
+	CanvasRenderer_AddUIVertexStream_m9A7D4EEE0971CF0AEA50540C3F2531FE2B9191AC,
 	CanvasRenderer_AddUIVertexStream_mD839C4D23B91E99AE2BD8F89C537FE62F5DB5DF5,
+	CanvasRenderer_SetVertices_mFC6048D8A5BF42096E15F969498AD819B4B7FCC3,
+	CanvasRenderer_SetVertices_m7A1C264F6A8B32938DE95F9B0E84D8BFD238A4D7,
 	CanvasRenderer_SplitIndicesStreamsInternal_m1CAD8F8DFEBFE03778B72F1AD290CADBAFA63848,
 	CanvasRenderer_SplitUIVertexStreamsInternal_mE0E7EF4A1B611F30DA5D236F81985154A2D2E50A,
 	CanvasRenderer_CreateUIVertexStreamInternal_mDCD7E8138A464984EA7F4CE942BA4C0E034B7296,
 	CanvasRenderer__ctor_mE2E55BC433AB98B1AFD219076BAB594A155230CC,
+	CanvasRenderer_get_hasPopInstruction_Injected_m7AC03BB196A804156FE3E5B454D05DFF259616BC,
 	CanvasRenderer_set_hasPopInstruction_Injected_m07D53BC30938D0C48B15E4957C3D4BC6B31C474E,
 	CanvasRenderer_get_materialCount_Injected_mABEC6830C1C6C8F11D6372529B97EE4A6448B5FF,
 	CanvasRenderer_set_materialCount_Injected_mBD8C3393E32116A366E0AC7F30810A414ADC07E9,
+	CanvasRenderer_get_popMaterialCount_Injected_mCA7011FF463F8E653C4B90017711690E1A50E3E8,
 	CanvasRenderer_set_popMaterialCount_Injected_mC8CAAAD9469D9271EDB1713D908A09A5A5801F7C,
 	CanvasRenderer_get_absoluteDepth_Injected_m194C5BAE11AE2F0B95808BF6F3D91DFB96DC9073,
 	CanvasRenderer_get_hasMoved_Injected_m9A29E286C7A0198C6C592425CFC668F7CEE38F35,
 	CanvasRenderer_get_cullTransparentMesh_Injected_m8B2CB0F5A4BA6FA08FD6DB0364CC59FED848B2CF,
 	CanvasRenderer_set_cullTransparentMesh_Injected_mBDA76BBD6526A217921A365DFC69477DCD1AFEBC,
+	CanvasRenderer_get_hasRectClipping_Injected_mCBE0880AB1C90882B93901FB2375F0A0C6232384,
+	CanvasRenderer_get_relativeDepth_Injected_m2EF9059A5071CDD09DC0FE2A5BEFD5A2474FAF98,
 	CanvasRenderer_get_cull_Injected_mCB584F0C2AD8079DA0345A004B5D897970B5F412,
 	CanvasRenderer_set_cull_Injected_mED3A8637C8032D9D579EDF920BA509A64B45165F,
 	CanvasRenderer_SetColor_Injected_mBF6E7EC764BD0752DCD1255A78A65C08B55A5448,
 	CanvasRenderer_GetColor_Injected_mA88CC2C492E06158E302758CCEE788CE2BE67028,
 	CanvasRenderer_EnableRectClipping_Injected_mEAE83CC88CD74992ADD84EC606C79B6D7FE0B2D7,
+	CanvasRenderer_get_clippingSoftness_Injected_m5CCC4E9BB0A5CEFCE9816DE5670C04D93A43E426,
 	CanvasRenderer_set_clippingSoftness_Injected_mEDBB839AE44CDCF5C92BE4289F92480E59E7F880,
 	CanvasRenderer_DisableRectClipping_Injected_m7C1B57EFD8CCB01177190DF1E46A7A61DF7A9433,
 	CanvasRenderer_SetMaterial_Injected_m1B28E9D99ADFE0A93D77668C2CFD3DA5FF80B45B,
 	CanvasRenderer_GetMaterial_Injected_m32B712EDFA5CABE5429305AEDDAC4CF4B78C4100,
 	CanvasRenderer_SetPopMaterial_Injected_m74FF92F034816D38776C6D253D173F8C40B5D827,
+	CanvasRenderer_GetPopMaterial_Injected_mF359B2EFCB4DEFF9058D365B4013FA062D7BE6D6,
 	CanvasRenderer_SetTexture_Injected_mA36270047FFE4CA875C3C7A89CC4CD0E2BFC9AE0,
+	CanvasRenderer_GetSecondaryTextureCount_Injected_mBF54830699E7F4D93BBFA13A21429A419554C558,
 	CanvasRenderer_SetSecondaryTextureCount_Injected_m4F6BB57DFE8AB7C74CBE17E8027B8B82A850248B,
+	CanvasRenderer_GetSecondaryTextureName_Injected_mB6A896936F8607E5B89206A08F4576E2711FD2AB,
+	CanvasRenderer_GetSecondaryTexture_Injected_mDFA520E9CA35DC6E76277EAAEA3A106CF7369510,
 	CanvasRenderer_SetSecondaryTexture_Injected_mA6F44B917B1BFF8513AFC6B4181EB8BD0E389368,
 	CanvasRenderer_SetAlphaTexture_Injected_m65D98FE1D0DE8FEA97B90E34C1C8B45A27B394B7,
 	CanvasRenderer_SetMesh_Injected_m6D6383DEF524EB92704E74D259A0B7DABF6B9C45,
+	CanvasRenderer_GetMesh_Injected_m7F12A69C86EF2BA287AA7EE03838C4AC45C48170,
 	CanvasRenderer_Clear_Injected_mA71BA1EF24EDA109E5F961CE0BDD455EF7B651CC,
+	CanvasRenderer_GetInheritedAlpha_Injected_m392D2F775E6E0396B3FF3600246C8770A1E3E704,
 	RectTransformUtility_PixelAdjustPoint_mF772BC0CDB4D0B6BDB06DADEFB59B8CEEF920558,
 	RectTransformUtility_PixelAdjustRect_mCE31ACDDCB3E4DA1B3BC5A095C31B0A520A019E6,
 	RectTransformUtility_PointInRectangle_m1F51E20D39ABB84471007410F37EDE02C23E3D40,
@@ -276,19 +380,34 @@ static Il2CppMethodPointer s_methodPointers[165] =
 	Canvas_set_scaleFactor_m65383E2F466BC670568C9CC1D631FA63911DB095,
 	Canvas_get_referencePixelsPerUnit_mE402D29BA765D8AC4BBBBA71A87BEBB8D398432A,
 	Canvas_set_referencePixelsPerUnit_m7114F49D5EAAA8FA40AA5A3191B02325FEBF9B30,
+	Canvas_get_overridePixelPerfect_mB21AFBB874D36098315B886D943D2381E96CF2E6,
+	Canvas_set_overridePixelPerfect_m09F509C6DD5D8BC7F356586E43CCACF727FB5352,
+	Canvas_get_vertexColorAlwaysGammaSpace_m91260494D371AD94329E0B9F1C8C3D0E85A7AFAB,
+	Canvas_set_vertexColorAlwaysGammaSpace_mD697D399635AB3D38ECB2BFEB9066E998B44345C,
+	Canvas_get_useReflectionProbes_mFE0422EC371F0F91F162E16907723E5650D6D04F,
+	Canvas_set_useReflectionProbes_mAD5BCE6DC562BF8DE1839FED03DC6ADD192C9960,
 	Canvas_get_pixelPerfect_mFD997D340F57D87C0307F92A9AA1155EF3DF7E75,
+	Canvas_set_pixelPerfect_m4610F1B69D813E93BC21F06E0FC4981A509963A5,
+	Canvas_get_planeDistance_mA37842426E220D0CDA03606E674B581F67BC3338,
+	Canvas_set_planeDistance_m730278089C7546A512385305C1F250C6477C279E,
 	Canvas_get_renderOrder_m4BC79FD8062270F9848DFE38DE6CC578BBF7DFAC,
 	Canvas_get_overrideSorting_mF0E6E695650194B15D53BB544926756F370CF33B,
 	Canvas_set_overrideSorting_m155D936A457E7935683894150A0E5DBED2170F54,
 	Canvas_get_sortingOrder_mFA9AC878A11BBEE1716CF7E7DF52E0AAC570C451,
 	Canvas_set_sortingOrder_m70D89DB61A3C0589C0FAB525E613DE9D0C799AAC,
 	Canvas_get_targetDisplay_m2F2FCEA6885820E659F2F520991828DE54CCB6BF,
+	Canvas_set_targetDisplay_mE0E9078C5DBE321BF15B3F02D85FD255897ADA7B,
 	Canvas_get_sortingLayerID_m38FE23D0D6A2001F62CA24676298E95BEE968AB6,
 	Canvas_set_sortingLayerID_m402DC8D59AAF66A6696BFE682D0B7AF489EA13FE,
+	Canvas_get_cachedSortingLayerValue_m10B2DDEC28AE6A70059D578457C2925AD433335A,
 	Canvas_get_additionalShaderChannels_m3039B1E9ADDCDC514E444A4BB56527FFAC3E6287,
 	Canvas_set_additionalShaderChannels_m182712BE72B72BE41FAFE97F2FD79C2476132DB0,
+	Canvas_get_sortingLayerName_mEBB0FD08B3B7763947CCB308B55AA3BFD9484B21,
+	Canvas_set_sortingLayerName_m5812AF732B17DB18E574D41F9AB133B8798EC32D,
 	Canvas_get_rootCanvas_m74DEA02014963B54DF651BE14284BDAFDA61DDFE,
 	Canvas_get_renderingDisplaySize_mE6F90F0F91200179ED84C6F6905343909FAF6312,
+	Canvas_get_updateRectTransformForStandalone_m33C2A93980448166E95A81F2D2C6734C3B6D12DE,
+	Canvas_set_updateRectTransformForStandalone_m6B1C28546090B34F25729089FB40AF9DD38CCB14,
 	Canvas_get_externBeginRenderOverlays_m7C0F441E294B15AB12249CAC58E6EF9EB1903099,
 	Canvas_set_externBeginRenderOverlays_m15382EED4DE4FD270EEAF103F066105E59ACAB03,
 	Canvas_get_externRenderOverlaysBefore_m2F2E095C9C692FB560FD13D5C9EDFB4E75DBB278,
@@ -298,8 +417,14 @@ static Il2CppMethodPointer s_methodPointers[165] =
 	Canvas_SetExternalCanvasEnabled_m13155750F26485027E5558C86AC55579B4CD7B6B,
 	Canvas_get_worldCamera_mD2FDE13B61A5213F4E64B40008EB0A8D2D07B853,
 	Canvas_set_worldCamera_m007F7DABDB5A3A6BFB043E3500DA82A4D936EDD4,
+	Canvas_get_normalizedSortingGridSize_mF7452EC8FC2EF133A2D2C9988620A3624828368E,
+	Canvas_set_normalizedSortingGridSize_mBFF42D7BE6330782C4D76B0E9EC5A8D60DB76078,
+	Canvas_get_sortingGridNormalizedSize_m25ECF2311D0498FB9CF81665B1CA2047FD0A8550,
+	Canvas_set_sortingGridNormalizedSize_mA9AC63EEC92AAA9479593B55D2E1A7402FF5D75E,
+	Canvas_GetDefaultCanvasTextMaterial_mEA05C0C7135284D5BA07056C9B19956356F04143,
 	Canvas_GetDefaultCanvasMaterial_m7A0E204A9DC6A1390692788E37DBE7D8C6B71CD2,
 	Canvas_GetETC1SupportedCanvasMaterial_mFABE1BCF145256FC155BD038DD44784E8832FAEA,
+	Canvas_UpdateCanvasRectTransform_m259CD24664F239C035EDA5158FA1D3D6405DB680,
 	Canvas_ForceUpdateCanvases_m6ECDBC5E85ADA3301BB20611753C45769F15EB51,
 	Canvas_SendPreWillRenderCanvases_mE397C15067BBE1B0C65D7A6FE94046B9AF375DD9,
 	Canvas_SendWillRenderCanvases_m2DA2A7A53FCE4B746A17CD5F0FCE6B21B1B46779,
@@ -315,23 +440,44 @@ static Il2CppMethodPointer s_methodPointers[165] =
 	Canvas_set_scaleFactor_Injected_mDE2F684F7391BCB7D6DF49229C67D7F911476950,
 	Canvas_get_referencePixelsPerUnit_Injected_m7991F00B8C372B400BF2D8EC47627BB8546EBA40,
 	Canvas_set_referencePixelsPerUnit_Injected_m5D5C7B8A579AB2DF7BC87CBD0EC35F34DA1D29C1,
+	Canvas_get_overridePixelPerfect_Injected_m287D75A2AC9830CF9A41FCDAA62F7CA0FDB90704,
+	Canvas_set_overridePixelPerfect_Injected_m80F020B247CC1CAADD038C70A6B4ACE81E87B225,
+	Canvas_get_vertexColorAlwaysGammaSpace_Injected_m9852E733B04A1231AD0182E67A1F7036C3C663C4,
+	Canvas_set_vertexColorAlwaysGammaSpace_Injected_mBF65E418A43830D2A5F1533B0A0F5DA93BD68729,
+	Canvas_get_useReflectionProbes_Injected_m9669BDECAF6BBA6C2694D218AD475C83700F8531,
+	Canvas_set_useReflectionProbes_Injected_mDCCDFCAA13E625C136745ECBFF9ACB6C0FD5790A,
 	Canvas_get_pixelPerfect_Injected_mF71B536C4D6158E5EC32789DD73CF329A90DBD5E,
+	Canvas_set_pixelPerfect_Injected_m13077ED9EA8EF29FB07B47675D22A55418B50D64,
+	Canvas_get_planeDistance_Injected_m2CB22EDA4A768EC43592787962BCC7EC10CE6E9F,
+	Canvas_set_planeDistance_Injected_m8E8EABB45CCFFFF7B7E617F4A5B515A2557964EC,
 	Canvas_get_renderOrder_Injected_m0FD3B8BA4815A0E5A32709748DEAC1E7D26AFBCC,
 	Canvas_get_overrideSorting_Injected_m254545A661B4D5D72D0F9CFBDC1360A6D2183CE9,
 	Canvas_set_overrideSorting_Injected_m8D1AF35DA1344FE539E55629268C2B1A32042391,
 	Canvas_get_sortingOrder_Injected_mFEB7965326735311B0DB6B8D3A478F2096896815,
 	Canvas_set_sortingOrder_Injected_m1CF44B038B42099D231420E3BB196072941E3458,
 	Canvas_get_targetDisplay_Injected_m38E3655D55E4EE8C80282461CFD89937DF1E054F,
+	Canvas_set_targetDisplay_Injected_m619B4199396B00A52D4EF5A23E25422CC014B5F7,
 	Canvas_get_sortingLayerID_Injected_m13994CAF9A9F1FB3F5122389666975B0F3963F2A,
 	Canvas_set_sortingLayerID_Injected_mA0C8C8BE2A7BE4ED422A88CD6D056B56EDE87A07,
+	Canvas_get_cachedSortingLayerValue_Injected_m4CA41EBA7E47C1D650618E6A01CDA0E32986637F,
 	Canvas_get_additionalShaderChannels_Injected_m9C0C62C72E90B15DF1C4BDC479D57C1D9A24CBD4,
 	Canvas_set_additionalShaderChannels_Injected_mD2C61B16032A292B5EF94E3DDAC0CEAE27E2B2EE,
+	Canvas_get_sortingLayerName_Injected_m20BBE98E1AD86AB6BED08F2D82CDF5A6C1854A6C,
+	Canvas_set_sortingLayerName_Injected_m533F30CBEB6C519BE8FEC7C5D255B5EB41BAE637,
 	Canvas_get_rootCanvas_Injected_m6527811DFBA51360FBECDF5ACC822ACA93A816F3,
 	Canvas_get_renderingDisplaySize_Injected_mB2EBF5D42D74DAF756662C294038800DB638287F,
+	Canvas_get_updateRectTransformForStandalone_Injected_m9B032D41C436E0EA67223BA74D0CB814D3FCF7DA,
+	Canvas_set_updateRectTransformForStandalone_Injected_mD04BA4A90CA3C51AA913F37E0279B8F448FD1270,
 	Canvas_get_worldCamera_Injected_m20E7777614D7BF74FDEC974A328447BF988FBBA9,
 	Canvas_set_worldCamera_Injected_m95271C7189974C4C764A9C5F28F030071E90E313,
+	Canvas_get_normalizedSortingGridSize_Injected_m055666F4EA5CD8D3B470DD9441E2A1DB669D9647,
+	Canvas_set_normalizedSortingGridSize_Injected_m3D96B13399DAFEC8F460CFB074E69344D2F89B68,
+	Canvas_get_sortingGridNormalizedSize_Injected_m6960D742B0AC39BC8A2E2168C63538C639258E53,
+	Canvas_set_sortingGridNormalizedSize_Injected_mFE09A91891907A95274A6C8D7BBD7C59ABD84200,
+	Canvas_GetDefaultCanvasTextMaterial_Injected_m242A6B318BBECC3A7BBEEE17BBAE0F4AFB96C325,
 	Canvas_GetDefaultCanvasMaterial_Injected_mEF1D8AB7FF2320B7E0C1EE8BE227A8A49590EA48,
 	Canvas_GetETC1SupportedCanvasMaterial_Injected_mBF5025B70336B06070A5EA1D1F3B421D091ED722,
+	Canvas_UpdateCanvasRectTransform_Injected_m3670CCAEF388CD39CA4EA373B176387119BE13F4,
 	WillRenderCanvases__ctor_mD8174C0964F8864D65270FFCAF275BD0BAC8DCF3,
 	WillRenderCanvases_Invoke_m47BAAC9AD2F84BF75E0021F436A6286C09A30566,
 	UISystemProfilerApi_BeginSample_m6AF893A85204DA2129D9D3D75D8A6EDD329FA23E,
@@ -339,179 +485,252 @@ static Il2CppMethodPointer s_methodPointers[165] =
 	UISystemProfilerApi_AddMarker_mB0E292213D18AE3770165011E265A57B17FCF90B,
 	UISystemProfilerApi_AddMarker_Injected_m283D922C84E040D412F5DC712DE6C81FD05AC87E,
 };
-static const int32_t s_InvokerIndices[165] = 
+static const int32_t s_InvokerIndices[238] = 
 {
-	14756,
-	11291,
-	11353,
+	15451,
+	11876,
+	11940,
 	-1,
-	14637,
-	11453,
-	14327,
-	14327,
-	14327,
-	11157,
-	3729,
-	14756,
-	22044,
-	20124,
-	21540,
-	21540,
-	21540,
-	20119,
-	11157,
-	14459,
-	11291,
-	11291,
-	14459,
-	14327,
-	14327,
-	11157,
-	14327,
-	11157,
-	11163,
-	14334,
-	11409,
-	11558,
-	14756,
-	5871,
-	9806,
-	5871,
-	11353,
-	11291,
-	2579,
-	11353,
-	11353,
-	14756,
-	5881,
-	14525,
-	15146,
-	15146,
-	15185,
-	20284,
-	15185,
-	15146,
-	14756,
-	20119,
-	21705,
-	20121,
-	20121,
-	21705,
-	21540,
-	21540,
-	20119,
-	21540,
-	20119,
-	20118,
-	20118,
-	20118,
-	20118,
-	22333,
-	18316,
-	19433,
-	18316,
-	20122,
-	20121,
-	17135,
-	20122,
-	20122,
-	22333,
-	17955,
-	19628,
-	16572,
-	17570,
-	16561,
-	16560,
-	16560,
-	19617,
-	19761,
-	17176,
-	18344,
-	22285,
-	22949,
-	17086,
-	18312,
-	16517,
-	22335,
-	22335,
-	22335,
-	22335,
-	14459,
-	11291,
-	14327,
-	14585,
-	14637,
-	11453,
-	14637,
-	11453,
-	14327,
-	14459,
-	14327,
-	11157,
-	14459,
-	11291,
-	14459,
-	14459,
-	11291,
-	14459,
-	11291,
-	14525,
-	14742,
-	22848,
-	22335,
-	22848,
-	22335,
-	22848,
-	22335,
-	22323,
-	14525,
-	11353,
-	22848,
-	22848,
-	22949,
-	22949,
-	22949,
-	22331,
-	20110,
-	22331,
-	14756,
-	21705,
-	20121,
-	21540,
-	20118,
-	22044,
-	20124,
-	22044,
-	20124,
-	21540,
-	21705,
-	21540,
-	20119,
-	21705,
-	20121,
-	21705,
-	21705,
-	20121,
-	21705,
-	20121,
-	21754,
-	20118,
-	21754,
-	20122,
-	22830,
-	22830,
-	5873,
-	14756,
-	22331,
-	22331,
-	20284,
-	20084,
+	15331,
+	12043,
+	15012,
+	15012,
+	15012,
+	11740,
+	3994,
+	15451,
+	23185,
+	21200,
+	22676,
+	22676,
+	22676,
+	21194,
+	15012,
+	11740,
+	15148,
+	11876,
+	15148,
+	11876,
+	15148,
+	15012,
+	15012,
+	11740,
+	15012,
+	15148,
+	15012,
+	11740,
+	15012,
+	11740,
+	11747,
+	15020,
+	11998,
+	15437,
+	12148,
+	15451,
+	6225,
+	10333,
+	6225,
+	10333,
+	11940,
+	15148,
+	11876,
+	10333,
+	10333,
+	2765,
+	11940,
+	11940,
+	15215,
+	15451,
+	15331,
+	12043,
+	15331,
+	6235,
+	15215,
+	15974,
+	15872,
+	15974,
+	15872,
+	16092,
+	15912,
+	11940,
+	6225,
+	21369,
+	15912,
+	15872,
+	15451,
+	22676,
+	21194,
+	22843,
+	21197,
+	22843,
+	21197,
+	22843,
+	22676,
+	22676,
+	21194,
+	22676,
+	22843,
+	22676,
+	21194,
+	21193,
+	21193,
+	21193,
+	21193,
+	21193,
+	23479,
+	19328,
+	20485,
+	19328,
+	20485,
+	21198,
+	22843,
+	21197,
+	19312,
+	20485,
+	17969,
+	21198,
+	21198,
+	22892,
+	23479,
+	23185,
+	18823,
+	20683,
+	17382,
+	18427,
+	17371,
+	17370,
+	17370,
+	20672,
+	20818,
+	18013,
+	19356,
+	23426,
+	24109,
+	17919,
+	19324,
+	17325,
+	23481,
+	23481,
+	23481,
+	23481,
+	15148,
+	11876,
+	15012,
+	15277,
+	15331,
+	12043,
+	15331,
+	12043,
+	15012,
+	11740,
+	15012,
+	11740,
+	15012,
+	11740,
+	15012,
+	11740,
+	15331,
+	12043,
+	15148,
+	15012,
+	11740,
+	15148,
+	11876,
+	15148,
+	11876,
+	15148,
+	11876,
+	15148,
+	15148,
+	11876,
+	15215,
+	11940,
+	15215,
+	15437,
+	15148,
+	11876,
+	24008,
+	23481,
+	24008,
+	23481,
+	24008,
+	23481,
+	23467,
+	15215,
+	11940,
+	15331,
+	12043,
+	15148,
+	11876,
+	24008,
+	24008,
+	24008,
+	11740,
+	24109,
+	24109,
+	24109,
+	23477,
+	21183,
+	23477,
+	15451,
+	22843,
+	21197,
+	22676,
+	21193,
+	23185,
+	21200,
+	23185,
+	21200,
+	22676,
+	21194,
+	22676,
+	21194,
+	22676,
+	21194,
+	22676,
+	21194,
+	23185,
+	21200,
+	22843,
+	22676,
+	21194,
+	22843,
+	21197,
+	22843,
+	21197,
+	22843,
+	21197,
+	22843,
+	22843,
+	21197,
+	21193,
+	21193,
+	22892,
+	21193,
+	22843,
+	21197,
+	22892,
+	21198,
+	23185,
+	21200,
+	22843,
+	21197,
+	23990,
+	23990,
+	23990,
+	21194,
+	6227,
+	15451,
+	23477,
+	23477,
+	21369,
+	21155,
 };
 IL2CPP_EXTERN_C const Il2CppCodeGenModule g_UnityEngine_UIModule_CodeGenModule;
 const Il2CppCodeGenModule g_UnityEngine_UIModule_CodeGenModule = 
 {
 	"UnityEngine.UIModule.dll",
-	165,
+	238,
 	s_methodPointers,
 	0,
 	NULL,

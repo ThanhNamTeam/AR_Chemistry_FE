@@ -1,6 +1,6 @@
 ManifestFileVersion: 0
 UnityVersion: 6000.4.7f1
-CRC: 4223371549
+CRC: 634757003
 HashAppended: 0
 AssetBundleManifest:
   AssetBundleInfos:
@@ -50,5 +50,8 @@ AssetBundleManifest:
       Name: marker_hcl
       Dependencies: {}
     Info_15:
+      Name: marker_naoh
+      Dependencies: {}
+    Info_16:
       Name: marker_fe
       Dependencies: {}

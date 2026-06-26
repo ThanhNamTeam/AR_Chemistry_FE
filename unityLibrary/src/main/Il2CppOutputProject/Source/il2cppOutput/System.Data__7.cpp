@@ -7058,7 +7058,7 @@ IL_0056:
 		int32_t L_15 = V_2;
 		NullCheck(L_12);
 		SortKey_tFE5594FAAAFF330066735114D1021DB0D5273740* L_16;
-		L_16 = VirtualFuncInvoker2< SortKey_tFE5594FAAAFF330066735114D1021DB0D5273740*, String_t*, int32_t >::Invoke(14, L_12, L_14, L_15);
+		L_16 = VirtualFuncInvoker2< SortKey_tFE5594FAAAFF330066735114D1021DB0D5273740*, String_t*, int32_t >::Invoke(16, L_12, L_14, L_15);
 		NullCheck(L_16);
 		ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031* L_17;
 		L_17 = VirtualFuncInvoker0< ByteU5BU5D_tA6237BF417AE52AD70CFB4EF24A7A82613DF9031* >::Invoke(5, L_16);
@@ -9958,7 +9958,7 @@ IL_0013:
 		RuntimeObject* L_9 = ___1_value;
 		NullCheck(L_8);
 		bool L_10;
-		L_10 = VirtualFuncInvoker1< bool, RuntimeObject* >::Invoke(116, L_8, L_9);
+		L_10 = VirtualFuncInvoker1< bool, RuntimeObject* >::Invoke(117, L_8, L_9);
 		if (!L_10)
 		{
 			goto IL_0042;
