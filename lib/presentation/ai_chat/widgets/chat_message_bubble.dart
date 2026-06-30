@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 import '../../../domain/models/ai_chat_models.dart';
 import '../../../shared/styles/app_colors.dart';
@@ -46,18 +47,20 @@ class ChatMessageBubble extends StatelessWidget {
                     border: isUser
                         ? null
                         : Border.all(
-                            color: AppColors.cardBorder.withOpacity(0.6),
+                            color: AppColors.cardBorder.withValues(alpha: 0.6),
                           ),
                   ),
-                  child: Text(
-                    message.content,
-                    style: TextStyle(
-                      fontSize: 15,
-                      height: 1.45,
-                      color: isUser ? Colors.white : AppColors.textPrimary,
-                      fontFamily: 'Inter',
-                    ),
-                  ),
+                  child: isUser
+                      ? SelectableText(
+                          message.content,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            height: 1.45,
+                            color: Colors.white,
+                            fontFamily: 'Inter',
+                          ),
+                        )
+                      : _AssistantMarkdown(content: message.content),
                 ),
                 if (!isUser && message.reusedMemory) ...[
                   const SizedBox(height: 6),
@@ -79,8 +82,8 @@ class ChatMessageBubble extends StatelessWidget {
       height: 32,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: color.withOpacity(0.15),
-        border: Border.all(color: color.withOpacity(0.35)),
+        color: color.withValues(alpha: 0.15),
+        border: Border.all(color: color.withValues(alpha: 0.35)),
       ),
       child: Icon(icon, size: 18, color: color),
     );
@@ -93,9 +96,9 @@ class ChatMessageBubble extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: AppColors.secondary.withOpacity(0.12),
+        color: AppColors.secondary.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: AppColors.secondary.withOpacity(0.3)),
+        border: Border.all(color: AppColors.secondary.withValues(alpha: 0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -111,6 +114,110 @@ class ChatMessageBubble extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _AssistantMarkdown extends StatelessWidget {
+  const _AssistantMarkdown({required this.content});
+
+  final String content;
+
+  @override
+  Widget build(BuildContext context) {
+    final textColor = AppColors.textPrimary;
+    final mutedColor = AppColors.textSecondary;
+    final borderColor = AppColors.cardBorder.withValues(alpha: 0.75);
+    final codeBg = AppColors.backgroundDark.withValues(alpha: 0.72);
+    final inlineCodeBg = AppColors.primary.withValues(alpha: 0.12);
+
+    final baseTextStyle = TextStyle(
+      fontSize: 15,
+      height: 1.55,
+      color: textColor,
+      fontFamily: 'Inter',
+    );
+
+    return MarkdownBody(
+      data: content,
+      selectable: true,
+      styleSheet: MarkdownStyleSheet(
+        p: baseTextStyle,
+        strong: baseTextStyle.copyWith(fontWeight: FontWeight.w700),
+        em: baseTextStyle.copyWith(fontStyle: FontStyle.italic),
+        h1: baseTextStyle.copyWith(
+          fontSize: 24,
+          height: 1.25,
+          fontWeight: FontWeight.w800,
+        ),
+        h2: baseTextStyle.copyWith(
+          fontSize: 21,
+          height: 1.3,
+          fontWeight: FontWeight.w800,
+        ),
+        h3: baseTextStyle.copyWith(
+          fontSize: 18,
+          height: 1.35,
+          fontWeight: FontWeight.w700,
+        ),
+        h4: baseTextStyle.copyWith(
+          fontSize: 16,
+          height: 1.4,
+          fontWeight: FontWeight.w700,
+        ),
+        h5: baseTextStyle.copyWith(
+          fontSize: 15,
+          height: 1.4,
+          fontWeight: FontWeight.w700,
+        ),
+        h6: baseTextStyle.copyWith(
+          fontSize: 14,
+          height: 1.4,
+          fontWeight: FontWeight.w700,
+          color: mutedColor,
+        ),
+        blockquote: baseTextStyle.copyWith(color: mutedColor),
+        blockquoteDecoration: BoxDecoration(
+          border: Border(
+            left: BorderSide(color: AppColors.primary, width: 3),
+          ),
+        ),
+        blockquotePadding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
+        code: TextStyle(
+          fontSize: 14,
+          height: 1.5,
+          color: AppColors.secondaryLight,
+          backgroundColor: inlineCodeBg,
+          fontFamily: 'monospace',
+        ),
+        codeblockDecoration: BoxDecoration(
+          color: codeBg,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: borderColor),
+        ),
+        codeblockPadding: const EdgeInsets.all(12),
+        tableHead: baseTextStyle.copyWith(
+          fontWeight: FontWeight.w700,
+          color: textColor,
+        ),
+        tableBody: baseTextStyle.copyWith(fontSize: 14),
+        tableBorder: TableBorder.all(color: borderColor),
+        tableColumnWidth: const IntrinsicColumnWidth(),
+        tableCellsPadding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 10,
+        ),
+        tableCellsDecoration: BoxDecoration(
+          color: AppColors.backgroundDark.withValues(alpha: 0.16),
+        ),
+        tableScrollbarThumbVisibility: true,
+        listBullet: baseTextStyle,
+        horizontalRuleDecoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(color: borderColor),
+          ),
+        ),
       ),
     );
   }
