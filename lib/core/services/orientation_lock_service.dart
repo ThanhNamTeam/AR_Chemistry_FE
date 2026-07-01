@@ -5,7 +5,7 @@ class OrientationLockService {
   const OrientationLockService._();
 
   static const MethodChannel _channel = MethodChannel(
-    'ar_chemistry_visual/orientation',
+    'labedu/orientation',
   );
 
   static const scannerUnitySceneLoaded = 'scannerUnitySceneLoaded';

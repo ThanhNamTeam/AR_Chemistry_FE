@@ -406,5 +406,5 @@ class ApiConstants {
   }
 
   /// Khi chưa cấu hình BE, lưu feedback cục bộ.
-  static bool get useLocalFallback => baseUrl.contains('example.com');
+  static bool get useLocalFallback => baseUrl.contains('hoaianstudio.com');
 }

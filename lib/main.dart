@@ -1,14 +1,20 @@
-import 'package:ar_chemistry_visual/presentation/ar_view/screens/ar_asset_loading_screen.dart';
-import 'package:ar_chemistry_visual/presentation/feedback/screens/my_feedbacks_screen.dart';
-import 'package:ar_chemistry_visual/presentation/home/screens/my_single_cards_screen.dart';
-import 'package:ar_chemistry_visual/presentation/inventory/screens/substance_detail_screen.dart';
-import 'package:ar_chemistry_visual/presentation/quiz/providers/student_quiz_provider.dart';
-import 'package:ar_chemistry_visual/presentation/quiz/screens/student_quiz_attempt_detail_screen.dart';
-import 'package:ar_chemistry_visual/presentation/quiz/screens/student_quiz_history_screen.dart';
-import 'package:ar_chemistry_visual/presentation/quiz/screens/student_quiz_list_screen.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:labedu/presentation/ar_view/screens/ar_asset_loading_screen.dart';
+import 'package:labedu/presentation/feedback/screens/my_feedbacks_screen.dart';
+import 'package:labedu/presentation/home/screens/my_single_cards_screen.dart';
+import 'package:labedu/presentation/inventory/screens/substance_detail_screen.dart';
+import 'package:labedu/presentation/quiz/providers/student_quiz_provider.dart';
+import 'package:labedu/presentation/quiz/screens/student_quiz_attempt_detail_screen.dart';
+import 'package:labedu/presentation/quiz/screens/student_quiz_history_screen.dart';
+import 'package:labedu/presentation/quiz/screens/student_quiz_list_screen.dart';
 import 'package:provider/provider.dart';
+
+import 'package:firebase_core/firebase_core.dart';
+
+import 'firebase_options.dart';
+import 'services/notification_service.dart';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
@@ -60,6 +66,11 @@ import 'presentation/mini_game/screens/mini_game_screen.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  await NotificationService.instance.init();
   await EnvConfig.load();
   debugPrint('API_BASE_URL = ${EnvConfig.apiBaseUrl}');
   await _configureAmplify();

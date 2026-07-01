@@ -5,6 +5,7 @@ plugins {
     id("com.android.application")
     id("kotlin-android")
     id("dev.flutter.flutter-gradle-plugin")
+    id ("com.google.gms.google-services")
 }
 
 val keystoreProperties = Properties()
@@ -15,17 +16,14 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.example.ar_chemistry_visual"
+    namespace = "com.hoaianstudio.labedu"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
+        isCoreLibraryDesugaringEnabled = true
     }
 
     defaultConfig {
@@ -52,7 +50,16 @@ android {
             if (keystorePropertiesFile.exists()) {
                 signingConfig = signingConfigs.getByName("release")
             }
+
+            isMinifyEnabled = false
+            isShrinkResources = false
         }
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
     }
 }
 
@@ -63,4 +70,8 @@ flutter {
 dependencies {
     implementation(project(":flutter_unity_widget_2"))
     implementation("com.android.billingclient:billing-ktx:7.1.1")
+    implementation("com.google.android.play:feature-delivery:2.1.0")
+    implementation("com.google.android.play:feature-delivery-ktx:2.1.0")
+    implementation("com.google.android.play:review:2.0.2")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 }

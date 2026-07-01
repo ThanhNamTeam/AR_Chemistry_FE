@@ -316,10 +316,10 @@ class ARUnitySession extends ChangeNotifier {
 
   static final ARUnitySession instance = ARUnitySession._();
   static const _permissionsChannel = MethodChannel(
-    'ar_chemistry_visual/permissions',
+    'labedu/permissions',
   );
   static const _unityLayoutChannel = MethodChannel(
-    'ar_chemistry_visual/unity_layout',
+    'labedu/unity_layout',
   );
 
   final Stopwatch _routeStopwatch = Stopwatch();

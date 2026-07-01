@@ -1,5 +1,5 @@
-import 'package:ar_chemistry_visual/core/models/response/reaction_check_response.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:labedu/core/models/response/reaction_check_response.dart';
 
 void main() {
   test('parses matched reaction response', () {

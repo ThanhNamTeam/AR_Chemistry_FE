@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "71152616630",
+    "project_id": "ar-chemistry-notification",
+    "storage_bucket": "ar-chemistry-notification.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:71152616630:android:aa6b30f46d7fe1a514d217",
+        "android_client_info": {
+          "package_name": "com.hoaianstudio.labedu"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9Zgk9CuI85BCbUdebbxylttLDZt5V_cM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

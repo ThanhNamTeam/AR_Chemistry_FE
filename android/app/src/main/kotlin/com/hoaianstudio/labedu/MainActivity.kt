@@ -1,4 +1,4 @@
-package com.example.ar_chemistry_visual
+package com.hoaianstudio.labedu
 
 import android.Manifest
 import android.content.Intent
@@ -159,6 +159,7 @@ class MainActivity : FlutterUnityActivity() {
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         logHost("configureFlutterEngine")
+        Log.i("APP_BUILD_CHECK", "Build versionCode +8 - DownloadManager 2026-06-26")
         super.configureFlutterEngine(flutterEngine)
 
         MethodChannel(

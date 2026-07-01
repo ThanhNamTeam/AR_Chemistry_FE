@@ -54,7 +54,7 @@ class NativeDownloadStartResult {
 
 class NativeDownloadManager {
   static const MethodChannel _channel =
-  MethodChannel('ar_chemistry_visual/download_manager');
+  MethodChannel('labedu/download_manager');
 
   static Future<NativeDownloadStartResult> startDownload({
     required String url,

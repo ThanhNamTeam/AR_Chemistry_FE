@@ -18,7 +18,7 @@ class EnvConfig {
     } catch (e) {
       if (kDebugMode) {
         debugPrint(
-          '[EnvConfig] Không tìm thấy .env — copy .env.example thành .env '
+          '[EnvConfig] Không tìm thấy .env — copy .env.hoaianstudio thành .env '
           'và sửa API_BASE_URL.',
         );
       }

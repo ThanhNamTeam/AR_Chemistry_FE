@@ -77,7 +77,7 @@ app.*.map.json
 # Local machine configuration
 local.properties
 
-# Environment (IP backend thay đổi theo WiFi — xem .env.example)
+# Environment (IP backend thay đổi theo WiFi — xem .env.hoaianstudio)
 .env
 
 android/key.properties
