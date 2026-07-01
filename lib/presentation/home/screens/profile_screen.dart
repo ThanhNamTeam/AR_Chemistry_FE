@@ -479,15 +479,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       const SizedBox(height: 10),
                       _MenuItem(
-                        icon: Icons.qr_code_scanner,
-                        label: l10n.arScanner,
-                        subtitle: l10n.arScannerSubtitle,
-                        color: AppColors.accentLight,
-                        onTap: () =>
-                            Navigator.pushNamed(context, AppRoutes.scan),
-                      ),
-                      const SizedBox(height: 10),
-                      _MenuItem(
                         icon: Icons.feedback_outlined,
                         label: l10n.feedback,
                         subtitle: l10n.feedbackSubtitle,
