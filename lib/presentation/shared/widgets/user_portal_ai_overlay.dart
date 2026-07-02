@@ -20,13 +20,19 @@ class UserPortalAiOverlay extends StatelessWidget {
     final fabVisible = context.watch<AiFabVisibility>().visible;
     final showFab = portal == AppPortal.user && loggedIn && fabVisible;
 
-    return Stack(
-      fit: StackFit.expand,
-      clipBehavior: Clip.none,
-      children: [
-        child,
-        if (showFab) const AiFloatingAssistant(),
-      ],
+    return NotificationListener<ScrollNotification>(
+      onNotification: (notification) {
+        context.read<AiFabVisibility>().onScrollNotification(notification);
+        return false;
+      },
+      child: Stack(
+        fit: StackFit.expand,
+        clipBehavior: Clip.none,
+        children: [
+          child,
+          if (showFab) const AiFloatingAssistant(),
+        ],
+      ),
     );
   }
 }
