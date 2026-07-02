@@ -451,10 +451,12 @@ class MainActivity : FlutterUnityActivity() {
 
     companion object {
         private const val TAG = "ANDROID_HOST_DIAG"
-        private const val PERMISSIONS_CHANNEL = "ar_chemistry_visual/permissions"
-        private const val ORIENTATION_CHANNEL = "ar_chemistry_visual/orientation"
-        private const val UNITY_LAYOUT_CHANNEL = "ar_chemistry_visual/unity_layout"
-        private const val DOWNLOAD_CHANNEL = "ar_chemistry_visual/download_manager"
+
+        private const val PERMISSIONS_CHANNEL = "labedu/permissions"
+        private const val ORIENTATION_CHANNEL = "labedu/orientation"
+        private const val UNITY_LAYOUT_CHANNEL = "labedu/unity_layout"
+        private const val DOWNLOAD_CHANNEL = "labedu/download_manager"
+
         private const val CAMERA_PERMISSION_REQUEST_CODE = 4101
     }
 }

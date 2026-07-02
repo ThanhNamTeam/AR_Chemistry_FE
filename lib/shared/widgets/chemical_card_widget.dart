@@ -170,7 +170,7 @@ class ChemicalCardWidget extends StatelessWidget {
                   child: Column(
                     children: [
                       Text(
-                        '${card.price} KP',
+                        '${card.kpPrice} KP',
                         style: TextStyle(
                           fontSize: 12,
                           color: AppColors.amberLight,

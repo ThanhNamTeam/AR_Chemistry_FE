@@ -53,7 +53,7 @@ class AdminKitApi {
     }
 
     final response = await http.post(
-      Uri.parse(ApiConstants.adminKitsUrl),
+      Uri.parse(ApiConstants.adminCreateKitsUrl),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',

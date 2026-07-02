@@ -6,6 +6,8 @@ import 'package:path/path.dart' as p;
 
 
 import '../../../core/api/chemical_card_api.dart';
+import '../../../core/api/knowledge_point_api.dart';
+import '../../../core/api/notification_token_api.dart';
 import '../../../core/api/single_card_api.dart';
 import '../../../core/models/response/card_bundle_response.dart';
 import '../../../core/models/response/chemical_card_response.dart';
@@ -29,6 +31,7 @@ import '../../../core/api/upload_api.dart';
 import '../../../core/models/request/generate_upload_url_request.dart';
 import '../../../core/api/package_api.dart';
 import '../../../core/models/response/package_response.dart';
+import '../../../services/notification_service.dart';
 
 
 
@@ -52,6 +55,18 @@ class AppState extends ChangeNotifier {
   int _mySingleCardsPage = 0;
   bool _mySingleCardsLast = false;
 
+  final KnowledgePointApi _knowledgePointApi = KnowledgePointApi();
+
+  int _knowledgePoints = 0;
+  int _totalEarnedKnowledgePoints = 0;
+  int _totalSpentKnowledgePoints = 0;
+  bool _loadingKnowledgePoints = false;
+
+  int get knowledgePoints => _knowledgePoints;
+  int get totalEarnedKnowledgePoints => _totalEarnedKnowledgePoints;
+  int get totalSpentKnowledgePoints => _totalSpentKnowledgePoints;
+  bool get loadingKnowledgePoints => _loadingKnowledgePoints;
+
   List<MySingleCardPurchaseResponse> get mySingleCards =>
       List.unmodifiable(_mySingleCards);
 
@@ -69,7 +84,6 @@ class AppState extends ChangeNotifier {
   String? _userPhone;
   String? _userAvatar;
   bool _isLoggedIn = false;
-  int _knowledgePoints = defaultKnowledgePoints;
 
   // Cards state
   final List<ChemicalCardModel> _cards =
@@ -79,7 +93,7 @@ class AppState extends ChangeNotifier {
     name: c.name,
     atomicNumber: c.atomicNumber,
     color: c.color,
-    price: c.price,
+    kpPrice: c.kpPrice,
     category: c.category,
     isUnlocked: c.isUnlocked,
   )).toList();
@@ -167,7 +181,6 @@ class AppState extends ChangeNotifier {
   String? get userPhone => _userPhone;
   String? get userAvatar => _userAvatar;
   bool get isLoggedIn => _isLoggedIn;
-  int get knowledgePoints => _knowledgePoints;
   List<ChemicalCardModel> get cards => List.unmodifiable(_cards);
   List<CartItem> get cart => List.unmodifiable(_cart);
   List<MyBagItem> get myBag => List.unmodifiable(_myBag);
@@ -207,6 +220,26 @@ class AppState extends ChangeNotifier {
 
     _initialized = true;
     notifyListeners();
+  }
+
+  Future<void> refreshKnowledgePoints() async {
+    if (_loadingKnowledgePoints) return;
+
+    _loadingKnowledgePoints = true;
+    notifyListeners();
+
+    try {
+      final wallet = await _knowledgePointApi.getMyKnowledgePoints();
+
+      _knowledgePoints = wallet.balance;
+      _totalEarnedKnowledgePoints = wallet.totalEarned;
+      _totalSpentKnowledgePoints = wallet.totalSpent;
+    } catch (e) {
+      debugPrint('Refresh knowledge points failed: $e');
+    } finally {
+      _loadingKnowledgePoints = false;
+      notifyListeners();
+    }
   }
 
   Future<bool> loadMySingleCards({
@@ -383,6 +416,8 @@ class AppState extends ChangeNotifier {
       return null;
     }
   }
+
+
 
   Future<bool> loadShopCardBundles({
     bool refresh = false,
@@ -589,6 +624,29 @@ class AppState extends ChangeNotifier {
 
 
   Future<void> logout() async {
+    // 1. Deactivate FCM token trước khi xóa auth local
+    try {
+      final fcmToken = await NotificationService.instance.getFcmToken();
+
+      if (fcmToken != null && fcmToken.isNotEmpty) {
+        await NotificationTokenApi().logoutCurrentDevice(
+          fcmToken: fcmToken,
+        );
+
+        safePrint('FCM token deactivated successfully');
+      }
+    } catch (e) {
+      safePrint('Deactivate FCM token failed, continue logout: $e');
+    }
+
+    // 2. Dừng listener refresh token
+    try {
+      await NotificationService.instance.stopTokenRefreshListener();
+    } catch (e) {
+      safePrint('Stop FCM refresh listener failed: $e');
+    }
+
+    // 3. Clear state trong app
     _isLoggedIn = false;
     _userName = null;
     _userEmail = null;
@@ -600,6 +658,7 @@ class AppState extends ChangeNotifier {
 
     notifyListeners();
 
+    // 4. Sign out Cognito
     try {
       await Amplify.Auth.signOut();
     } catch (e) {
@@ -767,7 +826,7 @@ class AppState extends ChangeNotifier {
     return BundlePricing.calculate(
       bundle,
       isCardOwned,
-          (id) => getCardById(id)?.price ?? 0,
+          (id) => getCardById(id)?.kpPrice ?? 0,
     );
   }
 
@@ -825,7 +884,7 @@ class AppState extends ChangeNotifier {
 
   int getCartItemPrice(CartItem item) {
     if (item.type == CartItemType.card) {
-      return getCardById(item.id)?.price ?? 0;
+      return getCardById(item.id)?.kpPrice ?? 0;
     }
     return getBundleQuote(item.id).totalPrice;
   }
@@ -840,8 +899,8 @@ class AppState extends ChangeNotifier {
     if (card == null || !canPurchaseCard(cardId)) return false;
 
     if (deductPoints) {
-      if (_knowledgePoints < card.price) return false;
-      _knowledgePoints -= card.price;
+      if (_knowledgePoints < card.kpPrice) return false;
+      _knowledgePoints -= card.kpPrice;
     }
 
     _myBag.add(MyBagItem(cardId: cardId));

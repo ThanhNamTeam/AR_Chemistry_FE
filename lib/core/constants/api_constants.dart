@@ -76,6 +76,21 @@ class ApiConstants {
     return '$baseUrl$devFakePurchasePath/ar-30-days';
   }
 
+  //notification
+  static String get notificationTokensUrl {
+    return '$baseUrl/notification-tokens';
+  }
+
+
+  static String get notificationTokenLogoutUrl {
+    return '$baseUrl/notification-tokens/logout';
+  }
+
+  // knowledge points
+  static String get knowledgePointsMeUrl {
+    return '$baseUrl/knowledge-points/me';
+  }
+
   // inventory
   static const String inventoryPath = '/inventory';
 
@@ -231,7 +246,7 @@ class ApiConstants {
   static final String singleCardsUrl = '$baseUrl/single-cards';
 
   static String fakeBuySingleCardUrl =
-      '$baseUrl/single-card-purchases/fake-buy';
+      '$baseUrl/single-card-purchases/buy';
 
   static String mySingleCardPurchasesUrl =
       '$baseUrl/single-card-purchases/my';
@@ -322,6 +337,10 @@ class ApiConstants {
 
   static String get adminKitsUrl {
     return '$baseUrl$adminKitsPath';
+  }
+
+  static String get adminCreateKitsUrl {
+    return '$baseUrl$adminKitsPath/full-kit';
   }
 
   static String adminKitDetailUrl(String id) {

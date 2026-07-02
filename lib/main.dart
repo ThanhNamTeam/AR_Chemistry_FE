@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 
+import 'core/utils/app_snackbar.dart';
 import 'firebase_options.dart';
 import 'services/notification_service.dart';
 
@@ -66,9 +67,7 @@ import 'presentation/mini_game/screens/mini_game_screen.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   await NotificationService.instance.init();
   await EnvConfig.load();
@@ -136,6 +135,7 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
       child: Consumer2<ThemeProvider, LocaleProvider>(
         builder: (context, themeProvider, localeProvider, _) {
           return MaterialApp(
+            scaffoldMessengerKey: rootScaffoldMessengerKey,
             navigatorKey: _navigatorKey,
             title: 'AR Chemistry Lab',
             debugShowCheckedModeBanner: false,
@@ -148,10 +148,17 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
             routes: _buildRoutes(),
             onGenerateRoute: _onGenerateRoute,
             builder: (context, child) {
-              return ARUnityHost(
-                child: UserPortalAiOverlay(
-                  child: child ?? const SizedBox.shrink(),
-                ),
+              return Stack(
+                fit: StackFit.expand,
+                children: [
+                  ARUnityHost(
+                    child: UserPortalAiOverlay(
+                      child: child ?? const SizedBox.shrink(),
+                    ),
+                  ),
+
+                  const AppToastOverlay(),
+                ],
               );
             },
           );
@@ -206,9 +213,7 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
 
       return MaterialPageRoute(
         settings: settings,
-        builder: (_) => SubstanceDetailScreen(
-          substanceId: substanceId,
-        ),
+        builder: (_) => SubstanceDetailScreen(substanceId: substanceId),
       );
     }
 

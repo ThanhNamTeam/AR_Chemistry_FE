@@ -108,6 +108,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     )..repeat(reverse: true);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       activatePortal(context, AppPortal.user);
+      context.read<AppState>().refreshKnowledgePoints();
       _showWelcomeMessage();
     });
   }

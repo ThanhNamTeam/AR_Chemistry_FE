@@ -84,7 +84,7 @@ function Test-MergedManifest {
 
     Write-BuildCheck "launcher activities=$($LauncherActivities -join ',')"
     Assert-Check 'merged manifest has exactly one launcher activity' ($LauncherActivities.Count -eq 1)
-    Assert-Check 'launcher activity is Flutter MainActivity' ($LauncherActivities[0] -eq 'com.example.ar_chemistry_visual.MainActivity')
+    Assert-Check 'launcher activity is Flutter MainActivity' ($LauncherActivities[0] -eq 'com.hoaianstudio.labedu.MainActivity')
 }
 
 function Test-ApkContents {

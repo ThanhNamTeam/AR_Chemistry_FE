@@ -1,5 +1,6 @@
 ﻿import 'dart:async';
 import 'dart:convert';
+import 'package:provider/provider.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -8,8 +9,11 @@ import 'package:flutter_unity_widget_2/flutter_unity_widget_2.dart';
 import 'package:dio/dio.dart';
 
 import '../../../core/api/reaction_check_api.dart';
+import '../../../core/models/response/reaction_check_response.dart';
+import '../../../core/utils/app_snackbar.dart';
 import '../../../routes/app_routes.dart';
 import '../../../shared/styles/app_colors.dart';
+import '../../home/providers/app_state.dart';
 
 class ARCameraView extends StatefulWidget {
   const ARCameraView({super.key, this.portalBorderRadius = 22});
@@ -31,6 +35,32 @@ class _ARCameraViewState extends State<ARCameraView>
   @override
   void initState() {
     super.initState();
+
+    _session.onReactionMatched = (result) async {
+      if (!mounted) return;
+
+      final reward = result.arScanReward;
+
+      await context.read<AppState>().refreshKnowledgePoints();
+
+      if (reward == null) {
+        debugPrint('[AR_KP] arScanReward is null');
+        return;
+      }
+
+      final message = reward.message.isNotEmpty
+          ? reward.message
+          : reward.rewarded
+          ? 'Bạn vừa nhận được ${reward.kpEarned} KP!'
+          : 'Phản ứng chính xác! Hôm nay bạn đã đạt giới hạn nhận KP từ quét AR.';
+
+      AppSnackBar.show(
+        message: message,
+        backgroundColor: reward.rewarded ? AppColors.secondary : Colors.orange,
+        icon: reward.rewarded ? Icons.bolt : Icons.info_outline,
+      );
+    };
+
     _session.markRouteOpened();
     _session.logWidgetLifecycle('ARCameraView initState');
     WidgetsBinding.instance.addPostFrameCallback((_) => _syncPortal());
@@ -39,6 +69,7 @@ class _ARCameraViewState extends State<ARCameraView>
   @override
   void dispose() {
     _session.logWidgetLifecycle('ARCameraView dispose');
+    _session.onReactionMatched = null;
     appRouteObserver.unsubscribe(this);
     _session.hidePortal(this);
     super.dispose();
@@ -315,6 +346,7 @@ class ARUnitySession extends ChangeNotifier {
   ARUnitySession._();
 
   static final ARUnitySession instance = ARUnitySession._();
+  Future<void> Function(ReactionCheckResponse result)? onReactionMatched;
   static const _permissionsChannel = MethodChannel(
     'labedu/permissions',
   );
@@ -568,7 +600,14 @@ class ARUnitySession extends ChangeNotifier {
           qrPayloads: qrPayloads,
           cancelToken: cancelToken,
         );
+
         if (!_isLatestReactionRequest(requestId, generation, signature)) return;
+
+        if (result.matched == true) {
+          debugPrint('[AR_KP] matched=true, reward=${result.arScanReward}');
+          await onReactionMatched?.call(result);
+        }
+
         await _sendReactionCheckResult(<String, Object?>{
           'requestId': requestId,
           'trackingGeneration': generation,

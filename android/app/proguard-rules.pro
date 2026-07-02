@@ -9,7 +9,7 @@
 -keep class com.xraph.plugin.flutter_unity_widget_2.** { *; }
 
 # Your native Android host / MethodChannel
--keep class com.example.ar_chemistry_visual.** { *; }
+-keep class com.hoaianstudio.labedu.** { *; }
 -keep class com.hoaianstudio.labedu.** { *; }
 
 # Android DownloadManager / Broadcast / MethodChannel names

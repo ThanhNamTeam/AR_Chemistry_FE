@@ -11,6 +11,7 @@ import '../../../core/portal/portal_scope.dart';
 import '../../../domain/models/app_portal.dart';
 import '../../../domain/models/login_route_args.dart';
 import '../../../domain/models/user_role.dart';
+import '../../../services/notification_service.dart';
 import '../../home/providers/theme_provider.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../providers/role_session_provider.dart';
@@ -25,6 +26,7 @@ import '../widgets/auth_app_logo_badge.dart';
 import '../widgets/cyber_beam_border.dart';
 import '../widgets/cyber_login_frame.dart';
 import '../../../core/l10n/app_localizations.dart';
+import '../../../core/api/notification_token_api.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -98,21 +100,35 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     if (roleSession.isStaff) {
       await activatePortal(context, AppPortal.staff);
       if (!mounted) return;
+
       Navigator.pushReplacementNamed(context, AppRoutes.staffHome);
       return;
     }
+
     if (roleSession.isAdmin) {
       await activatePortal(context, AppPortal.admin);
       if (!mounted) return;
+
       Navigator.pushReplacementNamed(context, AppRoutes.adminHome);
       return;
     }
+
     final state = context.read<AppState>();
-    if (!state.initialized) await state.initialize();
+
+    if (!state.initialized) {
+      await state.initialize();
+    }
+
     if (mounted && state.isLoggedIn) {
       await activatePortal(context, AppPortal.user);
       if (!mounted) return;
+
       Navigator.pushReplacementNamed(context, AppRoutes.home);
+
+      // Đợi Home dựng xong rồi mới xử lý notification pending
+      Future.delayed(const Duration(milliseconds: 500), () {
+        NotificationService.instance.handlePendingNavigationAfterLoginReady();
+      });
     }
   }
 
@@ -126,9 +142,47 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
 
   Future<void> _goHome(String welcome) async {
     debugPrint('LOGIN: navigating to home');
+
     await AppNavigator.pushNamedAndRemoveAll(
       AppRoutes.home,
       arguments: HomeRouteArgs(welcomeMessage: welcome),
+    );
+
+    NotificationService.instance.handlePendingNavigationAfterLoginReady();
+  }
+
+  Future<void> _registerFcmTokenAfterLogin() async {
+    try {
+      final fcmToken = await NotificationService.instance.getFcmToken();
+
+      if (fcmToken == null || fcmToken.isEmpty) {
+        debugPrint('FCM token is empty, skip register');
+        return;
+      }
+
+      await NotificationTokenApi().registerFcmToken(
+        fcmToken: fcmToken,
+        deviceName: 'Android Device',
+      );
+
+      debugPrint('FCM token registered successfully');
+    } catch (e) {
+      debugPrint('Register FCM token failed: $e');
+    }
+  }
+
+  Future<void> _setupNotificationAfterLogin() async {
+    await _registerFcmTokenAfterLogin();
+
+    NotificationService.instance.startTokenRefreshListener(
+      onRefresh: (newToken) async {
+        await NotificationTokenApi().registerFcmToken(
+          fcmToken: newToken,
+          deviceName: 'Android Device',
+        );
+
+        debugPrint('FCM refreshed token registered successfully');
+      },
     );
   }
 
@@ -138,6 +192,8 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     required String idToken,
   }) async {
     debugPrint('LOGIN: navigate role=$role email=$email');
+
+    unawaited(_setupNotificationAfterLogin());
 
     final roleSession = context.read<RoleSessionProvider>();
     final appState = context.read<AppState>();

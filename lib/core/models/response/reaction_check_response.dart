@@ -1,3 +1,5 @@
+import 'ar_scan_reward_response.dart';
+
 class ReactionCheckResponse {
   const ReactionCheckResponse({
     required this.matched,
@@ -8,6 +10,7 @@ class ReactionCheckResponse {
     required this.reactantFormulas,
     this.reactionCode,
     this.equation,
+    this.arScanReward,
   });
 
   final bool matched;
@@ -18,6 +21,7 @@ class ReactionCheckResponse {
   final List<String> affectedQrPayloads;
   final List<String> affectedFormulas;
   final List<String> reactantFormulas;
+  final ArScanRewardResponse? arScanReward;
 
   factory ReactionCheckResponse.fromJson(Map<String, dynamic> json) {
     List<String> strings(Object? value) => value is List
@@ -27,18 +31,21 @@ class ReactionCheckResponse {
     final reactants = json['reactants'];
     final reactantFormulas = reactants is List
         ? reactants
-              .whereType<Map>()
-              .map((item) => item['formula'])
-              .whereType<String>()
-              .toList(growable: false)
+        .whereType<Map>()
+        .map((item) => item['formula'])
+        .whereType<String>()
+        .toList(growable: false)
         : const <String>[];
 
     final matched = json['matched'];
     final reason = json['reason'];
     final message = json['message'];
+
     if (matched is! bool || reason is! String || message is! String) {
       throw const FormatException('Invalid reaction-check response');
     }
+
+    final rawArScanReward = json['reward'];
 
     return ReactionCheckResponse(
       matched: matched,
@@ -49,6 +56,11 @@ class ReactionCheckResponse {
       affectedQrPayloads: strings(json['affectedQrPayloads']),
       affectedFormulas: strings(json['affectedFormulas']),
       reactantFormulas: reactantFormulas,
+      arScanReward: rawArScanReward is Map
+          ? ArScanRewardResponse.fromJson(
+        Map<String, dynamic>.from(rawArScanReward),
+      )
+          : null,
     );
   }
 
@@ -61,5 +73,6 @@ class ReactionCheckResponse {
     'affectedQrPayloads': affectedQrPayloads,
     'affectedFormulas': affectedFormulas,
     'reactantFormulas': reactantFormulas,
+    if (arScanReward != null) 'arScanReward': arScanReward!.toBridgeJson(),
   };
 }

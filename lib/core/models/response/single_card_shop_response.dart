@@ -5,10 +5,12 @@ class SingleCardShopResponse {
   final String code;
   final String name;
   final String? description;
-  final int price;
+
+  /// Giá card bằng Knowledge Point
+  final int kpPrice;
+
   final int durationDays;
   final bool active;
-  final String? googlePlayProductId;
 
   final String substanceId;
   final String substanceFormula;
@@ -22,10 +24,9 @@ class SingleCardShopResponse {
     required this.code,
     required this.name,
     this.description,
-    required this.price,
+    required this.kpPrice,
     required this.durationDays,
     required this.active,
-    this.googlePlayProductId,
     required this.substanceId,
     required this.substanceFormula,
     required this.substanceName,
@@ -36,18 +37,17 @@ class SingleCardShopResponse {
 
   factory SingleCardShopResponse.fromJson(Map<String, dynamic> json) {
     return SingleCardShopResponse(
-      id: json['id'] ?? '',
-      code: json['code'] ?? '',
-      name: json['name'] ?? '',
-      description: json['description'],
-      price: _toInt(json['price']),
+      id: json['id']?.toString() ?? '',
+      code: json['code']?.toString() ?? '',
+      name: json['name']?.toString() ?? '',
+      description: json['description']?.toString(),
+      kpPrice: _toInt(json['kpPrice']),
       durationDays: _toInt(json['durationDays']),
       active: json['active'] == true,
-      googlePlayProductId: json['googlePlayProductId'],
-      substanceId: json['substanceId'] ?? '',
-      substanceFormula: json['substanceFormula'] ?? '',
-      substanceName: json['substanceName'] ?? '',
-      substanceVietnameseName: json['substanceVietnameseName'],
+      substanceId: json['substanceId']?.toString() ?? '',
+      substanceFormula: json['substanceFormula']?.toString() ?? '',
+      substanceName: json['substanceName']?.toString() ?? '',
+      substanceVietnameseName: json['substanceVietnameseName']?.toString(),
       frontImageUrl: json['frontImageUrl'] as String?,
       backImageUrl: json['backImageUrl'] as String?,
     );
@@ -57,6 +57,7 @@ class SingleCardShopResponse {
     if (value == null) return 0;
     if (value is int) return value;
     if (value is double) return value.round();
+    if (value is num) return value.toInt();
     if (value is String) return double.tryParse(value)?.round() ?? 0;
     return 0;
   }

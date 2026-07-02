@@ -8,7 +8,7 @@ class ChemicalCardModel {
   final String name;
   final int atomicNumber;
   final Color color;
-  final int price;
+  final int kpPrice;
   final CardCategory category;
   final String? frontImageUrl;
   final String? backImageUrl;
@@ -20,7 +20,7 @@ class ChemicalCardModel {
     required this.name,
     required this.atomicNumber,
     required this.color,
-    required this.price,
+    required this.kpPrice,
     this.category = CardCategory.element,
     this.frontImageUrl,
     this.backImageUrl,
@@ -92,7 +92,7 @@ class ChemicalData {
           name: 'Hydrogen',
           atomicNumber: 1,
           color: const Color(0xFF06B6D4),
-          price: 3000,
+          kpPrice: 3000,
           isUnlocked: true,
         ),
         ChemicalCardModel(
@@ -101,7 +101,7 @@ class ChemicalData {
           name: 'Oxygen',
           atomicNumber: 8,
           color: const Color(0xFF3B82F6),
-          price: 3000,
+          kpPrice: 3000,
           isUnlocked: true,
         ),
         ChemicalCardModel(
@@ -110,7 +110,7 @@ class ChemicalData {
           name: 'Sodium',
           atomicNumber: 11,
           color: const Color(0xFFF59E0B),
-          price: 3000,
+          kpPrice: 3000,
         ),
         ChemicalCardModel(
           id: 'Mg',
@@ -118,7 +118,7 @@ class ChemicalData {
           name: 'Magnesium',
           atomicNumber: 12,
           color: const Color(0xFF84CC16),
-          price: 3000,
+          kpPrice: 3000,
         ),
         ChemicalCardModel(
           id: 'Cl',
@@ -126,7 +126,7 @@ class ChemicalData {
           name: 'Chlorine',
           atomicNumber: 17,
           color: const Color(0xFF22C55E),
-          price: 3000,
+          kpPrice: 3000,
         ),
         ChemicalCardModel(
           id: 'Ca',
@@ -134,7 +134,7 @@ class ChemicalData {
           name: 'Calcium',
           atomicNumber: 20,
           color: const Color(0xFFA3E635),
-          price: 3000,
+          kpPrice: 3000,
         ),
         ChemicalCardModel(
           id: 'Fe',
@@ -142,7 +142,7 @@ class ChemicalData {
           name: 'Iron',
           atomicNumber: 26,
           color: const Color(0xFFEF4444),
-          price: 3500,
+          kpPrice: 3500,
         ),
         ChemicalCardModel(
           id: 'Cu',
@@ -150,7 +150,7 @@ class ChemicalData {
           name: 'Copper',
           atomicNumber: 29,
           color: const Color(0xFFF97316),
-          price: 3500,
+          kpPrice: 3500,
         ),
         ChemicalCardModel(
           id: 'H2O',
@@ -158,7 +158,7 @@ class ChemicalData {
           name: 'Water',
           atomicNumber: 0,
           color: const Color(0xFF0EA5E9),
-          price: 6000,
+          kpPrice: 6000,
           category: CardCategory.compound,
         ),
         ChemicalCardModel(
@@ -167,7 +167,7 @@ class ChemicalData {
           name: 'Salt',
           atomicNumber: 0,
           color: const Color(0xFF94A3B8),
-          price: 6000,
+          kpPrice: 6000,
           category: CardCategory.compound,
         ),
         ChemicalCardModel(
@@ -176,7 +176,7 @@ class ChemicalData {
           name: 'Sulfuric Acid',
           atomicNumber: 0,
           color: const Color(0xFFEAB308),
-          price: 6500,
+          kpPrice: 6500,
           category: CardCategory.compound,
         ),
       ];

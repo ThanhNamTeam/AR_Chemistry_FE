@@ -6,6 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import '../../../core/models/response/card_bundle_response.dart';
 import '../../../core/models/response/single_card_purchase_response.dart';
+import '../../../core/models/response/single_card_shop_response.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../../shared/widgets/knowledge_points_badge.dart';
 import '../../../shared/widgets/flash_card_flip_view.dart';
@@ -41,6 +42,7 @@ class _ShopScreenState extends State<ShopScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final state = context.read<AppState>();
 
+      state.refreshKnowledgePoints();
       state.loadShopSingleCards(refresh: true);
       state.loadMySingleCards(refresh: true);
       state.loadShopCardBundles(refresh: true);
@@ -172,6 +174,12 @@ class _ShopScreenState extends State<ShopScreen> {
       return;
     }
 
+    await state.refreshKnowledgePoints();
+    await state.loadMySingleCards(refresh: true);
+    await state.loadShopSingleCards(refresh: true);
+
+    if (!mounted) return;
+
     _showToast(l10n.cardPurchasedSuccess);
     _showPurchasedQrDialog(purchase);
   }
@@ -284,24 +292,7 @@ class _ShopScreenState extends State<ShopScreen> {
     context.watch<ThemeProvider>();
     final state = context.watch<AppState>();
     final l10n = AppLocalizations.of(context);
-    final catalog = state.shopSingleCards
-
-        .map((card) => ChemicalCardModel(
-              id: card.id,
-              symbol: card.substanceFormula,
-              name: (card.substanceVietnameseName != null &&
-                      card.substanceVietnameseName!.isNotEmpty)
-                  ? card.substanceVietnameseName!
-                  : card.substanceName,
-              atomicNumber: 0,
-              color: AppColors.primary,
-              price: card.price,
-              category: CardCategory.element,
-              isUnlocked: state.isSingleCardOwned(card.id),
-              frontImageUrl: card.frontImageUrl,
-              backImageUrl: card.backImageUrl,
-            ))
-        .toList();
+    final singleCards = state.shopSingleCards;
     final bundles = state.shopCardBundles;
 
 
@@ -496,10 +487,9 @@ class _ShopScreenState extends State<ShopScreen> {
                                 mainAxisSpacing: 12,
                                 childAspectRatio: 0.72,
                               ),
-                              itemCount: catalog.length,
+                              itemCount: singleCards.length,
                               itemBuilder: (ctx, i) {
-                                final card = catalog[i];
-
+                                final card = singleCards[i];
                                 final owned = state.isSingleCardOwned(card.id);
 
                                 return _SingleCardShopTile(
@@ -975,7 +965,7 @@ class _InfoRow extends StatelessWidget {
 }
 
 class _SingleCardShopTile extends StatelessWidget {
-  final ChemicalCardModel card;
+  final SingleCardShopResponse card;
   final bool owned;
   final VoidCallback? onBuy;
 
@@ -985,12 +975,24 @@ class _SingleCardShopTile extends StatelessWidget {
     required this.onBuy,
   });
 
+  String _formatKp(int value) {
+    if (value >= 1000) {
+      return '${(value / 1000).toStringAsFixed(1)}K KP';
+    }
+    return '$value KP';
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final borderColor = owned
         ? AppColors.secondary.withOpacity(0.55)
         : AppColors.primary.withOpacity(0.35);
+
+    final displayName = (card.substanceVietnameseName != null &&
+        card.substanceVietnameseName!.isNotEmpty)
+        ? card.substanceVietnameseName!
+        : card.substanceName;
 
     return Container(
       decoration: BoxDecoration(
@@ -1010,8 +1012,8 @@ class _SingleCardShopTile extends StatelessWidget {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(16),
                       child: FlashCardFlipView(
-                        substanceFormula: card.symbol,
-                        substanceName: card.name,
+                        substanceFormula: card.substanceFormula,
+                        substanceName: displayName,
                         frontImageUrl: card.frontImageUrl,
                         backImageUrl: card.backImageUrl,
                         borderRadius: BorderRadius.circular(16),
@@ -1046,7 +1048,6 @@ class _SingleCardShopTile extends StatelessWidget {
               ),
             ),
           ),
-
           Container(
             width: double.infinity,
             padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
@@ -1092,7 +1093,7 @@ class _SingleCardShopTile extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  '${card.price} KP',
+                  _formatKp(card.kpPrice),
                   style: TextStyle(
                     color: AppColors.textAmber,
                     fontSize: 16,
