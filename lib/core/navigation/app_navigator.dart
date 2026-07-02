@@ -8,6 +8,13 @@ class AppNavigator {
 
   static NavigatorState? get state => key.currentState;
 
+  /// Route name of the topmost visible route (for FAB scroll behavior).
+  static String? get currentRouteName {
+    final context = key.currentContext;
+    if (context == null) return null;
+    return ModalRoute.of(context)?.settings.name;
+  }
+
   static Future<T?>? pushNamedAndRemoveAll<T extends Object?>(
     String route, {
     Object? arguments,
