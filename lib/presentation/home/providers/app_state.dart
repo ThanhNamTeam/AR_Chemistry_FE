@@ -375,6 +375,7 @@ class AppState extends ChangeNotifier {
       final purchase = await _singleCardApi.fakeBuySingleCard(singleCardId);
 
       _lastSingleCardPurchase = purchase;
+      await loadMySingleCards(refresh: true);
 
       notifyListeners();
       return purchase;
