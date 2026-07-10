@@ -6,18 +6,11 @@ import 'package:flutter/foundation.dart';
 import '../constants/api_constants.dart';
 import '../models/request/create_payment_request.dart';
 import '../models/response/ar_access_response.dart';
+import '../models/response/package_ownership_response.dart';
 import '../models/response/page_response.dart';
 import '../models/response/payment_response.dart';
 
-import 'dart:convert';
 
-import 'package:http/http.dart' as http;
-import 'package:flutter/foundation.dart';
-
-import '../constants/api_constants.dart';
-import '../models/request/create_payment_request.dart';
-import '../models/response/page_response.dart';
-import '../models/response/payment_response.dart';
 import '../services/auth_token_service.dart';
 
 class PaymentApi {
@@ -127,6 +120,27 @@ class PaymentApi {
 
     throw Exception(
       'Verify Google Play failed: ${response.statusCode} - ${response.body}',
+    );
+  }
+
+  /// USER check đã sở hữu gói AR 30 Days chưa
+  Future<PackageOwnershipResponse> getAr30DaysOwnership() async {
+    final response = await http.get(
+      Uri.parse(ApiConstants.ar30DaysOwnershipUrl),
+      headers: await _authHeaders(),
+    );
+
+    debugPrint('AR 30 Days ownership status: ${response.statusCode}');
+    debugPrint('AR 30 Days ownership response: ${response.body}');
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final json = jsonDecode(response.body);
+
+      return PackageOwnershipResponse.fromJson(json['data'] ?? json);
+    }
+
+    throw Exception(
+      'Get AR 30 Days ownership failed: ${response.statusCode} - ${response.body}',
     );
   }
 }

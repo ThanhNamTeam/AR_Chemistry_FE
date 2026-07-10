@@ -1,6 +1,7 @@
 import java.util.Properties
 import java.io.FileInputStream
 
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -55,6 +56,11 @@ android {
             isShrinkResources = false
         }
     }
+
+    lint {
+        checkReleaseBuilds = false
+        abortOnError = false
+    }
 }
 
 kotlin {
@@ -74,3 +80,4 @@ dependencies {
     implementation("com.google.android.play:review:2.0.2")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 }
+

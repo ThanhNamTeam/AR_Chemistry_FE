@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 
 import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
@@ -22,6 +23,11 @@ class PackageScreen extends StatefulWidget {
 class _PackageScreenState extends State<PackageScreen> {
   bool _isLoading = false;
   bool _isPurchasing = false;
+  bool _ownsAr30Days = false;
+
+  int _ar30DaysRemainingDays = 0;
+  String? _ar30DaysExpiredAt;
+
 
   ProductDetails? _googlePlayProduct;
   String _googlePlayPriceText = 'Đang tải giá...';
@@ -61,11 +67,39 @@ class _PackageScreenState extends State<PackageScreen> {
       setState(() => _isLoading = true);
 
       await context.read<AppState>().loadPackages();
+      await _loadAr30DaysOwnership();
       await _loadGooglePlayProduct();
+      await _recoverOldPurchases();
 
       if (!mounted) return;
       setState(() => _isLoading = false);
     });
+  }
+
+  Future<void> _loadAr30DaysOwnership() async {
+    try {
+      final ownership = await _paymentApi.getAr30DaysOwnership();
+
+      if (!mounted) return;
+
+      setState(() {
+        _ownsAr30Days = ownership.owned;
+        _ar30DaysRemainingDays = ownership.remainingDays;
+        _ar30DaysExpiredAt = ownership.expiredAt;
+      });
+    } catch (e) {
+      debugPrint('[AR_30_DAYS_OWNERSHIP] load failed: $e');
+    }
+  }
+  Future<void> _recoverOldPurchases() async {
+    try {
+      final available = await _inAppPurchase.isAvailable();
+      if (!available) return;
+
+      await _inAppPurchase.restorePurchases();
+    } catch (e) {
+      debugPrint('[IAP] recover old purchases failed: $e');
+    }
   }
 
   Future<void> _loadGooglePlayProduct() async {
@@ -129,11 +163,11 @@ class _PackageScreenState extends State<PackageScreen> {
       }
 
       final product = response.productDetails.first;
-
       final purchaseParam = PurchaseParam(productDetails: product);
 
-      await _inAppPurchase.buyNonConsumable(
+      await _inAppPurchase.buyConsumable(
         purchaseParam: purchaseParam,
+        autoConsume: false,
       );
     } catch (e) {
       if (!mounted) return;
@@ -141,7 +175,11 @@ class _PackageScreenState extends State<PackageScreen> {
       setState(() => _isPurchasing = false);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${AppLocalizations.of(context).purchasePackageFailed}: $e')),
+        SnackBar(
+          content: Text(
+            '${AppLocalizations.of(context).purchasePackageFailed}: $e',
+          ),
+        ),
       );
     }
   }
@@ -157,7 +195,9 @@ class _PackageScreenState extends State<PackageScreen> {
       if (purchase.status == PurchaseStatus.error) {
         if (!mounted) return;
 
-        setState(() => _isPurchasing = false);
+        setState(() {
+          _isPurchasing = false;
+        });
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -172,10 +212,20 @@ class _PackageScreenState extends State<PackageScreen> {
       if (purchase.status == PurchaseStatus.purchased ||
           purchase.status == PurchaseStatus.restored) {
         try {
+          if (purchase.productID != _googlePlayProductId) {
+            continue;
+          }
+
           final access = await _paymentApi.verifyGooglePlayPurchase(
             productId: purchase.productID,
             purchaseToken: purchase.verificationData.serverVerificationData,
           );
+
+          final androidAddition =
+          _inAppPurchase.getPlatformAddition<
+              InAppPurchaseAndroidPlatformAddition>();
+
+          await androidAddition.consumePurchase(purchase);
 
           if (purchase.pendingCompletePurchase) {
             await _inAppPurchase.completePurchase(purchase);
@@ -183,7 +233,12 @@ class _PackageScreenState extends State<PackageScreen> {
 
           if (!mounted) return;
 
-          setState(() => _isPurchasing = false);
+          setState(() {
+            _isPurchasing = false;
+            _ownsAr30Days = true;
+            _ar30DaysRemainingDays = access.remainingDays;
+            _ar30DaysExpiredAt = access.expiredAt?.toString();
+          });
 
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -196,12 +251,38 @@ class _PackageScreenState extends State<PackageScreen> {
           );
 
           if (access.canScanAR) {
-            Navigator.pushNamed(context, AppRoutes.scan);
+            Navigator.pushNamed(context, AppRoutes.arAssetLoading);
           }
         } catch (e) {
           if (!mounted) return;
 
           setState(() => _isPurchasing = false);
+
+          final errorText = e.toString();
+
+          if (errorText.contains('state=1') ||
+              errorText.contains('canceled') ||
+              errorText.contains('refunded')) {
+            debugPrint('[IAP] Old refunded/canceled purchase, try consume: $errorText');
+
+            try {
+              if (purchase.productID == _googlePlayProductId) {
+                final androidAddition =
+                _inAppPurchase.getPlatformAddition<
+                    InAppPurchaseAndroidPlatformAddition>();
+
+                await androidAddition.consumePurchase(purchase);
+              }
+
+              if (purchase.pendingCompletePurchase) {
+                await _inAppPurchase.completePurchase(purchase);
+              }
+            } catch (consumeError) {
+              debugPrint('[IAP] consume old refunded purchase failed: $consumeError');
+            }
+
+            return;
+          }
 
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -328,9 +409,14 @@ class _PackageScreenState extends State<PackageScreen> {
                             duration: _getDurationText(
                               package.durationDays,
                             ),
-                            priceText: _googlePlayPriceText,
+                            priceText: _ownsAr30Days
+                                ? 'Đã sở hữu • còn $_ar30DaysRemainingDays ngày'
+                                : _googlePlayPriceText,
+                            isOwned: _ownsAr30Days,
                             onTap: _isPurchasing
                                 ? () {}
+                                : _ownsAr30Days
+                                ? () => Navigator.pushNamed(context, AppRoutes.arAssetLoading)
                                 : () => _buyPackageWithGooglePlay(_googlePlayProductId),
                           ),
                         );
@@ -352,6 +438,7 @@ class _PackageCard extends StatelessWidget {
   final String subtitle;
   final String duration;
   final String priceText;
+  final bool isOwned;
   final VoidCallback onTap;
 
   const _PackageCard({
@@ -359,6 +446,7 @@ class _PackageCard extends StatelessWidget {
     required this.subtitle,
     required this.duration,
     required this.priceText,
+    required this.isOwned,
     required this.onTap,
   });
 
@@ -473,13 +561,13 @@ class _PackageCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    l10n.buyAr30Days, // hoặc key khác
+                    isOwned ? 'Vào quét AR' : l10n.buyAr30Days,
                     style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
                       fontFamily: 'Inter',
                     ),
-                  ),
+                  )
                 ],
               ),
             ),

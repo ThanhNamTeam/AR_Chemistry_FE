@@ -69,6 +69,10 @@ class ApiConstants {
     return '$baseUrl$mePath/ar-access';
   }
 
+  static String get ar30DaysOwnershipUrl {
+    return '$baseUrl$mePath/packages/ar-30-days/ownership';
+  }
+
   // fake payment
   static const String devFakePurchasePath = '/dev/fake-purchase';
 
@@ -397,7 +401,6 @@ class ApiConstants {
   }
 
   // admin reactions
-
   static String adminReactionsUrl({
     int page = 0,
     int size = 20,
