@@ -88,6 +88,7 @@ class _ProfileUpdateSheetState extends State<ProfileUpdateSheet> {
   @override
   Widget build(BuildContext context) {
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+    final bottomSafe = MediaQuery.of(context).viewPadding.bottom;
 
     return Padding(
       padding: EdgeInsets.only(bottom: bottomInset),
@@ -98,7 +99,7 @@ class _ProfileUpdateSheetState extends State<ProfileUpdateSheet> {
           border: Border.all(color: AppColors.primary.withOpacity(0.3)),
         ),
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
+          padding: EdgeInsets.fromLTRB(24, 12, 24, 24 + bottomSafe),
           child: Form(
             key: _formKey,
             child: Column(

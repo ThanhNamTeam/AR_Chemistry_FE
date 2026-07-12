@@ -666,6 +666,7 @@ class _ChatSettingsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    context.watch<ThemeProvider>();
     final fabVisibility = context.watch<AiFabVisibility>();
     final enabled = fabVisibility.userEnabled;
 
