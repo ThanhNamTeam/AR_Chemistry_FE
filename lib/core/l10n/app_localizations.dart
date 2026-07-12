@@ -53,6 +53,29 @@ class AppLocalizations {
   String cardsUnlockedSubtitle(int count) => isVi
       ? '$count thẻ đã mở khóa'
       : '$count cards unlocked';
+
+  // —— My Library screen ——
+  String get libraryTabUnlocked => isVi ? 'Đã mở khóa' : 'Unlocked';
+  String get libraryTabAllCards => isVi ? 'Tất cả thẻ' : 'All Cards';
+  String get libraryNoUnlockedCards =>
+      isVi ? 'Chưa có thẻ nào được mở khóa' : 'No unlocked cards yet';
+  String get libraryActivateKitHint => isVi
+      ? 'Kích hoạt bộ thí nghiệm để mở khóa thẻ trong thư viện'
+      : 'Activate a kit to unlock cards in your library';
+  String get libraryNoCardsFound =>
+      isVi ? 'Không tìm thấy thẻ nào' : 'No cards found';
+  String get libraryCardsAppearHere => isVi
+      ? 'Thẻ thư viện sẽ hiển thị tại đây'
+      : 'Library cards will appear here';
+  String get cannotLoadLibrary =>
+      isVi ? 'Không tải được thư viện' : 'Cannot load library';
+  String get cardUnlockedLabel => isVi ? 'Đã mở khóa' : 'Unlocked';
+  String get cardLockedLabel => isVi ? 'Đã khóa' : 'Locked';
+  String get lockedCard => isVi ? 'Thẻ đã khóa' : 'Locked Card';
+  String cardLockedSnackbar(String name) => isVi
+      ? '$name đang bị khóa. Kích hoạt bộ thí nghiệm để mở khóa thẻ này.'
+      : '$name is locked. Activate a kit to unlock this card.';
+
   String get myBag => isVi ? 'Túi đồ' : 'My Bag';
   String get myBagSubtitle =>
       isVi ? 'Xem thẻ đã mua' : 'View your purchased cards';
@@ -445,7 +468,7 @@ class AppLocalizations {
       : 'Keep experimenting to earn more!';
 
   // —— Quiz screens ——
-  String get publishedQuizzes => isVi ? 'Quiz đã publish' : 'Published Quizzes';
+  String get publishedQuizzes => isVi ? 'Quiz đã xuất bản' : 'Published Quizzes';
   String get selectQuizToPractice => isVi ? 'Chọn một bài quiz để bắt đầu luyện tập.' : 'Select a quiz to start practicing.';
   String questionCountBadge(int n) => isVi ? '$n câu' : '$n questions';
   String get published => isVi ? 'Đã publish' : 'Published';
@@ -558,7 +581,7 @@ class AppLocalizations {
   String get payWithBankVnpay =>
       isVi ? 'Thanh toán ngân hàng (VNPay)' : 'Pay with Bank (VNPay)';
 
-  String get quizColon => 'Quiz:';
+  String get quizColon => 'Quiz';
 
   // —— Quiz history & attempt detail ——
   String get quizHistoryTitle => isVi ? 'Lịch sử làm quiz' : 'Quiz history';

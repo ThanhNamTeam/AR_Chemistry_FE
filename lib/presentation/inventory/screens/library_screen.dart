@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/api/inventory_api.dart';
 import '../../../core/api/library_api.dart';
+import '../../../core/l10n/app_localizations.dart';
+import '../../../core/l10n/locale_provider.dart';
 import '../../../core/models/response/library_card_response.dart';
 import '../../../routes/app_routes.dart';
 import '../../../shared/styles/app_colors.dart';
+import '../../home/providers/theme_provider.dart';
 
 class LibraryScreen extends StatefulWidget {
   const LibraryScreen({super.key});
@@ -148,6 +152,9 @@ class _LibraryScreenState extends State<LibraryScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    context.watch<LocaleProvider>();
+    context.watch<ThemeProvider>();
     final unlockedCount = _unlockedSubstanceIds.length;
 
     return Scaffold(
@@ -181,7 +188,7 @@ class _LibraryScreenState extends State<LibraryScreen>
                     ),
                     const SizedBox(width: 14),
                     Text(
-                      'My Library',
+                      l10n.myLibrary,
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.w700,
@@ -240,9 +247,9 @@ class _LibraryScreenState extends State<LibraryScreen>
                   ),
                   labelColor: Colors.white,
                   unselectedLabelColor: AppColors.textSecondary,
-                  tabs: const [
-                    Tab(text: 'Unlocked'),
-                    Tab(text: 'All Cards'),
+                  tabs: [
+                    Tab(text: l10n.libraryTabUnlocked),
+                    Tab(text: l10n.libraryTabAllCards),
                   ],
                 ),
               ),
@@ -250,7 +257,7 @@ class _LibraryScreenState extends State<LibraryScreen>
               Expanded(
                 child: RefreshIndicator(
                   onRefresh: () => _loadLibrary(refresh: true),
-                  child: _buildBody(),
+                  child: _buildBody(l10n),
                 ),
               ),
             ],
@@ -260,7 +267,7 @@ class _LibraryScreenState extends State<LibraryScreen>
     );
   }
 
-  Widget _buildBody() {
+  Widget _buildBody(AppLocalizations l10n) {
     if (_isLoading) {
       return const Center(
         child: CircularProgressIndicator(),
@@ -280,7 +287,7 @@ class _LibraryScreenState extends State<LibraryScreen>
           ),
           const SizedBox(height: 16),
           Text(
-            'Cannot load library',
+            l10n.cannotLoadLibrary,
             textAlign: TextAlign.center,
             style: TextStyle(
               color: AppColors.textPrimary,
@@ -307,15 +314,17 @@ class _LibraryScreenState extends State<LibraryScreen>
       controller: _tabCtrl,
       children: [
         _buildCardsGrid(
+          l10n: l10n,
           cards: _unlockedCards,
-          emptyTitle: 'No unlocked cards yet',
-          emptySubtitle: 'Activate a kit to unlock cards in your library',
+          emptyTitle: l10n.libraryNoUnlockedCards,
+          emptySubtitle: l10n.libraryActivateKitHint,
           useScrollController: false,
         ),
         _buildCardsGrid(
+          l10n: l10n,
           cards: _cards,
-          emptyTitle: 'No cards found',
-          emptySubtitle: 'Library cards will appear here',
+          emptyTitle: l10n.libraryNoCardsFound,
+          emptySubtitle: l10n.libraryCardsAppearHere,
           useScrollController: true,
         ),
       ],
@@ -323,6 +332,7 @@ class _LibraryScreenState extends State<LibraryScreen>
   }
 
   Widget _buildCardsGrid({
+    required AppLocalizations l10n,
     required List<LibraryCardResponse> cards,
     required String emptyTitle,
     required String emptySubtitle,
@@ -397,18 +407,18 @@ class _LibraryScreenState extends State<LibraryScreen>
               return;
             }
 
-            _showLockedMessage(card);
+            _showLockedMessage(card, l10n);
           },
         );
       },
     );
   }
 
-  void _showLockedMessage(LibraryCardResponse card) {
+  void _showLockedMessage(LibraryCardResponse card, AppLocalizations l10n) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          '${card.displayName} is locked. Activate a kit to unlock this card.',
+          l10n.cardLockedSnackbar(card.displayName),
           style: const TextStyle(fontFamily: 'Inter'),
         ),
         backgroundColor: AppColors.backgroundMid,
@@ -431,6 +441,7 @@ class _LibraryCardTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final stateColor = AppColors.substanceStateColor(card.state);
 
     return GestureDetector(
@@ -469,7 +480,7 @@ class _LibraryCardTile extends StatelessWidget {
                   ),
                   const Spacer(),
                   Text(
-                    unlocked ? card.displayName : 'Locked Card',
+                    unlocked ? card.displayName : l10n.lockedCard,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -499,7 +510,7 @@ class _LibraryCardTile extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      unlocked ? 'Unlocked' : 'Locked',
+                      unlocked ? l10n.cardUnlockedLabel : l10n.cardLockedLabel,
                       style: TextStyle(
                         color: unlocked ? stateColor : AppColors.textSecondary,
                         fontSize: 9,
