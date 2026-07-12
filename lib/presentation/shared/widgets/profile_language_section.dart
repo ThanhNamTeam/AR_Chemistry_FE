@@ -6,6 +6,7 @@ import '../../../core/l10n/locale_provider.dart';
 import '../../../domain/models/app_portal.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../../shared/styles/app_typography.dart';
+import '../../home/providers/theme_provider.dart';
 
 class ProfileLanguageSection extends StatelessWidget {
   final AppPortal portal;
@@ -15,6 +16,7 @@ class ProfileLanguageSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    context.watch<ThemeProvider>();
     final localeProvider = context.watch<LocaleProvider>();
     final isEnglish = localeProvider.isEnglishFor(portal);
     final isVietnamese = localeProvider.isVietnameseFor(portal);
