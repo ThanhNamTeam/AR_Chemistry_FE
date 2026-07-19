@@ -63,6 +63,13 @@ import 'presentation/ai_chat/providers/chat_provider.dart';
 import 'presentation/ai_chat/screens/ai_chat_screen.dart';
 import 'presentation/shared/widgets/user_portal_ai_overlay.dart';
 import 'presentation/mini_game/screens/mini_game_screen.dart';
+import 'core/storage/experiment_progress_storage.dart';
+import 'presentation/reaction_experiment/providers/reaction_experiment_session_provider.dart';
+import 'presentation/reaction_experiment/screens/grade_selection_screen.dart';
+import 'presentation/reaction_experiment/screens/reaction_category_screen.dart';
+import 'presentation/reaction_experiment/screens/reaction_list_screen.dart';
+import 'presentation/reaction_experiment/screens/reaction_experiment_hub_screen.dart';
+import 'presentation/reaction_experiment/screens/reaction_experiment_history_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -131,6 +138,11 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
         ChangeNotifierProvider(create: (_) => ChatProvider()),
         ChangeNotifierProvider(create: (_) => AiFabVisibility()),
         ChangeNotifierProvider(create: (_) => StudentQuizProvider()),
+        ChangeNotifierProvider(
+          create: (_) => ReactionExperimentSessionProvider(
+            ExperimentProgressStorage(),
+          )..loadProgress(),
+        ),
       ],
       child: Consumer2<ThemeProvider, LocaleProvider>(
         builder: (context, themeProvider, localeProvider, _) {
@@ -197,6 +209,13 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
       AppRoutes.mySingleCards: (_) => const MySingleCardsScreen(),
       AppRoutes.myFeedbacks: (_) => const MyFeedbacksScreen(),
       AppRoutes.arAssetLoading: (_) => const ArAssetLoadingScreen(),
+      AppRoutes.gradeSelection: (_) => const GradeSelectionScreen(),
+      AppRoutes.reactionCategory: (_) => const ReactionCategoryScreen(),
+      AppRoutes.reactionList: (_) => const ReactionListScreen(),
+      AppRoutes.reactionExperimentHub: (_) =>
+          const ReactionExperimentHubScreen(),
+      AppRoutes.reactionExperimentHistory: (_) =>
+          const ReactionExperimentHistoryScreen(),
     };
   }
 

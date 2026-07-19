@@ -34,4 +34,9 @@ class AppRoutes {
   static const String mySingleCards = '/my-single-cards';
   static const String myFeedbacks = '/my-feedbacks';
   static const String arAssetLoading = '/ar-asset-loading';
+  static const String gradeSelection = '/grade-selection';
+  static const String reactionCategory = '/reaction-category';
+  static const String reactionList = '/reaction-list';
+  static const String reactionExperimentHub = '/reaction-experiment-hub';
+  static const String reactionExperimentHistory = '/reaction-experiment-history';
 }

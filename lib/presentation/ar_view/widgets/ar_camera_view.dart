@@ -347,6 +347,7 @@ class ARUnitySession extends ChangeNotifier {
 
   static final ARUnitySession instance = ARUnitySession._();
   Future<void> Function(ReactionCheckResponse result)? onReactionMatched;
+  Future<void> Function(ReactionCheckResponse result)? experimentScanHandler;
   static const _permissionsChannel = MethodChannel(
     'labedu/permissions',
   );
@@ -605,7 +606,11 @@ class ARUnitySession extends ChangeNotifier {
 
         if (result.matched == true) {
           debugPrint('[AR_KP] matched=true, reward=${result.arScanReward}');
-          await onReactionMatched?.call(result);
+          if (experimentScanHandler != null) {
+            await experimentScanHandler!(result);
+          } else {
+            await onReactionMatched?.call(result);
+          }
         }
 
         await _sendReactionCheckResult(<String, Object?>{

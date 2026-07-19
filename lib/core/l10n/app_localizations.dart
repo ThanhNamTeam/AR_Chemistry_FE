@@ -506,6 +506,68 @@ class AppLocalizations {
       ? 'Đã trả lời $answered/$total'
       : 'Answered $answered/$total';
 
+  // —— Reaction experiment quiz flow ——
+  String get selectYourGrade => isVi
+      ? 'Chọn lớp bạn đang học để bắt đầu thí nghiệm AR + quiz.'
+      : 'Select your grade to start AR experiment + quiz.';
+  String gradeLabel(int grade) => isVi ? 'Lớp $grade' : 'Grade $grade';
+  String get reactionCategoriesTitle => isVi
+      ? 'Chọn nhóm phản ứng'
+      : 'Choose reaction category';
+  String get reactionCategoryMetal => isVi
+      ? 'Phản ứng với kim loại'
+      : 'Reactions with metals';
+  String get reactionCategoryAcid => isVi
+      ? 'Phản ứng với axit'
+      : 'Reactions with acids';
+  String get reactionCategoryBase => isVi
+      ? 'Phản ứng với bazơ'
+      : 'Reactions with bases';
+  String get reactionCategorySalt => isVi
+      ? 'Phản ứng với muối'
+      : 'Reactions with salts';
+  String get searchReactionsHint => isVi
+      ? 'Tìm tên phản ứng...'
+      : 'Search reaction name...';
+  String get startExperiment => isVi ? 'Bắt đầu' : 'Start';
+  String get retryExperiment => isVi ? 'Làm lại' : 'Retry';
+  String get viewAttemptHistory => isVi ? 'Xem lịch sử' : 'View history';
+  String get virtualExperimentAr => isVi
+      ? 'Thí nghiệm ảo (AR flash card)'
+      : 'Virtual experiment (AR flash card)';
+  String get scanTwoCardsHint => isVi
+      ? 'Quét đúng 2 thẻ chất của phản ứng. Thời gian 7 phút chỉ bắt đầu sau khi bấm Phản ứng thành công.'
+      : 'Scan the 2 correct substance cards. The 7-minute timer starts only after a successful Reaction.';
+  String get openArScan => isVi ? 'Quét AR' : 'Scan AR';
+  String get reactionButton => isVi ? 'Phản ứng' : 'Reaction';
+  String get reactionScript => isVi ? 'Mô tả phản ứng' : 'Reaction script';
+  String get experimentQuizSection => isVi ? 'Quiz (5 câu)' : 'Quiz (5 questions)';
+  String get confirmSubmitTitle => isVi ? 'Nộp bài?' : 'Submit quiz?';
+  String get confirmSubmitMessage => isVi
+      ? 'Bạn có chắc chắn muốn nộp bài không?'
+      : 'Are you sure you want to submit?';
+  String get confirm => isVi ? 'Xác nhận' : 'Confirm';
+  String get cancel => isVi ? 'Huỷ' : 'Cancel';
+  String get backToReactionList => isVi
+      ? 'Danh sách phản ứng'
+      : 'Reaction list';
+  String get backToCategories => isVi
+      ? 'Chọn nhóm phản ứng'
+      : 'Reaction categories';
+  String get experimentScoreTitle => isVi ? 'Kết quả làm bài' : 'Your score';
+  String scoreOutOf(int score, int total) =>
+      isVi ? '$score / $total điểm' : '$score / $total points';
+  String get explanationLabel => isVi ? 'Giải thích' : 'Explanation';
+  String get cardsReadyForReaction => isVi
+      ? 'Đã quét đủ 2 thẻ — bấm Phản ứng để bắt đầu'
+      : '2 cards scanned — tap Reaction to start';
+  String get arStepCompleted => isVi ? 'Đã hoàn thành AR' : 'AR completed';
+  String get noReactionsFound => isVi
+      ? 'Không tìm thấy phản ứng'
+      : 'No reactions found';
+  String reactantsLabel(String labels) =>
+      isVi ? 'Chất cần quét: $labels' : 'Scan: $labels';
+
   // —— Feedback screen ——
   String get feedbackSubmitSuccess => isVi
       ? 'Gửi phản hồi thành công. Cảm ơn bạn!'

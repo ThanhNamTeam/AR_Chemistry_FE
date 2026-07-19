@@ -411,7 +411,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     final items = [
       (Icons.menu_book_outlined, l10n.navLibrary, AppRoutes.library),
       (Icons.store_outlined, l10n.shop, AppRoutes.shop),
-      (Icons.quiz_outlined, l10n.navQuiz, AppRoutes.quizList),
+      (Icons.quiz_outlined, l10n.navQuiz, AppRoutes.gradeSelection),
       (Icons.extension_outlined, l10n.navMiniGame, AppRoutes.miniGame),
     ];
 

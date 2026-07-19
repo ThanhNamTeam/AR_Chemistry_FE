@@ -44,7 +44,12 @@ class _ArAssetLoadingScreenState extends State<ArAssetLoadingScreen> {
       );
 
       if (!mounted) return;
-      Navigator.pushReplacementNamed(context, AppRoutes.scan);
+      final args = ModalRoute.of(context)?.settings.arguments;
+      Navigator.pushReplacementNamed(
+        context,
+        AppRoutes.scan,
+        arguments: args,
+      );
     } catch (e) {
       if (!mounted) return;
 
