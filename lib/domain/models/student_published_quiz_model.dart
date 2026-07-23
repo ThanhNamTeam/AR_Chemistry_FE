@@ -1,31 +1,72 @@
 class StudentPublishedQuizModel {
-  final String lessonCode;
-  final String lessonTitle;
-  final String? chapter;
+  final String reactionId;
+  final String reactionCode;
+  final String reactionName;
+  final String equation;
+
+  final int grade;
+  final String reactionCategory;
+
   final String quizCode;
   final String quizTitle;
-  final int? version;
+
+  final int version;
   final int questionCount;
+  final int durationSeconds;
 
   const StudentPublishedQuizModel({
-    required this.lessonCode,
-    required this.lessonTitle,
-    this.chapter,
+    required this.reactionId,
+    required this.reactionCode,
+    required this.reactionName,
+    required this.equation,
+    required this.grade,
+    required this.reactionCategory,
     required this.quizCode,
     required this.quizTitle,
-    this.version,
+    required this.version,
     required this.questionCount,
+    required this.durationSeconds,
   });
 
-  factory StudentPublishedQuizModel.fromJson(Map<String, dynamic> json) {
+  factory StudentPublishedQuizModel.fromJson(
+      Map<String, dynamic> json,
+      ) {
     return StudentPublishedQuizModel(
-      lessonCode: json['lessonCode'] as String? ?? '',
-      lessonTitle: json['lessonTitle'] as String? ?? '',
-      chapter: json['chapter'] as String?,
-      quizCode: json['quizCode'] as String? ?? '',
-      quizTitle: json['quizTitle'] as String? ?? '',
-      version: json['version'] as int?,
-      questionCount: json['questionCount'] as int? ?? 0,
+      reactionId:
+      json['reactionId']?.toString() ?? '',
+
+      reactionCode:
+      json['reactionCode']?.toString() ?? '',
+
+      reactionName:
+      json['reactionName']?.toString() ?? '',
+
+      equation:
+      json['equation']?.toString() ?? '',
+
+      grade:
+      (json['grade'] as num?)?.toInt() ?? 0,
+
+      reactionCategory:
+      json['reactionCategory']?.toString() ?? '',
+
+      quizCode:
+      json['quizCode']?.toString() ?? '',
+
+      quizTitle:
+      json['quizTitle']?.toString() ??
+          json['title']?.toString() ??
+          '',
+
+      version:
+      (json['version'] as num?)?.toInt() ?? 1,
+
+      questionCount:
+      (json['questionCount'] as num?)?.toInt() ?? 0,
+
+      durationSeconds:
+      (json['durationSeconds'] as num?)?.toInt() ??
+          420,
     );
   }
 }

@@ -6,9 +6,6 @@ import 'package:labedu/presentation/feedback/screens/my_feedbacks_screen.dart';
 import 'package:labedu/presentation/home/screens/my_single_cards_screen.dart';
 import 'package:labedu/presentation/inventory/screens/substance_detail_screen.dart';
 import 'package:labedu/presentation/quiz/providers/student_quiz_provider.dart';
-import 'package:labedu/presentation/quiz/screens/student_quiz_attempt_detail_screen.dart';
-import 'package:labedu/presentation/quiz/screens/student_quiz_history_screen.dart';
-import 'package:labedu/presentation/quiz/screens/student_quiz_list_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -56,7 +53,6 @@ import 'presentation/payment/screens/shop_screen.dart';
 import 'presentation/payment/screens/cart_screen.dart';
 import 'presentation/payment/screens/payment_page.dart';
 import 'presentation/payment/screens/payment_success_screen.dart';
-import 'presentation/quiz/screens/quiz_screen.dart';
 import 'presentation/feedback/screens/feedback_screen.dart';
 import 'presentation/ai_chat/providers/ai_fab_visibility.dart';
 import 'presentation/ai_chat/providers/chat_provider.dart';
@@ -78,7 +74,6 @@ Future<void> main() async {
 
   await NotificationService.instance.init();
   await EnvConfig.load();
-  debugPrint('API_BASE_URL = ${EnvConfig.apiBaseUrl}');
   await _configureAmplify();
 
   AppColors.applyTheme(
@@ -108,7 +103,6 @@ Future<void> _configureAmplify() async {
 
     await Amplify.configure(amplifyconfig);
 
-    debugPrint('Amplify configured');
   } catch (e) {
     debugPrint('Amplify configure failed: $e');
   }
@@ -139,9 +133,26 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
         ChangeNotifierProvider(create: (_) => AiFabVisibility()),
         ChangeNotifierProvider(create: (_) => StudentQuizProvider()),
         ChangeNotifierProvider(
-          create: (_) => ReactionExperimentSessionProvider(
+          create: (_) => StudentQuizProvider(),
+        ),
+        ChangeNotifierProxyProvider<
+            StudentQuizProvider,
+            ReactionExperimentSessionProvider>(
+          create: (context) => ReactionExperimentSessionProvider(
             ExperimentProgressStorage(),
+            context.read<StudentQuizProvider>(),
           )..loadProgress(),
+          update: (
+              context,
+              studentQuizProvider,
+              previous,
+              ) {
+            return previous ??
+                ReactionExperimentSessionProvider(
+                  ExperimentProgressStorage(),
+                  studentQuizProvider,
+                )..loadProgress();
+          },
         ),
       ],
       child: Consumer2<ThemeProvider, LocaleProvider>(
@@ -191,7 +202,6 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
       AppRoutes.feedback: (_) => const FeedbackScreen(),
       AppRoutes.aiChat: (_) => const AiChatScreen(),
       AppRoutes.library: (_) => const LibraryScreen(),
-      AppRoutes.quiz: (_) => const QuizScreen(),
       AppRoutes.myBag: (_) => const MyBagScreen(),
       AppRoutes.scan: (_) => const ScanScreen(),
       AppRoutes.shop: (_) => const ShopScreen(),
@@ -202,9 +212,6 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
       AppRoutes.staffHome: (_) => const StaffHomeScreen(),
       AppRoutes.adminHome: (_) => const AdminHomeScreen(),
       AppRoutes.portalProfile: (_) => const PortalProfileScreen(),
-      AppRoutes.quizList: (_) => const StudentQuizListScreen(),
-      AppRoutes.quizHistory: (_) => const StudentQuizHistoryScreen(),
-      AppRoutes.quizAttemptDetail: (_) => const StudentQuizAttemptDetailScreen(),
       AppRoutes.miniGame: (_) => const MiniGameScreen(),
       AppRoutes.mySingleCards: (_) => const MySingleCardsScreen(),
       AppRoutes.myFeedbacks: (_) => const MyFeedbacksScreen(),

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'dart:convert';
 import 'package:file_picker/file_picker.dart';
 
 import '../../../core/l10n/app_localizations.dart';
 import '../../../domain/models/staff_quiz_question_model.dart';
 import '../../../domain/models/staff_quiz_summary_model.dart';
-import '../../../domain/models/staff_lesson_quiz_overview_model.dart';
+import '../../../domain/models/staff_reaction_quiz_overview_model.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../shared/widgets/portal/portal_widgets.dart';
 import '../providers/staff_provider.dart';
@@ -25,41 +24,12 @@ class _StaffQuizTabState extends State<StaffQuizTab> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<StaffProvider>().loadLessonQuizOverviews();
+      context.read<StaffProvider>().loadReactionQuizOverviews();
     });
   }
 
-  String _buildQuizPrompt({
-    required StaffLessonQuizOverviewModel lesson,
-    required String content,
-  }) {
-    return '''
-Bạn là giáo viên Hóa học lớp 8.
 
-Dựa hoàn toàn vào nội dung bài học bên dưới, hãy tạo 10 câu quiz cho học sinh lớp 8.
-
-Yêu cầu:
-- Xuất kết quả dưới dạng CSV.
-- Không giải thích ngoài CSV.
-- CSV phải có header đúng như sau:
-lesson_code,quiz_title,question_order,type,question_text,option_a,option_b,option_c,option_d,correct_answer,explanation,difficulty
-- type chỉ được là: multiple_choice, true_false, fill_blank
-- difficulty chỉ được là: easy, medium, hard
-- Tạo 6 câu multiple_choice, 2 câu true_false, 2 câu fill_blank.
-- Với multiple_choice phải có đủ option_a, option_b, option_c, option_d.
-- Với true_false, correct_answer chỉ được là TRUE hoặc FALSE.
-- Với fill_blank, question_text phải có ký hiệu ____ tại chỗ trống.
-- Tất cả câu hỏi phải dựa trên nội dung bài học, không dùng kiến thức ngoài.
-
-lesson_code: ${lesson.lessonCode}
-quiz_title: Quiz ${lesson.lessonTitle}
-
-Nội dung bài học:
-$content
-''';
-  }
-
-  StaffLessonQuizOverviewModel? _selectedLesson;
+  StaffReactionQuizOverviewModel? _selectedReaction;
   StaffQuizSummaryModel? _selectedQuiz;
 
   Future<void> _refresh() async {
@@ -67,14 +37,21 @@ $content
 
     if (_selectedQuiz != null) {
       await provider.loadQuizDetail(_selectedQuiz!.quizCode);
-    } else if (_selectedLesson != null) {
-      await provider.loadQuizzesByLesson(_selectedLesson!.lessonCode);
+    } else if (_selectedReaction != null) {
+      await Future.wait([
+        provider.loadQuizzesByReaction(
+          _selectedReaction!.reactionCode,
+        ),
+        provider.loadReactionQuizPrompt(
+          _selectedReaction!.reactionCode,
+        ),
+      ]);
     } else {
-      await provider.loadLessonQuizOverviews();
+      await provider.loadReactionQuizOverviews();
     }
   }
 
-  Future<void> _pickAndImportCsv(String lessonCode) async {
+  Future<void> _pickAndImportCsv(String reactionCode) async {
     final result = await FilePicker.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['csv'],
@@ -98,7 +75,7 @@ $content
 
     try {
       await context.read<StaffProvider>().importQuizCsv(
-        lessonCode: lessonCode,
+        reactionCode: reactionCode,
         fileName: file.name,
         bytes: bytes,
         fileSize: file.size,
@@ -130,9 +107,9 @@ $content
     final l10n = AppLocalizations.of(context);
     final staff = context.watch<StaffProvider>();
 
-    final lessons = staff.lessonQuizOverviews;
-    final selectedLesson = _selectedLesson;
-    final selectedQuizzes = staff.selectedLessonQuizzes;
+    final reactions = staff.reactionQuizOverviews;
+    final selectedReaction = _selectedReaction;
+    final selectedQuizzes = staff.selectedReactionQuizzes;
     final selectedQuiz = _selectedQuiz;
     final selectedQuizDetail = staff.selectedQuizDetail;
 
@@ -142,16 +119,20 @@ $content
         padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
         children: [
           PortalPrimaryButton(
-            label: l10n.isVi ? 'Quản lý quiz theo bài học' : 'Manage quizzes by lesson',
+            label: l10n.isVi
+                ? 'Quản lý quiz theo phản ứng'
+                : 'Manage quizzes by reaction',
             icon: Icons.quiz_outlined,
-            loading: staff.loadingLessonQuizOverviews || staff.importingQuizCsv,
+            loading:
+            staff.loadingReactionQuizOverviews ||
+                staff.importingQuizCsv,
             onPressed: _refresh,
           ),
           const SizedBox(height: 8),
           Text(
             l10n.isVi
-                ? 'Chọn một bài học để import CSV quiz, xem quiz nháp hoặc quiz đã publish.'
-                : 'Select a lesson to import quiz CSV, review drafts, or view published quizzes.',
+                ? 'Chọn một phản ứng để xem prompt, import CSV, kiểm tra câu hỏi và publish quiz.'
+                : 'Select a reaction to view its prompt, import CSV, review questions, and publish the quiz.',
             style: TextStyle(
               fontSize: 11,
               color: AppColors.textSecondary,
@@ -171,123 +152,151 @@ $content
           ),
           const SizedBox(height: 20),
           PortalSectionHeader(
-            title: l10n.isVi ? 'Quiz Management' : 'Quiz Management',
-            actionLabel: '${lessons.length}',
+            title: l10n.isVi
+                ? 'Danh sách phản ứng'
+                : 'Reaction list',
+            actionLabel: '${reactions.length}',
           ),
 
-          if (selectedLesson == null) ...[
-            if (staff.loadingLessonQuizOverviews && lessons.isEmpty)
+          if (selectedReaction == null) ...[
+            if (staff.loadingReactionQuizOverviews &&
+                reactions.isEmpty)
               const Padding(
                 padding: EdgeInsets.only(top: 24),
-                child: Center(child: CircularProgressIndicator()),
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
               )
-            else if (staff.lessonQuizOverviewError != null)
+            else if (staff.reactionQuizOverviewError != null)
               _ErrorCard(
-                message: staff.lessonQuizOverviewError!,
+                message: staff.reactionQuizOverviewError!,
                 onRetry: _refresh,
               )
-            else if (lessons.isEmpty)
+            else if (reactions.isEmpty)
                 _EmptyCard(
-                  message: l10n.isVi ? 'Chưa có bài học nào.' : 'No lessons found.',
+                  message: l10n.isVi
+                      ? 'Chưa có phản ứng nào.'
+                      : 'No reactions found.',
                 )
               else
-                ...lessons.map(
-                      (lesson) => _LessonQuizOverviewCard(
-                    lesson: lesson,
-
-                    // Nút 1: Bài & Prompt
+                ...reactions.map(
+                      (reaction) => _ReactionQuizOverviewCard(
+                    reaction: reaction,
                     onViewPrompt: () async {
                       setState(() {
-                        _selectedLesson = lesson;
+                        _selectedReaction = reaction;
                         _selectedQuiz = null;
                       });
 
-                      final provider = context.read<StaffProvider>();
+                      final provider =
+                      context.read<StaffProvider>();
+
                       await Future.wait([
-                        provider.loadQuizzesByLesson(lesson.lessonCode),
-                        provider.loadLessonContent(lesson.lessonCode),
+                        provider.loadQuizzesByReaction(
+                          reaction.reactionCode,
+                        ),
+                        provider.loadReactionQuizPrompt(
+                          reaction.reactionCode,
+                        ),
                       ]);
                     },
-
-                    // Nút 2: Xem quiz
                     onViewQuizzes: () async {
                       setState(() {
-                        _selectedLesson = lesson;
+                        _selectedReaction = reaction;
                         _selectedQuiz = null;
                       });
 
-                      final provider = context.read<StaffProvider>();
+                      final provider =
+                      context.read<StaffProvider>();
 
-                      // Nếu provider có hàm này thì gọi để không hiện prompt cũ
-                      provider.clearSelectedLessonContent();
-
-                      await provider.loadQuizzesByLesson(lesson.lessonCode);
+                      await provider.loadQuizzesByReaction(
+                        reaction.reactionCode,
+                      );
                     },
                   ),
                 ),
           ] else if (selectedQuiz == null) ...[
-            _SelectedLessonHeader(
-              lesson: selectedLesson,
+            _SelectedReactionHeader(
+              reaction: selectedReaction,
               onBack: () {
-                context.read<StaffProvider>().clearSelectedLessonQuizzes();
+                context
+                    .read<StaffProvider>()
+                    .clearSelectedReaction();
+
                 setState(() {
-                  _selectedLesson = null;
+                  _selectedReaction = null;
                   _selectedQuiz = null;
                 });
               },
             ),
+
             const SizedBox(height: 10),
 
-            if (staff.loadingLessonContent)
+            if (staff.loadingReactionPrompt)
               const Padding(
-                padding: EdgeInsets.only(top: 12, bottom: 12),
-                child: Center(child: CircularProgressIndicator()),
+                padding: EdgeInsets.symmetric(vertical: 12),
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
               )
-            else if (staff.lessonContentError != null)
+            else if (staff.reactionPromptError != null)
               _ErrorCard(
-                message: staff.lessonContentError!,
+                message: staff.reactionPromptError!,
                 onRetry: _refresh,
               )
-            else if (staff.selectedLessonContent != null)
-                _LessonPromptCard(
-                  lesson: selectedLesson,
-                  content: staff.selectedLessonContent!,
-                  prompt: _buildQuizPrompt(
-                    lesson: selectedLesson,
-                    content: staff.selectedLessonContent!,
-                  ),
+            else if (staff.selectedReactionPrompt != null)
+                _ReactionPromptCard(
+                  reaction: selectedReaction,
+                  prompt: staff.selectedReactionPrompt!.prompt,
                 ),
+
             const SizedBox(height: 10),
+
             PortalPrimaryButton(
-              label: staff.importingQuizCsv ? 'Đang import CSV...' : 'Import CSV cho bài này',
+              label: staff.importingQuizCsv
+                  ? 'Đang import CSV...'
+                  : 'Import CSV cho phản ứng này',
               icon: Icons.upload_file_outlined,
               loading: staff.importingQuizCsv,
               onPressed: staff.importingQuizCsv
                   ? null
-                  : () => _pickAndImportCsv(selectedLesson.lessonCode),
+                  : () => _pickAndImportCsv(
+                selectedReaction.reactionCode,
+              ),
             ),
+
             const SizedBox(height: 10),
-            if (staff.loadingSelectedLessonQuizzes && selectedQuizzes.isEmpty)
+
+            if (staff.loadingSelectedReactionQuizzes &&
+                selectedQuizzes.isEmpty)
               const Padding(
                 padding: EdgeInsets.only(top: 24),
-                child: Center(child: CircularProgressIndicator()),
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
               )
-            else if (staff.selectedLessonQuizError != null)
+            else if (staff.selectedReactionQuizError != null)
               _ErrorCard(
-                message: staff.selectedLessonQuizError!,
+                message: staff.selectedReactionQuizError!,
                 onRetry: _refresh,
               )
             else if (selectedQuizzes.isEmpty)
-                _EmptyCard(
-                  message: 'Bài này chưa có quiz. Hãy import CSV để tạo quiz.',
+                const _EmptyCard(
+                  message:
+                  'Phản ứng này chưa có quiz. Hãy import CSV để tạo quiz.',
                 )
               else
                 ...selectedQuizzes.map(
                       (quiz) => _QuizSummaryCard(
                     quiz: quiz,
                     onViewQuestions: () async {
-                      setState(() => _selectedQuiz = quiz);
-                      await context.read<StaffProvider>().loadQuizDetail(quiz.quizCode);
+                      setState(() {
+                        _selectedQuiz = quiz;
+                      });
+
+                      await context
+                          .read<StaffProvider>()
+                          .loadQuizDetail(quiz.quizCode);
                     },
                   ),
                 ),
@@ -296,21 +305,32 @@ $content
               quiz: selectedQuiz,
               publishing: staff.publishingQuiz,
               onBack: () {
-                context.read<StaffProvider>().clearSelectedQuizDetail();
-                setState(() => _selectedQuiz = null);
+                context
+                    .read<StaffProvider>()
+                    .clearSelectedQuizDetail();
+
+                setState(() {
+                  _selectedQuiz = null;
+                });
               },
               onPublish: () async {
                 try {
-                  await context.read<StaffProvider>().publishQuiz(selectedQuiz.quizCode);
+                  await context
+                      .read<StaffProvider>()
+                      .publishQuiz(selectedQuiz.quizCode);
 
                   if (!context.mounted) return;
+
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Đã publish quiz')),
+                    const SnackBar(
+                      content: Text('Đã publish quiz'),
+                    ),
                   );
 
                   await _refresh();
                 } catch (e) {
                   if (!context.mounted) return;
+
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('Publish thất bại: $e'),
@@ -320,11 +340,16 @@ $content
                 }
               },
             ),
+
             const SizedBox(height: 10),
-            if (staff.loadingQuizDetail && selectedQuizDetail == null)
+
+            if (staff.loadingQuizDetail &&
+                selectedQuizDetail == null)
               const Padding(
                 padding: EdgeInsets.only(top: 24),
-                child: Center(child: CircularProgressIndicator()),
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
               )
             else if (staff.quizDetailError != null)
               _ErrorCard(
@@ -332,16 +357,18 @@ $content
                 onRetry: _refresh,
               )
             else if (selectedQuizDetail == null)
-                _EmptyCard(
+                const _EmptyCard(
                   message: 'Không tìm thấy chi tiết quiz.',
                 )
               else if (selectedQuizDetail.questions.items.isEmpty)
-                  _EmptyCard(
+                  const _EmptyCard(
                     message: 'Quiz này chưa có câu hỏi.',
                   )
                 else
                   ...selectedQuizDetail.questions.items.map(
-                        (question) => _QuestionCard(question: question),
+                        (question) => _QuestionCard(
+                      question: question,
+                    ),
                   ),
           ],
         ],
@@ -350,40 +377,41 @@ $content
   }
 }
 
-class _LessonQuizOverviewCard extends StatelessWidget {
-  final StaffLessonQuizOverviewModel lesson;
+class _ReactionQuizOverviewCard extends StatelessWidget {
+  final StaffReactionQuizOverviewModel reaction;
   final VoidCallback onViewPrompt;
   final VoidCallback onViewQuizzes;
 
-  const _LessonQuizOverviewCard({
-    required this.lesson,
+  const _ReactionQuizOverviewCard({
+    required this.reaction,
     required this.onViewPrompt,
     required this.onViewQuizzes,
   });
 
   @override
   Widget build(BuildContext context) {
-    final hasQuiz = lesson.hasQuiz;
-    final status = lesson.latestQuizStatus?.toLowerCase();
+    final hasQuiz = reaction.hasQuiz;
+    final status =
+    reaction.latestQuizStatus?.toLowerCase();
 
-    final Color statusColor = !hasQuiz
+    final statusColor = !hasQuiz
         ? AppColors.textSecondary
         : switch (status) {
       'published' => AppColors.success,
       'draft' => AppColors.amber,
-      'reviewed' => AppColors.subtitleAccent,
+      'ready' => AppColors.subtitleAccent,
       'archived' => AppColors.textSecondary,
       _ => AppColors.amber,
     };
 
-    final String statusLabel = !hasQuiz
+    final statusLabel = !hasQuiz
         ? 'Chưa có quiz'
         : switch (status) {
       'published' => 'Đã publish',
       'draft' => 'Bản nháp',
-      'reviewed' => 'Đã duyệt',
+      'ready' => 'Sẵn sàng',
       'archived' => 'Đã lưu trữ',
-      _ => lesson.latestQuizStatus ?? 'Có quiz',
+      _ => reaction.latestQuizStatus ?? 'Có quiz',
     };
 
     return Padding(
@@ -395,30 +423,24 @@ class _LessonQuizOverviewCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                PortalBadge(text: statusLabel, color: statusColor),
-                const Spacer(),
-                Icon(
-                  Icons.menu_book_outlined,
-                  size: 14,
-                  color: AppColors.textSecondary,
+                PortalBadge(
+                  text: statusLabel,
+                  color: statusColor,
                 ),
-                const SizedBox(width: 4),
-                Flexible(
-                  child: Text(
-                    lesson.lessonCode,
-                    style: TextStyle(
-                      fontSize: 10,
-                      color: AppColors.textSecondary,
-                      fontFamily: 'Inter',
-                    ),
-                    overflow: TextOverflow.ellipsis,
+                const Spacer(),
+                Text(
+                  reaction.reactionCode,
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: AppColors.textSecondary,
+                    fontFamily: 'Inter',
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 10),
             Text(
-              _lessonTitle,
+              reaction.reactionName,
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w700,
@@ -428,78 +450,61 @@ class _LessonQuizOverviewCard extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              lesson.chapter ?? 'Không có chương',
+              reaction.equation,
               style: TextStyle(
                 fontSize: 12,
                 color: AppColors.subtitleAccent,
                 fontFamily: 'Inter',
               ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: 10),
-            if (hasQuiz) ...[
-              Row(
-                children: [
-                  Icon(
-                    Icons.quiz_outlined,
-                    size: 16,
-                    color: AppColors.textSecondary,
-                  ),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: Text(
-                      lesson.latestQuizTitle ?? 'Quiz',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: AppColors.textSecondary,
-                        fontFamily: 'Inter',
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  Text(
-                    '${lesson.questionCount} câu',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: AppColors.textSecondary,
-                      fontFamily: 'Inter',
-                    ),
-                  ),
-                ],
+            const SizedBox(height: 6),
+            Text(
+              'Lớp ${reaction.grade} • '
+                  '${reaction.reactionCategory} • '
+                  '${reaction.reactionType}',
+              style: TextStyle(
+                fontSize: 11,
+                color: AppColors.textSecondary,
+                fontFamily: 'Inter',
               ),
-              const SizedBox(height: 12),
+            ),
+            if (hasQuiz) ...[
+              const SizedBox(height: 10),
+              Text(
+                '${reaction.latestQuizTitle ?? 'Quiz'} '
+                    '• ${reaction.questionCount} câu',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: AppColors.textSecondary,
+                  fontFamily: 'Inter',
+                ),
+              ),
             ],
+            const SizedBox(height: 12),
             Row(
               children: [
                 Expanded(
                   child: OutlinedButton.icon(
                     onPressed: onViewPrompt,
-                    icon: Icon(
-                      Icons.visibility_outlined,
+                    icon: const Icon(
+                      Icons.description_outlined,
                       size: 18,
-                      color: AppColors.subtitleAccent,
                     ),
-                    label: const Text('Bài & Prompt'),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.subtitleAccent,
-                      side: BorderSide(
-                        color: AppColors.subtitleAccent.withOpacity(0.45),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                    ),
+                    label: const Text('Prompt'),
                   ),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
                   child: ElevatedButton.icon(
                     onPressed: onViewQuizzes,
-                    icon: const Icon(Icons.quiz_outlined, size: 18),
+                    icon: const Icon(
+                      Icons.quiz_outlined,
+                      size: 18,
+                    ),
                     label: const Text('Xem quiz'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.secondary,
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                   ),
                 ),
@@ -510,31 +515,19 @@ class _LessonQuizOverviewCard extends StatelessWidget {
       ),
     );
   }
-
-
-
-  String get _lessonTitle {
-    final number = lesson.lessonNumber;
-    if (number == null) return lesson.lessonTitle;
-    return 'Bài $number: ${lesson.lessonTitle}';
-  }
 }
 
-class _SelectedLessonHeader extends StatelessWidget {
-  final StaffLessonQuizOverviewModel lesson;
+class _SelectedReactionHeader extends StatelessWidget {
+  final StaffReactionQuizOverviewModel reaction;
   final VoidCallback onBack;
 
-  const _SelectedLessonHeader({
-    required this.lesson,
+  const _SelectedReactionHeader({
+    required this.reaction,
     required this.onBack,
   });
 
   @override
   Widget build(BuildContext context) {
-    final title = lesson.lessonNumber == null
-        ? lesson.lessonTitle
-        : 'Bài ${lesson.lessonNumber}: ${lesson.lessonTitle}';
-
     return PortalGlassCard(
       accentBorder: AppColors.subtitleAccent,
       child: Row(
@@ -552,7 +545,7 @@ class _SelectedLessonHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title,
+                  reaction.reactionName,
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
@@ -562,7 +555,8 @@ class _SelectedLessonHeader extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  lesson.lessonCode,
+                  '${reaction.reactionCode} • '
+                      '${reaction.equation}',
                   style: TextStyle(
                     fontSize: 11,
                     color: AppColors.textSecondary,
@@ -577,30 +571,24 @@ class _SelectedLessonHeader extends StatelessWidget {
     );
   }
 }
-class _LessonPromptCard extends StatelessWidget {
-  final StaffLessonQuizOverviewModel lesson;
-  final String content;
+class _ReactionPromptCard extends StatelessWidget {
+  final StaffReactionQuizOverviewModel reaction;
   final String prompt;
 
-  const _LessonPromptCard({
-    required this.lesson,
-    required this.content,
+  const _ReactionPromptCard({
+    required this.reaction,
     required this.prompt,
   });
 
   @override
   Widget build(BuildContext context) {
-    final lessonTitle = lesson.lessonNumber == null
-        ? lesson.lessonTitle
-        : 'Bài ${lesson.lessonNumber}: ${lesson.lessonTitle}';
-
     return PortalGlassCard(
       accentBorder: AppColors.secondary,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Nội dung bài học & Prompt',
+            'Prompt tạo CSV quiz',
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w700,
@@ -610,63 +598,46 @@ class _LessonPromptCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            lessonTitle,
+            reaction.reactionName,
             style: TextStyle(
               fontSize: 12,
               color: AppColors.subtitleAccent,
               fontFamily: 'Inter',
             ),
           ),
-          if (lesson.chapter != null && lesson.chapter!.isNotEmpty) ...[
-            const SizedBox(height: 4),
-            Text(
-              lesson.chapter!,
-              style: TextStyle(
-                fontSize: 11,
-                color: AppColors.textSecondary,
-                fontFamily: 'Inter',
-              ),
+          const SizedBox(height: 4),
+          Text(
+            reaction.equation,
+            style: TextStyle(
+              fontSize: 11,
+              color: AppColors.textSecondary,
+              fontFamily: 'Inter',
             ),
-          ],
+          ),
           const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: () async {
-                    await Clipboard.setData(ClipboardData(text: prompt));
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () async {
+                await Clipboard.setData(
+                  ClipboardData(text: prompt),
+                );
 
-                    if (!context.mounted) return;
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Đã copy prompt')),
-                    );
-                  },
-                  icon: const Icon(Icons.copy, size: 18),
-                  label: const Text('Copy prompt'),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: () async {
-                    await Clipboard.setData(ClipboardData(text: content));
+                if (!context.mounted) return;
 
-                    if (!context.mounted) return;
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Đã copy nội dung bài học')),
-                    );
-                  },
-                  icon: const Icon(Icons.article_outlined, size: 18),
-                  label: const Text('Copy bài'),
-                ),
-              ),
-            ],
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Đã copy prompt'),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.copy, size: 18),
+              label: const Text('Copy prompt'),
+            ),
           ),
           const SizedBox(height: 12),
           Text(
-            content,
-            maxLines: 8,
-            overflow: TextOverflow.ellipsis,
+            prompt,
             style: TextStyle(
               fontSize: 12,
               color: AppColors.textSecondary,
@@ -888,30 +859,12 @@ class _QuizSummaryCard extends StatelessWidget {
 class _QuestionCard extends StatelessWidget {
   final StaffQuizQuestionModel question;
 
-  const _QuestionCard({required this.question});
-
-  List<String> _parseOptions(String? optionsJson) {
-    if (optionsJson == null || optionsJson.trim().isEmpty) return [];
-
-    try {
-      final decoded = jsonDecode(optionsJson);
-
-      if (decoded is List) {
-        return decoded.map((e) => e.toString()).toList();
-      }
-
-      return [];
-    } catch (_) {
-      return [];
-    }
-  }
+  const _QuestionCard({
+    required this.question,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final type = question.type;
-    final difficulty = question.difficulty ?? 'unknown';
-    final options = _parseOptions(question.optionsJson);
-
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: PortalGlassCard(
@@ -922,22 +875,13 @@ class _QuestionCard extends StatelessWidget {
             Row(
               children: [
                 PortalBadge(
-                  text: 'Câu ${question.questionOrder ?? '-'}',
+                  text: 'Câu ${question.questionOrder}',
                   color: AppColors.subtitleAccent,
                 ),
-                const SizedBox(width: 8),
-                PortalBadge(
-                  text: type,
-                  color: AppColors.amber,
-                ),
                 const Spacer(),
-                Text(
-                  difficulty,
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: AppColors.textSecondary,
-                    fontFamily: 'Inter',
-                  ),
+                PortalBadge(
+                  text: question.status,
+                  color: AppColors.amber,
                 ),
               ],
             ),
@@ -951,19 +895,23 @@ class _QuestionCard extends StatelessWidget {
                 fontFamily: 'Inter',
               ),
             ),
-            if (options.isNotEmpty) ...[
+            if (question.options.isNotEmpty) ...[
               const SizedBox(height: 10),
-              ...options.asMap().entries.map((entry) {
-                final index = entry.key;
-                final optionText = entry.value;
-                final label = String.fromCharCode(65 + index); // A, B, C, D
-                final isCorrect = question.correctAnswer?.trim().toUpperCase() == label;
+              ...question.options.map((option) {
+                final isCorrect =
+                    option.optionKey.trim().toUpperCase() ==
+                        question.correctAnswer
+                            .trim()
+                            .toUpperCase();
 
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 6),
                   child: Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 8,
+                    ),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
@@ -976,10 +924,11 @@ class _QuestionCard extends StatelessWidget {
                           : Colors.transparent,
                     ),
                     child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment:
+                      CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '$label. ',
+                          '${option.optionKey}. ',
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
@@ -991,7 +940,7 @@ class _QuestionCard extends StatelessWidget {
                         ),
                         Expanded(
                           child: Text(
-                            optionText,
+                            option.optionText,
                             style: TextStyle(
                               fontSize: 12,
                               color: AppColors.textSecondary,
@@ -1007,7 +956,7 @@ class _QuestionCard extends StatelessWidget {
             ],
             const SizedBox(height: 8),
             Text(
-              'Đáp án: ${question.correctAnswer ?? '-'}',
+              'Đáp án: ${question.correctAnswer}',
               style: TextStyle(
                 fontSize: 12,
                 color: AppColors.success,

@@ -39,4 +39,6 @@ class AppRoutes {
   static const String reactionList = '/reaction-list';
   static const String reactionExperimentHub = '/reaction-experiment-hub';
   static const String reactionExperimentHistory = '/reaction-experiment-history';
+  static const String reactionDetail =
+      '/student/reaction-detail';
 }

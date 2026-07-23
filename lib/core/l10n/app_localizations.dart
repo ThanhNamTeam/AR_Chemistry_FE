@@ -536,7 +536,7 @@ class AppLocalizations {
       ? 'Thí nghiệm ảo (AR flash card)'
       : 'Virtual experiment (AR flash card)';
   String get scanTwoCardsHint => isVi
-      ? 'Quét đúng 2 thẻ chất của phản ứng. Thời gian 7 phút chỉ bắt đầu sau khi bấm Phản ứng thành công.'
+      ? 'Quét đúng chất của phản ứng. Thời gian 7 phút chỉ bắt đầu sau khi bấm Quét AR.'
       : 'Scan the 2 correct substance cards. The 7-minute timer starts only after a successful Reaction.';
   String get openArScan => isVi ? 'Quét AR' : 'Scan AR';
   String get reactionButton => isVi ? 'Phản ứng' : 'Reaction';
@@ -547,7 +547,6 @@ class AppLocalizations {
       ? 'Bạn có chắc chắn muốn nộp bài không?'
       : 'Are you sure you want to submit?';
   String get confirm => isVi ? 'Xác nhận' : 'Confirm';
-  String get cancel => isVi ? 'Huỷ' : 'Cancel';
   String get backToReactionList => isVi
       ? 'Danh sách phản ứng'
       : 'Reaction list';
@@ -742,7 +741,6 @@ class AppLocalizations {
   String get backToMenu => isVi ? 'Về menu' : 'Back to menu';
   String get playAgain => isVi ? 'Chơi lại' : 'Play again';
   String get poemLabel => isVi ? 'Bài thơ:' : 'Poem:';
-  String get explanationLabel => isVi ? 'Giải thích:' : 'Explanation:';
   String get skippedAnswer => isVi ? 'Bỏ qua' : 'Skipped';
   String get learnPoemTitle => isVi ? 'Học Bài Thơ' : 'Learn Poems';
   String get atomicMassTab => isVi ? 'Khối lượng' : 'Atomic mass';

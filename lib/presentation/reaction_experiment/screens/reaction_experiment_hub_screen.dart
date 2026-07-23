@@ -6,11 +6,14 @@ import '../../../core/l10n/app_localizations.dart';
 import '../../../core/l10n/locale_provider.dart';
 import '../../../domain/models/reaction_experiment/experiment_attempt_record.dart';
 import '../../../domain/models/reaction_experiment/experiment_quiz_question.dart';
+import '../../../domain/models/student_quiz_attempt_detail_model.dart';
+import '../../../domain/models/student_quiz_question_model.dart';
 import '../../ar_view/models/scan_launch_args.dart';
 import '../../ar_view/widgets/ar_camera_view.dart';
 import '../../../routes/app_routes.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../home/providers/theme_provider.dart';
+import '../../quiz/providers/student_quiz_provider.dart';
 import '../providers/reaction_experiment_session_provider.dart';
 import '../widgets/experiment_screen_header.dart';
 
@@ -28,113 +31,313 @@ class _ReactionExperimentHubScreenState
   bool _openingAr = false;
 
   Future<void> _openExperimentScan() async {
-    final session = context.read<ReactionExperimentSessionProvider>();
-    if (!session.canOpenScan || _openingAr) return;
+    final session =
+    context.read<ReactionExperimentSessionProvider>();
 
-    setState(() => _openingAr = true);
+    if (!session.canOpenScan || _openingAr) {
+      return;
+    }
+
+    final reaction = session.activeReaction;
+
+    if (reaction == null) {
+      return;
+    }
+
+    setState(() {
+      _openingAr = true;
+    });
+
     try {
       final access = await _arAccessApi.getMyArAccess();
-      if (!mounted) return;
-      if (!access.canScanAR) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(access.message)),
-        );
+
+      if (!mounted) {
         return;
       }
 
+      if (!access.canScanAR) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(access.message),
+          ),
+        );
+
+        return;
+      }
+
+
+
       session.markEnteringScan();
+
       ARUnitySession.instance.experimentScanHandler =
-          session.handleExperimentReactionCheck;
+          (result) async {
+
+        await session.handleExperimentReactionCheck(result);
+
+
+
+        // Quét sai hoặc không đúng phản ứng:
+        // giữ nguyên handler để người dùng có thể quét lại.
+        if (session.lastReactionCheck == null) {
+          if (mounted && session.sessionError != null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(session.sessionError!),
+              ),
+            );
+          }
+
+          return;
+        }
+
+        // Quét đúng: tiếp tục complete-ar và tải quiz.
+        await session.onReturnFromExperimentScan();
+
+
+        // Chỉ xóa handler sau khi đã xử lý kết quả thành công.
+        ARUnitySession.instance.experimentScanHandler = null;
+
+        if (!mounted) {
+          return;
+        }
+
+        if (session.sessionError != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(session.sessionError!),
+            ),
+          );
+        }
+      };
 
       await Navigator.pushNamed(
         context,
         AppRoutes.arAssetLoading,
         arguments: ScanLaunchArgs(
           mode: ScanMode.experiment,
-          expectedReactionCode: session.activeReaction!.code,
+          expectedReactionCode: reaction.reactionCode,
         ),
       );
 
-      if (!mounted) return;
-      ARUnitySession.instance.experimentScanHandler = null;
-      session.onReturnFromExperimentScan();
+      // Không xóa handler và không gọi onReturn ở đây,
+      // vì route loading có thể kết thúc trước khi Unity quét xong.
     } catch (e) {
+      ARUnitySession.instance.experimentScanHandler = null;
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString())),
+          SnackBar(
+            content: Text(e.toString()),
+          ),
         );
       }
     } finally {
-      if (mounted) setState(() => _openingAr = false);
+      if (mounted) {
+        setState(() {
+          _openingAr = false;
+        });
+      }
     }
   }
 
   Future<void> _confirmSubmit() async {
     final l10n = AppLocalizations.of(context);
+
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.cardBg,
-        title: Text(
-          l10n.confirmSubmitTitle,
-          style: TextStyle(color: AppColors.textPrimary, fontFamily: 'Inter'),
-        ),
-        content: Text(
-          l10n.confirmSubmitMessage,
-          style: TextStyle(color: AppColors.textSecondary, fontFamily: 'Inter'),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: Text(l10n.cancel),
+      builder: (dialogContext) {
+        return AlertDialog(
+          backgroundColor: AppColors.cardBg,
+          title: Text(
+            l10n.confirmSubmitTitle,
+            style: TextStyle(
+              color: AppColors.textPrimary,
+              fontFamily: 'Inter',
+            ),
           ),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: Text(l10n.confirm),
+          content: Text(
+            l10n.confirmSubmitMessage,
+            style: TextStyle(
+              color: AppColors.textSecondary,
+              fontFamily: 'Inter',
+            ),
           ),
-        ],
-      ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(
+                  dialogContext,
+                  false,
+                );
+              },
+              child: Text(l10n.cancel),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(
+                  dialogContext,
+                  true,
+                );
+              },
+              child: Text(l10n.confirm),
+            ),
+          ],
+        );
+      },
     );
 
-    if (confirmed == true && mounted) {
-      await context.read<ReactionExperimentSessionProvider>().submit(
-            force: false,
-            isVi: l10n.isVi,
-          );
+    if (confirmed != true || !mounted) {
+      return;
+    }
+
+    final session =
+    context.read<ReactionExperimentSessionProvider>();
+
+    final submitted = await session.submit();
+
+    if (!mounted) {
+      return;
+    }
+
+    if (!submitted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            session.sessionError ??
+                'Không thể nộp bài',
+          ),
+        ),
+      );
     }
   }
 
-  void _leaveHub({required bool abandon}) {
-    final session = context.read<ReactionExperimentSessionProvider>();
-    if (abandon && session.shouldAbandonOnLeave) {
-      session.abandonSession();
+  Future<void> _leaveHub({
+    required bool abandon,
+  }) async {
+    final session =
+    context.read<ReactionExperimentSessionProvider>();
+
+    if (abandon &&
+        session.shouldAbandonOnLeave) {
+      final success =
+      await session.abandonSession();
+
+      if (!success || !mounted) {
+        return;
+      }
     } else if (session.showResult) {
       session.clearActiveSession();
     }
-    Navigator.pop(context);
+
+    if (mounted) {
+      Navigator.pop(context);
+    }
+  }
+
+  Widget _buildResultBody({
+    required AppLocalizations l10n,
+    required ReactionExperimentSessionProvider session,
+    required StudentQuizProvider quizProvider,
+    required StudentQuizAttemptDetailModel? attemptResult,
+  }) {
+    if (quizProvider.loadingAttemptDetail &&
+        attemptResult == null) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    if (quizProvider.attemptDetailError != null &&
+        attemptResult == null) {
+      return ListView(
+        padding: const EdgeInsets.fromLTRB(
+          20,
+          30,
+          20,
+          24,
+        ),
+        children: [
+          _LoadQuizErrorCard(
+            message: quizProvider.attemptDetailError!,
+            onRetry: () async {
+              await quizProvider.loadCurrentAttemptResult();
+            },
+          ),
+        ],
+      );
+    }
+
+    if (attemptResult == null) {
+      return Center(
+        child: Text(
+          'Không tìm thấy kết quả bài làm',
+          style: TextStyle(
+            color: AppColors.textSecondary,
+            fontFamily: 'Inter',
+          ),
+        ),
+      );
+    }
+
+    return _ResultPanel(
+      l10n: l10n,
+      result: attemptResult,
+      onBackToList: () {
+        session.clearActiveSession();
+        Navigator.pop(context);
+      },
+      onBackToCategories: () {
+        session.clearActiveSession();
+
+        Navigator.popUntil(
+          context,
+          ModalRoute.withName(
+            AppRoutes.reactionCategory,
+          ),
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+
     context.watch<LocaleProvider>();
     context.watch<ThemeProvider>();
-    final session = context.watch<ReactionExperimentSessionProvider>();
-    session.syncSubmitLocale(l10n.isVi);
+
+    final session =
+    context.watch<ReactionExperimentSessionProvider>();
+
+    final quizProvider = context.watch<StudentQuizProvider>();
+
     final reaction = session.activeReaction;
+    final quizContent = quizProvider.quizDetail;
+    final attemptResult = quizProvider.attemptDetail;
 
     if (reaction == null) {
       return Scaffold(
-        body: Center(child: Text(l10n.noExperimentData)),
+        backgroundColor: AppColors.backgroundDark,
+        body: Center(
+          child: Text(
+            l10n.noExperimentData,
+            style: TextStyle(
+              color: AppColors.textPrimary,
+              fontFamily: 'Inter',
+            ),
+          ),
+        ),
       );
     }
 
     return PopScope(
-      canPop: true,
-      onPopInvokedWithResult: (didPop, result) {
-        if (didPop && session.shouldAbandonOnLeave) {
-          session.abandonSession();
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) {
+          return;
         }
+
+        await _leaveHub(abandon: true);
       },
       child: Scaffold(
         backgroundColor: AppColors.backgroundDark,
@@ -144,7 +347,7 @@ class _ReactionExperimentHubScreenState
             child: Column(
               children: [
                 ExperimentScreenHeader(
-                  title: reaction.name(l10n.isVi),
+                  title: reaction.reactionName,
                   onBack: () => _leaveHub(abandon: true),
                   trailing: session.isTimerRunning
                       ? ExperimentTimerBadge(
@@ -154,79 +357,145 @@ class _ReactionExperimentHubScreenState
                       : null,
                 ),
                 Expanded(
-                  child: session.showResult && session.lastSubmitResult != null
-                      ? _ResultPanel(
-                          l10n: l10n,
-                          record: session.lastSubmitResult!,
-                          onBackToList: () {
-                            session.clearActiveSession();
-                            Navigator.pop(context);
-                          },
-                          onBackToCategories: () {
-                            session.clearActiveSession();
-                            Navigator.popUntil(
-                              context,
-                              ModalRoute.withName(AppRoutes.reactionCategory),
-                            );
-                          },
-                        )
+                  child: session.showResult
+                      ? _buildResultBody(
+                    l10n: l10n,
+                    session: session,
+                    quizProvider: quizProvider,
+                    attemptResult: attemptResult,
+                  )
                       : ListView(
-                          padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
-                          children: [
-                            _ArSection(
-                              l10n: l10n,
-                              arCompleted: session.arCompleted,
-                              canOpenScan: session.canOpenScan,
-                              isOpening: _openingAr,
-                              onOpenScan: _openExperimentScan,
-                              timerText: session.isTimerRunning
-                                  ? session.formatRemaining()
-                                  : null,
+                    padding: const EdgeInsets.fromLTRB(
+                      20,
+                      8,
+                      20,
+                      24,
+                    ),
+                    children: [
+                      _ArSection(
+                        l10n: l10n,
+                        equation: reaction.equation,
+                        arCompleted: session.arCompleted,
+                        canOpenScan: session.canOpenScan,
+                        isOpening: _openingAr,
+                        onOpenScan: _openExperimentScan,
+                        timerText: session.isTimerRunning
+                            ? session.formatRemaining()
+                            : null,
+                      ),
+
+                      if (session.sessionError != null) ...[
+                        const SizedBox(height: 14),
+                        _InlineErrorCard(
+                          message: session.sessionError!,
+                        ),
+                      ],
+
+                      if (quizProvider.completingAr) ...[
+                        const SizedBox(height: 20),
+                        const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      ],
+
+                      if (session.canShowQuizSection) ...[
+                        const SizedBox(height: 20),
+
+                        if (quizProvider.loadingQuizContent &&
+                            quizContent == null)
+                          const Padding(
+                            padding: EdgeInsets.symmetric(
+                              vertical: 30,
                             ),
-                            if (session.canShowQuizSection) ...[
-                              const SizedBox(height: 20),
-                              _ScriptSection(
-                                l10n: l10n,
-                                script: reaction.script(l10n.isVi),
-                                equation: reaction.equation,
-                              ),
-                              const SizedBox(height: 20),
-                              _QuizSection(
-                                l10n: l10n,
-                                questions: reaction.questions,
-                                session: session,
-                              ),
-                              const SizedBox(height: 20),
-                              SizedBox(
-                                width: double.infinity,
-                                child: ElevatedButton(
-                                  onPressed: session.allQuestionsAnswered
-                                      ? _confirmSubmit
-                                      : null,
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors.primary,
-                                    foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 14,
-                                    ),
-                                  ),
-                                  child: Text(l10n.submitQuiz),
-                                ),
-                              ),
-                            ] else if (!session.arCompleted) ...[
-                              const SizedBox(height: 16),
-                              Text(
-                                l10n.scanTwoCardsHint,
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  color: AppColors.textSecondary,
-                                  fontFamily: 'Inter',
-                                  height: 1.4,
-                                ),
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          )
+                        else if (quizProvider.quizContentError !=
+                            null &&
+                            quizContent == null)
+                          _LoadQuizErrorCard(
+                            message:
+                            quizProvider.quizContentError!,
+                            onRetry: () async {
+                              await quizProvider
+                                  .loadQuizContent();
+                            },
+                          )
+                        else if (quizContent != null) ...[
+                            _ScriptSection(
+                              l10n: l10n,
+                              script: quizContent.script ??
+                                  'Chưa có nội dung hướng dẫn cho phản ứng này.',
+                              equation: quizContent.equation,
+                            ),
+
+                            const SizedBox(height: 20),
+
+                            _QuizSection(
+                              l10n: l10n,
+                              questions: quizContent.questions,
+                              session: session,
+                              quizProvider: quizProvider,
+                            ),
+
+                            if (quizProvider.saveAnswerError !=
+                                null) ...[
+                              const SizedBox(height: 12),
+                              _InlineErrorCard(
+                                message:
+                                quizProvider
+                                    .saveAnswerError!,
                               ),
                             ],
+
+                            const SizedBox(height: 20),
+
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                onPressed: quizProvider.submitting
+                                    ? null
+                                    : session.allQuestionsAnswered
+                                    ? _confirmSubmit
+                                    : null,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.primary,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 14,
+                                  ),
+                                ),
+                                child: quizProvider.submitting
+                                    ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                                    : Text(
+                                  l10n.submitQuiz,
+                                ),
+                              ),
+                            )
                           ],
+                      ] else if (!session.arCompleted) ...[
+                        const SizedBox(height: 16),
+                        Text(
+                          l10n.scanTwoCardsHint,
+                          style: TextStyle(
+                            fontSize: 13,
+                            color:
+                            AppColors.textSecondary,
+                            fontFamily: 'Inter',
+                            height: 1.4,
+                          ),
                         ),
+                      ],
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -239,6 +508,7 @@ class _ReactionExperimentHubScreenState
 
 class _ArSection extends StatelessWidget {
   final AppLocalizations l10n;
+  final String equation;
   final bool arCompleted;
   final bool canOpenScan;
   final bool isOpening;
@@ -247,6 +517,7 @@ class _ArSection extends StatelessWidget {
 
   const _ArSection({
     required this.l10n,
+    required this.equation,
     required this.arCompleted,
     required this.canOpenScan,
     required this.isOpening,
@@ -308,6 +579,50 @@ class _ArSection extends StatelessWidget {
                 ),
             ],
           ),
+
+          if (equation.trim().isNotEmpty) ...[
+            const SizedBox(height: 12),
+
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 14,
+                vertical: 12,
+              ),
+              decoration: BoxDecoration(
+                color: AppColors.backgroundDark.withOpacity(0.45),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: AppColors.subtitleAccent.withOpacity(0.35),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Phương trình phản ứng',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textSecondary,
+                      fontFamily: 'Inter',
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    equation,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.subtitleAccent,
+                      fontFamily: 'Inter',
+                      height: 1.4,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
           if (timerText != null) ...[
             const SizedBox(height: 10),
             ExperimentTimerBadge(timeText: timerText!, active: true),
@@ -398,17 +713,26 @@ class _ScriptSection extends StatelessWidget {
 
 class _QuizSection extends StatelessWidget {
   final AppLocalizations l10n;
-  final List<ExperimentQuizQuestion> questions;
+  final List<StudentQuizQuestionModel> questions;
   final ReactionExperimentSessionProvider session;
+  final StudentQuizProvider quizProvider;
 
   const _QuizSection({
     required this.l10n,
     required this.questions,
     required this.session,
+    required this.quizProvider,
   });
 
   @override
   Widget build(BuildContext context) {
+    final sortedQuestions = [...questions]
+      ..sort(
+            (a, b) => a.questionOrder.compareTo(
+          b.questionOrder,
+        ),
+      );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -422,14 +746,28 @@ class _QuizSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-        for (var i = 0; i < questions.length; i++)
+        for (var index = 0;
+        index < sortedQuestions.length;
+        index++)
           Padding(
-            padding: const EdgeInsets.only(bottom: 14),
+            padding: const EdgeInsets.only(
+              bottom: 14,
+            ),
             child: _QuestionCard(
-              index: i + 1,
-              question: questions[i],
-              selected: session.answerFor(questions[i].id),
-              onSelect: (idx) => session.selectAnswer(questions[i].id, idx),
+              index: index + 1,
+              question: sortedQuestions[index],
+              selectedOptionKey: session.answerFor(
+                sortedQuestions[index].questionId,
+              ),
+              saving: quizProvider.isSavingAnswer(
+                sortedQuestions[index].questionId,
+              ),
+              onSelect: (optionKey) async {
+                await session.selectAnswer(
+                  questionId: sortedQuestions[index].questionId,
+                  optionKey: optionKey,
+                );
+              },
               l10n: l10n,
             ),
           ),
@@ -440,43 +778,76 @@ class _QuizSection extends StatelessWidget {
 
 class _QuestionCard extends StatelessWidget {
   final int index;
-  final ExperimentQuizQuestion question;
-  final int? selected;
-  final ValueChanged<int> onSelect;
+  final StudentQuizQuestionModel question;
+  final String? selectedOptionKey;
+  final bool saving;
+  final Future<void> Function(String optionKey)
+  onSelect;
   final AppLocalizations l10n;
 
   const _QuestionCard({
     required this.index,
     required this.question,
-    required this.selected,
+    required this.selectedOptionKey,
+    required this.saving,
     required this.onSelect,
     required this.l10n,
   });
 
   @override
   Widget build(BuildContext context) {
+    final options = [...question.options]
+      ..sort(
+            (a, b) =>
+            a.optionOrder.compareTo(
+              b.optionOrder,
+            ),
+      );
+
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: AppColors.cardSurface,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.primary.withOpacity(0.15)),
+        border: Border.all(
+          color:
+          AppColors.primary.withOpacity(0.15),
+        ),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment:
+        CrossAxisAlignment.start,
         children: [
-          Text(
-            l10n.questionNumber(index),
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: AppColors.primary,
-              fontFamily: 'Inter',
-            ),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  l10n.questionNumber(index),
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight:
+                    FontWeight.w600,
+                    color: AppColors.primary,
+                    fontFamily: 'Inter',
+                  ),
+                ),
+              ),
+              if (saving)
+                const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child:
+                  CircularProgressIndicator(
+                    strokeWidth: 2,
+                  ),
+                ),
+            ],
           ),
+
           const SizedBox(height: 6),
+
           Text(
-            question.questionText(l10n.isVi),
+            question.questionText,
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
@@ -484,37 +855,109 @@ class _QuestionCard extends StatelessWidget {
               fontFamily: 'Inter',
             ),
           ),
+
           const SizedBox(height: 10),
-          for (var i = 0; i < question.options(l10n.isVi).length; i++)
+
+          for (final option in options)
             Padding(
-              padding: const EdgeInsets.only(bottom: 6),
+              padding:
+              const EdgeInsets.only(
+                bottom: 7,
+              ),
               child: InkWell(
-                onTap: () => onSelect(i),
-                borderRadius: BorderRadius.circular(10),
+                onTap: saving
+                    ? null
+                    : () {
+                  onSelect(
+                    option.optionKey,
+                  );
+                },
+                borderRadius:
+                BorderRadius.circular(10),
                 child: Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.symmetric(
+                  padding:
+                  const EdgeInsets.symmetric(
                     horizontal: 12,
                     vertical: 10,
                   ),
                   decoration: BoxDecoration(
-                    color: selected == i
-                        ? AppColors.primary.withOpacity(0.15)
-                        : AppColors.backgroundDark.withOpacity(0.35),
-                    borderRadius: BorderRadius.circular(10),
+                    color:
+                    selectedOptionKey ==
+                        option.optionKey
+                        ? AppColors.primary
+                        .withOpacity(0.15)
+                        : AppColors
+                        .backgroundDark
+                        .withOpacity(0.35),
+                    borderRadius:
+                    BorderRadius.circular(10),
                     border: Border.all(
-                      color: selected == i
-                          ? AppColors.primary.withOpacity(0.5)
-                          : AppColors.cardBorder.withOpacity(0.3),
+                      color:
+                      selectedOptionKey ==
+                          option.optionKey
+                          ? AppColors.primary
+                          .withOpacity(0.5)
+                          : AppColors
+                          .cardBorder
+                          .withOpacity(0.3),
                     ),
                   ),
-                  child: Text(
-                    question.options(l10n.isVi)[i],
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: AppColors.textPrimary,
-                      fontFamily: 'Inter',
-                    ),
+                  child: Row(
+                    crossAxisAlignment:
+                    CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 25,
+                        height: 25,
+                        alignment:
+                        Alignment.center,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color:
+                          selectedOptionKey ==
+                              option
+                                  .optionKey
+                              ? AppColors
+                              .primary
+                              : AppColors
+                              .backgroundDark
+                              .withOpacity(
+                            0.45,
+                          ),
+                        ),
+                        child: Text(
+                          option.optionKey,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight:
+                            FontWeight.w700,
+                            color:
+                            selectedOptionKey ==
+                                option
+                                    .optionKey
+                                ? Colors.white
+                                : AppColors
+                                .textSecondary,
+                            fontFamily: 'Inter',
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          option.optionText,
+                          style: TextStyle(
+                            fontSize: 13,
+                            color:
+                            AppColors
+                                .textPrimary,
+                            fontFamily: 'Inter',
+                            height: 1.35,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -527,13 +970,13 @@ class _QuestionCard extends StatelessWidget {
 
 class _ResultPanel extends StatelessWidget {
   final AppLocalizations l10n;
-  final ExperimentAttemptRecord record;
+  final StudentQuizAttemptDetailModel result;
   final VoidCallback onBackToList;
   final VoidCallback onBackToCategories;
 
   const _ResultPanel({
     required this.l10n,
-    required this.record,
+    required this.result,
     required this.onBackToList,
     required this.onBackToCategories,
   });
@@ -541,7 +984,12 @@ class _ResultPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+      padding: const EdgeInsets.fromLTRB(
+        20,
+        8,
+        20,
+        24,
+      ),
       children: [
         Text(
           l10n.experimentScoreTitle,
@@ -552,9 +1000,11 @@ class _ResultPanel extends StatelessWidget {
             fontFamily: 'Inter',
           ),
         ),
+
         const SizedBox(height: 8),
+
         Text(
-          l10n.scoreOutOf(record.score, record.total),
+          '${result.score}/${result.totalQuestions}',
           style: TextStyle(
             fontSize: 28,
             fontWeight: FontWeight.w800,
@@ -562,89 +1012,358 @@ class _ResultPanel extends StatelessWidget {
             fontFamily: 'Inter',
           ),
         ),
+
+        const SizedBox(height: 8),
+
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            _ResultBadge(
+              icon: Icons.check_circle_outline,
+              text: '${result.correctCount} đúng',
+              success: true,
+            ),
+            _ResultBadge(
+              icon: Icons.cancel_outlined,
+              text:
+              '${result.totalQuestions - result.correctCount} sai',
+              success: false,
+            ),
+            _StatusBadge(
+              status: result.status,
+            ),
+          ],
+        ),
+
         const SizedBox(height: 20),
-        ...record.results.map((r) {
-          final color = r.isCorrect ? AppColors.success : AppColors.error;
-          return Container(
-            margin: const EdgeInsets.only(bottom: 12),
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: AppColors.cardSurface,
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: color.withOpacity(0.35)),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  r.questionText,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
-                    fontFamily: 'Inter',
-                  ),
+
+        ...result.answers.map(
+              (answer) {
+            final answerColor = answer.correct
+                ? AppColors.success
+                : AppColors.error;
+
+            return Container(
+              margin:
+              const EdgeInsets.only(
+                bottom: 12,
+              ),
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: AppColors.cardSurface,
+                borderRadius:
+                BorderRadius.circular(14),
+                border: Border.all(
+                  color:
+                  answerColor.withOpacity(0.35),
                 ),
-                const SizedBox(height: 8),
-                if (r.selectedIndex >= 0 && r.selectedIndex < r.options.length)
+              ),
+              child: Column(
+                crossAxisAlignment:
+                CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment:
+                    CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          answer.questionText,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight:
+                            FontWeight.w600,
+                            color: AppColors
+                                .textPrimary,
+                            fontFamily: 'Inter',
+                          ),
+                        ),
+                      ),
+                      Icon(
+                        answer.correct
+                            ? Icons.check_circle
+                            : Icons.cancel,
+                        color: answerColor,
+                        size: 20,
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 8),
+
                   Text(
-                    l10n.yourAnswer(r.options[r.selectedIndex]),
+                    'Đáp án của bạn: '
+                        '${answer.studentAnswer ?? "Chưa trả lời"}',
                     style: TextStyle(
                       fontSize: 13,
-                      color: r.isCorrect ? AppColors.success : AppColors.error,
+                      color: answerColor,
                       fontFamily: 'Inter',
                     ),
                   ),
-                if (!r.isCorrect && r.correctIndex < r.options.length)
-                  Text(
-                    l10n.correctAnswerLabel(r.options[r.correctIndex]),
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: AppColors.success,
-                      fontFamily: 'Inter',
+
+                  if (!answer.correct) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      'Đáp án đúng: '
+                          '${answer.correctAnswer}',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: AppColors.success,
+                        fontFamily: 'Inter',
+                      ),
                     ),
-                  ),
-                const SizedBox(height: 6),
-                Text(
-                  '${l10n.explanationLabel}: ${r.explanation}',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.textSecondary,
-                    fontFamily: 'Inter',
-                    height: 1.4,
-                  ),
-                ),
-              ],
-            ),
-          );
-        }),
+                  ],
+
+                  if (answer.explanation != null &&
+                      answer.explanation!
+                          .trim()
+                          .isNotEmpty) ...[
+                    const SizedBox(height: 7),
+                    Text(
+                      '${l10n.explanationLabel}: '
+                          '${answer.explanation}',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color:
+                        AppColors.textSecondary,
+                        fontFamily: 'Inter',
+                        height: 1.4,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            );
+          },
+        ),
+
         const SizedBox(height: 16),
+
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(
             onPressed: onBackToList,
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
+              backgroundColor:
+              AppColors.primary,
               foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 14),
+              padding:
+              const EdgeInsets.symmetric(
+                vertical: 14,
+              ),
             ),
-            child: Text(l10n.backToReactionList),
+            child: Text(
+              l10n.backToReactionList,
+            ),
           ),
         ),
+
         const SizedBox(height: 10),
+
         SizedBox(
           width: double.infinity,
           child: OutlinedButton(
             onPressed: onBackToCategories,
             style: OutlinedButton.styleFrom(
-              foregroundColor: AppColors.primary,
-              side: BorderSide(color: AppColors.primary.withOpacity(0.4)),
-              padding: const EdgeInsets.symmetric(vertical: 14),
+              foregroundColor:
+              AppColors.primary,
+              side: BorderSide(
+                color: AppColors.primary
+                    .withOpacity(0.4),
+              ),
+              padding:
+              const EdgeInsets.symmetric(
+                vertical: 14,
+              ),
             ),
-            child: Text(l10n.backToCategories),
+            child: Text(
+              l10n.backToCategories,
+            ),
           ),
         ),
       ],
+    );
+  }
+}
+
+class _ResultBadge extends StatelessWidget {
+  final IconData icon;
+  final String text;
+  final bool success;
+
+  const _ResultBadge({
+    required this.icon,
+    required this.text,
+    required this.success,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color = success
+        ? AppColors.success
+        : AppColors.error;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 10,
+        vertical: 6,
+      ),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.12),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: color.withOpacity(0.3),
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            size: 15,
+            color: color,
+          ),
+          const SizedBox(width: 5),
+          Text(
+            text,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: color,
+              fontFamily: 'Inter',
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StatusBadge extends StatelessWidget {
+  final String status;
+
+  const _StatusBadge({
+    required this.status,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 10,
+        vertical: 6,
+      ),
+      decoration: BoxDecoration(
+        color: AppColors.primary.withOpacity(0.12),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color:
+          AppColors.primary.withOpacity(0.3),
+        ),
+      ),
+      child: Text(
+        status,
+        style: TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
+          color: AppColors.primary,
+          fontFamily: 'Inter',
+        ),
+      ),
+    );
+  }
+}
+
+class _InlineErrorCard extends StatelessWidget {
+  final String message;
+
+  const _InlineErrorCard({
+    required this.message,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.error.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppColors.error.withOpacity(0.35),
+        ),
+      ),
+      child: Row(
+        crossAxisAlignment:
+        CrossAxisAlignment.start,
+        children: [
+          Icon(
+            Icons.error_outline,
+            color: AppColors.error,
+            size: 20,
+          ),
+          const SizedBox(width: 9),
+          Expanded(
+            child: Text(
+              message,
+              style: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 12,
+                fontFamily: 'Inter',
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LoadQuizErrorCard extends StatelessWidget {
+  final String message;
+  final Future<void> Function() onRetry;
+
+  const _LoadQuizErrorCard({
+    required this.message,
+    required this.onRetry,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.cardSurface,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: AppColors.error.withOpacity(0.4),
+        ),
+      ),
+      child: Column(
+        children: [
+          Icon(
+            Icons.error_outline,
+            color: AppColors.error,
+            size: 36,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 12,
+              color: AppColors.textSecondary,
+              fontFamily: 'Inter',
+            ),
+          ),
+          const SizedBox(height: 10),
+          OutlinedButton.icon(
+            onPressed: onRetry,
+            icon: const Icon(Icons.refresh),
+            label: const Text('Thử lại'),
+          ),
+        ],
+      ),
     );
   }
 }

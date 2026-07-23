@@ -1,13 +1,18 @@
-// lib/core/models/request/create_reaction_definition_request.dart
-
 class CreateReactionDefinitionRequest {
   final String code;
   final String name;
   final String equation;
+
+  final String reactionCategory;
   final String reactionType;
   final String arSceneKey;
+
   final String description;
+  final String? script;
+
+  final int grade;
   final bool active;
+
   final List<ReactionSubstanceRequest> reactants;
   final List<ReactionSubstanceRequest> products;
 
@@ -15,9 +20,12 @@ class CreateReactionDefinitionRequest {
     required this.code,
     required this.name,
     required this.equation,
+    required this.reactionCategory,
     required this.reactionType,
     required this.arSceneKey,
     required this.description,
+    this.script,
+    required this.grade,
     required this.active,
     required this.reactants,
     required this.products,
@@ -28,9 +36,12 @@ class CreateReactionDefinitionRequest {
       'code': code,
       'name': name,
       'equation': equation,
+      'reactionCategory': reactionCategory,
       'reactionType': reactionType,
       'arSceneKey': arSceneKey,
       'description': description,
+      'script': script,
+      'grade': grade,
       'active': active,
       'reactants': reactants.map((e) => e.toJson()).toList(),
       'products': products.map((e) => e.toJson()).toList(),

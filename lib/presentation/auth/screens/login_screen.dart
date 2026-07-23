@@ -141,7 +141,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
   }
 
   Future<void> _goHome(String welcome) async {
-    debugPrint('LOGIN: navigating to home');
 
     await AppNavigator.pushNamedAndRemoveAll(
       AppRoutes.home,
@@ -156,7 +155,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
       final fcmToken = await NotificationService.instance.getFcmToken();
 
       if (fcmToken == null || fcmToken.isEmpty) {
-        debugPrint('FCM token is empty, skip register');
         return;
       }
 
@@ -165,7 +163,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
         deviceName: 'Android Device',
       );
 
-      debugPrint('FCM token registered successfully');
     } catch (e) {
       debugPrint('Register FCM token failed: $e');
     }
@@ -181,7 +178,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
           deviceName: 'Android Device',
         );
 
-        debugPrint('FCM refreshed token registered successfully');
       },
     );
   }
@@ -191,7 +187,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     required String email,
     required String idToken,
   }) async {
-    debugPrint('LOGIN: navigate role=$role email=$email');
 
     unawaited(_setupNotificationAfterLogin());
 
@@ -201,7 +196,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     if (role == UserRole.admin) {
       await roleSession.saveSession(role: role, email: email);
       await activatePortal(context, AppPortal.admin);
-      debugPrint('LOGIN: navigating to admin');
       await AppNavigator.pushNamedAndRemoveAll(AppRoutes.adminHome);
       return;
     }
@@ -209,7 +203,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     if (role == UserRole.staff) {
       await roleSession.saveSession(role: role, email: email);
       await activatePortal(context, AppPortal.staff);
-      debugPrint('LOGIN: navigating to staff');
       await AppNavigator.pushNamedAndRemoveAll(AppRoutes.staffHome);
       return;
     }
@@ -224,7 +217,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
       idToken: idToken,
     );
 
-    debugPrint('LOGIN: session established isLoggedIn=${appState.isLoggedIn}');
 
     await activatePortal(context, AppPortal.user);
 
@@ -236,7 +228,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
 
     unawaited(
       AuthApi().syncUser(idToken).catchError((Object e) {
-        debugPrint('BE sync skipped: $e');
       }),
     );
   }
@@ -285,13 +276,11 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
   }) async {
     final idToken = session.userPoolTokensResult.value.idToken.raw;
     final claims = _decodeJwtClaims(idToken);
-    debugPrint('CLAIMS: $claims');
 
     final groups = (claims['cognito:groups'] as List?)
             ?.map((e) => e.toString())
             .toList() ??
         [];
-    debugPrint('GROUPS: $groups');
 
     final email = _emailFromClaims(claims, fallback: requestedEmail);
     await _navigateAfterLogin(
@@ -345,7 +334,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
         );
 
         if (!result.isSignedIn) {
-          debugPrint('LOGIN: Cognito isSignedIn=false');
           if (!mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -398,7 +386,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
         ),
       );
     } catch (e) {
-      debugPrint('LOGIN_ERROR: $e');
 
       if (!mounted) return;
 
@@ -463,7 +450,6 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
       // Sync user từ Cognito -> Backend
       try {
         await AuthApi().syncUser(idToken);
-        debugPrint('SYNC USER SUCCESS');
       } catch (e) {
         debugPrint('SYNC USER FAILED, CONTINUE LOGIN: $e');
       }

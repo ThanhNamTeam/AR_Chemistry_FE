@@ -44,7 +44,6 @@ class _ARCameraViewState extends State<ARCameraView>
       await context.read<AppState>().refreshKnowledgePoints();
 
       if (reward == null) {
-        debugPrint('[AR_KP] arScanReward is null');
         return;
       }
 
@@ -562,16 +561,27 @@ class ARUnitySession extends ChangeNotifier {
   }
 
   void onUnityMessage(dynamic message) {
+
     _log('unityMessage ${_formatUnityMessage(message)}');
     unawaited(_handleReactionCheckMessage(message));
   }
 
   Future<void> _handleReactionCheckMessage(dynamic rawMessage) async {
+
+
     try {
       final decoded = rawMessage is String
           ? jsonDecode(rawMessage)
           : rawMessage;
-      if (decoded is! Map || decoded['type'] != 'reaction_check_requested') {
+
+
+      if (decoded is! Map) {
+
+        return;
+      }
+
+      if (decoded['type'] != 'reaction_check_requested') {
+
         return;
       }
 
@@ -596,19 +606,25 @@ class ARUnitySession extends ChangeNotifier {
       _latestTrackingGeneration = generation;
       _latestTrackingSignature = signature;
 
+
+
       try {
+
         final result = await _reactionCheckApi.check(
           qrPayloads: qrPayloads,
           cancelToken: cancelToken,
         );
 
+
         if (!_isLatestReactionRequest(requestId, generation, signature)) return;
 
         if (result.matched == true) {
-          debugPrint('[AR_KP] matched=true, reward=${result.arScanReward}');
           if (experimentScanHandler != null) {
+
+
             await experimentScanHandler!(result);
           } else {
+
             await onReactionMatched?.call(result);
           }
         }
@@ -1073,7 +1089,6 @@ class ARUnitySession extends ChangeNotifier {
     final elapsed = _routeStopwatch.isRunning
         ? _routeStopwatch.elapsedMilliseconds
         : 0;
-    debugPrint('[AR_UNITY_TIMING] ${elapsed}ms $event');
   }
 
   String _formatUnityMessage(dynamic message) {
@@ -1110,7 +1125,6 @@ class ARUnitySession extends ChangeNotifier {
 
   Future<bool> _requestCameraPermission() async {
     try {
-      debugPrint('[AR_UNITY_TIMING] cameraPermission requestStart');
       final granted = await _permissionsChannel.invokeMethod<bool>(
         'requestCameraPermission',
       );
@@ -1119,7 +1133,6 @@ class ARUnitySession extends ChangeNotifier {
       notifyListeners();
       return permissionGranted == true;
     } on MissingPluginException catch (error) {
-      debugPrint('[AR_UNITY_TIMING] cameraPermissionChannelMissing $error');
       permissionGranted = false;
       notifyListeners();
       return false;
@@ -1132,7 +1145,6 @@ class ARUnitySession extends ChangeNotifier {
       notifyListeners();
       return false;
     } catch (error, stackTrace) {
-      debugPrint('[AR_UNITY_TIMING] cameraPermissionUnexpectedError $error');
       debugPrint(
         '[AR_UNITY_TIMING] cameraPermissionUnexpectedStack $stackTrace',
       );

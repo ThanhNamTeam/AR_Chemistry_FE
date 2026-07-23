@@ -1,12 +1,10 @@
-import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 
 import '../../../core/models/response/reaction_check_response.dart';
 import '../../../core/storage/experiment_progress_storage.dart';
-import '../../../domain/models/reaction_experiment/experiment_attempt_record.dart';
 import '../../../domain/models/reaction_experiment/reaction_category.dart';
-import '../../../domain/models/reaction_experiment/student_experiment_reaction.dart';
+import '../../../domain/models/student_reaction_model.dart';
+import '../../quiz/providers/student_quiz_provider.dart';
 
 enum ExperimentSessionPhase {
   idle,
@@ -16,282 +14,459 @@ enum ExperimentSessionPhase {
   reactionRunning,
   scriptUnlocked,
   submitted,
+  timeout,
+  abandoned,
 }
 
-class ReactionExperimentSessionProvider extends ChangeNotifier {
-  ReactionExperimentSessionProvider(this._storage);
+class ReactionExperimentSessionProvider
+    extends ChangeNotifier {
+  ReactionExperimentSessionProvider(
+      this._storage,
+      this._studentQuizProvider,
+      );
+  ReactionCheckResponse? _lastReactionCheck;
 
+  ReactionCheckResponse? get lastReactionCheck =>
+      _lastReactionCheck;
   final ExperimentProgressStorage _storage;
-
-  static const sessionDurationSeconds = 7 * 60;
+  final StudentQuizProvider _studentQuizProvider;
 
   int? selectedGrade;
   ReactionCategory? selectedCategory;
-  StudentExperimentReaction? activeReaction;
 
-  ExperimentSessionPhase phase = ExperimentSessionPhase.idle;
-  bool arCompleted = false;
+  StudentReactionModel? activeReaction;
+
+  ExperimentSessionPhase phase =
+      ExperimentSessionPhase.idle;
+
   bool hasReturnedFromArOnce = false;
-  bool scriptAndQuizUnlocked = false;
-  bool showResult = false;
 
-  final Map<String, int?> _answers = {};
+  String? sessionError;
 
-  int remainingSeconds = 0;
-  Timer? _timer;
-  DateTime? _timerEndsAt;
+  StudentQuizProvider get quizProvider =>
+      _studentQuizProvider;
 
-  ExperimentAttemptRecord? lastSubmitResult;
-  Map<String, ExperimentAttemptRecord> _completed = {};
-  bool _submitLocaleIsVi = true;
+  bool get arCompleted {
+    return _studentQuizProvider.running ||
+        _studentQuizProvider.submitted ||
+        _studentQuizProvider.timedOut;
+  }
 
-  Map<String, ExperimentAttemptRecord> get completedAttempts =>
-      Map.unmodifiable(_completed);
+  bool get scriptAndQuizUnlocked {
+    return _studentQuizProvider.running ||
+        _studentQuizProvider.submitted ||
+        _studentQuizProvider.timedOut;
+  }
+
+  bool get showResult {
+    return _studentQuizProvider.submitted ||
+        _studentQuizProvider.timedOut;
+  }
+
+  int get remainingSeconds =>
+      _studentQuizProvider.remainingSeconds;
+
+  String get attemptCode =>
+      _studentQuizProvider.attemptCode ?? '';
 
   bool get isTimerRunning =>
-      phase == ExperimentSessionPhase.reactionRunning ||
-      (phase == ExperimentSessionPhase.scriptUnlocked && remainingSeconds > 0);
+      _studentQuizProvider.running &&
+          _studentQuizProvider.remainingSeconds > 0;
 
-  bool get canOpenScan =>
-      activeReaction != null &&
-      (phase == ExperimentSessionPhase.ready ||
-          phase == ExperimentSessionPhase.scanning ||
-          phase == ExperimentSessionPhase.cardsReady ||
-          phase == ExperimentSessionPhase.reactionRunning);
+  bool get canOpenScan {
+    return activeReaction != null &&
+        (phase == ExperimentSessionPhase.ready ||
+            phase == ExperimentSessionPhase.scanning ||
+            phase == ExperimentSessionPhase.cardsReady);
+  }
 
-  bool get canStartReaction =>
-      phase == ExperimentSessionPhase.cardsReady && !arCompleted;
+  bool get canStartReaction {
+    return activeReaction != null &&
+        phase == ExperimentSessionPhase.cardsReady &&
+        !_studentQuizProvider.running;
+  }
 
-  bool get canShowQuizSection => scriptAndQuizUnlocked && !showResult;
+  bool get canShowQuizSection {
+    return scriptAndQuizUnlocked && !showResult;
+  }
 
   Future<void> loadProgress() async {
-    selectedGrade = await _storage.getSelectedGrade();
-    _completed = await _storage.loadAttempts();
+    selectedGrade =
+    await _storage.getSelectedGrade();
+
     notifyListeners();
   }
 
   Future<void> selectGrade(int grade) async {
     selectedGrade = grade;
+
     await _storage.saveSelectedGrade(grade);
+
     notifyListeners();
   }
 
-  void selectCategory(ReactionCategory category) {
+  void selectCategory(
+      ReactionCategory category,
+      ) {
     selectedCategory = category;
     notifyListeners();
   }
 
-  void beginReaction(StudentExperimentReaction reaction) {
-    _cancelTimer();
+  Future<bool> beginReaction(
+      StudentReactionModel reaction,
+      ) async {
     activeReaction = reaction;
+    _lastReactionCheck = null;
+
     phase = ExperimentSessionPhase.ready;
-    arCompleted = false;
     hasReturnedFromArOnce = false;
-    scriptAndQuizUnlocked = false;
-    showResult = false;
-    _answers.clear();
-    lastSubmitResult = null;
-    remainingSeconds = 0;
-    _timerEndsAt = null;
+    sessionError = null;
+
     notifyListeners();
+
+    await _studentQuizProvider.selectReaction(
+      reaction.reactionId,
+    );
+
+    if (_studentQuizProvider.reactionDetail == null) {
+      sessionError =
+          _studentQuizProvider.reactionDetailError ??
+              'Không thể tải thông tin phản ứng';
+
+      notifyListeners();
+      return false;
+    }
+
+    final started =
+    await _studentQuizProvider.startQuiz(
+      reactionId: reaction.reactionId,
+    );
+
+    if (!started) {
+      sessionError =
+          _studentQuizProvider.startAttemptError ??
+              'Không thể bắt đầu attempt';
+
+      notifyListeners();
+      return false;
+    }
+
+    if (_studentQuizProvider.running) {
+      phase = ExperimentSessionPhase.scriptUnlocked;
+
+      await _studentQuizProvider.loadQuizContent();
+    } else {
+      phase = ExperimentSessionPhase.ready;
+    }
+
+    notifyListeners();
+    return true;
   }
 
   void markEnteringScan() {
     if (phase == ExperimentSessionPhase.ready ||
-        phase == ExperimentSessionPhase.reactionRunning) {
+        phase ==
+            ExperimentSessionPhase.cardsReady) {
       phase = ExperimentSessionPhase.scanning;
       notifyListeners();
     }
   }
 
   Future<void> handleExperimentReactionCheck(
-    ReactionCheckResponse result,
-  ) async {
-    final expected = activeReaction?.code;
-    if (expected == null) return;
-    if (!result.matched) return;
+      ReactionCheckResponse result,
+      ) async {
+    debugPrint(
+      '[EXPERIMENT-SESSION] handleReactionCheck được gọi: '
+          'matched=${result.matched}, '
+          'actual=${result.reactionCode}, '
+          'expected=${activeReaction?.reactionCode}, '
+          'qr=${result.affectedQrPayloads}',
+    );
+    final expectedCode = activeReaction?.reactionCode;
 
-    if (result.reactionCode != null && result.reactionCode != expected) {
+    if (expectedCode == null || expectedCode.isEmpty) {
       return;
     }
 
-    if (phase == ExperimentSessionPhase.scanning ||
-        phase == ExperimentSessionPhase.ready) {
-      phase = ExperimentSessionPhase.cardsReady;
-      notifyListeners();
-    }
-  }
+    if (!result.matched) {
+      _lastReactionCheck = null;
+      sessionError = result.message;
+      phase = ExperimentSessionPhase.scanning;
 
-  void startReactionAfterScan() {
-    if (!canStartReaction) return;
-    arCompleted = true;
-    phase = ExperimentSessionPhase.reactionRunning;
-    _startTimer();
+      notifyListeners();
+      return;
+    }
+
+    final actualReactionCode = result.reactionCode;
+
+    if (actualReactionCode == null ||
+        actualReactionCode.trim().isEmpty ||
+        actualReactionCode != expectedCode) {
+      _lastReactionCheck = null;
+      sessionError =
+      'Phản ứng quét được không khớp với phản ứng đang học';
+      phase = ExperimentSessionPhase.scanning;
+
+      notifyListeners();
+      return;
+    }
+
+    _lastReactionCheck = result;
+    sessionError = null;
+    phase = ExperimentSessionPhase.cardsReady;
+
     notifyListeners();
   }
 
-  void onReturnFromExperimentScan() {
-    if (arCompleted && !hasReturnedFromArOnce) {
-      hasReturnedFromArOnce = true;
-      scriptAndQuizUnlocked = true;
-      phase = ExperimentSessionPhase.scriptUnlocked;
-      notifyListeners();
-    } else if (phase == ExperimentSessionPhase.scanning ||
-        phase == ExperimentSessionPhase.cardsReady) {
-      phase = arCompleted
-          ? ExperimentSessionPhase.reactionRunning
-          : ExperimentSessionPhase.ready;
-      notifyListeners();
-    }
-  }
+  Future<bool> completeScannedReaction() async {
+    final result = _lastReactionCheck;
 
-  void syncSubmitLocale(bool isVi) {
-    _submitLocaleIsVi = isVi;
-  }
-
-  void selectAnswer(String questionId, int index) {
-    _answers[questionId] = index;
-    notifyListeners();
-  }
-
-  int? answerFor(String questionId) => _answers[questionId];
-
-  bool get allQuestionsAnswered {
-    final qs = activeReaction?.questions ?? const [];
-    if (qs.isEmpty) return false;
-    for (final q in qs) {
-      if (_answers[q.id] == null) return false;
-    }
-    return true;
-  }
-
-  Future<bool> submit({required bool force, bool? isVi}) async {
-    if (activeReaction == null) return false;
-    if (!force && !allQuestionsAnswered) return false;
-
-    final localeIsVi = isVi ?? _submitLocaleIsVi;
-    final reaction = activeReaction!;
-    final results = <ExperimentQuestionResult>[];
-    var score = 0;
-
-    for (final q in reaction.questions) {
-      final selected = _answers[q.id] ?? -1;
-      final correct = selected == q.correctIndex;
-      if (correct) score++;
-      results.add(
-        ExperimentQuestionResult(
-          questionId: q.id,
-          questionText: q.questionText(localeIsVi),
-          options: q.options(localeIsVi),
-          selectedIndex: selected,
-          correctIndex: q.correctIndex,
-          explanation: q.explanation(localeIsVi),
-        ),
-      );
-    }
-
-    final record = ExperimentAttemptRecord(
-      reactionCode: reaction.code,
-      grade: reaction.grade,
-      categoryKey: reaction.category.storageKey,
-      score: score,
-      total: reaction.questions.length,
-      completedAt: DateTime.now(),
-      results: results,
+    debugPrint(
+      '[EXPERIMENT] completeScannedReaction '
+          'result=${result != null}, '
+          'matched=${result?.matched}, '
+          'reactionCode=${result?.reactionCode}, '
+          'qrPayloads=${result?.affectedQrPayloads}',
     );
 
-    lastSubmitResult = record;
-    _completed[reaction.code] = record;
-    await _storage.saveAttempt(record);
+    if (result == null || !result.matched) {
+      sessionError = 'Chưa có kết quả quét phản ứng hợp lệ';
+      notifyListeners();
+      return false;
+    }
 
-    _cancelTimer();
-    phase = ExperimentSessionPhase.submitted;
-    showResult = true;
-    remainingSeconds = 0;
+    final scannedCodes = result.affectedQrPayloads;
+
+    if (scannedCodes.isEmpty) {
+      sessionError = 'Không tìm thấy dữ liệu QR của các chất đã quét';
+      debugPrint('[EXPERIMENT] affectedQrPayloads đang rỗng');
+      notifyListeners();
+      return false;
+    }
+
+    debugPrint('[EXPERIMENT] Gọi completeAr với $scannedCodes');
+
+    return startReactionAfterScan(
+      scannedCardCodes: scannedCodes,
+    );
+  }
+
+  Future<bool> startReactionAfterScan({
+    required List<String> scannedCardCodes,
+    String? arSessionCode,
+  }) async {
+    if (!canStartReaction) {
+      return false;
+    }
+
+    sessionError = null;
+    phase = ExperimentSessionPhase.reactionRunning;
+
+    notifyListeners();
+
+    final completed = await _studentQuizProvider.completeAr(
+      scannedCardCodes: scannedCardCodes,
+      reactionSuccessful: true,
+      arSessionCode: arSessionCode,
+    );
+
+    debugPrint(
+      '[EXPERIMENT] completeAr result=$completed '
+          'error=${_studentQuizProvider.completeArError} '
+          'running=${_studentQuizProvider.running} '
+          'waitingAr=${_studentQuizProvider.waitingAr}',
+    );
+
+    if (!completed) {
+      sessionError =
+          _studentQuizProvider.completeArError ??
+              'Không thể xác nhận AR';
+
+      phase = ExperimentSessionPhase.cardsReady;
+
+      notifyListeners();
+      return false;
+    }
+
+    phase = ExperimentSessionPhase.scriptUnlocked;
+
+    await _studentQuizProvider.loadQuizContent();
+    debugPrint(
+      '[EXPERIMENT] loadQuizContent xong '
+          'quizDetail=${_studentQuizProvider.quizDetail != null} '
+          'error=${_studentQuizProvider.quizContentError}',
+    );
+    if (_studentQuizProvider.quizDetail == null) {
+      sessionError =
+          _studentQuizProvider.quizContentError ??
+              'Không thể tải nội dung quiz';
+
+      notifyListeners();
+      return false;
+    }
+
     notifyListeners();
     return true;
   }
 
-  void abandonSession() {
-    if (phase == ExperimentSessionPhase.submitted) return;
-    _cancelTimer();
-    activeReaction = null;
-    phase = ExperimentSessionPhase.idle;
-    arCompleted = false;
-    hasReturnedFromArOnce = false;
-    scriptAndQuizUnlocked = false;
-    showResult = false;
-    _answers.clear();
-    lastSubmitResult = null;
-    remainingSeconds = 0;
-    _timerEndsAt = null;
+  Future<void> onReturnFromExperimentScan() async {
+    hasReturnedFromArOnce = true;
+
+    if (phase == ExperimentSessionPhase.cardsReady &&
+        _lastReactionCheck != null) {
+      final completed =
+      await completeScannedReaction();
+
+      if (!completed) {
+        notifyListeners();
+        return;
+      }
+    } else {
+      await syncWithBackend();
+    }
+
+    if (_studentQuizProvider.running) {
+      phase = ExperimentSessionPhase.scriptUnlocked;
+
+      if (_studentQuizProvider.quizDetail == null) {
+        await _studentQuizProvider.loadQuizContent();
+      }
+    } else if (_studentQuizProvider.waitingAr) {
+      phase = ExperimentSessionPhase.ready;
+    }
+
     notifyListeners();
   }
 
-  void resetForRetry() {
+  Future<void> syncWithBackend() async {
+    await _studentQuizProvider.syncAttemptState();
+
+    if (_studentQuizProvider.running) {
+      phase = ExperimentSessionPhase.scriptUnlocked;
+    } else if (_studentQuizProvider.submitted) {
+      phase = ExperimentSessionPhase.submitted;
+    } else if (_studentQuizProvider.timedOut) {
+      phase = ExperimentSessionPhase.timeout;
+
+      await _studentQuizProvider
+          .loadCurrentAttemptResult();
+    } else if (_studentQuizProvider.abandoned) {
+      phase = ExperimentSessionPhase.abandoned;
+    } else if (_studentQuizProvider.waitingAr) {
+      phase = ExperimentSessionPhase.ready;
+    }
+
+    notifyListeners();
+  }
+
+  Future<void> selectAnswer({
+    required String questionId,
+    required String optionKey,
+  }) async {
+    await _studentQuizProvider.selectAnswer(
+      questionId: questionId,
+      answer: optionKey,
+    );
+
+    notifyListeners();
+  }
+
+  String? answerFor(String questionId) {
+    return _studentQuizProvider
+        .answers[questionId];
+  }
+
+  bool get allQuestionsAnswered {
+    return _studentQuizProvider.canSubmit;
+  }
+
+  Future<bool> submit() async {
+    sessionError = null;
+
+    final submitted =
+    await _studentQuizProvider
+        .submitCurrentAttempt();
+
+    if (!submitted) {
+      sessionError =
+          _studentQuizProvider.submitError ??
+              'Không thể nộp bài';
+
+      notifyListeners();
+      return false;
+    }
+
+    phase = ExperimentSessionPhase.submitted;
+
+    await _studentQuizProvider
+        .loadCurrentAttemptResult();
+
+    notifyListeners();
+    return true;
+  }
+
+  Future<bool> abandonSession() async {
+    if (phase ==
+        ExperimentSessionPhase.submitted ||
+        phase == ExperimentSessionPhase.timeout ||
+        phase == ExperimentSessionPhase.idle) {
+      clearActiveSession();
+      return true;
+    }
+
+    final abandoned =
+    await _studentQuizProvider
+        .abandonCurrentAttempt();
+
+    if (!abandoned) {
+      sessionError =
+          _studentQuizProvider.attemptStateError ??
+              'Không thể hủy attempt';
+
+      notifyListeners();
+      return false;
+    }
+
+    phase = ExperimentSessionPhase.abandoned;
+
+    clearActiveSession();
+    return true;
+  }
+
+  Future<bool> resetForRetry() async {
     final reaction = activeReaction;
-    if (reaction == null) return;
-    beginReaction(reaction);
+
+    if (reaction == null) {
+      return false;
+    }
+
+    _studentQuizProvider.resetQuizSession();
+
+    return beginReaction(reaction);
   }
 
   void clearActiveSession() {
-    _cancelTimer();
     activeReaction = null;
     phase = ExperimentSessionPhase.idle;
-    arCompleted = false;
     hasReturnedFromArOnce = false;
-    scriptAndQuizUnlocked = false;
-    showResult = false;
-    _answers.clear();
-    lastSubmitResult = null;
-    remainingSeconds = 0;
-    _timerEndsAt = null;
+    sessionError = null;
+    _lastReactionCheck = null;
+
+    _studentQuizProvider.resetQuizSession();
+
     notifyListeners();
   }
 
-  bool get shouldAbandonOnLeave =>
-      activeReaction != null &&
-      phase != ExperimentSessionPhase.submitted &&
-      phase != ExperimentSessionPhase.idle;
-
-  bool isReactionCompleted(String code) => _completed.containsKey(code);
-
-  ExperimentAttemptRecord? attemptFor(String code) => _completed[code];
-
-  void _startTimer() {
-    _cancelTimer();
-    remainingSeconds = sessionDurationSeconds;
-    _timerEndsAt = DateTime.now().add(
-      const Duration(seconds: sessionDurationSeconds),
-    );
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) => _tick());
-  }
-
-  void _tick() {
-    if (_timerEndsAt == null) return;
-    final left = _timerEndsAt!.difference(DateTime.now()).inSeconds;
-    remainingSeconds = left.clamp(0, sessionDurationSeconds);
-    if (remainingSeconds <= 0) {
-      unawaited(submit(force: true));
-      return;
-    }
-    notifyListeners();
-  }
-
-  void _cancelTimer() {
-    _timer?.cancel();
-    _timer = null;
+  bool get shouldAbandonOnLeave {
+    return activeReaction != null &&
+        phase != ExperimentSessionPhase.submitted &&
+        phase != ExperimentSessionPhase.timeout &&
+        phase != ExperimentSessionPhase.abandoned &&
+        phase != ExperimentSessionPhase.idle;
   }
 
   String formatRemaining() {
-    final m = remainingSeconds ~/ 60;
-    final s = remainingSeconds % 60;
-    return '${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
-  }
-
-  @override
-  void dispose() {
-    _cancelTimer();
-    super.dispose();
+    return _studentQuizProvider
+        .formattedRemainingTime;
   }
 }

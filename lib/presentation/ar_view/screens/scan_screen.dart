@@ -160,16 +160,21 @@ class _ScanScreenState extends State<ScanScreen>
     Navigator.maybePop(context);
   }
 
-  void _startExperimentReaction() {
-    final session = context.read<ReactionExperimentSessionProvider>();
-    if (!session.canStartReaction) return;
-    session.startReactionAfterScan();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(AppLocalizations.of(context).cardsReadyForReaction),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
+  Future<void> _startExperimentReaction() async {
+    final session =
+    context.read<ReactionExperimentSessionProvider>();
+
+    if (!session.canStartReaction) {
+      return;
+    }
+
+    await _restoreAppUiMode();
+
+    if (!mounted) {
+      return;
+    }
+
+    Navigator.pop(context);
   }
 
   void _ensureArCameraView() {
@@ -423,7 +428,6 @@ class _ExperimentScanOverlay extends StatelessWidget {
     context.watch<LocaleProvider>();
     context.watch<ThemeProvider>();
     final session = context.watch<ReactionExperimentSessionProvider>();
-    session.syncSubmitLocale(l10n.isVi);
 
     return SafeArea(
       child: Align(

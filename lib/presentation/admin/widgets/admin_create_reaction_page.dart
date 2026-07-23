@@ -22,9 +22,19 @@ class _AdminCreateReactionPageState extends State<AdminCreateReactionPage> {
   final _equationCtrl = TextEditingController();
 
   final _descriptionCtrl = TextEditingController();
+  final _scriptCtrl = TextEditingController();
+
+  String? _selectedReactionCategory = 'SALT';
 
   String? _selectedArSceneKey = 'COMBUSTION_GAS';
   String? _selectedReactionType = 'COMBUSTION';
+
+  final List<String> _reactionCategories = const [
+    'METAL',
+    'ACID',
+    'BASE',
+    'SALT',
+  ];
 
   final List<String> _arSceneKeys = const [
     'METAL_ACID_GAS',
@@ -53,6 +63,16 @@ class _AdminCreateReactionPageState extends State<AdminCreateReactionPage> {
     'OTHER',
   ];
 
+  String? _selectedGrade = '8';
+
+  final List<String> _grades = const [
+    '8',
+    '9',
+    '10',
+    '11',
+    '12',
+  ];
+
   final List<_ReactionSubstanceInput> _reactants = [
     _ReactionSubstanceInput(),
   ];
@@ -70,12 +90,16 @@ class _AdminCreateReactionPageState extends State<AdminCreateReactionPage> {
     _nameCtrl.dispose();
     _equationCtrl.dispose();
     _descriptionCtrl.dispose();
+    _scriptCtrl.dispose();
+
     for (final item in _reactants) {
       item.dispose();
     }
+
     for (final item in _products) {
       item.dispose();
     }
+
     super.dispose();
   }
 
@@ -336,14 +360,18 @@ class _AdminCreateReactionPageState extends State<AdminCreateReactionPage> {
         code: _codeCtrl.text.trim(),
         name: _nameCtrl.text.trim(),
         equation: _equationCtrl.text.trim(),
+        reactionCategory: _selectedReactionCategory!,
         reactionType: _selectedReactionType!,
         arSceneKey: _selectedArSceneKey!,
         description: _descriptionCtrl.text.trim(),
+        script: _scriptCtrl.text.trim().isEmpty
+            ? null
+            : _scriptCtrl.text.trim(),
+        grade: int.parse(_selectedGrade!),
         active: _active,
         reactants: reactants,
         products: products,
       );
-
       await context.read<AdminProvider>().addReaction(request);
 
       if (!mounted) return;
@@ -498,6 +526,20 @@ class _AdminCreateReactionPageState extends State<AdminCreateReactionPage> {
               onChanged: (value) {
                 setState(() {
                   _selectedArSceneKey = value;
+                });
+              },
+            ),
+
+            const SizedBox(height: 12),
+
+            _dropdownField(
+              label: 'Lớp áp dụng',
+              value: _selectedGrade,
+              items: _grades,
+              icon: Icons.school_outlined,
+              onChanged: (value) {
+                setState(() {
+                  _selectedGrade = value;
                 });
               },
             ),

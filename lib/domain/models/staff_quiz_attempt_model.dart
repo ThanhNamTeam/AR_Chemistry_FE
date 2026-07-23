@@ -34,21 +34,50 @@ class StaffQuizAttemptModel {
     this.submittedAt,
   });
 
-  factory StaffQuizAttemptModel.fromJson(Map<String, dynamic> json) {
+  factory StaffQuizAttemptModel.fromJson(
+      Map<String, dynamic> json,
+      ) {
     return StaffQuizAttemptModel(
-      attemptCode: json['attemptCode'] as String? ?? '',
-      studentId: json['studentId'] as String?,
-      studentName: json['studentName'] as String? ?? 'Unknown student',
-      studentEmail: json['studentEmail'] as String?,
-      quizCode: json['quizCode'] as String? ?? '',
-      quizTitle: json['quizTitle'] as String? ?? '',
-      lessonCode: json['lessonCode'] as String? ?? '',
-      lessonTitle: json['lessonTitle'] as String? ?? '',
-      score: json['score'] as int? ?? 0,
-      totalQuestions: json['totalQuestions'] as int? ?? 0,
-      correctCount: json['correctCount'] as int? ?? 0,
-      status: json['status'] as String? ?? '',
-      submittedAt: DateTime.tryParse(json['submittedAt'] as String? ?? ''),
+      attemptCode:
+      json['attemptCode']?.toString() ?? '',
+
+      studentId:
+      json['studentId']?.toString(),
+
+      studentName:
+      json['studentName']?.toString() ??
+          'Unknown student',
+
+      studentEmail:
+      json['studentEmail']?.toString(),
+
+      quizCode:
+      json['quizCode']?.toString() ?? '',
+
+      quizTitle:
+      json['quizTitle']?.toString() ?? '',
+
+      lessonCode:
+      json['lessonCode']?.toString() ?? '',
+
+      lessonTitle:
+      json['lessonTitle']?.toString() ?? '',
+
+      score:
+      (json['score'] as num?)?.toInt() ?? 0,
+
+      totalQuestions:
+      (json['totalQuestions'] as num?)?.toInt() ?? 0,
+
+      correctCount:
+      (json['correctCount'] as num?)?.toInt() ?? 0,
+
+      status:
+      json['status']?.toString() ?? '',
+
+      submittedAt: DateTime.tryParse(
+        json['submittedAt']?.toString() ?? '',
+      ),
     );
   }
 }
