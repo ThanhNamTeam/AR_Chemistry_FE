@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
+import '../../../core/l10n/app_localizations.dart';
 import '../../../domain/models/ai_chat_models.dart';
 import '../../../shared/styles/app_colors.dart';
 
@@ -62,9 +64,23 @@ class ChatMessageBubble extends StatelessWidget {
                         )
                       : _AssistantMarkdown(content: message.content),
                 ),
-                if (!isUser && message.reusedMemory) ...[
-                  const SizedBox(height: 6),
-                  _memoryBadge(message.similarityScore),
+                if (!isUser) ...[
+                  const SizedBox(height: 4),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _CopyButton(content: message.content),
+                      if (message.reusedMemory) ...[
+                        const SizedBox(width: 6),
+                        Flexible(
+                          child: _memoryBadge(
+                            context,
+                            message.similarityScore,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
                 ],
               ],
             ),
@@ -89,10 +105,13 @@ class ChatMessageBubble extends StatelessWidget {
     );
   }
 
-  Widget _memoryBadge(double? score) {
+  Widget _memoryBadge(BuildContext context, double? score) {
+    final l10n = AppLocalizations.of(context);
+    // Nhãn phải nói rõ đây là CACHE (câu hỏi tương tự từng gặp) chứ không phải
+    // độ tin cậy — "(100%)" trần trụi dễ bị hiểu nhầm là "chắc chắn đúng 100%".
     final label = score != null
-        ? 'Trả lời từ bộ nhớ (${(score * 100).toStringAsFixed(0)}%)'
-        : 'Trả lời từ bộ nhớ';
+        ? l10n.aiMemoryBadge((score * 100).toStringAsFixed(0))
+        : l10n.aiMemoryBadgeNoScore;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
@@ -105,16 +124,47 @@ class ChatMessageBubble extends StatelessWidget {
         children: [
           Icon(Icons.bolt, size: 14, color: AppColors.secondary),
           const SizedBox(width: 4),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 11,
-              color: AppColors.secondaryLight,
-              fontFamily: 'Inter',
+          Flexible(
+            child: Text(
+              label,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 11,
+                color: AppColors.secondaryLight,
+                fontFamily: 'Inter',
+              ),
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Nút sao chép câu trả lời AI — chọn-kéo thủ công trên màn điện thoại với
+/// câu trả lời markdown dài rất khổ sở.
+class _CopyButton extends StatelessWidget {
+  const _CopyButton({required this.content});
+
+  final String content;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return IconButton(
+      visualDensity: VisualDensity.compact,
+      tooltip: l10n.aiCopyAnswer,
+      icon: Icon(Icons.copy, size: 15, color: AppColors.textSecondary),
+      onPressed: () {
+        Clipboard.setData(ClipboardData(text: content));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.copiedToClipboard),
+            duration: const Duration(seconds: 1),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      },
     );
   }
 }

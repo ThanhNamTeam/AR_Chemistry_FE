@@ -611,6 +611,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                     prefixIcon: Icons.mail_outline,
                     keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.next,
+                    autofillHints: const [AutofillHints.username, AutofillHints.email],
                     validator: (v) => v == null || v.isEmpty
                         ? l10n.emailRequired
                         : null,
@@ -623,6 +624,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                     prefixIcon: Icons.lock_outline,
                     isPassword: true,
                     textInputAction: TextInputAction.done,
+                    autofillHints: const [AutofillHints.password],
                     onFieldSubmitted: (_) {
                       if (!_loggingIn) _login();
                     },

@@ -52,22 +52,12 @@ class MiniGameScreen extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       child: Row(
         children: [
-          GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.15),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(Icons.arrow_back_ios_new,
-                  color: AppColors.primary, size: 18),
-            ),
-          ),
-          const SizedBox(width: 12),
+          // Không có nút quay lại: Mini Game là một đích của thanh nav dưới.
+          // Back cứng Android / vuốt mép iOS vẫn dùng được.
           Text(
             l10n.miniGameChemistryTitle,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               color: AppColors.textPrimary,
               fontSize: 20,

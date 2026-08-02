@@ -500,6 +500,44 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       const SizedBox(height: 24),
                       GestureDetector(
                         onTap: () async {
+                          // Đăng xuất nhầm rất tốn công khôi phục (email +
+                          // mật khẩu + có thể cả OTP) — luôn hỏi trước.
+                          final confirmed = await showDialog<bool>(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              backgroundColor: AppColors.cardBg,
+                              title: Text(
+                                l10n.logoutConfirmTitle,
+                                style: TextStyle(
+                                  color: AppColors.textPrimary,
+                                  fontFamily: 'Inter',
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              content: Text(
+                                l10n.logoutConfirmMessage,
+                                style: TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontFamily: 'Inter',
+                                ),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(ctx, false),
+                                  child: Text(l10n.cancel),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.pop(ctx, true),
+                                  child: Text(
+                                    l10n.logout,
+                                    style: TextStyle(color: AppColors.error),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                          if (confirmed != true || !context.mounted) return;
+
                           await state.logout();
                           await activatePortal(context, AppPortal.auth);
                           if (context.mounted) {

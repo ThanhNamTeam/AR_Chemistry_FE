@@ -618,6 +618,61 @@ class AppLocalizations {
   // —— Payment page ——
   String get paymentTitle => isVi ? 'Thanh toán' : 'Payment';
   String get paymentSuccessToast => isVi ? 'Thanh toán thành công!' : 'Payment successful!';
+  String get paymentFailedToast => isVi
+      ? 'Thanh toán thất bại. Vui lòng thử lại.'
+      : 'Payment failed. Please try again.';
+  String get copiedToClipboard => isVi ? 'Đã sao chép' : 'Copied';
+  String get qrLoadFailed => isVi
+      ? 'Không tải được mã QR.\nKiểm tra kết nối mạng.'
+      : 'Could not load QR code.\nCheck your connection.';
+
+  // —— Quiz guard ——
+  String get quizLeaveTitle => isVi ? 'Thoát bài làm?' : 'Leave quiz?';
+  String get quizLeaveMessage => isVi
+      ? 'Bài làm chưa nộp sẽ bị mất. Bạn có chắc muốn thoát?'
+      : 'Your unsubmitted answers will be lost. Leave anyway?';
+  String get quizKeepDoing => isVi ? 'Tiếp tục làm' : 'Keep going';
+  String get quizLeaveConfirm => isVi ? 'Thoát' : 'Leave';
+  String get quizSubmitConfirmTitle => isVi ? 'Nộp bài?' : 'Submit quiz?';
+  String quizSubmitConfirmMessage(int answered, int total) => isVi
+      ? 'Bạn đã trả lời $answered/$total câu. Nộp bài sẽ không sửa lại được.'
+      : 'You answered $answered/$total questions. Submission cannot be undone.';
+
+  // —— Logout ——
+  String get logoutConfirmTitle => isVi ? 'Đăng xuất?' : 'Log out?';
+  String get logoutConfirmMessage => isVi
+      ? 'Bạn sẽ cần đăng nhập lại để tiếp tục học.'
+      : 'You will need to sign in again to continue.';
+
+  // —— AI chat ——
+  String get aiDisclaimer => isVi
+      ? 'AI có thể trả lời sai — hãy đối chiếu với sách giáo khoa khi ôn thi.'
+      : 'AI can make mistakes — double-check with your textbook when revising.';
+  String aiMemoryBadge(String percent) => isVi
+      ? 'Câu hỏi tương tự đã gặp ($percent%) — trả lời được dùng lại'
+      : 'Similar question seen before ($percent%) — answer reused';
+  String get aiMemoryBadgeNoScore => isVi
+      ? 'Trả lời được dùng lại từ câu hỏi tương tự'
+      : 'Answer reused from a similar question';
+  String get aiCopyAnswer => isVi ? 'Sao chép câu trả lời' : 'Copy answer';
+  String get aiRetry => isVi ? 'Thử lại' : 'Retry';
+
+  // —— Shop confirm ——
+  String buyConfirmMessage(int kp) => isVi
+      ? 'Mua thẻ này với $kp KP? Điểm đã trừ không hoàn lại được.'
+      : 'Buy this card for $kp KP? Spent points cannot be refunded.';
+  String get buyConfirmAction => isVi ? 'Mua' : 'Buy';
+
+  // —— AR asset loading ——
+  String get arPreparingAssets =>
+      isVi ? 'Đang chuẩn bị dữ liệu AR...' : 'Preparing AR assets...';
+  String get arPrepareFailed => isVi
+      ? 'Không chuẩn bị được dữ liệu AR. Kiểm tra kết nối mạng rồi thử lại.'
+      : 'Could not prepare AR assets. Check your connection and try again.';
+  String get arExtracting => isVi
+      ? 'Đang giải nén dữ liệu AR, vui lòng chờ hoàn tất.'
+      : 'Extracting AR data, please wait.';
+  String get tryAgainAction => isVi ? 'Thử lại' : 'Try again';
   String knowledgePoints(int n) => '$n KP';
 
   // —— Feedback list & detail ——

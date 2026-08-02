@@ -17,6 +17,10 @@ class ChatProvider extends ChangeNotifier {
   bool _loadingConversations = false;
   String? _error;
 
+  /// Tin nhắn gửi thất bại gần nhất — để nút "Thử lại" gửi lại được mà người
+  /// dùng không phải gõ lại.
+  String? _lastFailedMessage;
+
   List<ChatMessage> get messages => List.unmodifiable(_messages);
   List<ConversationSummary> get conversations => List.unmodifiable(_conversations);
   String? get conversationId => _conversationId;
@@ -25,6 +29,7 @@ class ChatProvider extends ChangeNotifier {
   bool get loadingConversations => _loadingConversations;
   String? get error => _error;
   bool get hasMessages => _messages.isNotEmpty;
+  bool get canRetry => _lastFailedMessage != null;
 
   static const suggestedPrompts = [
     'Giải thích cấu trúc phân tử nước H₂O',
@@ -111,15 +116,33 @@ class ChatProvider extends ChangeNotifier {
           similarityScore: result.similarityScore,
         ),
       );
+      _lastFailedMessage = null;
       await loadConversations();
     } on AiApiException catch (e) {
       _error = e.message;
+      _lastFailedMessage = trimmed;
     } catch (_) {
       _error = 'Không gửi được tin nhắn. Kiểm tra mạng hoặc backend.';
+      _lastFailedMessage = trimmed;
     } finally {
       _sending = false;
       notifyListeners();
     }
+  }
+
+  /// Gửi lại tin nhắn thất bại gần nhất. Gỡ bubble user của lần gửi hỏng
+  /// trước đó để không hiển thị trùng câu hỏi hai lần.
+  Future<void> retryLastMessage() async {
+    final text = _lastFailedMessage;
+    if (text == null || _sending) return;
+    if (_messages.isNotEmpty &&
+        _messages.last.isUser &&
+        _messages.last.content == text) {
+      _messages.removeLast();
+    }
+    _lastFailedMessage = null;
+    _error = null;
+    await sendMessage(text);
   }
 
   Future<bool> deleteConversation(String id) async {
