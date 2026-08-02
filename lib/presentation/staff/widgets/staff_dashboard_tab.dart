@@ -8,14 +8,12 @@ import '../providers/staff_provider.dart';
 
 class StaffDashboardTab extends StatelessWidget {
   final VoidCallback onOpenFeedback;
-  final VoidCallback onOpenPayment;
   final VoidCallback onOpenQuiz;
   final VoidCallback onOpenQuizResults;
 
   const StaffDashboardTab({
     super.key,
     required this.onOpenFeedback,
-    required this.onOpenPayment,
     required this.onOpenQuiz,
     required this.onOpenQuizResults,
   });
@@ -89,17 +87,6 @@ class StaffDashboardTab extends StatelessWidget {
                     '${staff.awaitingResponseCount} ${l10n.awaitingResponse}',
                 color: AppColors.amber,
                 onTap: onOpenFeedback,
-              ),
-              Divider(
-                color: AppColors.primary.withOpacity(0.12),
-                height: 20,
-              ),
-              _QuickActionTile(
-                icon: Icons.payments_outlined,
-                label: 'Duyệt thanh toán',
-                subtitle: 'Xem thanh toán chờ duyệt',
-                color: AppColors.primary,
-                onTap: onOpenPayment,
               ),
               Divider(
                 color: AppColors.primary.withOpacity(0.12),

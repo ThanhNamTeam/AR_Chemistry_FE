@@ -11,7 +11,6 @@ import '../../shared/widgets/portal/portal_shell.dart';
 import '../providers/staff_provider.dart';
 import '../widgets/staff_dashboard_tab.dart';
 import '../widgets/staff_feedback_tab.dart';
-import '../widgets/staff_payment_tab.dart';
 import '../widgets/staff_quiz_results_tab.dart';
 import '../widgets/staff_quiz_tab.dart';
 
@@ -72,11 +71,6 @@ class _StaffHomeScreenState extends State<StaffHomeScreen> {
           label: l10n.feedback,
         ),
         PortalNavItem(
-          icon: Icons.payments_outlined,
-          activeIcon: Icons.payments_rounded,
-          label: 'Thanh toán',
-        ),
-        PortalNavItem(
           icon: Icons.quiz_outlined,
           activeIcon: Icons.quiz_rounded,
           label: l10n.quizPipeline,
@@ -88,14 +82,14 @@ class _StaffHomeScreenState extends State<StaffHomeScreen> {
         ),
       ],
       pages: [
+        // Thanh toán/doanh thu là việc của ADMIN (tab Tổng quan + Top bán
+        // bên Admin Portal) — staff không đụng tới tiền.
         StaffDashboardTab(
           onOpenFeedback: () => setState(() => _index = 1),
-          onOpenPayment: () => setState(() => _index = 2),
-          onOpenQuiz: () => setState(() => _index = 3),
-          onOpenQuizResults: () => setState(() => _index = 4),
+          onOpenQuiz: () => setState(() => _index = 2),
+          onOpenQuizResults: () => setState(() => _index = 3),
         ),
         const StaffFeedbackTab(),
-        const StaffPaymentTab(),
         const StaffQuizTab(),
         const StaffQuizResultsTab(),
       ],

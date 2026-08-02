@@ -130,6 +130,89 @@ class AppLocalizations {
   String get navTopSales => isVi ? 'Top bán' : 'Top sales';
   String get navCardsAr => isVi ? 'Thẻ AR' : 'AR Cards';
   String get navUsers => isVi ? 'Người dùng' : 'Users';
+  String get navLogs => isVi ? 'Logs' : 'Logs';
+
+  // —— Admin: system logs (ELK) ——
+  String get systemLogsTitle => isVi ? 'Log hệ thống' : 'System logs';
+  String get searchLogsHint => isVi
+      ? 'Tìm trong message, class, method...'
+      : 'Search message, class, method...';
+  String get allLevels => isVi ? 'Tất cả' : 'All';
+  String get noLogsFound =>
+      isVi ? 'Không có log trong khoảng thời gian này' : 'No logs in this window';
+  String get loadMoreLogs => isVi ? 'Tải thêm' : 'Load more';
+  String logCountLabel(int shown, int total) =>
+      isVi ? 'Hiển thị $shown / $total log' : 'Showing $shown / $total logs';
+  String cannotOpenKibana(String url) => isVi
+      ? 'Không mở được Kibana ($url). Kiểm tra KIBANA_URL trong .env.'
+      : 'Cannot open Kibana ($url). Check KIBANA_URL in .env.';
+
+  // —— Quiz theo phản ứng (contract mới) ——
+  String get quizBrowseTitle => isVi ? 'Luyện tập theo phản ứng' : 'Practice by reaction';
+  String get quizBrowseSubtitle => isVi
+      ? 'Chọn phản ứng, thực hiện AR rồi trả lời câu hỏi.'
+      : 'Pick a reaction, perform it in AR, then answer the questions.';
+  String get quizGradeLabel => isVi ? 'Lớp' : 'Grade';
+  String quizCategoryLabel(String c) {
+    switch (c) {
+      case 'METAL':
+        return isVi ? 'Kim loại' : 'Metal';
+      case 'ACID':
+        return isVi ? 'Axit' : 'Acid';
+      case 'BASE':
+        return isVi ? 'Bazơ' : 'Base';
+      case 'SALT':
+        return isVi ? 'Muối' : 'Salt';
+      default:
+        return c;
+    }
+  }
+  String get quizSearchReactionHint =>
+      isVi ? 'Tìm phản ứng...' : 'Search reactions...';
+  String get quizNoReactions => isVi
+      ? 'Không có phản ứng nào cho bộ lọc này'
+      : 'No reactions for this filter';
+  String get quizReactionsLoadFailed => isVi
+      ? 'Không tải được danh sách phản ứng'
+      : 'Failed to load reactions';
+  String get quizStart => isVi ? 'Bắt đầu' : 'Start';
+  String get quizContinue => isVi ? 'Tiếp tục' : 'Continue';
+  String get quizRetry => isVi ? 'Làm lại' : 'Retry';
+  String get quizHistoryAction => isVi ? 'Lịch sử' : 'History';
+  String get quizCompletedBadge => isVi ? 'Đã hoàn thành' : 'Completed';
+  String get quizInProgressBadge => isVi ? 'Đang làm dở' : 'In progress';
+  String get quizStartFailed =>
+      isVi ? 'Không bắt đầu được, thử lại sau' : 'Could not start, try again';
+  String get quizWaitingArTitle =>
+      isVi ? 'Thực hiện phản ứng AR để mở bài' : 'Perform the AR reaction to unlock';
+  String get quizWaitingArDesc => isVi
+      ? 'Quét đúng 2 thẻ hoá học của phản ứng này và thực hiện phản ứng trong AR. Khi phản ứng thành công, bài quiz sẽ tự mở và đồng hồ 7 phút bắt đầu chạy.'
+      : 'Scan the 2 chemical cards of this reaction and perform it in AR. Once it succeeds, the quiz unlocks and the 7-minute timer starts.';
+  String get quizOpenArScanner => isVi ? 'Mở máy quét AR' : 'Open AR scanner';
+  String get quizCheckArStatus => isVi ? 'Kiểm tra lại' : 'Check again';
+  String get quizWaitingArAutoCheck => isVi
+      ? 'Tự động kiểm tra mỗi 5 giây'
+      : 'Auto-checking every 5 seconds';
+  String get quizScriptTitle =>
+      isVi ? 'Kịch bản thí nghiệm' : 'Experiment script';
+  String get quizSubmit => isVi ? 'Nộp bài' : 'Submit';
+  String get quizSubmitConfirm =>
+      isVi ? 'Nộp bài ngay bây giờ?' : 'Submit your answers now?';
+  String quizSubmitConfirmUnanswered(int n) => isVi
+      ? 'Còn $n câu chưa trả lời. Vẫn nộp bài?'
+      : '$n questions are unanswered. Submit anyway?';
+  String get quizSubmitFailed =>
+      isVi ? 'Nộp bài thất bại, thử lại' : 'Submit failed, try again';
+  String get quizAbandon => isVi ? 'Bỏ bài' : 'Abandon';
+  String get quizAbandonConfirm => isVi
+      ? 'Thoát bây giờ sẽ BỎ lần làm bài này (không tính điểm). Tiếp tục?'
+      : 'Leaving now ABANDONS this attempt (no score). Continue?';
+  String get quizAnswerSaveFailed => isVi
+      ? 'Chưa lưu được đáp án, chọn lại giúp nhé'
+      : 'Answer not saved, please pick again';
+  String get quizStateLoadFailed => isVi
+      ? 'Không tải được trạng thái bài làm'
+      : 'Failed to load attempt state';
 
   // —— Admin: quản lý người dùng ——
   String get userMgmtTitle => isVi ? 'Quản lý người dùng' : 'User management';

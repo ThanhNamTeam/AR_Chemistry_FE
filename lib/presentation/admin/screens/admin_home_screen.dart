@@ -13,6 +13,7 @@ import '../widgets/admin_cards_tab.dart';
 import '../widgets/admin_chemicals_tab.dart';
 import '../widgets/admin_dashboard_tab.dart';
 import '../widgets/admin_kits_tab.dart';
+import '../widgets/admin_logs_tab.dart';
 import '../widgets/admin_reactions_tab.dart';
 import '../widgets/admin_top_sales_tab.dart';
 import '../widgets/admin_users_tab.dart';
@@ -110,6 +111,11 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
           activeIcon: Icons.people_rounded,
           label: l10n.navUsers,
         ),
+        PortalNavItem(
+          icon: Icons.receipt_long_outlined,
+          activeIcon: Icons.receipt_long_rounded,
+          label: l10n.navLogs,
+        ),
       ],
       pages: const [
         AdminDashboardTab(),
@@ -119,6 +125,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
         AdminTopSalesTab(),
         AdminCardsTab(),
         AdminUsersTab(),
+        AdminLogsTab(),
       ],
     );
   }

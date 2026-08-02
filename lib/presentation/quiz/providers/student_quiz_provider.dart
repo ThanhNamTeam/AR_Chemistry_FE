@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import '../../../core/api/student_quiz_api.dart';
+import '../../../core/api/student_reaction_quiz_api.dart';
 import '../../../core/models/request/submit_quiz_request_model.dart';
 import '../../../core/models/response/submit_quiz_response_model.dart';
 import '../../../domain/models/student_published_quiz_model.dart';
@@ -12,6 +13,7 @@ import '../../../domain/models/student_quiz_summary_model.dart';
 
 class StudentQuizProvider extends ChangeNotifier {
   final StudentQuizApi _studentQuizApi = StudentQuizApi();
+  final StudentReactionQuizApi _reactionQuizApi = StudentReactionQuizApi();
 
   StudentQuizSummaryModel? _quizSummary;
   StudentQuizDetailModel? _quizDetail;
@@ -105,6 +107,7 @@ class StudentQuizProvider extends ChangeNotifier {
 
   Future<void> loadAttemptHistory({
     String? quizCode,
+    String? reactionId,
     int page = 0,
     int size = 10,
   }) async {
@@ -113,13 +116,23 @@ class StudentQuizProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final result = await _studentQuizApi.getQuizAttemptHistory(
-        quizCode: quizCode,
-        page: page,
-        size: size,
-      );
-
-      _attemptHistory = result.items;
+      // Contract mới: lịch sử nằm theo PHẢN ỨNG. Nhánh quizCode cũ giữ lại
+      // cho tương thích nhưng endpoint của nó đã bị BE gỡ.
+      if (reactionId != null && reactionId.isNotEmpty) {
+        final result = await _reactionQuizApi.getReactionHistory(
+          reactionId,
+          page: page,
+          size: size,
+        );
+        _attemptHistory = result.items;
+      } else {
+        final result = await _studentQuizApi.getQuizAttemptHistory(
+          quizCode: quizCode,
+          page: page,
+          size: size,
+        );
+        _attemptHistory = result.items;
+      }
     } catch (e) {
       _attemptHistoryError = e.toString();
     } finally {

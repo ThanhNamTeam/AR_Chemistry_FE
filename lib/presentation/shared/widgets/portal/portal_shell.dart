@@ -227,7 +227,7 @@ class _HeaderIconButton extends StatelessWidget {
   }
 }
 
-class _PortalBottomNav extends StatelessWidget {
+class _PortalBottomNav extends StatefulWidget {
   final List<PortalNavItem> items;
   final int selectedIndex;
   final ValueChanged<int> onSelected;
@@ -239,6 +239,56 @@ class _PortalBottomNav extends StatelessWidget {
   });
 
   @override
+  State<_PortalBottomNav> createState() => _PortalBottomNavState();
+}
+
+class _PortalBottomNavState extends State<_PortalBottomNav> {
+  /// Dưới bề rộng này mỗi tab, chữ bắt đầu bị cắt ("Người d...") — lúc đó
+  /// chuyển sang chế độ CUỘN NGANG thay vì chia đều ép chật.
+  static const double _minItemWidth = 68;
+
+  final ScrollController _scroll = ScrollController();
+  late List<GlobalKey> _itemKeys;
+
+  @override
+  void initState() {
+    super.initState();
+    _itemKeys = List.generate(widget.items.length, (_) => GlobalKey());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _revealSelected());
+  }
+
+  @override
+  void didUpdateWidget(covariant _PortalBottomNav old) {
+    super.didUpdateWidget(old);
+    if (old.items.length != widget.items.length) {
+      _itemKeys = List.generate(widget.items.length, (_) => GlobalKey());
+    }
+    if (old.selectedIndex != widget.selectedIndex) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _revealSelected());
+    }
+  }
+
+  @override
+  void dispose() {
+    _scroll.dispose();
+    super.dispose();
+  }
+
+  /// Cuộn tab đang chọn về giữa thanh — người dùng luôn thấy mình đang ở đâu,
+  /// và thấy hé tab kế bên nên tự hiểu là thanh cuộn được.
+  void _revealSelected() {
+    if (!mounted || !_scroll.hasClients) return;
+    final ctx = _itemKeys[widget.selectedIndex].currentContext;
+    if (ctx == null) return;
+    Scrollable.ensureVisible(
+      ctx,
+      alignment: 0.5,
+      duration: const Duration(milliseconds: 250),
+      curve: Curves.easeOutCubic,
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
@@ -248,7 +298,8 @@ class _PortalBottomNav extends StatelessWidget {
           color: AppColors.navBarBg,
           borderRadius: BorderRadius.circular(24),
           border: Border.all(
-            color: AppColors.primary.withOpacity(AppColors.isLight ? 0.22 : 0.2),
+            color:
+                AppColors.primary.withOpacity(AppColors.isLight ? 0.22 : 0.2),
           ),
           boxShadow: [
             BoxShadow(
@@ -258,53 +309,83 @@ class _PortalBottomNav extends StatelessWidget {
             ),
           ],
         ),
-        child: Row(
-          children: List.generate(items.length, (i) {
-            final item = items[i];
-            final selected = selectedIndex == i;
-            return Expanded(
-              child: GestureDetector(
-                onTap: () => onSelected(i),
-                behavior: HitTestBehavior.opaque,
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 220),
-                  curve: Curves.easeOutCubic,
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  decoration: BoxDecoration(
-                    gradient: selected ? AppColors.primaryGradient : null,
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        selected ? item.activeIcon : item.icon,
-                        size: 22,
-                        color: selected
-                            ? Colors.white
-                            : AppColors.navMuted,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        item.label,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight:
-                              selected ? FontWeight.w700 : FontWeight.w600,
-                          color: selected
-                              ? Colors.white
-                              : AppColors.navMuted,
-                          fontFamily: 'Inter',
-                        ),
-                      ),
-                    ],
-                  ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final fits =
+                constraints.maxWidth >= widget.items.length * _minItemWidth;
+
+            // Ít tab (staff): dàn đều kín thanh như trước.
+            if (fits) {
+              return Row(
+                children: List.generate(
+                  widget.items.length,
+                  (i) => Expanded(child: _buildItem(i, compactWidth: null)),
+                ),
+              );
+            }
+
+            // Nhiều tab (admin 7 tab): cuộn ngang, mỗi tab đủ rộng cho nhãn.
+            return SingleChildScrollView(
+              controller: _scroll,
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: List.generate(
+                  widget.items.length,
+                  (i) => _buildItem(i, compactWidth: _minItemWidth + 8),
                 ),
               ),
             );
-          }),
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildItem(int i, {required double? compactWidth}) {
+    final item = widget.items[i];
+    final selected = widget.selectedIndex == i;
+
+    return KeyedSubtree(
+      key: _itemKeys[i],
+      child: Semantics(
+        button: true,
+        selected: selected,
+        label: item.label,
+        child: GestureDetector(
+          onTap: () => widget.onSelected(i),
+          behavior: HitTestBehavior.opaque,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 220),
+            curve: Curves.easeOutCubic,
+            width: compactWidth,
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+            decoration: BoxDecoration(
+              gradient: selected ? AppColors.primaryGradient : null,
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  selected ? item.activeIcon : item.icon,
+                  size: 22,
+                  color: selected ? Colors.white : AppColors.navMuted,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  item.label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: selected ? FontWeight.w700 : FontWeight.w600,
+                    color: selected ? Colors.white : AppColors.navMuted,
+                    fontFamily: 'Inter',
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

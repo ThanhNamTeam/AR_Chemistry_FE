@@ -145,11 +145,10 @@ class _HomeDashboardState extends State<HomeDashboard> {
       if (ratio < 0.7) {
         text = l10n.suggestReviewLesson(attempt.lessonTitle);
         cta = l10n.reviewNow;
-        route = AppRoutes.quiz;
-        routeArgs = {
-          'lessonCode': attempt.lessonCode,
-          'lessonTitle': attempt.lessonTitle,
-        };
+        // Luồng quiz mới theo phản ứng: đưa về màn duyệt phản ứng (màn quiz
+        // theo bài học cũ đã chết cùng endpoint của nó).
+        route = AppRoutes.quizList;
+        routeArgs = null;
       } else {
         text = l10n.suggestNextQuiz;
         cta = l10n.doQuizNow;
