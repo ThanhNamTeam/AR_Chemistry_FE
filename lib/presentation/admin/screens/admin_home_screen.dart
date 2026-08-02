@@ -15,6 +15,7 @@ import '../widgets/admin_dashboard_tab.dart';
 import '../widgets/admin_kits_tab.dart';
 import '../widgets/admin_reactions_tab.dart';
 import '../widgets/admin_top_sales_tab.dart';
+import '../widgets/admin_users_tab.dart';
 
 class AdminHomeScreen extends StatefulWidget {
   const AdminHomeScreen({super.key});
@@ -104,6 +105,11 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
           activeIcon: Icons.style_rounded,
           label: l10n.navCardsAr,
         ),
+        PortalNavItem(
+          icon: Icons.people_outline,
+          activeIcon: Icons.people_rounded,
+          label: l10n.navUsers,
+        ),
       ],
       pages: const [
         AdminDashboardTab(),
@@ -112,6 +118,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
         AdminReactionsTab(),
         AdminTopSalesTab(),
         AdminCardsTab(),
+        AdminUsersTab(),
       ],
     );
   }

@@ -129,6 +129,67 @@ class AppLocalizations {
   String get navReactions => isVi ? 'PTHH' : 'Reactions';
   String get navTopSales => isVi ? 'Top bán' : 'Top sales';
   String get navCardsAr => isVi ? 'Thẻ AR' : 'AR Cards';
+  String get navUsers => isVi ? 'Người dùng' : 'Users';
+
+  // —— Admin: quản lý người dùng ——
+  String get userMgmtTitle => isVi ? 'Quản lý người dùng' : 'User management';
+  String get userMgmtSearchHint =>
+      isVi ? 'Tìm theo email hoặc tên...' : 'Search by email or name...';
+  String get userMgmtEmpty =>
+      isVi ? 'Chưa có người dùng nào' : 'No users yet';
+  String get userMgmtLoadMore => isVi ? 'Tải thêm' : 'Load more';
+  String get userMgmtLoadFailed =>
+      isVi ? 'Không tải được danh sách người dùng' : 'Failed to load users';
+  String get userMgmtRetry => isVi ? 'Thử lại' : 'Retry';
+  String get userMgmtStatusLabel => isVi ? 'Trạng thái' : 'Status';
+  String get userMgmtRolesLabel => isVi ? 'Vai trò' : 'Roles';
+  String get userMgmtResetPassword =>
+      isVi ? 'Đặt lại mật khẩu' : 'Reset password';
+  String get userMgmtResetPasswordConfirm => isVi
+      ? 'Đặt lại mật khẩu của người dùng này? Mật khẩu tạm sẽ hiện ra sau khi đặt.'
+      : 'Reset this user\'s password? A temporary password will be shown.';
+  String get userMgmtDelete => isVi ? 'Xoá người dùng' : 'Delete user';
+  String get userMgmtDeleteConfirm => isVi
+      ? 'Xoá (mềm) người dùng này? Tài khoản sẽ bị vô hiệu hoá.'
+      : 'Soft-delete this user? The account will be disabled.';
+  String get userMgmtUpdated => isVi ? 'Đã cập nhật' : 'Updated';
+  String get userMgmtDeleted => isVi ? 'Đã xoá người dùng' : 'User deleted';
+  String get userMgmtActionFailed =>
+      isVi ? 'Thao tác thất bại, thử lại sau' : 'Action failed, try again';
+  String get userMgmtSelfWarning => isVi
+      ? 'Không thể tự thao tác trên tài khoản của chính mình'
+      : 'You cannot modify your own account';
+  String userStatusLabel(String status) {
+    switch (status) {
+      case 'ACTIVE':
+        return isVi ? 'Hoạt động' : 'Active';
+      case 'INACTIVE':
+        return isVi ? 'Ngưng hoạt động' : 'Inactive';
+      case 'BLOCKED':
+        return isVi ? 'Bị chặn' : 'Blocked';
+      case 'DELETED':
+        return isVi ? 'Đã xoá' : 'Deleted';
+      case 'REJECTED':
+        return isVi ? 'Bị từ chối' : 'Rejected';
+      default:
+        return status;
+    }
+  }
+
+  String roleLabel(String role) {
+    switch (role) {
+      case 'ROLE_ADMIN':
+        return 'Admin';
+      case 'ROLE_STAFF':
+        return isVi ? 'Nhân viên' : 'Staff';
+      case 'ROLE_TEACHER':
+        return isVi ? 'Giáo viên' : 'Teacher';
+      case 'ROLE_STUDENT':
+        return isVi ? 'Học sinh' : 'Student';
+      default:
+        return role;
+    }
+  }
   String get navCombos => isVi ? 'Combo' : 'Combos';
   String get awaitingResponse =>
       isVi ? 'Chờ phản hồi' : 'Awaiting response';
@@ -336,6 +397,7 @@ class AppLocalizations {
   String get saveQr => isVi ? 'Lưu QR' : 'Save QR';
   String get close => isVi ? 'Đóng' : 'Close';
   String get cancel => isVi ? 'Hủy' : 'Cancel';
+  String get confirm => isVi ? 'Xác nhận' : 'Confirm';
   String get qrContentLabel => isVi ? 'Nội dung QR: ' : 'QR Content: ';
   String get expiresAtLabel => isVi ? 'Hết hạn: ' : 'Expires at: ';
   String get storagePermissionDenied => isVi ? 'Quyền lưu trữ bị từ chối' : 'Storage permission denied';
@@ -662,6 +724,24 @@ class AppLocalizations {
       ? 'Mua thẻ này với $kp KP? Điểm đã trừ không hoàn lại được.'
       : 'Buy this card for $kp KP? Spent points cannot be refunded.';
   String get buyConfirmAction => isVi ? 'Mua' : 'Buy';
+
+  // —— Home dashboard ——
+  String get todayStudyTitle => isVi ? 'Hôm nay học gì?' : "Today's study";
+  String get streakDaysLabel => isVi ? 'Ngày liên tiếp' : 'Day streak';
+  String get quizzesDoneLabel => isVi ? 'Quiz đã làm' : 'Quizzes done';
+  String get latestQuizTitle => isVi ? 'Quiz gần nhất' : 'Latest quiz';
+  String get recentScansTitle => isVi ? 'Thẻ vừa quét' : 'Recently scanned';
+  String get doQuizNow => isVi ? 'Làm ngay' : 'Start';
+  String get reviewNow => isVi ? 'Ôn lại' : 'Review';
+  String get suggestFirstQuiz => isVi
+      ? 'Bắt đầu hành trình với một bài quiz đầu tiên nhé!'
+      : 'Start your journey with your first quiz!';
+  String suggestReviewLesson(String lesson) => isVi
+      ? 'Hôm nay ôn lại bài "$lesson" nhé? Lần trước điểm chưa cao đâu.'
+      : 'Review "$lesson" today? Your last score has room to grow.';
+  String get suggestNextQuiz => isVi
+      ? 'Điểm lần trước tốt lắm! Thử một bài quiz mới hôm nay?'
+      : 'Great score last time! Try a new quiz today?';
 
   // —— Periodic table ——
   String get periodicTableTitle => isVi ? 'Bảng tuần hoàn' : 'Periodic Table';

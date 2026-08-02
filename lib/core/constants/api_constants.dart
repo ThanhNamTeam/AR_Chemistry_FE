@@ -287,6 +287,26 @@ class ApiConstants {
     return '$baseUrl$adminChemicalCardsPath/$id/active';
   }
 
+  // admin users
+  static const String adminUsersPath = '/admin/users';
+
+  static String adminUsersUrl({int page = 0, int size = 20}) {
+    return Uri.parse('$baseUrl$adminUsersPath')
+        .replace(queryParameters: {'page': '$page', 'size': '$size'})
+        .toString();
+  }
+
+  static String adminUserUrl(String id) => '$baseUrl$adminUsersPath/$id';
+
+  static String adminUserStatusUrl(String id) =>
+      '$baseUrl$adminUsersPath/$id/status';
+
+  static String adminUserRolesUrl(String id) =>
+      '$baseUrl$adminUsersPath/$id/roles';
+
+  static String adminUserResetPasswordUrl(String id) =>
+      '$baseUrl$adminUsersPath/$id/reset-password';
+
   // admin substances
   static const String adminSubstancesPath = '/substances';
 
