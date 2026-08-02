@@ -414,6 +414,51 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             ),
           ),
         ),
+        const SizedBox(height: 14),
+        // Lối vào bảng tuần hoàn — feature tĩnh, mở được cả khi chưa có gói AR.
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 56),
+          child: Semantics(
+            button: true,
+            label: l10n.periodicTableTitle,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(999),
+              onTap: () =>
+                  Navigator.pushNamed(context, AppRoutes.periodicTable),
+              child: Container(
+                width: double.infinity,
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(999),
+                  border: Border.all(
+                    color: AppColors.primary.withOpacity(0.4),
+                    width: 1.2,
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.grid_on,
+                        color: AppColors.primary, size: 20),
+                    const SizedBox(width: 8),
+                    Text(
+                      l10n.periodicTableTitle,
+                      style: TextStyle(
+                        color: AppColors.accentText,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        fontFamily: 'Inter',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
         const SizedBox(height: 24),
       ],
     );

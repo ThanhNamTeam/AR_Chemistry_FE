@@ -663,6 +663,26 @@ class AppLocalizations {
       : 'Buy this card for $kp KP? Spent points cannot be refunded.';
   String get buyConfirmAction => isVi ? 'Mua' : 'Buy';
 
+  // —— Periodic table ——
+  String get periodicTableTitle => isVi ? 'Bảng tuần hoàn' : 'Periodic Table';
+  String get periodicSearchHint => isVi
+      ? 'Tìm nguyên tố (Fe, Sắt, 26...)'
+      : 'Search element (Fe, Iron, 26...)';
+  String get atomicMassLabel =>
+      isVi ? 'Khối lượng nguyên tử' : 'Atomic mass';
+  String get electronegativityLabel =>
+      isVi ? 'Độ âm điện (Pauling)' : 'Electronegativity (Pauling)';
+  String get electronConfigLabel =>
+      isVi ? 'Cấu hình electron' : 'Electron configuration';
+  String get periodLabel => isVi ? 'Chu kỳ' : 'Period';
+  // groupLabel dùng chung key đã có sẵn ở phần khai báo phía trên (dòng ~438).
+  String get lanthanideRowLabel => isVi ? 'Họ Lantan' : 'Lanthanide';
+  String get actinideRowLabel => isVi ? 'Họ Actini' : 'Actinide';
+  String get arCardAvailable => isVi
+      ? 'Nguyên tố này có thẻ AR trong bộ LABEDU!'
+      : 'This element has an AR card in the LABEDU set!';
+  String get scanArCard => isVi ? 'Quét thẻ AR' : 'Scan AR card';
+
   // —— AR asset loading ——
   String get arPreparingAssets =>
       isVi ? 'Đang chuẩn bị dữ liệu AR...' : 'Preparing AR assets...';
