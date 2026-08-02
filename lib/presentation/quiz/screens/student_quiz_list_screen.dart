@@ -43,7 +43,7 @@ class _StudentQuizListScreenState extends State<StudentQuizListScreen> {
         child: SafeArea(
           child: Column(
             children: [
-              _Header(onBack: () => Navigator.pop(context)),
+              const _Header(),
               Expanded(
                 child: RefreshIndicator(
                   onRefresh: _refresh,
@@ -122,9 +122,7 @@ class _StudentQuizListScreenState extends State<StudentQuizListScreen> {
 }
 
 class _Header extends StatelessWidget {
-  final VoidCallback onBack;
-
-  const _Header({required this.onBack});
+  const _Header();
 
   @override
   Widget build(BuildContext context) {
@@ -133,28 +131,13 @@ class _Header extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
       child: Row(
         children: [
-          GestureDetector(
-            onTap: onBack,
-            child: Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: AppColors.primary.withOpacity(0.3),
-                ),
-              ),
-              child: Icon(
-                Icons.arrow_back,
-                color: AppColors.primary,
-                size: 20,
-              ),
-            ),
-          ),
-          const SizedBox(width: 14),
+          // Không có nút quay lại: Quiz là một đích của thanh nav dưới.
+          // Back cứng Android / vuốt mép iOS vẫn dùng được.
           Expanded(
             child: Text(
               l10n.quizColon,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w700,

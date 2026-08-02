@@ -1,5 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 
+import '../../../core/l10n/app_localizations.dart';
 import '../../../core/services/ar_asset_downloader.dart';
 import '../../../routes/app_routes.dart';
 import '../../../shared/styles/app_colors.dart';
@@ -14,8 +15,9 @@ class ArAssetLoadingScreen extends StatefulWidget {
 
 class _ArAssetLoadingScreenState extends State<ArAssetLoadingScreen> {
   double _progress = 0;
-  String _message = 'Preparing AR assets...';
+  String? _downloaderMessage;
   bool _isExtracting = false;
+  bool _failed = false;
 
   @override
   void initState() {
@@ -24,13 +26,19 @@ class _ArAssetLoadingScreenState extends State<ArAssetLoadingScreen> {
   }
 
   Future<void> _prepareAssets() async {
+    setState(() {
+      _failed = false;
+      _progress = 0;
+      _downloaderMessage = null;
+    });
+
     try {
       await ArAssetDownloader.ensureReady(
         onProgress: (progress, message) {
           if (!mounted) return;
           setState(() {
             _progress = progress;
-            _message = message;
+            _downloaderMessage = message;
             _isExtracting = message.startsWith('Extracting');
           });
         },
@@ -46,20 +54,21 @@ class _ArAssetLoadingScreenState extends State<ArAssetLoadingScreen> {
       if (!mounted) return;
       Navigator.pushReplacementNamed(context, AppRoutes.scan);
     } catch (e) {
+      // Không hiển thị e.toString() cho người dùng — chuỗi exception Dart/Dio
+      // vô nghĩa với học sinh. Log để debug, màn hình hiện thông báo thân thiện
+      // kèm nút Thử lại.
+      debugPrint('AR asset prepare failed: $e');
       if (!mounted) return;
-
       setState(() {
-        _message = 'Failed to prepare AR assets. Please try again.';
+        _failed = true;
+        _isExtracting = false;
       });
-
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(e.toString())));
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final percent = (_progress * 100).clamp(0, 100).toStringAsFixed(0);
 
     return PopScope(
@@ -67,9 +76,7 @@ class _ArAssetLoadingScreenState extends State<ArAssetLoadingScreen> {
       onPopInvokedWithResult: (didPop, result) {
         if (!didPop && _isExtracting) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Đang giải nén dữ liệu AR, vui lòng chờ hoàn tất.'),
-            ),
+            SnackBar(content: Text(l10n.arExtracting)),
           );
         }
       },
@@ -81,34 +88,51 @@ class _ArAssetLoadingScreenState extends State<ArAssetLoadingScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.view_in_ar, color: Colors.white, size: 64),
+                Icon(
+                  _failed ? Icons.cloud_off : Icons.view_in_ar,
+                  color: _failed ? AppColors.error : AppColors.textPrimary,
+                  size: 64,
+                ),
                 const SizedBox(height: 24),
                 Text(
-                  _message,
+                  _failed
+                      ? l10n.arPrepareFailed
+                      : (_downloaderMessage ?? l10n.arPreparingAssets),
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: AppColors.textPrimary,
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
                     fontFamily: 'Inter',
                   ),
                 ),
-                const SizedBox(height: 24),
-                LinearProgressIndicator(value: _progress),
-                const SizedBox(height: 12),
-                Text(
-                  '$percent%',
-                  style: TextStyle(
-                    color: AppColors.textSecondary,
-                    fontFamily: 'Inter',
+                if (!_failed) ...[
+                  const SizedBox(height: 24),
+                  LinearProgressIndicator(value: _progress),
+                  const SizedBox(height: 12),
+                  Text(
+                    '$percent%',
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontFamily: 'Inter',
+                    ),
                   ),
-                ),
+                ],
                 const SizedBox(height: 20),
+                if (_failed)
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: _prepareAssets,
+                      icon: const Icon(Icons.refresh),
+                      label: Text(l10n.tryAgainAction),
+                    ),
+                  ),
                 TextButton(
                   onPressed: _isExtracting
                       ? null
                       : () => Navigator.pop(context),
-                  child: const Text('Cancel'),
+                  child: Text(l10n.cancel),
                 ),
               ],
             ),

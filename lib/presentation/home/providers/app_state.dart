@@ -14,6 +14,7 @@ import '../../../core/models/response/chemical_card_response.dart';
 import '../../../core/models/response/my_single_card_purchase_response.dart';
 import '../../../core/models/response/single_card_purchase_response.dart';
 import '../../../core/models/response/single_card_shop_response.dart';
+import '../../../core/auth/cognito_service.dart';
 import '../../../core/storage/avatar_storage_service.dart';
 import '../../../core/storage/local_storage_service.dart';
 import '../../../domain/models/account_setup_model.dart';
@@ -295,8 +296,37 @@ class AppState extends ChangeNotifier {
 
       await _persistAuth();
       notifyListeners();
+
+      // Tài khoản Google mà chưa có avatar -> lấy ảnh Google gắn vào.
+      await _backfillAvatarFromGoogle();
     } catch (e) {
       debugPrint('Load profile from backend error: $e');
+    }
+  }
+
+  /// Điền ảnh đại diện Google cho tài khoản chưa có avatar.
+  ///
+  /// Cognito giữ ảnh Google ở attribute `picture`, nhưng backend chỉ lưu vào
+  /// hồ sơ nếu token có claim đó. Lấy trực tiếp từ Cognito rồi ghi qua
+  /// `PUT /users/avatar` nên chạy được ngay, không phụ thuộc backend đã deploy
+  /// bản đọc claim `picture` hay chưa.
+  ///
+  /// Chỉ chạy khi hồ sơ CHƯA có avatar — không bao giờ đè ảnh người dùng tự
+  /// tải lên. Lỗi ở đây là không nghiêm trọng: hỏng thì vẫn hiện avatar chữ cái.
+  Future<void> _backfillAvatarFromGoogle() async {
+    if (_userAvatar != null && _userAvatar!.trim().isNotEmpty) return;
+
+    try {
+      final googleAvatar = await CognitoService().fetchAvatarUrl();
+      if (googleAvatar == null || googleAvatar.isEmpty) return;
+
+      await _profileApi.updateAvatar(avatarUrl: googleAvatar);
+
+      _userAvatar = googleAvatar;
+      await _persistAuth();
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Backfill Google avatar failed: $e');
     }
   }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../styles/app_colors.dart';
 
 class CustomTextField extends StatefulWidget {
@@ -16,6 +17,15 @@ class CustomTextField extends StatefulWidget {
   final int? maxLines;
   final int? minLines;
 
+  /// Gợi ý autofill (AutofillHints.email, .password, .oneTimeCode...) để bàn
+  /// phím hệ thống và trình quản lý mật khẩu điền tự động được.
+  final Iterable<String>? autofillHints;
+
+  /// Giới hạn số ký tự (ví dụ 6 cho mã OTP). Ẩn bộ đếm mặc định.
+  final int? maxLength;
+
+  final List<TextInputFormatter>? inputFormatters;
+
   const CustomTextField({
     super.key,
     required this.label,
@@ -31,6 +41,9 @@ class CustomTextField extends StatefulWidget {
     this.readOnly = false,
     this.maxLines,
     this.minLines,
+    this.autofillHints,
+    this.maxLength,
+    this.inputFormatters,
   });
 
   @override
@@ -45,23 +58,33 @@ class _CustomTextFieldState extends State<CustomTextField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          widget.label,
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w500,
-            color: AppColors.isLight ? AppColors.textPrimary : AppColors.textCyan,
-            fontFamily: 'Inter',
+        // Nhãn hiển thị đã được gộp vào semantics của chính TextFormField bên
+        // dưới, nên loại khỏi cây semantics để screen reader không đọc hai lần.
+        ExcludeSemantics(
+          child: Text(
+            widget.label,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+              color: AppColors.isLight ? AppColors.textPrimary : AppColors.textCyan,
+              fontFamily: 'Inter',
+            ),
           ),
         ),
         const SizedBox(height: 8),
-        TextFormField(
+        Semantics(
+          textField: true,
+          label: widget.label,
+          child: TextFormField(
           controller: widget.controller,
           readOnly: widget.readOnly,
           obscureText: widget.isPassword && _obscure,
           keyboardType: widget.keyboardType,
           maxLines: widget.isPassword ? 1 : (widget.maxLines ?? 1),
           minLines: widget.minLines,
+          maxLength: widget.maxLength,
+          inputFormatters: widget.inputFormatters,
+          autofillHints: widget.autofillHints,
           validator: widget.validator,
           onChanged: widget.onChanged,
           onFieldSubmitted: widget.onFieldSubmitted,
@@ -73,6 +96,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           ),
           decoration: InputDecoration(
             hintText: widget.hint,
+            counterText: '',
             hintStyle: TextStyle(
               color: AppColors.textSecondary.withOpacity(0.6),
               fontSize: 14,
@@ -122,6 +146,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             ),
             contentPadding:
                 const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          ),
           ),
         ),
       ],

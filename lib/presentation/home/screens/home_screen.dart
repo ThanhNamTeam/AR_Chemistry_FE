@@ -64,11 +64,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        backgroundColor: AppColors.backgroundDark,
+        // cardBg + textPrimary theo theme — hard-code Colors.white sẽ tàng
+        // hình trên nền trắng khi người dùng chọn theme Light.
+        backgroundColor: AppColors.cardBg,
         title: Text(
           l10n.cannotScanAr,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: AppColors.textPrimary,
             fontFamily: 'Inter',
             fontWeight: FontWeight.w700,
           ),
@@ -153,7 +155,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               children: [
                 _buildHeader(state),
                 Expanded(child: _buildBody()),
-                _buildBottomNav(),
+                // Thanh điều hướng dưới giờ do UserPortalBottomNavShell
+                // (trong MaterialApp.builder) dựng cho MỌI trang, nên Home
+                // không tự vẽ nữa để khỏi bị trùng hai thanh.
               ],
             ),
           ),
@@ -226,7 +230,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, AppRoutes.packages),
       child: Container(
-        height: 34,
+        // 40 + hit slop của GestureDetector — pill 34px cũ dưới chuẩn 48dp,
+        // đây lại là nút vào luồng mua gói.
+        height: 40,
         padding: const EdgeInsets.symmetric(horizontal: 14),
         decoration: BoxDecoration(
           gradient: AppColors.amberGradient,
@@ -279,37 +285,44 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
     final hasAvatar = isNetworkAvatar || hasLocalAvatar;
 
-    return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, AppRoutes.profile),
-      child: Container(
-        width: 44,
-        height: 44,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: hasAvatar ? null : AppColors.cyanEmeraldGradient,
-          image: hasAvatar
-              ? DecorationImage(
-            image: isNetworkAvatar
-                ? NetworkImage(avatar)
-                : FileImage(File(avatar!)) as ImageProvider,
-            fit: BoxFit.cover,
-          )
-              : null,
-          border: Border.all(
-            color: AppColors.primary.withOpacity(0.4),
-            width: 1.5,
+    final l10n = AppLocalizations.of(context);
+    // Semantics + 48dp: avatar là lối vào Hồ sơ nhưng trước đây screen reader
+    // không đọc được gì và vùng chạm 44px dưới chuẩn tối thiểu.
+    return Semantics(
+      button: true,
+      label: l10n.profile,
+      child: GestureDetector(
+        onTap: () => Navigator.pushNamed(context, AppRoutes.profile),
+        child: Container(
+          width: 48,
+          height: 48,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: hasAvatar ? null : AppColors.cyanEmeraldGradient,
+            image: hasAvatar
+                ? DecorationImage(
+              image: isNetworkAvatar
+                  ? NetworkImage(avatar)
+                  : FileImage(File(avatar!)) as ImageProvider,
+              fit: BoxFit.cover,
+            )
+                : null,
+            border: Border.all(
+              color: AppColors.primary.withOpacity(0.4),
+              width: 1.5,
+            ),
           ),
-        ),
-        child: hasAvatar
-            ? null
-            : Center(
-          child: Text(
-            state.displayName.substring(0, 1).toUpperCase(),
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
-              fontFamily: 'Inter',
+          child: hasAvatar
+              ? null
+              : Center(
+            child: Text(
+              state.displayName.substring(0, 1).toUpperCase(),
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+                fontFamily: 'Inter',
+              ),
             ),
           ),
         ),
@@ -403,54 +416,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ),
         const SizedBox(height: 24),
       ],
-    );
-  }
-
-  Widget _buildBottomNav() {
-    final l10n = AppLocalizations.of(context);
-    final items = [
-      (Icons.menu_book_outlined, l10n.navLibrary, AppRoutes.library),
-      (Icons.store_outlined, l10n.shop, AppRoutes.shop),
-      (Icons.quiz_outlined, l10n.navQuiz, AppRoutes.quizList),
-      (Icons.extension_outlined, l10n.navMiniGame, AppRoutes.miniGame),
-    ];
-
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.backgroundDark.withOpacity(0.8),
-        border: Border(
-          top: BorderSide(color: AppColors.primary.withOpacity(0.2), width: 1),
-        ),
-      ),
-      child: Row(
-        children: items.map((item) {
-          return Expanded(
-            child: GestureDetector(
-              onTap: () => Navigator.pushNamed(context, item.$3),
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(item.$1, color: AppColors.primary, size: 24),
-                    const SizedBox(height: 4),
-                    Text(
-                      item.$2,
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: AppColors.textSecondary,
-                        fontFamily: 'Inter',
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        }).toList(),
-      ),
     );
   }
 

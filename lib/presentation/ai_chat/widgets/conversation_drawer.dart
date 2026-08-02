@@ -181,7 +181,8 @@ class _ConversationList extends StatelessWidget {
         backgroundColor: AppColors.cardBg,
         title: Text(
           l10n.deleteConversationTitle,
-          style: const TextStyle(fontFamily: 'Inter', color: Colors.white),
+          // textPrimary theo theme — Colors.white tàng hình trên theme Light.
+          style: TextStyle(fontFamily: 'Inter', color: AppColors.textPrimary),
         ),
         content: Text(
           item.title,

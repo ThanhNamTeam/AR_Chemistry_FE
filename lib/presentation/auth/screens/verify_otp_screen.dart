@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../routes/app_routes.dart';
 import '../../../shared/styles/app_colors.dart';
@@ -17,9 +20,14 @@ class _VerifyOtpScreenState
     extends State<VerifyOtpScreen>
     with TickerProviderStateMixin {
 
+  static const int _otpLength = 6;
+  static const int _resendCooldownSeconds = 60;
+
   final _otpCtrl = TextEditingController();
 
   bool _loading = false;
+  int _resendRemaining = 0;
+  Timer? _resendTimer;
 
   late AnimationController _bgCtrl;
   late Animation<double> _bgPulse;
@@ -46,9 +54,27 @@ class _VerifyOtpScreenState
 
   @override
   void dispose() {
+    _resendTimer?.cancel();
     _otpCtrl.dispose();
     _bgCtrl.dispose();
     super.dispose();
+  }
+
+  /// Chặn bấm "Gửi lại mã" liên tục — Cognito sẽ rate-limit và trả lỗi khó
+  /// hiểu. Đếm ngược hiển thị ngay trên nút.
+  void _startResendCooldown() {
+    _resendTimer?.cancel();
+    setState(() => _resendRemaining = _resendCooldownSeconds);
+    _resendTimer = Timer.periodic(const Duration(seconds: 1), (t) {
+      if (!mounted) {
+        t.cancel();
+        return;
+      }
+      setState(() {
+        _resendRemaining--;
+        if (_resendRemaining <= 0) t.cancel();
+      });
+    });
   }
 
   Future<void> _verify() async {
@@ -111,11 +137,14 @@ class _VerifyOtpScreenState
   }
 
   Future<void> _resendCode() async {
+    if (_resendRemaining > 0) return;
 
     final email =
     ModalRoute.of(context)!
         .settings
         .arguments as String;
+
+    _startResendCooldown();
 
     try {
 
@@ -229,7 +258,7 @@ class _VerifyOtpScreenState
                     const SizedBox(height: 24),
 
                     Text(
-                      'Verify OTP',
+                      'Xác thực OTP',
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight:
@@ -287,13 +316,29 @@ class _VerifyOtpScreenState
                         children: [
 
                           CustomTextField(
-                            label: 'OTP Code',
-                            hint: 'Enter OTP',
+                            label: 'Mã OTP',
+                            hint: 'Nhập mã 6 số',
                             controller: _otpCtrl,
                             prefixIcon:
                             Icons.lock_clock,
                             keyboardType:
                             TextInputType.number,
+                            maxLength: _otpLength,
+                            autofillHints: const [
+                              AutofillHints.oneTimeCode,
+                            ],
+                            inputFormatters: [
+                              FilteringTextInputFormatter
+                                  .digitsOnly,
+                            ],
+                            // Tự gửi khi nhập đủ 6 số — người dùng không phải
+                            // tìm nút Verify sau khi bàn phím tự điền mã.
+                            onChanged: (value) {
+                              if (value.length == _otpLength &&
+                                  !_loading) {
+                                _verify();
+                              }
+                            },
                           ),
 
                           const SizedBox(height: 24),
@@ -361,7 +406,7 @@ class _VerifyOtpScreenState
                                   ),
                                 )
                                     : const Text(
-                                  'Verify',
+                                  'Xác thực',
                                   style:
                                   TextStyle(
                                     color:
@@ -380,13 +425,19 @@ class _VerifyOtpScreenState
 
                           const SizedBox(height: 16),
 
-                          GestureDetector(
-                            onTap: _resendCode,
+                          TextButton(
+                            onPressed:
+                            _resendRemaining > 0
+                                ? null
+                                : _resendCode,
                             child: Text(
-                              'Resend Code',
+                              _resendRemaining > 0
+                                  ? 'Gửi lại mã sau ${_resendRemaining}s'
+                                  : 'Gửi lại mã',
                               style: TextStyle(
-                                color: AppColors
-                                    .primaryLight,
+                                color: _resendRemaining > 0
+                                    ? AppColors.textSecondary
+                                    : AppColors.primaryLight,
                                 fontWeight:
                                 FontWeight.w600,
                                 fontSize: 13,

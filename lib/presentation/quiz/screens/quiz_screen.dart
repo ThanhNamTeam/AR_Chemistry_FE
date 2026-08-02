@@ -45,13 +45,71 @@ class _QuizScreenState extends State<QuizScreen> {
     });
   }
 
+  /// Đang làm dở bài (đã tải câu hỏi, đã chọn ít nhất một đáp án, chưa nộp)
+  /// thì thoát màn sẽ mất toàn bộ bài làm — phải hỏi trước.
+  bool _hasUnsavedAttempt(StudentQuizProvider provider) {
+    return provider.hasLoadedQuestions &&
+        provider.submitResult == null &&
+        provider.answeredCount > 0;
+  }
+
+  Future<bool> _confirmLeave() async {
+    final l10n = AppLocalizations.of(context);
+    final leave = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.cardBg,
+        title: Text(
+          l10n.quizLeaveTitle,
+          style: TextStyle(
+            color: AppColors.textPrimary,
+            fontFamily: 'Inter',
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        content: Text(
+          l10n.quizLeaveMessage,
+          style: TextStyle(
+            color: AppColors.textSecondary,
+            fontFamily: 'Inter',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.quizKeepDoing),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(
+              l10n.quizLeaveConfirm,
+              style: TextStyle(color: AppColors.error),
+            ),
+          ),
+        ],
+      ),
+    );
+    return leave == true;
+  }
+
+  Future<void> _handleBack(StudentQuizProvider provider) async {
+    if (_hasUnsavedAttempt(provider) && !await _confirmLeave()) return;
+    if (mounted) Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     context.watch<ThemeProvider>();
     final quizProvider = context.watch<StudentQuizProvider>();
 
-    return Scaffold(
+    return PopScope(
+      canPop: !_hasUnsavedAttempt(quizProvider),
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        if (await _confirmLeave() && mounted) Navigator.pop(context);
+      },
+      child: Scaffold(
       backgroundColor: AppColors.backgroundDark,
       body: Container(
         decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
@@ -60,7 +118,7 @@ class _QuizScreenState extends State<QuizScreen> {
             children: [
               _QuizHeader(
                 title: _lessonTitle ?? l10n.navQuiz,
-                onBack: () => Navigator.pop(context),
+                onBack: () => _handleBack(quizProvider),
               ),
               Expanded(
                 child: _buildBody(context, quizProvider),
@@ -68,6 +126,7 @@ class _QuizScreenState extends State<QuizScreen> {
             ],
           ),
         ),
+      ),
       ),
     );
   }
@@ -352,8 +411,45 @@ class _QuizQuestionList extends StatelessWidget {
           width: double.infinity,
           child: ElevatedButton.icon(
             onPressed: provider.canSubmit && !provider.submitting
-                ? () {
-              context.read<StudentQuizProvider>().submitCurrentQuiz();
+                ? () async {
+              // Nộp bài là không hoàn tác được — xác nhận kèm số câu đã làm.
+              final confirmed = await showDialog<bool>(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  backgroundColor: AppColors.cardBg,
+                  title: Text(
+                    l10n.quizSubmitConfirmTitle,
+                    style: TextStyle(
+                      color: AppColors.textPrimary,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  content: Text(
+                    l10n.quizSubmitConfirmMessage(
+                      provider.answeredCount,
+                      provider.totalQuestions,
+                    ),
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontFamily: 'Inter',
+                    ),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(ctx, false),
+                      child: Text(l10n.cancel),
+                    ),
+                    ElevatedButton(
+                      onPressed: () => Navigator.pop(ctx, true),
+                      child: Text(l10n.submitQuiz),
+                    ),
+                  ],
+                ),
+              );
+              if (confirmed == true && context.mounted) {
+                context.read<StudentQuizProvider>().submitCurrentQuiz();
+              }
             }
                 : null,
             icon: provider.submitting
