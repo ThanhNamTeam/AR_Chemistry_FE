@@ -42,6 +42,20 @@ class EnvConfig {
     return _fallbackUrl;
   }
 
+  /// URL Kibana cho nút "Mở Kibana" trong Admin Portal.
+  /// Cấu hình KIBANA_URL trong `.env` (ví dụ http://192.168.1.10:5601 khi
+  /// chạy trên máy thật cùng WiFi); mặc định localhost cho desktop/web.
+  static String get kibanaUrl {
+    const fromDefine = String.fromEnvironment('KIBANA_URL');
+    if (fromDefine.isNotEmpty) return _normalize(fromDefine);
+
+    final fromEnv = dotenv.env['KIBANA_URL'];
+    if (fromEnv != null && fromEnv.trim().isNotEmpty) {
+      return _normalize(fromEnv.trim());
+    }
+    return 'http://localhost:5601';
+  }
+
   static String _normalize(String url) {
     return url.endsWith('/') ? url.substring(0, url.length - 1) : url;
   }

@@ -34,4 +34,5 @@ class AppRoutes {
   static const String mySingleCards = '/my-single-cards';
   static const String myFeedbacks = '/my-feedbacks';
   static const String arAssetLoading = '/ar-asset-loading';
+  static const String periodicTable = '/periodic-table';
 }

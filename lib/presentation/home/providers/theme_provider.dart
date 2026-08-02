@@ -36,9 +36,13 @@ class ThemeProvider extends ChangeNotifier {
       accent: Color(0xFF3B82F6),
     ),
     AppThemeOption(
+      // Bộ màu Light theo dải xanh thiết kế:
+      // #27A4F2 #3EAEF4 #6EC2F7 #9FD7F9 #CFEBFC.
+      // Accent cũng là xanh (không dùng cam) để toàn theme một tông;
+      // các mã còn lại của dải nằm trong AppColors.applyTheme (nhánh light).
       key: AppThemeKey.light,
-      primary: Color(0xFF0EA5E9),
-      accent: Color(0xFFF59E0B),
+      primary: Color(0xFF27A4F2),
+      accent: Color(0xFF3EAEF4),
     ),
     AppThemeOption(
       key: AppThemeKey.ocean,

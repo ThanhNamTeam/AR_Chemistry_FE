@@ -55,7 +55,10 @@ class AppColors {
     end: Alignment.bottomCenter,
   );
 
-  static const LinearGradient amberGradient = LinearGradient(
+  // KHÔNG const: theme Light đổi dải "amber" (nút Nâng cấp, badge KP) sang
+  // xanh của bộ màu để toàn màn một tông; theme tối giữ cam. Gán lại trong
+  // [applyTheme].
+  static LinearGradient amberGradient = const LinearGradient(
     colors: [Color(0xFFF59E0B), Color(0xFFEA580C)],
     begin: Alignment.centerLeft,
     end: Alignment.centerRight,
@@ -81,18 +84,32 @@ class AppColors {
     accentDark = Color.lerp(accent, Colors.black, 0.2)!;
 
     if (isLight) {
-      backgroundDark = const Color(0xFFF8FAFC);
-      backgroundMid = const Color(0xFFE2E8F0);
-      backgroundBlue = const Color(0xFFDBEAFE);
+      // Dải xanh thiết kế: #27A4F2 #3EAEF4 #6EC2F7 #9FD7F9 #CFEBFC.
+      // Nền dùng ĐƠN MÀU rất nhạt (trắng ngả xanh) để nội dung nổi;
+      // #CFEBFC làm lớp giữa của gradient nền, #9FD7F9 làm viền thẻ.
+      backgroundDark = const Color(0xFFF5FAFE);
+      backgroundMid = const Color(0xFFE7F4FD);
+      backgroundBlue = const Color(0xFFCFEBFC);
       cardBg = const Color(0xFFFFFFFF);
-      cardBorder = Color.lerp(primaryColor, const Color(0xFFCBD5E1), 0.35)!;
+      cardBorder = const Color(0xFF9FD7F9);
       textPrimary = const Color(0xFF0F172A);
       textSecondary = const Color(0xFF475569);
-      // Darker accents for readable text on light surfaces.
+      // Chữ nhấn phải sẫm hơn #27A4F2 mới đủ tương phản trên nền trắng.
       textCyan = Color.lerp(primaryColor, const Color(0xFF0F172A), 0.45)!;
-      textAmber = const Color(0xFFB45309);
       primaryLight = primaryDark;
       secondaryLight = secondaryDark;
+
+      // Dải "amber" (nút Nâng cấp, badge KP) chuyển sang xanh cùng bộ —
+      // Light không còn màu cam lệch tông.
+      amber = const Color(0xFF27A4F2);
+      amberLight = const Color(0xFF6EC2F7);
+      amberDark = const Color(0xFF1B87D6);
+      textAmber = Color.lerp(const Color(0xFF27A4F2), const Color(0xFF0F172A), 0.45)!;
+      amberGradient = const LinearGradient(
+        colors: [Color(0xFF27A4F2), Color(0xFF3EAEF4)],
+        begin: Alignment.centerLeft,
+        end: Alignment.centerRight,
+      );
     } else {
       backgroundDark = const Color(0xFF020817);
       backgroundMid = const Color(0xFF0F172A);
@@ -103,6 +120,17 @@ class AppColors {
       textSecondary = const Color(0xFF94A3B8);
       textCyan = Color.lerp(primaryColor, Colors.white, 0.55)!;
       textAmber = const Color(0xFFFCD34D);
+
+      // Khôi phục dải cam mặc định — các field này là static bị nhánh light
+      // ghi đè, không trả lại thì đổi Light -> Dark sẽ kẹt màu xanh.
+      amber = const Color(0xFFF59E0B);
+      amberLight = const Color(0xFFFBBF24);
+      amberDark = const Color(0xFFD97706);
+      amberGradient = const LinearGradient(
+        colors: [Color(0xFFF59E0B), Color(0xFFEA580C)],
+        begin: Alignment.centerLeft,
+        end: Alignment.centerRight,
+      );
     }
 
     primaryGradient = LinearGradient(
@@ -110,11 +138,19 @@ class AppColors {
       begin: Alignment.centerLeft,
       end: Alignment.centerRight,
     );
-    cyanEmeraldGradient = LinearGradient(
-      colors: [primary, secondary],
-      begin: Alignment.centerLeft,
-      end: Alignment.centerRight,
-    );
+    // Gradient CTA: Light đi trong dải xanh (#27A4F2 -> #3EAEF4) cho đồng
+    // bộ; theme tối giữ xanh->lục đặc trưng cũ.
+    cyanEmeraldGradient = isLight
+        ? LinearGradient(
+            colors: [primary, accent],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+          )
+        : LinearGradient(
+            colors: [primary, secondary],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+          );
     backgroundGradient = LinearGradient(
       colors: [backgroundDark, backgroundBlue, backgroundDark],
       begin: Alignment.topCenter,

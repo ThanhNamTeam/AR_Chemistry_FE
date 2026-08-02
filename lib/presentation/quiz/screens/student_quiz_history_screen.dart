@@ -17,6 +17,7 @@ class StudentQuizHistoryScreen extends StatefulWidget {
 
 class _StudentQuizHistoryScreenState extends State<StudentQuizHistoryScreen> {
   String? _quizCode;
+  String? _reactionId;
   String? _quizTitle;
   bool _initialized = false;
 
@@ -31,12 +32,17 @@ class _StudentQuizHistoryScreenState extends State<StudentQuizHistoryScreen> {
 
     if (args is Map) {
       _quizCode = args['quizCode']?.toString();
-      _quizTitle = args['quizTitle']?.toString();
+      // Contract mới: lịch sử theo phản ứng — màn duyệt phản ứng truyền
+      // reactionId (+ reactionName làm tiêu đề).
+      _reactionId = args['reactionId']?.toString();
+      _quizTitle =
+          (args['quizTitle'] ?? args['reactionName'])?.toString();
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<StudentQuizProvider>().loadAttemptHistory(
         quizCode: _quizCode,
+        reactionId: _reactionId,
       );
     });
   }
@@ -44,6 +50,7 @@ class _StudentQuizHistoryScreenState extends State<StudentQuizHistoryScreen> {
   Future<void> _refresh() async {
     await context.read<StudentQuizProvider>().loadAttemptHistory(
       quizCode: _quizCode,
+      reactionId: _reactionId,
     );
   }
 

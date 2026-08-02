@@ -13,7 +13,7 @@ import '../../../routes/app_routes.dart';
 import '../../home/providers/app_state.dart';
 import '../../../core/portal/portal_scope.dart';
 import '../../home/providers/theme_provider.dart';
-import '../widgets/themed_home_background.dart';
+import '../widgets/home_dashboard.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -149,7 +149,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          const ThemedHomeBackground(),
+          // Gradient phẳng thay cho ảnh nền: ảnh quá rối làm chữ và các thẻ
+          // dashboard phía trên không đọc nổi (nhất là theme Sáng).
+          DecoratedBox(
+            decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
+          ),
           SafeArea(
             child: Column(
               children: [
@@ -332,9 +336,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Widget _buildBody() {
     final l10n = AppLocalizations.of(context);
-    return Column(
+    // ListView thay cho Spacer-căn-giữa: Home giờ là dashboard có nội dung
+    // thật (streak, quiz, gợi ý ôn tập) nên cần cuộn được trên màn nhỏ.
+    return ListView(
+      padding: const EdgeInsets.only(top: 8, bottom: 16),
       children: [
-        const Spacer(flex: 4),
+        const HomeDashboard(),
+        const SizedBox(height: 4),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 56),
           child: GestureDetector(
@@ -411,6 +419,59 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   : Colors.white,
               fontFamily: 'Inter',
               height: 1.5,
+            ),
+          ),
+        ),
+        const SizedBox(height: 14),
+        // Lối vào bảng tuần hoàn — feature tĩnh, mở được cả khi chưa có gói AR.
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 56),
+          child: Semantics(
+            button: true,
+            label: l10n.periodicTableTitle,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(999),
+              onTap: () =>
+                  Navigator.pushNamed(context, AppRoutes.periodicTable),
+              child: Container(
+                width: double.infinity,
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                // Nền đặc để nút không chìm vào background.
+                decoration: BoxDecoration(
+                  color: AppColors.cardSurface,
+                  borderRadius: BorderRadius.circular(999),
+                  border: Border.all(
+                    color: AppColors.primary.withOpacity(0.5),
+                    width: 1.2,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.shadowSoft,
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.grid_on,
+                        color: AppColors.primary, size: 20),
+                    const SizedBox(width: 8),
+                    Text(
+                      l10n.periodicTableTitle,
+                      style: TextStyle(
+                        color: AppColors.accentText,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        fontFamily: 'Inter',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         ),

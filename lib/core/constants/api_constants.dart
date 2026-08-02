@@ -11,6 +11,25 @@ class ApiConstants {
   static const String chemicalCardsShopPath = '/chemical-cards';
   static const String cardBundlesShopPath = '/card-bundles';
 
+  // admin logs (ELK)
+  static String adminLogsUrl({
+    String? level,
+    String? q,
+    int minutes = 1440,
+    int page = 0,
+    int size = 50,
+  }) {
+    return Uri.parse('$baseUrl/admin/logs').replace(
+      queryParameters: {
+        if (level != null && level.isNotEmpty && level != 'ALL') 'level': level,
+        if (q != null && q.trim().isNotEmpty) 'q': q.trim(),
+        'minutes': minutes.toString(),
+        'page': page.toString(),
+        'size': size.toString(),
+      },
+    ).toString();
+  }
+
   // staff quiz management
   static const String staffQuizManagementPath = '/staff/quiz-management';
   static const String staffQuizImportPath = '/staff/quiz-import';
@@ -138,8 +157,60 @@ class ApiConstants {
   }
 
   static String studentQuizAttemptDetailUrl(String attemptCode) {
-    return '$baseUrl$studentPath/quiz-attempts/$attemptCode';
+    // Contract mới: kết quả nằm ở /result (URL cũ không có suffix đã bị xoá).
+    return '$baseUrl$studentPath/quiz-attempts/$attemptCode/result';
   }
+
+  // ---- Luồng quiz theo PHẢN ỨNG (contract mới, thay cho quiz theo bài học) ----
+
+  static String studentReactionsUrl({
+    required int grade,
+    required String reactionCategory,
+    String keyword = '',
+    int page = 0,
+    int size = 10,
+  }) {
+    return Uri.parse('$baseUrl$studentPath/reactions').replace(
+      queryParameters: {
+        'grade': '$grade',
+        'reactionCategory': reactionCategory,
+        if (keyword.trim().isNotEmpty) 'keyword': keyword.trim(),
+        'page': '$page',
+        'size': '$size',
+      },
+    ).toString();
+  }
+
+  static String studentStartAttemptUrl(String reactionId) =>
+      '$baseUrl$studentPath/reactions/$reactionId/attempts';
+
+  static String studentReactionHistoryUrl(
+    String reactionId, {
+    int page = 0,
+    int size = 10,
+  }) {
+    return Uri.parse(
+      '$baseUrl$studentPath/reactions/$reactionId/attempt-history',
+    ).replace(queryParameters: {'page': '$page', 'size': '$size'}).toString();
+  }
+
+  static String studentAttemptStateUrl(String attemptCode) =>
+      '$baseUrl$studentPath/quiz-attempts/$attemptCode/state';
+
+  static String studentAttemptContentUrl(String attemptCode) =>
+      '$baseUrl$studentPath/quiz-attempts/$attemptCode/content';
+
+  static String studentCompleteArUrl(String attemptCode) =>
+      '$baseUrl$studentPath/quiz-attempts/$attemptCode/complete-ar';
+
+  static String studentSaveAnswerUrl(String attemptCode, String questionId) =>
+      '$baseUrl$studentPath/quiz-attempts/$attemptCode/answers/$questionId';
+
+  static String studentSubmitAttemptUrl(String attemptCode) =>
+      '$baseUrl$studentPath/quiz-attempts/$attemptCode/submit';
+
+  static String studentAbandonAttemptUrl(String attemptCode) =>
+      '$baseUrl$studentPath/quiz-attempts/$attemptCode/abandon';
 
   // library
   static const String libraryPath = '/library';
@@ -286,6 +357,26 @@ class ApiConstants {
   static String adminChemicalCardActiveUrl(String id) {
     return '$baseUrl$adminChemicalCardsPath/$id/active';
   }
+
+  // admin users
+  static const String adminUsersPath = '/admin/users';
+
+  static String adminUsersUrl({int page = 0, int size = 20}) {
+    return Uri.parse('$baseUrl$adminUsersPath')
+        .replace(queryParameters: {'page': '$page', 'size': '$size'})
+        .toString();
+  }
+
+  static String adminUserUrl(String id) => '$baseUrl$adminUsersPath/$id';
+
+  static String adminUserStatusUrl(String id) =>
+      '$baseUrl$adminUsersPath/$id/status';
+
+  static String adminUserRolesUrl(String id) =>
+      '$baseUrl$adminUsersPath/$id/roles';
+
+  static String adminUserResetPasswordUrl(String id) =>
+      '$baseUrl$adminUsersPath/$id/reset-password';
 
   // admin substances
   static const String adminSubstancesPath = '/substances';

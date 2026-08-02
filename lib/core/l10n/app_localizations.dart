@@ -129,6 +129,150 @@ class AppLocalizations {
   String get navReactions => isVi ? 'PTHH' : 'Reactions';
   String get navTopSales => isVi ? 'Top bán' : 'Top sales';
   String get navCardsAr => isVi ? 'Thẻ AR' : 'AR Cards';
+  String get navUsers => isVi ? 'Người dùng' : 'Users';
+  String get navLogs => isVi ? 'Logs' : 'Logs';
+
+  // —— Admin: system logs (ELK) ——
+  String get systemLogsTitle => isVi ? 'Log hệ thống' : 'System logs';
+  String get searchLogsHint => isVi
+      ? 'Tìm trong message, class, method...'
+      : 'Search message, class, method...';
+  String get allLevels => isVi ? 'Tất cả' : 'All';
+  String get noLogsFound =>
+      isVi ? 'Không có log trong khoảng thời gian này' : 'No logs in this window';
+  String get loadMoreLogs => isVi ? 'Tải thêm' : 'Load more';
+  String logCountLabel(int shown, int total) =>
+      isVi ? 'Hiển thị $shown / $total log' : 'Showing $shown / $total logs';
+  String cannotOpenKibana(String url) => isVi
+      ? 'Không mở được Kibana ($url). Kiểm tra KIBANA_URL trong .env.'
+      : 'Cannot open Kibana ($url). Check KIBANA_URL in .env.';
+
+  // —— Quiz theo phản ứng (contract mới) ——
+  String get quizBrowseTitle => isVi ? 'Luyện tập theo phản ứng' : 'Practice by reaction';
+  String get quizBrowseSubtitle => isVi
+      ? 'Chọn phản ứng, thực hiện AR rồi trả lời câu hỏi.'
+      : 'Pick a reaction, perform it in AR, then answer the questions.';
+  String get quizGradeLabel => isVi ? 'Lớp' : 'Grade';
+  String quizCategoryLabel(String c) {
+    switch (c) {
+      case 'METAL':
+        return isVi ? 'Kim loại' : 'Metal';
+      case 'ACID':
+        return isVi ? 'Axit' : 'Acid';
+      case 'BASE':
+        return isVi ? 'Bazơ' : 'Base';
+      case 'SALT':
+        return isVi ? 'Muối' : 'Salt';
+      default:
+        return c;
+    }
+  }
+  String get quizSearchReactionHint =>
+      isVi ? 'Tìm phản ứng...' : 'Search reactions...';
+  String get quizNoReactions => isVi
+      ? 'Không có phản ứng nào cho bộ lọc này'
+      : 'No reactions for this filter';
+  String get quizReactionsLoadFailed => isVi
+      ? 'Không tải được danh sách phản ứng'
+      : 'Failed to load reactions';
+  String get quizStart => isVi ? 'Bắt đầu' : 'Start';
+  String get quizContinue => isVi ? 'Tiếp tục' : 'Continue';
+  String get quizRetry => isVi ? 'Làm lại' : 'Retry';
+  String get quizHistoryAction => isVi ? 'Lịch sử' : 'History';
+  String get quizCompletedBadge => isVi ? 'Đã hoàn thành' : 'Completed';
+  String get quizInProgressBadge => isVi ? 'Đang làm dở' : 'In progress';
+  String get quizStartFailed =>
+      isVi ? 'Không bắt đầu được, thử lại sau' : 'Could not start, try again';
+  String get quizWaitingArTitle =>
+      isVi ? 'Thực hiện phản ứng AR để mở bài' : 'Perform the AR reaction to unlock';
+  String get quizWaitingArDesc => isVi
+      ? 'Quét đúng 2 thẻ hoá học của phản ứng này và thực hiện phản ứng trong AR. Khi phản ứng thành công, bài quiz sẽ tự mở và đồng hồ 7 phút bắt đầu chạy.'
+      : 'Scan the 2 chemical cards of this reaction and perform it in AR. Once it succeeds, the quiz unlocks and the 7-minute timer starts.';
+  String get quizOpenArScanner => isVi ? 'Mở máy quét AR' : 'Open AR scanner';
+  String get quizCheckArStatus => isVi ? 'Kiểm tra lại' : 'Check again';
+  String get quizWaitingArAutoCheck => isVi
+      ? 'Tự động kiểm tra mỗi 5 giây'
+      : 'Auto-checking every 5 seconds';
+  String get quizScriptTitle =>
+      isVi ? 'Kịch bản thí nghiệm' : 'Experiment script';
+  String get quizSubmit => isVi ? 'Nộp bài' : 'Submit';
+  String get quizSubmitConfirm =>
+      isVi ? 'Nộp bài ngay bây giờ?' : 'Submit your answers now?';
+  String quizSubmitConfirmUnanswered(int n) => isVi
+      ? 'Còn $n câu chưa trả lời. Vẫn nộp bài?'
+      : '$n questions are unanswered. Submit anyway?';
+  String get quizSubmitFailed =>
+      isVi ? 'Nộp bài thất bại, thử lại' : 'Submit failed, try again';
+  String get quizAbandon => isVi ? 'Bỏ bài' : 'Abandon';
+  String get quizAbandonConfirm => isVi
+      ? 'Thoát bây giờ sẽ BỎ lần làm bài này (không tính điểm). Tiếp tục?'
+      : 'Leaving now ABANDONS this attempt (no score). Continue?';
+  String get quizAnswerSaveFailed => isVi
+      ? 'Chưa lưu được đáp án, chọn lại giúp nhé'
+      : 'Answer not saved, please pick again';
+  String get quizStateLoadFailed => isVi
+      ? 'Không tải được trạng thái bài làm'
+      : 'Failed to load attempt state';
+
+  // —— Admin: quản lý người dùng ——
+  String get userMgmtTitle => isVi ? 'Quản lý người dùng' : 'User management';
+  String get userMgmtSearchHint =>
+      isVi ? 'Tìm theo email hoặc tên...' : 'Search by email or name...';
+  String get userMgmtEmpty =>
+      isVi ? 'Chưa có người dùng nào' : 'No users yet';
+  String get userMgmtLoadMore => isVi ? 'Tải thêm' : 'Load more';
+  String get userMgmtLoadFailed =>
+      isVi ? 'Không tải được danh sách người dùng' : 'Failed to load users';
+  String get userMgmtRetry => isVi ? 'Thử lại' : 'Retry';
+  String get userMgmtStatusLabel => isVi ? 'Trạng thái' : 'Status';
+  String get userMgmtRolesLabel => isVi ? 'Vai trò' : 'Roles';
+  String get userMgmtResetPassword =>
+      isVi ? 'Đặt lại mật khẩu' : 'Reset password';
+  String get userMgmtResetPasswordConfirm => isVi
+      ? 'Đặt lại mật khẩu của người dùng này? Mật khẩu tạm sẽ hiện ra sau khi đặt.'
+      : 'Reset this user\'s password? A temporary password will be shown.';
+  String get userMgmtDelete => isVi ? 'Xoá người dùng' : 'Delete user';
+  String get userMgmtDeleteConfirm => isVi
+      ? 'Xoá (mềm) người dùng này? Tài khoản sẽ bị vô hiệu hoá.'
+      : 'Soft-delete this user? The account will be disabled.';
+  String get userMgmtUpdated => isVi ? 'Đã cập nhật' : 'Updated';
+  String get userMgmtDeleted => isVi ? 'Đã xoá người dùng' : 'User deleted';
+  String get userMgmtActionFailed =>
+      isVi ? 'Thao tác thất bại, thử lại sau' : 'Action failed, try again';
+  String get userMgmtSelfWarning => isVi
+      ? 'Không thể tự thao tác trên tài khoản của chính mình'
+      : 'You cannot modify your own account';
+  String userStatusLabel(String status) {
+    switch (status) {
+      case 'ACTIVE':
+        return isVi ? 'Hoạt động' : 'Active';
+      case 'INACTIVE':
+        return isVi ? 'Ngưng hoạt động' : 'Inactive';
+      case 'BLOCKED':
+        return isVi ? 'Bị chặn' : 'Blocked';
+      case 'DELETED':
+        return isVi ? 'Đã xoá' : 'Deleted';
+      case 'REJECTED':
+        return isVi ? 'Bị từ chối' : 'Rejected';
+      default:
+        return status;
+    }
+  }
+
+  String roleLabel(String role) {
+    switch (role) {
+      case 'ROLE_ADMIN':
+        return 'Admin';
+      case 'ROLE_STAFF':
+        return isVi ? 'Nhân viên' : 'Staff';
+      case 'ROLE_TEACHER':
+        return isVi ? 'Giáo viên' : 'Teacher';
+      case 'ROLE_STUDENT':
+        return isVi ? 'Học sinh' : 'Student';
+      default:
+        return role;
+    }
+  }
   String get navCombos => isVi ? 'Combo' : 'Combos';
   String get awaitingResponse =>
       isVi ? 'Chờ phản hồi' : 'Awaiting response';
@@ -336,6 +480,7 @@ class AppLocalizations {
   String get saveQr => isVi ? 'Lưu QR' : 'Save QR';
   String get close => isVi ? 'Đóng' : 'Close';
   String get cancel => isVi ? 'Hủy' : 'Cancel';
+  String get confirm => isVi ? 'Xác nhận' : 'Confirm';
   String get qrContentLabel => isVi ? 'Nội dung QR: ' : 'QR Content: ';
   String get expiresAtLabel => isVi ? 'Hết hạn: ' : 'Expires at: ';
   String get storagePermissionDenied => isVi ? 'Quyền lưu trữ bị từ chối' : 'Storage permission denied';
@@ -662,6 +807,44 @@ class AppLocalizations {
       ? 'Mua thẻ này với $kp KP? Điểm đã trừ không hoàn lại được.'
       : 'Buy this card for $kp KP? Spent points cannot be refunded.';
   String get buyConfirmAction => isVi ? 'Mua' : 'Buy';
+
+  // —— Home dashboard ——
+  String get todayStudyTitle => isVi ? 'Hôm nay học gì?' : "Today's study";
+  String get streakDaysLabel => isVi ? 'Ngày liên tiếp' : 'Day streak';
+  String get quizzesDoneLabel => isVi ? 'Quiz đã làm' : 'Quizzes done';
+  String get latestQuizTitle => isVi ? 'Quiz gần nhất' : 'Latest quiz';
+  String get recentScansTitle => isVi ? 'Thẻ vừa quét' : 'Recently scanned';
+  String get doQuizNow => isVi ? 'Làm ngay' : 'Start';
+  String get reviewNow => isVi ? 'Ôn lại' : 'Review';
+  String get suggestFirstQuiz => isVi
+      ? 'Bắt đầu hành trình với một bài quiz đầu tiên nhé!'
+      : 'Start your journey with your first quiz!';
+  String suggestReviewLesson(String lesson) => isVi
+      ? 'Hôm nay ôn lại bài "$lesson" nhé? Lần trước điểm chưa cao đâu.'
+      : 'Review "$lesson" today? Your last score has room to grow.';
+  String get suggestNextQuiz => isVi
+      ? 'Điểm lần trước tốt lắm! Thử một bài quiz mới hôm nay?'
+      : 'Great score last time! Try a new quiz today?';
+
+  // —— Periodic table ——
+  String get periodicTableTitle => isVi ? 'Bảng tuần hoàn' : 'Periodic Table';
+  String get periodicSearchHint => isVi
+      ? 'Tìm nguyên tố (Fe, Sắt, 26...)'
+      : 'Search element (Fe, Iron, 26...)';
+  String get atomicMassLabel =>
+      isVi ? 'Khối lượng nguyên tử' : 'Atomic mass';
+  String get electronegativityLabel =>
+      isVi ? 'Độ âm điện (Pauling)' : 'Electronegativity (Pauling)';
+  String get electronConfigLabel =>
+      isVi ? 'Cấu hình electron' : 'Electron configuration';
+  String get periodLabel => isVi ? 'Chu kỳ' : 'Period';
+  // groupLabel dùng chung key đã có sẵn ở phần khai báo phía trên (dòng ~438).
+  String get lanthanideRowLabel => isVi ? 'Họ Lantan' : 'Lanthanide';
+  String get actinideRowLabel => isVi ? 'Họ Actini' : 'Actinide';
+  String get arCardAvailable => isVi
+      ? 'Nguyên tố này có thẻ AR trong bộ LABEDU!'
+      : 'This element has an AR card in the LABEDU set!';
+  String get scanArCard => isVi ? 'Quét thẻ AR' : 'Scan AR card';
 
   // —— AR asset loading ——
   String get arPreparingAssets =>
