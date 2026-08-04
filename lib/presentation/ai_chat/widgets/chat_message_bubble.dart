@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../../../domain/models/ai_chat_models.dart';
 import '../../../shared/styles/app_colors.dart';
+import 'ai_chat_icon.dart';
 import '../providers/chat_provider.dart';
 
 class ChatMessageBubble extends StatelessWidget {
@@ -26,7 +27,9 @@ class ChatMessageBubble extends StatelessWidget {
             isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          if (!isUser) _avatar(Icons.science_outlined, AppColors.primary),
+          // Avatar AI dùng mascot thật (AiChatIcon) cho khớp header/bong bóng
+          // — trước đây là icon bình thí nghiệm chung chung.
+          if (!isUser) const AiChatIcon(size: 32),
           if (!isUser) const SizedBox(width: 8),
           Flexible(
             child: Column(
@@ -359,19 +362,7 @@ class _ChatTypingIndicatorState extends State<ChatTypingIndicator>
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
         children: [
-          Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppColors.primary.withValues(alpha: 0.15),
-            ),
-            child: Icon(
-              Icons.science_outlined,
-              size: 18,
-              color: AppColors.primary,
-            ),
-          ),
+          const AiChatIcon(size: 32),
           const SizedBox(width: 8),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
