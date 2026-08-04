@@ -139,7 +139,7 @@ class _SegmentTab extends StatelessWidget {
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 gradient: selected ? AppColors.primaryGradient : null,
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(12),
                 boxShadow: selected
                     ? [
                         BoxShadow(
@@ -223,7 +223,7 @@ class _AtomicMassTable extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           decoration: BoxDecoration(
             color: AppColors.cardBg.withOpacity(0.6),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(12),
             border: Border.all(color: AppColors.primary.withOpacity(0.12)),
           ),
           child: Row(
@@ -233,7 +233,7 @@ class _AtomicMassTable extends StatelessWidget {
                 height: 38,
                 decoration: BoxDecoration(
                   color: AppColors.primary.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Center(
                   child: Text(
@@ -263,7 +263,7 @@ class _AtomicMassTable extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: AppColors.accent.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: AppColors.accent.withOpacity(0.2)),
                 ),
                 child: Text(
@@ -337,7 +337,7 @@ class _ValenceTable extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           decoration: BoxDecoration(
             color: AppColors.cardBg.withOpacity(0.6),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(12),
             border: Border.all(color: AppColors.secondary.withOpacity(0.12)),
           ),
           child: Row(
@@ -347,7 +347,7 @@ class _ValenceTable extends StatelessWidget {
                 height: 38,
                 decoration: BoxDecoration(
                   color: AppColors.secondary.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Center(
                   child: Text(
@@ -379,7 +379,7 @@ class _ValenceTable extends StatelessWidget {
                   color: el.hasMultipleValences
                       ? AppColors.amber.withOpacity(0.1)
                       : AppColors.secondary.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: el.hasMultipleValences
                         ? AppColors.amber.withOpacity(0.3)
@@ -513,7 +513,7 @@ class _ElementTile extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: accent.withOpacity(0.08),
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(color: accent.withOpacity(0.3)),
         ),
         child: Column(
@@ -570,7 +570,7 @@ class _ElementDetailSheet extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.backgroundMid,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
         border: Border.all(color: AppColors.primary.withOpacity(0.15)),
       ),
       padding: const EdgeInsets.fromLTRB(24, 16, 24, 40),
@@ -592,7 +592,7 @@ class _ElementDetailSheet extends StatelessWidget {
             height: 90,
             decoration: BoxDecoration(
               gradient: AppColors.primaryGradient,
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
                   color: AppColors.primary.withOpacity(0.3),
@@ -797,7 +797,7 @@ class _PoemLineCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
         color: color.withOpacity(0.06),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: color.withOpacity(0.2)),
       ),
       child: Column(

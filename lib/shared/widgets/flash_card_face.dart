@@ -246,7 +246,7 @@ class FlashCardFace extends StatelessWidget {
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: _green, width: 2),
                       ),
                       child: Stack(

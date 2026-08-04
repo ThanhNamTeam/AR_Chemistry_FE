@@ -463,7 +463,7 @@ class _PackageCard extends StatelessWidget {
             AppColors.cardSurface,
           ],
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: AppColors.cardBorder.withOpacity(0.5),
           width: 1.5,
@@ -481,7 +481,7 @@ class _PackageCard extends StatelessWidget {
           Row(
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(16),
                 child: Image.asset(
                   'assets/images/ar_30_days.png',
                   width: 56,
@@ -549,7 +549,7 @@ class _PackageCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 14),
               decoration: BoxDecoration(
                 gradient: AppColors.primaryGradient,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(16),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,

@@ -208,7 +208,7 @@ class _LibraryScreenState extends State<LibraryScreen>
                       button: true,
                       label: l10n.reviewTitle,
                       child: InkWell(
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(16),
                         onTap: () => Navigator.pushNamed(
                           context,
                           AppRoutes.flashcardReview,
@@ -220,7 +220,7 @@ class _LibraryScreenState extends State<LibraryScreen>
                           ),
                           decoration: BoxDecoration(
                             gradient: AppColors.cyanEmeraldGradient,
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(16),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -250,7 +250,7 @@ class _LibraryScreenState extends State<LibraryScreen>
                       ),
                       decoration: BoxDecoration(
                         color: AppColors.primary.withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(16),
                         border: Border.all(
                           color: AppColors.primary.withOpacity(0.3),
                         ),
@@ -283,7 +283,7 @@ class _LibraryScreenState extends State<LibraryScreen>
                   controller: _tabCtrl,
                   indicator: BoxDecoration(
                     gradient: AppColors.cyanEmeraldGradient,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   dividerColor: Colors.transparent,
                   labelStyle: const TextStyle(
@@ -498,7 +498,7 @@ class _LibraryCardTile extends StatelessWidget {
           padding: const EdgeInsets.all(11),
           decoration: BoxDecoration(
             color: AppColors.cardSurface,
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: unlocked
                   ? AppColors.substanceStateBorder(card.state)
@@ -548,7 +548,7 @@ class _LibraryCardTile extends StatelessWidget {
                       color: unlocked
                           ? stateColor.withOpacity(0.14)
                           : AppColors.textSecondary.withOpacity(0.10),
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(16),
                       border: Border.all(
                         color: unlocked
                             ? stateColor.withOpacity(0.35)

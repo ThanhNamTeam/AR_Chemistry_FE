@@ -230,10 +230,10 @@ class _ConversationTile extends StatelessWidget {
       color: selected
           ? AppColors.primary.withOpacity(0.12)
           : Colors.transparent,
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(12),
       child: ListTile(
         onTap: onTap,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         leading: Icon(
           Icons.chat_bubble_outline,
           color: selected ? AppColors.primary : AppColors.textSecondary,

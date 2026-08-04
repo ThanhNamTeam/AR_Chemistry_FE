@@ -193,7 +193,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                                         s.color.withOpacity(0.05),
                                       ],
                                     ),
-                                    borderRadius: BorderRadius.circular(32),
+                                    borderRadius: BorderRadius.circular(16),
                                     border: Border.all(
                                       color: s.color.withOpacity(0.4),
                                       width: 1.5,
@@ -278,7 +278,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                             padding: const EdgeInsets.symmetric(vertical: 18),
                             decoration: BoxDecoration(
                               gradient: AppColors.cyanEmeraldGradient,
-                              borderRadius: BorderRadius.circular(20),
+                              borderRadius: BorderRadius.circular(16),
                               boxShadow: [
                                 BoxShadow(
                                   color: AppColors.primary.withOpacity(0.4),

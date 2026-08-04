@@ -246,7 +246,7 @@ class _AdminUsersTabState extends State<AdminUsersTab> {
       isScrollControlled: true,
       backgroundColor: AppColors.cardBg,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (_) => _UserDetailSheet(
         user: user,
@@ -299,14 +299,14 @@ class _UserCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 10),
       child: Material(
         color: AppColors.cardSurface,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         child: InkWell(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(16),
           onTap: onTap,
           child: Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(16),
               border: Border.all(
                   color: AppColors.cardBorder.withValues(alpha: .5)),
             ),
@@ -721,7 +721,7 @@ class _ErrorCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.cardSurface,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         border:
             Border.all(color: AppColors.error.withValues(alpha: .4)),
       ),

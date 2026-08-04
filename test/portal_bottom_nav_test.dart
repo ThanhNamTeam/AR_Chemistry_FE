@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:labedu/core/l10n/app_localizations.dart';
 import 'package:labedu/core/l10n/locale_provider.dart';
 import 'package:labedu/presentation/home/providers/theme_provider.dart';
 import 'package:labedu/presentation/shared/widgets/portal/portal_shell.dart';
@@ -27,6 +28,11 @@ void main() {
         ChangeNotifierProvider(create: (_) => LocaleProvider()),
       ],
       child: MaterialApp(
+        // Header portal giờ dùng AppLocalizations (nhãn Semantics P2-8) —
+        // harness phải có delegates như app thật, thiếu sẽ _TypeError.
+        locale: const Locale('vi'),
+        supportedLocales: AppLocalizations.supportedLocales,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
         home: Scaffold(
           body: Center(
             child: SizedBox(

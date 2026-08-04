@@ -21,7 +21,7 @@ class FlashCardFlipView extends StatefulWidget {
     required this.substanceName,
     this.frontImageUrl,
     this.backImageUrl,
-    this.borderRadius = const BorderRadius.all(Radius.circular(20)),
+    this.borderRadius = const BorderRadius.all(Radius.circular(16)),
   });
 
   @override

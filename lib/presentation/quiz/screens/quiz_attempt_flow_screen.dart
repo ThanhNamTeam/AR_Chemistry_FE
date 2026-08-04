@@ -514,7 +514,7 @@ class _ScriptCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         color: AppColors.cardSurface,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.cardBorder.withValues(alpha: .5)),
       ),
       child: Theme(
@@ -565,7 +565,7 @@ class _QuestionCard extends StatelessWidget {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: AppColors.cardSurface,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.cardBorder.withValues(alpha: .5)),
       ),
       child: Column(
@@ -587,7 +587,7 @@ class _QuestionCard extends StatelessWidget {
             return Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: InkWell(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(12),
                 onTap: onSelect == null ? null : () => onSelect!(o.optionKey),
                 child: Container(
                   width: double.infinity,
@@ -599,7 +599,7 @@ class _QuestionCard extends StatelessWidget {
                     color: isSelected
                         ? AppColors.primary.withValues(alpha: .14)
                         : Colors.transparent,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: isSelected
                           ? AppColors.primary

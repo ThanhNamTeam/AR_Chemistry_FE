@@ -32,12 +32,19 @@ class UserBottomNav extends StatelessWidget {
     // Thư viện đã gộp vào Cửa hàng (nút sách ở header Cửa hàng, và cả trong
     // Hồ sơ) để nhường chỗ cho Trang chủ — trước đây không có đường quay về
     // Home từ thanh nav.
-    final items = <(IconData, String, String)>[
-      (Icons.home_outlined, l10n.home, AppRoutes.home),
-      (Icons.store_outlined, l10n.shop, AppRoutes.shop),
-      (Icons.quiz_outlined, l10n.navQuiz, AppRoutes.quizList),
-      (Icons.extension_outlined, l10n.navMiniGame, AppRoutes.miniGame),
+    // (icon outline, icon filled khi active, nhãn, route)
+    final items = <(IconData, IconData, String, String)>[
+      (Icons.home_outlined, Icons.home_rounded, l10n.home, AppRoutes.home),
+      (Icons.store_outlined, Icons.store_rounded, l10n.shop, AppRoutes.shop),
+      (Icons.quiz_outlined, Icons.quiz_rounded, l10n.navQuiz,
+          AppRoutes.quizList),
+      (Icons.extension_outlined, Icons.extension_rounded, l10n.navMiniGame,
+          AppRoutes.miniGame),
     ];
+
+    // Tab đang active theo route hiện tại — trước đây 4 tab cùng một màu,
+    // người dùng không biết mình đang ở đâu (lỗi P1 trong audit UX).
+    final currentRoute = CurrentRouteObserver.routeName.value;
 
     // BẮT BUỘC bọc Material: widget này sống trong `MaterialApp.builder`, tức
     // nằm NGOÀI Scaffold/Material. Text render ngoài Material sẽ bị Flutter vẽ
@@ -60,28 +67,34 @@ class UserBottomNav extends StatelessWidget {
           top: false,
           child: Row(
             children: items.map((item) {
+              final selected = currentRoute == item.$4;
+              final color = selected ? AppColors.primary : AppColors.navMuted;
               return Expanded(
                 child: Semantics(
                   button: true,
-                  label: item.$2,
+                  selected: selected,
+                  label: item.$3,
                   child: InkWell(
                     // InkWell thay GestureDetector để có phản hồi chạm (ripple).
-                    onTap: () => _go(item.$3),
+                    onTap: () => _go(item.$4),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(item.$1, color: AppColors.primary, size: 24),
+                          Icon(selected ? item.$2 : item.$1,
+                              color: color, size: 24),
                           const SizedBox(height: 4),
                           Text(
-                            item.$2,
+                            item.$3,
                             style: TextStyle(
                               // 11px + navMuted: 10px/textSecondary cũ dưới
                               // ngưỡng đọc được và thiếu tương phản.
                               fontSize: 11,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.navMuted,
+                              fontWeight: selected
+                                  ? FontWeight.w700
+                                  : FontWeight.w600,
+                              color: color,
                               fontFamily: 'Inter',
                               // Ghi rõ để không phụ thuộc default style bên ngoài.
                               decoration: TextDecoration.none,

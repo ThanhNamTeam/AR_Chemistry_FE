@@ -464,7 +464,7 @@ class _ShopScreenState extends State<ShopScreen> {
                                     horizontal: 8, vertical: 3),
                                 decoration: BoxDecoration(
                                   color: AppColors.secondary.withOpacity(0.15),
-                                  borderRadius: BorderRadius.circular(20),
+                                  borderRadius: BorderRadius.circular(16),
                                   border: Border.all(
                                       color: AppColors.secondary.withOpacity(0.4)),
                                 ),
@@ -626,7 +626,7 @@ class _BundleCard extends StatelessWidget {
           AppColors.cardBg,
           AppColors.cardSurface,
         ]),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.cardBorder.withOpacity(0.5), width: 1.5),
         boxShadow: [
           BoxShadow(
@@ -667,7 +667,7 @@ class _BundleCard extends StatelessWidget {
                           horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
                         gradient: AppColors.amberGradient,
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
                         '-${bundle.salePercent}%',
@@ -721,7 +721,7 @@ class _BundleCard extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       color: cardColor.withOpacity(owned ? 0.05 : 0.1),
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(12),
                       border: Border.all(
                         color: cardColor.withOpacity(owned ? 0.2 : 0.4),
                       ),
@@ -879,7 +879,7 @@ class _QRModal extends StatelessWidget {
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(16),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -1069,7 +1069,7 @@ class _SingleCardShopTile extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.cardSurface,
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: borderColor, width: 1.4),
       ),
       child: Column(
@@ -1135,7 +1135,7 @@ class _SingleCardShopTile extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 11),
               decoration: BoxDecoration(
                 color: AppColors.secondary.withOpacity(0.14),
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: AppColors.secondary.withOpacity(0.35),
                 ),
@@ -1181,7 +1181,7 @@ class _SingleCardShopTile extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     decoration: BoxDecoration(
                       gradient: AppColors.primaryGradient,
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(16),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,

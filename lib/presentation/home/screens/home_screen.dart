@@ -238,34 +238,47 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         // đây lại là nút vào luồng mua gói.
         height: 40,
         padding: const EdgeInsets.symmetric(horizontal: 14),
+        // P2-5 audit UX: ở theme TỐI, "Nâng cấp" hạ xuống dạng outline nhẹ
+        // (nền 12%, viền + chữ giữ màu nhấn) để không tranh sân khấu với CTA
+        // chính "Bắt đầu thí nghiệm AR". Theme sáng giữ gradient (đã cùng
+        // dải xanh nên không còn cạnh tranh).
         decoration: BoxDecoration(
-          gradient: AppColors.amberGradient,
-          borderRadius: BorderRadius.circular(999),
+          gradient: AppColors.isLight ? AppColors.amberGradient : null,
+          color: AppColors.isLight
+              ? null
+              : AppColors.amber.withOpacity(0.12),
+          borderRadius: BorderRadius.circular(AppColors.radiusPill),
           border: Border.all(
             color: AppColors.amberLight.withOpacity(0.7),
             width: 1.2,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.amberLight.withOpacity(0.3),
-              blurRadius: 12,
-              offset: const Offset(0, 3),
-            ),
-          ],
+          boxShadow: AppColors.isLight
+              ? [
+                  BoxShadow(
+                    color: AppColors.amberLight.withOpacity(0.3),
+                    blurRadius: 12,
+                    offset: const Offset(0, 3),
+                  ),
+                ]
+              : null,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
+            Icon(
               Icons.workspace_premium,
-              color: Colors.white,
+              color: AppColors.isLight
+                  ? AppColors.onGradient
+                  : AppColors.amberLight,
               size: 16,
             ),
             const SizedBox(width: 5),
             Text(
               l10n.upgrade,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: AppColors.isLight
+                    ? AppColors.onGradient
+                    : AppColors.amberLight,
                 fontSize: 12,
                 fontWeight: FontWeight.w800,
                 fontFamily: 'Inter',
@@ -324,7 +337,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
-                color: Colors.white,
+                color: AppColors.onGradient,
                 fontFamily: 'Inter',
               ),
             ),
@@ -384,16 +397,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         height: 20,
                         child: CircularProgressIndicator(
                           strokeWidth: 2.2,
-                          color: Colors.white,
+                          color: AppColors.onGradient,
                         ),
                       )
                     else
-                      const Icon(Icons.view_in_ar, color: Colors.white, size: 22),
+                      const Icon(Icons.view_in_ar,
+                          color: AppColors.onGradient, size: 22),
                     const SizedBox(width: 8),
                     Text(
                       _checkingArAccess ? l10n.checkingAccess : l10n.startArExperiment,
                       style: const TextStyle(
-                        color: Colors.white,
+                        color: AppColors.onGradient,
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
                         fontFamily: 'Inter',

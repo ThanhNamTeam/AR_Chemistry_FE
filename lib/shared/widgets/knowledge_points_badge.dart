@@ -24,11 +24,13 @@ class KnowledgePointsBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Vàng nhạt trên nền sáng gần như tàng hình — theme Sáng phải dùng
-    // amber đậm trên nền trắng đặc mới đọc được.
-    final textColor = AppColors.isLight ? AppColors.amberDark : AppColors.amberLight;
+    // KP giữ MỘT màu vàng định danh ở mọi theme (P2-7): không dùng token
+    // amber vì theme Light ghi đè dải đó sang xanh. Vàng đậm trên nền sáng
+    // (4,8:1), vàng tươi trên nền tối.
+    final textColor =
+        AppColors.isLight ? AppColors.kpGold : AppColors.kpGoldBright;
     final unitColor =
-        AppColors.isLight ? AppColors.amberDark : const Color(0xFFFDE68A);
+        AppColors.isLight ? AppColors.kpGold : const Color(0xFFFDE68A);
 
     return Container(
       padding: EdgeInsets.symmetric(
@@ -43,7 +45,8 @@ class KnowledgePointsBadge extends StatelessWidget {
                 colors: [Color(0x33F59E0B), Color(0x33EA580C)],
               ),
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: AppColors.amber.withOpacity(0.6), width: 1),
+        border: Border.all(
+            color: AppColors.kpGoldBorder.withOpacity(0.6), width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

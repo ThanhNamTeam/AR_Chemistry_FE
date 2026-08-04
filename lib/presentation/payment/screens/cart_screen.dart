@@ -100,7 +100,7 @@ class CartScreen extends StatelessWidget {
                 AppColors.primary.withOpacity(0.2),
                 AppColors.secondary.withOpacity(0.2),
               ]),
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(16),
             ),
             child: Icon(Icons.shopping_cart_outlined,
                 color: AppColors.primary, size: 40),
@@ -125,7 +125,7 @@ class CartScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
               decoration: BoxDecoration(
                 gradient: AppColors.cyanEmeraldGradient,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(16),
               ),
               child: Text(l10n.goToShop,
                   style: TextStyle(

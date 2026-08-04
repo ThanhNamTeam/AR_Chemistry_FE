@@ -135,7 +135,7 @@ class _MiniGamePlayScreenState extends State<MiniGamePlayScreen>
                   height: 36,
                   decoration: BoxDecoration(
                     color: AppColors.primary.withOpacity(0.12),
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(Icons.close,
                       color: AppColors.textSecondary, size: 18),
@@ -186,7 +186,7 @@ class _MiniGamePlayScreenState extends State<MiniGamePlayScreen>
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: AppColors.cardBg.withOpacity(0.7),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: _isPoemFill
               ? AppColors.accent.withOpacity(0.35)
@@ -215,7 +215,7 @@ class _MiniGamePlayScreenState extends State<MiniGamePlayScreen>
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
                     color: AppColors.amber.withOpacity(0.12),
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(16),
                     border: Border.all(
                         color: AppColors.amber.withOpacity(0.3)),
                   ),
@@ -342,7 +342,7 @@ class _MiniGamePlayScreenState extends State<MiniGamePlayScreen>
               padding: const EdgeInsets.symmetric(vertical: 18),
               decoration: BoxDecoration(
                 color: bgColor,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(16),
                 border: Border.all(color: borderColor, width: 1.5),
               ),
               child: Column(
@@ -406,7 +406,7 @@ class _MiniGamePlayScreenState extends State<MiniGamePlayScreen>
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
             decoration: BoxDecoration(
               color: bgColor,
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(16),
               border: Border.all(color: borderColor, width: 1.5),
             ),
             child: Row(
@@ -444,7 +444,7 @@ class _MiniGamePlayScreenState extends State<MiniGamePlayScreen>
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: color.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(16),
           border: Border.all(color: color.withOpacity(0.4)),
         ),
         child: Column(
@@ -510,7 +510,7 @@ class _MiniGamePlayScreenState extends State<MiniGamePlayScreen>
             backgroundColor: AppColors.primary,
             disabledBackgroundColor: AppColors.primary.withOpacity(0.3),
             shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             elevation: 0,
           ),
           child: Text(
@@ -656,7 +656,7 @@ class _QuestionTypeBadge extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         color: AppColors.accent.withOpacity(0.12),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.accent.withOpacity(0.3)),
       ),
       child: Text(

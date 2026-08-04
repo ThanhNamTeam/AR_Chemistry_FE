@@ -201,7 +201,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                                   color: selected
                                       ? null
                                       : AppColors.cardSurfaceMuted,
-                                  borderRadius: BorderRadius.circular(20),
+                                  borderRadius: BorderRadius.circular(16),
                                   border: Border.all(
                                     color: selected
                                         ? Colors.transparent
@@ -272,7 +272,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                                     fit: StackFit.expand,
                                     children: [
                                       ClipRRect(
-                                        borderRadius: BorderRadius.circular(15),
+                                        borderRadius: BorderRadius.circular(16),
                                         child: Image.file(
                                           File(_imagePath!),
                                           fit: BoxFit.cover,

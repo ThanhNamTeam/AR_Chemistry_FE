@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/l10n/app_localizations.dart';
+import '../../../core/utils/friendly_error.dart';
 import '../../../routes/app_routes.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../providers/student_quiz_provider.dart';
@@ -109,7 +110,11 @@ class _StudentQuizHistoryScreenState extends State<StudentQuizHistoryScreen> {
                         )
                       else if (provider.attemptHistoryError != null)
                         _ErrorCard(
-                          message: provider.attemptHistoryError!,
+                          message: friendlyError(
+                            l10n,
+                            provider.attemptHistoryError,
+                            context: 'attemptHistory',
+                          ),
                           onRetry: _refresh,
                         )
                       else if (attempts.isEmpty)
@@ -217,7 +222,7 @@ class _AttemptHistoryCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.cardSurface,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: AppColors.cardBorder.withOpacity(0.55),
         ),
@@ -231,7 +236,7 @@ class _AttemptHistoryCard extends StatelessWidget {
       ),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -321,7 +326,7 @@ class _ScoreBox extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
         decoration: BoxDecoration(
           color: AppColors.primary.withOpacity(0.08),
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: AppColors.primary.withOpacity(0.16),
           ),
@@ -400,7 +405,7 @@ class _ErrorCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.cardSurface,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: AppColors.error.withOpacity(0.45),
         ),
@@ -451,7 +456,7 @@ class _EmptyCard extends StatelessWidget {
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
         color: AppColors.cardSurface,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: AppColors.cardBorder.withOpacity(0.45),
         ),

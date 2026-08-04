@@ -37,7 +37,7 @@ class _AiChatSheet extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(top: MediaQuery.paddingOf(context).top * 0.15),
       child: ClipRRect(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
         child: SizedBox(
           height: height,
           child: AiChatPanel(

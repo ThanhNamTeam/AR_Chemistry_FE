@@ -55,7 +55,7 @@ class ProfileThemeSection extends StatelessWidget {
                     color: selected
                         ? null
                         : AppColors.cardSurfaceMuted,
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(16),
                     border: Border.all(
                       color: selected
                           ? Colors.transparent

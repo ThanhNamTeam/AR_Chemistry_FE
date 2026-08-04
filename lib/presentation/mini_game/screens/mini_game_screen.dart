@@ -73,7 +73,7 @@ class MiniGameScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
             child: const Icon(Icons.science_outlined,
-                color: Colors.white, size: 20),
+                color: AppColors.onGradient, size: 20),
           ),
         ],
       ),
@@ -93,7 +93,7 @@ class MiniGameScreen extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.primary.withOpacity(0.3)),
       ),
       child: Row(
@@ -174,10 +174,10 @@ class MiniGameScreen extends StatelessWidget {
               height: 52,
               decoration: BoxDecoration(
                 gradient: AppColors.primaryGradient,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(16),
               ),
               child: const Icon(Icons.play_circle_outline,
-                  color: Colors.white, size: 28),
+                  color: AppColors.onGradient, size: 28),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -241,7 +241,7 @@ class MiniGameScreen extends StatelessWidget {
               height: 52,
               decoration: BoxDecoration(
                 gradient: AppColors.cyanEmeraldGradient,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(16),
               ),
               child: const Icon(Icons.menu_book_outlined,
                   color: Colors.white, size: 28),
@@ -353,7 +353,7 @@ class _StatTile extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
         decoration: BoxDecoration(
           color: color.withOpacity(0.08),
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(16),
           border: Border.all(color: color.withOpacity(0.2)),
         ),
         child: Column(
@@ -396,7 +396,7 @@ class _DifficultySheet extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.backgroundMid,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
         border: Border.all(color: AppColors.primary.withOpacity(0.15)),
       ),
       padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
@@ -448,7 +448,7 @@ class _DifficultyTile extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         decoration: BoxDecoration(
           color: c.withOpacity(0.08),
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(16),
           border: Border.all(color: c.withOpacity(0.35)),
         ),
         child: Row(
@@ -458,7 +458,7 @@ class _DifficultyTile extends StatelessWidget {
               height: 40,
               decoration: BoxDecoration(
                 color: c.withOpacity(0.15),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(_diffIcon(difficulty), color: c, size: 22),
             ),

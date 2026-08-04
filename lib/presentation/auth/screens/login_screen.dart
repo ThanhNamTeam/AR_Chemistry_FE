@@ -26,6 +26,7 @@ import '../widgets/auth_app_logo_badge.dart';
 import '../widgets/cyber_beam_border.dart';
 import '../widgets/cyber_login_frame.dart';
 import '../../../core/l10n/app_localizations.dart';
+import '../../../core/utils/friendly_error.dart';
 import '../../../core/api/notification_token_api.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -404,7 +405,9 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(e.toString()),
+          content: Text(
+            friendlyError(AppLocalizations.of(context), e, context: 'login'),
+          ),
           backgroundColor: AppColors.error,
         ),
       );

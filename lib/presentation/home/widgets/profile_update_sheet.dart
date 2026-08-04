@@ -95,7 +95,7 @@ class _ProfileUpdateSheetState extends State<ProfileUpdateSheet> {
       child: Container(
         decoration: BoxDecoration(
           color: AppColors.cardBg,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
           border: Border.all(color: AppColors.primary.withOpacity(0.3)),
         ),
         child: SingleChildScrollView(

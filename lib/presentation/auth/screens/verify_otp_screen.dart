@@ -293,7 +293,7 @@ class _VerifyOtpScreenState
                             .withOpacity(0.5),
 
                         borderRadius:
-                        BorderRadius.circular(24),
+                        BorderRadius.circular(16),
 
                         border: Border.all(
                           color: AppColors.primary

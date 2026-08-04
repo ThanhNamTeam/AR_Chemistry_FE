@@ -189,7 +189,7 @@ class _MyBagScreenState extends State<MyBagScreen> {
                       ),
                       decoration: BoxDecoration(
                         color: AppColors.secondary.withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(16),
                         border: Border.all(
                           color: AppColors.secondary.withOpacity(0.4),
                         ),
@@ -214,7 +214,7 @@ class _MyBagScreenState extends State<MyBagScreen> {
                         ),
                         decoration: BoxDecoration(
                           gradient: AppColors.cyanEmeraldGradient,
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
                               color: AppColors.primary.withOpacity(0.18),
@@ -306,7 +306,7 @@ class _MyBagScreenState extends State<MyBagScreen> {
                 ),
                 decoration: BoxDecoration(
                   gradient: AppColors.cyanEmeraldGradient,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(16),
                 ),
                 child: Text(
                   l10n.tryAgain,
@@ -373,7 +373,7 @@ class _MyBagScreenState extends State<MyBagScreen> {
                   AppColors.secondary.withOpacity(0.2),
                 ],
               ),
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(16),
             ),
             child: Icon(
               Icons.shopping_bag_outlined,
@@ -411,7 +411,7 @@ class _MyBagScreenState extends State<MyBagScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
               decoration: BoxDecoration(
                 gradient: AppColors.cyanEmeraldGradient,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(16),
               ),
               child: Text(
                 l10n.activateKit,
@@ -537,7 +537,7 @@ class _InventoryItemCard extends StatelessWidget {
                       color: item.active
                           ? stateColor.withOpacity(0.15)
                           : AppColors.amber.withOpacity(0.15),
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(16),
                       border: Border.all(
                         color: item.active
                             ? stateColor.withOpacity(0.4)
@@ -671,7 +671,7 @@ class _ActivateKitSheetState extends State<_ActivateKitSheet> {
         decoration: BoxDecoration(
           color: AppColors.isLight ? Colors.white : AppColors.backgroundMid,
           borderRadius: const BorderRadius.vertical(
-            top: Radius.circular(28),
+            top: Radius.circular(16),
           ),
           border: Border.all(
             color: AppColors.primary.withOpacity(0.22),
@@ -694,7 +694,7 @@ class _ActivateKitSheetState extends State<_ActivateKitSheet> {
                 height: 4,
                 decoration: BoxDecoration(
                   color: AppColors.textSecondary.withOpacity(0.35),
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(16),
                 ),
               ),
               const SizedBox(height: 18),
@@ -705,7 +705,7 @@ class _ActivateKitSheetState extends State<_ActivateKitSheet> {
                     height: 44,
                     decoration: BoxDecoration(
                       gradient: AppColors.cyanEmeraldGradient,
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(16),
                     ),
                     child: const Icon(
                       Icons.qr_code_2_rounded,
@@ -790,7 +790,7 @@ class _ActivateKitSheetState extends State<_ActivateKitSheet> {
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
                     color: AppColors.error.withOpacity(0.12),
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(16),
                     border: Border.all(
                       color: AppColors.error.withOpacity(0.35),
                     ),

@@ -192,7 +192,7 @@ class _PeriodicTableScreenState extends State<PeriodicTableScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
               color: AppColors.amber.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(16),
               border:
                   Border.all(color: AppColors.amber.withValues(alpha: 0.4)),
             ),
@@ -370,7 +370,7 @@ class _PeriodicTableScreenState extends State<PeriodicTableScreen> {
         height: _cellH,
         decoration: BoxDecoration(
           color: color.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: color.withValues(alpha: 0.35),
             style: BorderStyle.solid,
@@ -413,7 +413,7 @@ class _PeriodicTableScreenState extends State<PeriodicTableScreen> {
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
                 color: color.withValues(alpha: AppColors.isLight ? 0.14 : 0.16),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(12),
                 border: Border.all(
                   color: hasAr
                       ? AppColors.amberLight
@@ -497,7 +497,7 @@ class _PeriodicTableScreenState extends State<PeriodicTableScreen> {
       backgroundColor: AppColors.cardBg,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setSheetState) => Padding(
@@ -556,7 +556,7 @@ class _PeriodicTableScreenState extends State<PeriodicTableScreen> {
                               horizontal: 8, vertical: 3),
                           decoration: BoxDecoration(
                             color: color.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                                 color: color.withValues(alpha: 0.4)),
                           ),

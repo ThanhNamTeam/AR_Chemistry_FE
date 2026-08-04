@@ -89,7 +89,7 @@ class _FeedbackCard extends StatelessWidget {
             await context.read<StaffProvider>().initialize();
           }
         },
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         child: PortalGlassCard(
           padding: const EdgeInsets.all(16),
           accentBorder: _typeColor(f.type),

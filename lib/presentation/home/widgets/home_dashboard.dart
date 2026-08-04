@@ -95,7 +95,9 @@ class _HomeDashboardState extends State<HomeDashboard> {
               Expanded(
                 child: _StatTile(
                   icon: Icons.auto_awesome,
-                  iconColor: AppColors.amberLight,
+                  // KP giữ MỘT màu vàng định danh ở mọi theme (P2-7) — không
+                  // dùng token amber vì theme Light đã ghi đè nó sang xanh.
+                  iconColor: AppColors.kpGold,
                   value: '${state.knowledgePoints}',
                   label: 'KP',
                 ),
@@ -157,6 +159,10 @@ class _HomeDashboardState extends State<HomeDashboard> {
       }
     }
 
+    // P1-4 audit UX: tuyệt đối không render khung card khi không có nội dung
+    // (từng có thẻ trắng rỗng chiếm vị trí đẹp nhất Home).
+    if (text.trim().isEmpty) return const SizedBox.shrink();
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
       child: Container(
@@ -166,7 +172,7 @@ class _HomeDashboardState extends State<HomeDashboard> {
         // nên vạch nhấn xanh làm thanh riêng đứng đầu Row.
         decoration: BoxDecoration(
           color: AppColors.cardSurface,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(16),
           border:
               Border.all(color: AppColors.cardBorder.withValues(alpha: 0.5)),
         ),
@@ -201,7 +207,7 @@ class _HomeDashboardState extends State<HomeDashboard> {
               button: true,
               label: cta,
               child: InkWell(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(12),
                 onTap: () =>
                     Navigator.pushNamed(context, route, arguments: routeArgs),
                 child: Container(
@@ -209,14 +215,14 @@ class _HomeDashboardState extends State<HomeDashboard> {
                       horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
                     gradient: AppColors.cyanEmeraldGradient,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
                     cta,
                     style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w700,
-                      color: Colors.white,
+                      color: AppColors.onGradient,
                       fontFamily: 'Inter',
                     ),
                   ),
@@ -259,13 +265,13 @@ class _HomeDashboardState extends State<HomeDashboard> {
         button: true,
         label: l10n.latestQuizTitle,
         child: InkWell(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(16),
           onTap: () => Navigator.pushNamed(context, AppRoutes.quizHistory),
           child: Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
               color: AppColors.cardSurface,
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(16),
               border: Border.all(
                   color: AppColors.cardBorder.withValues(alpha: 0.5)),
             ),
@@ -346,7 +352,7 @@ class _HomeDashboardState extends State<HomeDashboard> {
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: AppColors.cardSurface,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(16),
           border:
               Border.all(color: AppColors.cardBorder.withValues(alpha: 0.5)),
         ),
@@ -407,7 +413,7 @@ class _StatTile extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
       decoration: BoxDecoration(
         color: AppColors.cardSurface,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         border:
             Border.all(color: AppColors.cardBorder.withValues(alpha: 0.5)),
       ),

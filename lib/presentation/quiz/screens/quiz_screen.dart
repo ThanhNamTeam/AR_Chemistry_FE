@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/l10n/app_localizations.dart';
+import '../../../core/utils/friendly_error.dart';
 import '../../../routes/app_routes.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../home/providers/theme_provider.dart';
@@ -151,7 +152,9 @@ class _QuizScreenState extends State<QuizScreen> {
       return _EmptyState(
         icon: Icons.error_outline,
         title: l10n.cannotLoadQuiz,
-        message: provider.summaryError!,
+        // Raw exception KHÔNG được lên UI — friendlyError phân loại +
+        // đẩy chi tiết thật vào debugPrint/log.
+        message: friendlyError(l10n, provider.summaryError, context: 'quizSummary'),
         actionLabel: l10n.tryAgain,
         onAction: () {
           context
@@ -264,7 +267,7 @@ class _QuizIntro extends StatelessWidget {
           padding: const EdgeInsets.all(22),
           decoration: BoxDecoration(
             color: AppColors.cardSurface,
-            borderRadius: BorderRadius.circular(22),
+            borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: AppColors.primary.withOpacity(0.2),
             ),
@@ -517,7 +520,7 @@ class _QuestionCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.cardSurface,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: AppColors.cardBorder.withOpacity(0.55),
         ),
@@ -625,7 +628,7 @@ class _AnswerOption extends StatelessWidget {
           color: selected
               ? AppColors.primary.withOpacity(0.14)
               : Colors.transparent,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: selected
                 ? AppColors.primary.withOpacity(0.7)
@@ -679,7 +682,7 @@ class _QuizResultView extends StatelessWidget {
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             gradient: AppColors.primaryGradient,
-            borderRadius: BorderRadius.circular(22),
+            borderRadius: BorderRadius.circular(16),
           ),
           child: Column(
             children: [
@@ -785,7 +788,7 @@ class _Badge extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: AppColors.primary.withOpacity(0.12),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
       ),
       child: Text(
         text,

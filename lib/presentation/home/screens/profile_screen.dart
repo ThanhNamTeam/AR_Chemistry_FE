@@ -204,7 +204,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       AppColors.primary.withOpacity(0.15),
                       AppColors.secondary.withOpacity(0.15),
                     ]),
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(16),
                     border: Border.all(
                         color: AppColors.primary.withOpacity(0.3), width: 1.5),
                     boxShadow: [
@@ -261,7 +261,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           style: const TextStyle(
                                             fontSize: 26,
                                             fontWeight: FontWeight.w700,
-                                            color: Colors.white,
+                                            color: AppColors.onGradient,
                                             fontFamily: 'Inter',
                                           ),
                                         ),
@@ -273,7 +273,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   height: 64,
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2,
-                                    color: Colors.white,
+                                    color: AppColors.onGradient,
                                   ),
                                 )
                               else
@@ -293,7 +293,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     child: const Icon(
                                       Icons.camera_alt,
                                       size: 12,
-                                      color: Colors.white,
+                                      color: AppColors.onGradient,
                                     ),
                                   ),
                                 ),
@@ -355,7 +355,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   button: true,
                                   label: l10n.updateProfile,
                                   child: InkWell(
-                                    borderRadius: BorderRadius.circular(20),
+                                    borderRadius: BorderRadius.circular(16),
                                     onTap: () =>
                                         ProfileUpdateSheet.show(context),
                                     child: Container(
@@ -365,7 +365,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         color: AppColors.primary
                                             .withOpacity(0.12),
                                         borderRadius:
-                                            BorderRadius.circular(20),
+                                            BorderRadius.circular(16),
                                         border: Border.all(
                                           color: AppColors.primary
                                               .withOpacity(0.45),
@@ -410,7 +410,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
                     decoration: BoxDecoration(
                       color: AppColors.cardSurface,
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(16),
                       border: Border.all(
                           color: AppColors.cardBorder.withOpacity(0.5)),
                     ),
@@ -467,7 +467,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         const SizedBox(height: 6),
                         ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(12),
                           child: LinearProgressIndicator(
                             value: _libraryProgress.clamp(0.0, 1.0),
                             minHeight: 6,
@@ -659,7 +659,7 @@ class _StatCard extends StatelessWidget {
           height: 34,
           decoration: BoxDecoration(
             color: color.withOpacity(0.12),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(icon, color: color, size: 18),
         ),

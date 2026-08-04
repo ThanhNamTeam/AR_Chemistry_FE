@@ -21,7 +21,7 @@ class PortalGlassCard extends StatelessWidget {
       padding: padding,
       decoration: BoxDecoration(
         color: AppColors.cardSurface,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: (accentBorder ?? AppColors.primary)
               .withOpacity(AppColors.isLight ? 0.28 : 0.22),
@@ -69,7 +69,7 @@ class PortalStatCard extends StatelessWidget {
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   color: color.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(icon, color: color, size: 18),
               ),
@@ -179,7 +179,7 @@ class PortalBadge extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
         color: color.withOpacity(0.12),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: color.withOpacity(0.35)),
       ),
       child: Text(
@@ -271,7 +271,7 @@ class PortalPeriodChips extends StatelessWidget {
               decoration: BoxDecoration(
                 gradient: selected ? AppColors.primaryGradient : null,
                 color: selected ? null : AppColors.cardSurfaceMuted,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: selected
                       ? Colors.transparent

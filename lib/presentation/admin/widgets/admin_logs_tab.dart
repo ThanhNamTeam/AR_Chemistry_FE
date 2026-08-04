@@ -179,12 +179,12 @@ class _AdminLogsTabState extends State<AdminLogsTab> {
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide(
                     color: AppColors.primary.withValues(alpha: 0.3)),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide(
                     color: AppColors.primary.withValues(alpha: 0.3)),
               ),
@@ -370,7 +370,7 @@ class _LogTile extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.cardSurface,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(12),
         border:
             Border.all(color: AppColors.cardBorder.withValues(alpha: 0.4)),
       ),

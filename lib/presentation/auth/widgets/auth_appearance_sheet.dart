@@ -21,7 +21,7 @@ class AuthAppearanceSheet {
         builder: (_, scrollCtrl) => Container(
           decoration: BoxDecoration(
             color: AppColors.cardSurface,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
             border: Border.all(color: AppColors.primary.withOpacity(0.2)),
           ),
           child: ListView(

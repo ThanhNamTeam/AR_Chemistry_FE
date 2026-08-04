@@ -65,7 +65,7 @@ class ChemicalCardWidget extends StatelessWidget {
                       Positioned.fill(
                         child: Container(
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(14),
+                            borderRadius: BorderRadius.circular(16),
                             gradient: RadialGradient(
                               colors: [
                                 card.color.withOpacity(0.1),
@@ -79,7 +79,7 @@ class ChemicalCardWidget extends StatelessWidget {
                       Positioned.fill(
                         child: Container(
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(14),
+                            borderRadius: BorderRadius.circular(16),
                             color: Colors.black.withOpacity(0.4),
                           ),
                           child: Center(
@@ -95,7 +95,7 @@ class ChemicalCardWidget extends StatelessWidget {
                       Positioned.fill(
                         child: Container(
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(14),
+                            borderRadius: BorderRadius.circular(16),
                             color: Colors.black.withOpacity(0.55),
                           ),
                           child: Center(

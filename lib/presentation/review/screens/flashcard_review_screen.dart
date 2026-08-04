@@ -206,7 +206,7 @@ class _FlashcardReviewScreenState extends State<FlashcardReviewScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: AppColors.warning.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.warning.withValues(alpha: 0.4)),
       ),
       child: Row(
@@ -357,7 +357,7 @@ class _FlashcardReviewScreenState extends State<FlashcardReviewScreen> {
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
             color: AppColors.cardSurface,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: _flipped
                   ? AppColors.secondary.withValues(alpha: 0.5)
@@ -382,7 +382,7 @@ class _FlashcardReviewScreenState extends State<FlashcardReviewScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
           decoration: BoxDecoration(
             color: AppColors.primary.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(12),
           ),
           child: Text(
             card.frontHint,

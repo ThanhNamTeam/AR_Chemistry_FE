@@ -43,8 +43,8 @@ class ChatMessageBubble extends StatelessWidget {
                     gradient: isUser ? AppColors.primaryGradient : null,
                     color: isUser ? null : AppColors.cardBg,
                     borderRadius: BorderRadius.only(
-                      topLeft: const Radius.circular(18),
-                      topRight: const Radius.circular(18),
+                      topLeft: const Radius.circular(16),
+                      topRight: const Radius.circular(16),
                       bottomLeft: Radius.circular(isUser ? 18 : 4),
                       bottomRight: Radius.circular(isUser ? 4 : 18),
                     ),
@@ -134,7 +134,7 @@ class ChatMessageBubble extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         color: AppColors.secondary.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.secondary.withValues(alpha: 0.3)),
       ),
       child: Row(
@@ -297,7 +297,7 @@ class _AssistantMarkdown extends StatelessWidget {
         ),
         codeblockDecoration: BoxDecoration(
           color: codeBg,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(color: borderColor),
         ),
         codeblockPadding: const EdgeInsets.all(12),
@@ -377,7 +377,7 @@ class _ChatTypingIndicatorState extends State<ChatTypingIndicator>
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
               color: AppColors.cardBg,
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(16),
               border: Border.all(
                 color: AppColors.cardBorder.withValues(alpha: 0.5),
               ),

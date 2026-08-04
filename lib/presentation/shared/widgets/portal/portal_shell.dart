@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/l10n/locale_provider.dart';
 import '../../../../shared/styles/app_colors.dart';
 import '../../../home/providers/theme_provider.dart';
@@ -66,10 +67,7 @@ class PortalShell extends StatelessWidget {
               Expanded(
                 child: isLoading
                     ? const Center(child: CircularProgressIndicator())
-                    : IndexedStack(
-                        index: selectedIndex,
-                        children: pages,
-                      ),
+                    : IndexedStack(index: selectedIndex, children: pages),
               ),
               _PortalBottomNav(
                 items: navItems,
@@ -110,7 +108,7 @@ class _PortalHeader extends StatelessWidget {
             height: 48,
             decoration: BoxDecoration(
               gradient: AppColors.primaryGradient,
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
                   color: AppColors.primary.withOpacity(0.3),
@@ -119,7 +117,11 @@ class _PortalHeader extends StatelessWidget {
                 ),
               ],
             ),
-            child: const Icon(Icons.science, color: Colors.white, size: 26),
+            child: const Icon(
+              Icons.science,
+              color: AppColors.onGradient,
+              size: 26,
+            ),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -148,7 +150,7 @@ class _PortalHeader extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         color: AppColors.primary.withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(12),
                         border: Border.all(
                           color: AppColors.primary.withOpacity(0.35),
                         ),
@@ -181,11 +183,13 @@ class _PortalHeader extends StatelessWidget {
           _HeaderIconButton(
             icon: Icons.person_outline_rounded,
             onTap: onProfile,
+            semanticLabel: AppLocalizations.of(context).profile,
           ),
           _HeaderIconButton(
             icon: Icons.logout_rounded,
             color: AppColors.error,
             onTap: onLogout,
+            semanticLabel: AppLocalizations.of(context).logout,
           ),
         ],
       ),
@@ -198,29 +202,37 @@ class _HeaderIconButton extends StatelessWidget {
   final Color? color;
   final VoidCallback onTap;
 
+  /// P2-8: nút chỉ có icon — screen reader cần nhãn mô tả hành động.
+  final String? semanticLabel;
+
   const _HeaderIconButton({
     required this.icon,
     required this.onTap,
     this.color,
+    this.semanticLabel,
   });
 
   @override
   Widget build(BuildContext context) {
     final c = color ?? AppColors.primary;
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          margin: const EdgeInsets.only(left: 4),
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: c.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: c.withOpacity(0.25)),
+    return Semantics(
+      button: true,
+      label: semanticLabel,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(12),
+          child: Container(
+            margin: const EdgeInsets.only(left: 4),
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: c.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: c.withOpacity(0.25)),
+            ),
+            child: Icon(icon, color: c, size: 22),
           ),
-          child: Icon(icon, color: c, size: 22),
         ),
       ),
     );
@@ -296,10 +308,11 @@ class _PortalBottomNavState extends State<_PortalBottomNav> {
         padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 6),
         decoration: BoxDecoration(
           color: AppColors.navBarBg,
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color:
-                AppColors.primary.withOpacity(AppColors.isLight ? 0.22 : 0.2),
+            color: AppColors.primary.withOpacity(
+              AppColors.isLight ? 0.22 : 0.2,
+            ),
           ),
           boxShadow: [
             BoxShadow(
@@ -361,7 +374,7 @@ class _PortalBottomNavState extends State<_PortalBottomNav> {
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
             decoration: BoxDecoration(
               gradient: selected ? AppColors.primaryGradient : null,
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(16),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -369,7 +382,7 @@ class _PortalBottomNavState extends State<_PortalBottomNav> {
                 Icon(
                   selected ? item.activeIcon : item.icon,
                   size: 22,
-                  color: selected ? Colors.white : AppColors.navMuted,
+                  color: selected ? AppColors.onGradient : AppColors.navMuted,
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -379,7 +392,7 @@ class _PortalBottomNavState extends State<_PortalBottomNav> {
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: selected ? FontWeight.w700 : FontWeight.w600,
-                    color: selected ? Colors.white : AppColors.navMuted,
+                    color: selected ? AppColors.onGradient : AppColors.navMuted,
                     fontFamily: 'Inter',
                   ),
                 ),

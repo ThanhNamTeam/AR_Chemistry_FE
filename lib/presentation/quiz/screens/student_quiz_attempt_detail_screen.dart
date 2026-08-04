@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/l10n/app_localizations.dart';
+import '../../../core/utils/friendly_error.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../providers/student_quiz_provider.dart';
 import '../../../domain/models/student_quiz_attempt_detail_model.dart';
@@ -81,7 +82,11 @@ class _StudentQuizAttemptDetailScreenState
                         )
                       else if (provider.attemptDetailError != null)
                           _ErrorCard(
-                            message: provider.attemptDetailError!,
+                            message: friendlyError(
+                              l10n,
+                              provider.attemptDetailError,
+                              context: 'attemptDetail',
+                            ),
                             onRetry: _refresh,
                           )
                         else if (detail == null)
@@ -171,7 +176,7 @@ class _SummaryCard extends StatelessWidget {
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         gradient: AppColors.primaryGradient,
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
             color: AppColors.primary.withOpacity(0.22),
@@ -249,7 +254,7 @@ class _AnswerDetailCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.cardSurface,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: color.withOpacity(0.5),
         ),
@@ -271,6 +276,14 @@ class _AnswerDetailCard extends StatelessWidget {
                 color: AppColors.primary,
               ),
               const SizedBox(width: 8),
+              // P2-8: đúng/sai không chỉ dựa vào màu — icon + chữ đi kèm
+              // (người mù màu vẫn phân biệt được).
+              Icon(
+                answer.correct ? Icons.check_circle : Icons.cancel,
+                color: color,
+                size: 16,
+              ),
+              const SizedBox(width: 4),
               _Badge(text: label, color: color),
             ],
           ),
@@ -404,7 +417,7 @@ class _ErrorCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.cardSurface,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: AppColors.error.withOpacity(0.45),
         ),
@@ -459,7 +472,7 @@ class _EmptyCard extends StatelessWidget {
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
         color: AppColors.cardSurface,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: AppColors.cardBorder.withOpacity(0.45),
         ),

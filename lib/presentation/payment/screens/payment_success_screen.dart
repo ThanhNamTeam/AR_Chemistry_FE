@@ -105,7 +105,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
                           padding: const EdgeInsets.symmetric(vertical: 18),
                           decoration: BoxDecoration(
                             gradient: AppColors.cyanEmeraldGradient,
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
                                   color: AppColors.primary.withOpacity(0.4),
@@ -137,7 +137,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           decoration: BoxDecoration(
                             color: AppColors.cardBg,
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(16),
                             border: Border.all(
                                 color: AppColors.primary.withOpacity(0.3)),
                           ),

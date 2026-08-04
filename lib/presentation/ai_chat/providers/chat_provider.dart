@@ -70,7 +70,17 @@ class ChatProvider extends ChangeNotifier {
     _messages.clear();
     notifyListeners();
     try {
-      _messages.addAll(await _api.getConversationMessages(id));
+      final history = await _api.getConversationMessages(id);
+      // Sắp xếp phòng thủ theo thời gian tăng dần: backend cũ (chưa có
+      // @OrderBy trên Conversation.messages) trả tin nhắn theo thứ tự tuỳ ý
+      // của DB, làm câu hỏi hiển thị nằm DƯỚI câu trả lời.
+      history.sort((a, b) {
+        final ta = a.createdAt;
+        final tb = b.createdAt;
+        if (ta == null || tb == null) return 0;
+        return ta.compareTo(tb);
+      });
+      _messages.addAll(history);
       _error = null;
     } on AiApiException catch (e) {
       _error = e.message;

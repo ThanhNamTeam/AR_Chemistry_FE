@@ -37,6 +37,30 @@ class AppColors {
   static const Color error = Color(0xFFEF4444);
   static const Color warning = Color(0xFFF59E0B);
 
+  /// Màu chữ/icon đặt TRÊN các nền rực (primary/cyanEmerald/amber gradient).
+  ///
+  /// Chữ TRẮNG trên các nền này fail WCAG AA nặng: trắng/#06B6D4 ≈ 2,4:1,
+  /// trắng/#27A4F2 ≈ 2,7:1, trắng/#10B981 ≈ 2,5:1 (chuẩn cần 4,5:1).
+  /// Thay vì làm xỉn màu thương hiệu, dùng ink tối trên nền rực:
+  /// #0F172A/#06B6D4 ≈ 7,9:1 · /#27A4F2 ≈ 7,7:1 · /#10B981 ≈ 7,5:1
+  /// · /#F59E0B ≈ 9:1 — vượt cả mức AAA, giữ nguyên chất neon.
+  /// Giá trị cố định cho mọi theme vì các gradient đều đủ sáng.
+  static const Color onGradient = Color(0xFF0F172A);
+
+  /// Màu ĐỊNH DANH của Knowledge Point — cố định vàng/gold ở MỌI theme
+  /// (P2-7 audit UX). Không dùng dải `amber` vì theme Light ghi đè dải đó
+  /// sang xanh; KP đổi màu theo theme khiến "đơn vị tiền tệ" mất nhận diện.
+  /// kpGold dùng trên nền sáng (4,8:1 trên trắng), kpGoldBright trên nền tối.
+  static const Color kpGold = Color(0xFFB45309);
+  static const Color kpGoldBright = Color(0xFFFBBF24);
+  static const Color kpGoldBorder = Color(0xFFF59E0B);
+
+  /// Thang bo góc 3 nấc (P2-6 audit UX): phần tử nhỏ (chip/input/nút vuông),
+  /// thẻ/card, và pill tròn hoàn toàn. Không thêm nấc mới ngoài 3 nấc này.
+  static const double radiusSm = 12;
+  static const double radiusCard = 16;
+  static const double radiusPill = 999;
+
   static LinearGradient primaryGradient = LinearGradient(
     colors: [Color(0xFF06B6D4), Color(0xFF2563EB)],
     begin: Alignment.centerLeft,

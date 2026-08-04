@@ -147,6 +147,23 @@ class AppLocalizations {
       ? 'Không mở được Kibana ($url). Kiểm tra KIBANA_URL trong .env.'
       : 'Cannot open Kibana ($url). Check KIBANA_URL in .env.';
 
+  // —— Thông báo lỗi thân thiện (friendly_error.dart) ——
+  String get errNetwork => isVi
+      ? 'Không có kết nối mạng. Kiểm tra Wi-Fi/4G rồi thử lại.'
+      : 'No internet connection. Check Wi-Fi/4G and try again.';
+  String get errTimeout => isVi
+      ? 'Máy chủ phản hồi quá chậm. Thử lại sau ít phút.'
+      : 'The server is taking too long. Try again in a moment.';
+  String get errServer => isVi
+      ? 'Máy chủ đang gặp sự cố. Chúng mình đang xử lý, thử lại sau nhé.'
+      : 'The server hit a problem. We are on it — try again soon.';
+  String get errSession => isVi
+      ? 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.'
+      : 'Your session expired. Please sign in again.';
+  String get errGeneric => isVi
+      ? 'Có lỗi xảy ra. Vui lòng thử lại.'
+      : 'Something went wrong. Please try again.';
+
   // —— Quiz theo phản ứng (contract mới) ——
   String get quizBrowseTitle => isVi ? 'Luyện tập theo phản ứng' : 'Practice by reaction';
   String get quizBrowseSubtitle => isVi

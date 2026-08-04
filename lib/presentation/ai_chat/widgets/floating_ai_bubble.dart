@@ -595,7 +595,7 @@ class _LabelChip extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
           color: Colors.black.withValues(alpha: 0.82),
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Text(
           text,
@@ -644,7 +644,7 @@ class _RecallTab extends StatelessWidget {
           decoration: BoxDecoration(
             color: AppColors.primary.withValues(alpha: 0.88),
             borderRadius: const BorderRadius.horizontal(
-              left: Radius.circular(14),
+              left: Radius.circular(16),
             ),
             boxShadow: [
               BoxShadow(
@@ -654,7 +654,8 @@ class _RecallTab extends StatelessWidget {
               ),
             ],
           ),
-          child: const Icon(Icons.chevron_left, size: 16, color: Colors.white),
+          child:
+              const Icon(Icons.chevron_left, size: 16, color: AppColors.onGradient),
         ),
       ),
     );

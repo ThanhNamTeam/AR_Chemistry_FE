@@ -234,7 +234,7 @@ class _HeroCard extends StatelessWidget {
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
         color: AppColors.cardSurface,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: AppColors.substanceStateBorder(detail.state),
         ),
@@ -253,7 +253,7 @@ class _HeroCard extends StatelessWidget {
             alignment: Alignment.center,
             decoration: BoxDecoration(
               gradient: stateGradient,
-              borderRadius: BorderRadius.circular(28),
+              borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
                   color: stateColor.withOpacity(0.28),
@@ -304,7 +304,7 @@ class _HeroCard extends StatelessWidget {
               ),
               decoration: BoxDecoration(
                 color: AppColors.substanceStateSurface(detail.state),
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: AppColors.substanceStateBorder(detail.state),
                 ),
@@ -425,7 +425,7 @@ class _InfoSection extends StatelessWidget {
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: AppColors.cardSurface,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: AppColors.primary.withOpacity(0.2),
         ),
