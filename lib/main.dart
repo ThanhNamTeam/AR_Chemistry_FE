@@ -66,6 +66,7 @@ import 'presentation/shared/widgets/user_bottom_nav.dart';
 import 'core/navigation/current_route_observer.dart';
 import 'presentation/mini_game/screens/mini_game_screen.dart';
 import 'presentation/periodic_table/screens/periodic_table_screen.dart';
+import 'presentation/review/screens/flashcard_review_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -206,6 +207,7 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
       AppRoutes.myFeedbacks: (_) => const MyFeedbacksScreen(),
       AppRoutes.arAssetLoading: (_) => const ArAssetLoadingScreen(),
       AppRoutes.periodicTable: (_) => const PeriodicTableScreen(),
+      AppRoutes.flashcardReview: (_) => const FlashcardReviewScreen(),
     };
   }
 

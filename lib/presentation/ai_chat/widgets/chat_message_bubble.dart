@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/l10n/app_localizations.dart';
 import '../../../domain/models/ai_chat_models.dart';
 import '../../../shared/styles/app_colors.dart';
+import '../providers/chat_provider.dart';
 
 class ChatMessageBubble extends StatelessWidget {
   const ChatMessageBubble({
@@ -70,6 +72,22 @@ class ChatMessageBubble extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       _CopyButton(content: message.content),
+                      if (message.canRate) ...[
+                        _RateButton(
+                          message: message,
+                          rating: 1,
+                          icon: Icons.thumb_up_outlined,
+                          activeIcon: Icons.thumb_up,
+                          activeColor: AppColors.success,
+                        ),
+                        _RateButton(
+                          message: message,
+                          rating: -1,
+                          icon: Icons.thumb_down_outlined,
+                          activeIcon: Icons.thumb_down,
+                          activeColor: AppColors.error,
+                        ),
+                      ],
                       if (message.reusedMemory) ...[
                         const SizedBox(width: 6),
                         Flexible(
@@ -137,6 +155,42 @@ class ChatMessageBubble extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Nút chấm 👍/👎 cho câu trả lời AI. Bấm lại cùng nút = bỏ chấm.
+/// Câu bị 👎 sẽ bị backend loại khỏi memory reuse.
+class _RateButton extends StatelessWidget {
+  const _RateButton({
+    required this.message,
+    required this.rating,
+    required this.icon,
+    required this.activeIcon,
+    required this.activeColor,
+  });
+
+  final ChatMessage message;
+  final int rating;
+  final IconData icon;
+  final IconData activeIcon;
+  final Color activeColor;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final active = message.rating == rating;
+
+    return IconButton(
+      visualDensity: VisualDensity.compact,
+      tooltip: rating > 0 ? l10n.aiRateHelpful : l10n.aiRateUnhelpful,
+      icon: Icon(
+        active ? activeIcon : icon,
+        size: 15,
+        color: active ? activeColor : AppColors.textSecondary,
+      ),
+      onPressed: () =>
+          context.read<ChatProvider>().rateMessage(message, rating),
     );
   }
 }

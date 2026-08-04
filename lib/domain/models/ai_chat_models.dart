@@ -9,6 +9,8 @@ class ChatMessage {
     this.modelUsed,
     this.reusedMemory = false,
     this.similarityScore,
+    this.serverId,
+    this.rating = 0,
   });
 
   final String id;
@@ -19,7 +21,29 @@ class ChatMessage {
   final bool reusedMemory;
   final double? similarityScore;
 
+  /// Id message trên backend — cần để gọi API đánh giá 👍/👎.
+  /// Null khi message chưa đồng bộ với server (ví dụ gửi thất bại).
+  final String? serverId;
+
+  /// 1 = 👍, -1 = 👎, 0 = chưa chấm.
+  final int rating;
+
   bool get isUser => role == ChatMessageRole.user;
+  bool get canRate => !isUser && serverId != null && serverId!.isNotEmpty;
+
+  ChatMessage copyWith({int? rating}) {
+    return ChatMessage(
+      id: id,
+      role: role,
+      content: content,
+      createdAt: createdAt,
+      modelUsed: modelUsed,
+      reusedMemory: reusedMemory,
+      similarityScore: similarityScore,
+      serverId: serverId,
+      rating: rating ?? this.rating,
+    );
+  }
 }
 
 class ConversationSummary {
@@ -56,6 +80,7 @@ class AiChatResult {
     this.reusedMemory = false,
     this.similarityScore,
     this.timestamp,
+    this.messageId,
   });
 
   final String conversationId;
@@ -65,6 +90,9 @@ class AiChatResult {
   final double? similarityScore;
   final DateTime? timestamp;
 
+  /// Id ASSISTANT message trên backend — dùng cho đánh giá 👍/👎.
+  final String? messageId;
+
   factory AiChatResult.fromJson(Map<String, dynamic> json) {
     return AiChatResult(
       conversationId: json['conversationId'] as String,
@@ -73,6 +101,7 @@ class AiChatResult {
       reusedMemory: json['reusedMemory'] as bool? ?? false,
       similarityScore: (json['similarityScore'] as num?)?.toDouble(),
       timestamp: _parseInstant(json['timestamp']),
+      messageId: json['messageId'] as String?,
     );
   }
 }
@@ -101,12 +130,15 @@ List<ChatMessage> messagesFromConversationDetail(Map<String, dynamic> json) {
   if (raw is! List) return [];
   return raw.map((item) {
     final m = item as Map<String, dynamic>;
+    final id = m['id'] as String? ?? '';
     return ChatMessage(
-      id: m['id'] as String? ?? '',
+      id: id,
+      serverId: id.isEmpty ? null : id,
       role: _roleFromString(m['role'] as String?),
       content: m['content'] as String? ?? '',
       createdAt: _parseInstant(m['createdAt']),
       modelUsed: m['modelUsed'] as String?,
+      rating: (m['rating'] as num?)?.toInt() ?? 0,
     );
   }).toList();
 }

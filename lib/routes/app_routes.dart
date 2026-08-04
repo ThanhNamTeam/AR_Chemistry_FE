@@ -35,4 +35,5 @@ class AppRoutes {
   static const String myFeedbacks = '/my-feedbacks';
   static const String arAssetLoading = '/ar-asset-loading';
   static const String periodicTable = '/periodic-table';
+  static const String flashcardReview = '/flashcard-review';
 }

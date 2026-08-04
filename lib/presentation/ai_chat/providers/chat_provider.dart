@@ -22,6 +22,11 @@ class ChatProvider extends ChangeNotifier {
   String? _lastFailedMessage;
 
   List<ChatMessage> get messages => List.unmodifiable(_messages);
+
+  /// CHỈ dùng trong test: truy cập trực tiếp danh sách message để dựng
+  /// trạng thái mà không phải giả lập cả luồng sendMessage.
+  @visibleForTesting
+  List<ChatMessage> get messagesForTest => _messages;
   List<ConversationSummary> get conversations => List.unmodifiable(_conversations);
   String? get conversationId => _conversationId;
   bool get sending => _sending;
@@ -108,6 +113,7 @@ class ChatProvider extends ChangeNotifier {
       _messages.add(
         ChatMessage(
           id: 'local-ai-${DateTime.now().millisecondsSinceEpoch}',
+          serverId: result.messageId,
           role: ChatMessageRole.assistant,
           content: result.answer,
           createdAt: result.timestamp ?? DateTime.now(),
@@ -143,6 +149,34 @@ class ChatProvider extends ChangeNotifier {
     _lastFailedMessage = null;
     _error = null;
     await sendMessage(text);
+  }
+
+  /// Chấm câu trả lời AI. Bấm lại cùng nút = bỏ chấm.
+  /// Cập nhật optimistic — lỗi mạng thì hoàn tác về trạng thái cũ.
+  Future<void> rateMessage(ChatMessage message, int rating) async {
+    final serverId = message.serverId;
+    if (serverId == null || serverId.isEmpty) return;
+
+    final index = _messages.indexWhere((m) => m.id == message.id);
+    if (index < 0) return;
+
+    final previousRating = _messages[index].rating;
+    final newRating = previousRating == rating ? 0 : rating;
+
+    _messages[index] = _messages[index].copyWith(rating: newRating);
+    notifyListeners();
+
+    try {
+      await _api.rateMessage(serverId, newRating);
+    } catch (_) {
+      // Hoàn tác khi gửi thất bại — không hiện banner lỗi cho hành động phụ.
+      final revertIndex = _messages.indexWhere((m) => m.id == message.id);
+      if (revertIndex >= 0) {
+        _messages[revertIndex] =
+            _messages[revertIndex].copyWith(rating: previousRating);
+        notifyListeners();
+      }
+    }
   }
 
   Future<bool> deleteConversation(String id) async {

@@ -49,7 +49,7 @@ class AppLocalizations {
   String get experiments => isVi ? 'Thí nghiệm' : 'Experiments';
   String get libraryProgress =>
       isVi ? 'Tiến độ thư viện' : 'Library Progress';
-  String get myLibrary => isVi ? 'Thư viện của tôi' : 'My Library';
+  String get myLibrary => isVi ? 'Thẻ của tôi' : 'My Cards';
   String cardsUnlockedSubtitle(int count) => isVi
       ? '$count thẻ đã mở khóa'
       : '$count cards unlocked';
@@ -801,6 +801,9 @@ class AppLocalizations {
       : 'Answer reused from a similar question';
   String get aiCopyAnswer => isVi ? 'Sao chép câu trả lời' : 'Copy answer';
   String get aiRetry => isVi ? 'Thử lại' : 'Retry';
+  String get aiRateHelpful => isVi ? 'Trả lời hữu ích' : 'Helpful answer';
+  String get aiRateUnhelpful =>
+      isVi ? 'Trả lời sai hoặc chưa hữu ích' : 'Wrong or unhelpful answer';
 
   // —— Shop confirm ——
   String buyConfirmMessage(int kp) => isVi
@@ -825,6 +828,31 @@ class AppLocalizations {
   String get suggestNextQuiz => isVi
       ? 'Điểm lần trước tốt lắm! Thử một bài quiz mới hôm nay?'
       : 'Great score last time! Try a new quiz today?';
+
+  // —— Flashcard review ——
+  String get reviewTitle => isVi ? 'Ôn thẻ' : 'Card review';
+  String get reviewFlip => isVi ? 'Lật thẻ' : 'Flip card';
+  String get reviewKnown => isVi ? 'Đã thuộc' : 'I knew it';
+  String get reviewUnknown => isVi ? 'Chưa thuộc' : 'Still learning';
+  String get reviewAllDone => isVi
+      ? 'Tuyệt! Không còn thẻ nào đến hạn ôn hôm nay.\nQuay lại vào ngày mai nhé.'
+      : 'Great! No cards due today.\nCome back tomorrow.';
+  String get reviewNoCards => isVi
+      ? 'Chưa có thẻ để ôn.\nMở khóa thẻ trong Thư viện để bắt đầu.'
+      : 'No cards to review yet.\nUnlock cards in your Library to start.';
+  String get reviewOfflineBanner => isVi
+      ? 'Đang ôn ngoại tuyến bằng dữ liệu đã lưu'
+      : 'Reviewing offline with saved data';
+  String reviewSummary(int known, int total) => isVi
+      ? 'Bạn thuộc $known/$total thẻ!'
+      : 'You knew $known/$total cards!';
+  String get reviewSummaryPerfect => isVi
+      ? 'Hoàn hảo! Các thẻ này sẽ giãn lịch ôn ra xa hơn.'
+      : 'Perfect! These cards will come back less often.';
+  String reviewSummaryRetry(int count) => isVi
+      ? '$count thẻ chưa thuộc sẽ xuất hiện lại ở lượt ôn sau.'
+      : '$count cards will show up again next session.';
+  String get reviewAgain => isVi ? 'Ôn lượt mới' : 'New session';
 
   // —— Periodic table ——
   String get periodicTableTitle => isVi ? 'Bảng tuần hoàn' : 'Periodic Table';

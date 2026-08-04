@@ -134,6 +134,28 @@ class AiApiService {
     }
   }
 
+  /// Chấm câu trả lời AI: 1 = 👍, -1 = 👎, 0 = bỏ chấm.
+  Future<void> rateMessage(String messageId, int rating) async {
+    try {
+      final response = await _dio.patch(
+        ApiConstants.aiMessageRatingUrl(messageId),
+        data: {'rating': rating},
+        options: await _authOptions(),
+      );
+      final body = response.data;
+      if (body is Map<String, dynamic>) {
+        final success = body['success'] as bool? ?? true;
+        if (!success) {
+          throw AiApiException(
+            body['message'] as String? ?? 'Gửi đánh giá thất bại.',
+          );
+        }
+      }
+    } on DioException catch (e) {
+      throw _fromDio(e);
+    }
+  }
+
   Future<void> deleteConversation(String id) async {
     try {
       final response = await _dio.delete(

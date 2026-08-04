@@ -237,6 +237,16 @@ class ApiConstants {
 // reactions
   static const String reactionsPath = '/reactions/definitions';
 
+  /// Danh sách phản ứng đang bật (có phương trình) — nguồn cho thẻ ôn dạng
+  /// "chất tham gia → ?".
+  static String reactionsListUrl({int page = 0, int size = 100}) {
+    return Uri.parse('$baseUrl/reactions').replace(queryParameters: {
+      'active': 'true',
+      'page': page.toString(),
+      'size': size.toString(),
+    }).toString();
+  }
+
   static String get reactionSummaryUrl {
     return '$baseUrl$reactionsPath/summary';
   }
@@ -283,6 +293,8 @@ class ApiConstants {
   // AI
   static String get aiChatUrl => '$baseUrl$aiPath/chat';
   static String get aiConversationsUrl => '$baseUrl$aiPath/conversations';
+  static String aiMessageRatingUrl(String messageId) =>
+      '$baseUrl$aiPath/messages/$messageId/rating';
 
   static String aiConversationDetailUrl(String id) {
     return '$baseUrl$aiPath/conversations/$id';
