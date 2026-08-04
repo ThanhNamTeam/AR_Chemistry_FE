@@ -189,15 +189,8 @@ class StaffProvider extends ChangeNotifier {
       _quizDrafts.where((q) => q.status == QuizDraftStatus.rejected).length;
 
   /// Mock weekly feedback volume for dashboard chart.
-  List<({String label, double value})> get feedbackTrendWeek => const [
-    (label: 'T2', value: 4),
-    (label: 'T3', value: 7),
-    (label: 'T4', value: 5),
-    (label: 'T5', value: 9),
-    (label: 'T6', value: 6),
-    (label: 'T7', value: 3),
-    (label: 'CN', value: 2),
-  ];
+  // feedbackTrendWeek đã xoá: đó là dãy số bịa hard-code, không phải dữ liệu
+  // backend. Khi nào BE có API thống kê feedback theo tuần thì thêm lại.
 
   List<StaffFeedbackItem> get recentFeedbacks {
     final sorted = List<StaffFeedbackItem>.from(_feedbacks)

@@ -70,11 +70,9 @@ class StaffDashboardTab extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 20),
-        PortalBarChartCard(
-          title: l10n.feedbackTrend,
-          data: staff.feedbackTrendWeek,
-        ),
+        // Biểu đồ "Feedback theo tuần" đã gỡ: dữ liệu là số bịa hard-code
+        // trong provider (không phải từ backend) — gây hiểu nhầm khi mọi
+        // chỉ số thật đều 0 mà biểu đồ vẫn có cột.
         const SizedBox(height: 20),
         PortalSectionHeader(title: l10n.quickActions),
         PortalGlassCard(
