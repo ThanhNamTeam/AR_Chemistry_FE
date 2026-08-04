@@ -80,15 +80,59 @@ class _FloatingAiBubbleState extends State<FloatingAiBubble> {
   bool _showLabel = false;
   Timer? _labelTimer;
 
+  /// Không tương tác trong [_idleTuckDelay] → tự thu gọn vào mép để không
+  /// che nội dung. Chạm vào là bung ra lại.
+  static const _idleTuckDelay = Duration(seconds: 5);
+  Timer? _idleTimer;
+  AiFabVisibility? _fab;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final fab = context.read<AiFabVisibility>();
+    if (_fab != fab) {
+      _fab?.removeListener(_onFabChanged);
+      _fab = fab;
+      fab.addListener(_onFabChanged);
+      _onFabChanged();
+    }
+  }
+
+  /// Provider đổi trạng thái: đang bung + hiển thị → hẹn giờ thu gọn;
+  /// đã thu gọn / modal chat đang mở → huỷ hẹn giờ.
+  void _onFabChanged() {
+    if (!mounted) return;
+    final fab = _fab;
+    if (fab != null && fab.visible && fab.isExpanded) {
+      _armIdleTuck();
+    } else {
+      _idleTimer?.cancel();
+    }
+  }
+
+  void _armIdleTuck() {
+    _idleTimer?.cancel();
+    _idleTimer = Timer(_idleTuckDelay, () {
+      if (!mounted || _dragging) return;
+      final fab = _fab;
+      if (fab != null && fab.visible && fab.isExpanded) {
+        fab.minimize();
+      }
+    });
+  }
+
   @override
   void dispose() {
     _labelTimer?.cancel();
+    _idleTimer?.cancel();
+    _fab?.removeListener(_onFabChanged);
     super.dispose();
   }
 
   /// Nhấn giữ → hiện nhãn ~1.6s rồi tự ẩn.
   void _flashLabel() {
     _labelTimer?.cancel();
+    _armIdleTuck(); // có tương tác → tính lại 5s
     setState(() => _showLabel = true);
     HapticFeedback.selectionClick();
     _labelTimer = Timer(const Duration(milliseconds: 1600), () {
@@ -226,6 +270,7 @@ class _FloatingAiBubbleState extends State<FloatingAiBubble> {
   // ---------------------------------------------------------------------------
 
   void _onPanStart(Offset current) {
+    _idleTimer?.cancel(); // đang kéo thì không tự thu gọn
     setState(() {
       _dragging = true;
       _position = current;
@@ -294,6 +339,8 @@ class _FloatingAiBubbleState extends State<FloatingAiBubble> {
       fab.minimize();
     } else {
       fab.expand();
+      // expand() không notify nếu vốn đang bung — tự hẹn giờ lại ở đây.
+      _armIdleTuck();
     }
 
     HapticFeedback.lightImpact();

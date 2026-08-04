@@ -645,7 +645,7 @@ class _ActivateKitSheetState extends State<_ActivateKitSheet> {
             response.message ?? l10n.kitActivatedSuccess,
             style: const TextStyle(fontFamily: 'Inter'),
           ),
-          backgroundColor: AppColors.secondary,
+          backgroundColor: AppColors.success,
           behavior: SnackBarBehavior.floating,
         ),
       );

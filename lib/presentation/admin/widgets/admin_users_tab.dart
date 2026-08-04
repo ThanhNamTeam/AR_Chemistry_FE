@@ -102,7 +102,7 @@ class _AdminUsersTabState extends State<AdminUsersTab> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(msg, style: const TextStyle(fontFamily: 'Inter')),
-        backgroundColor: isError ? AppColors.error : AppColors.secondary,
+        backgroundColor: isError ? AppColors.error : AppColors.success,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),

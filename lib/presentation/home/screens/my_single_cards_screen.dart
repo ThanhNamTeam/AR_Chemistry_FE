@@ -39,7 +39,7 @@ class _MySingleCardsScreenState extends State<MySingleCardsScreen> {
           message,
           style: const TextStyle(fontFamily: 'Inter'),
         ),
-        backgroundColor: isError ? AppColors.error : AppColors.secondary,
+        backgroundColor: isError ? AppColors.error : AppColors.success,
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(

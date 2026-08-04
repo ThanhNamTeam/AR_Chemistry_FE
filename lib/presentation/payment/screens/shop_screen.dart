@@ -156,7 +156,7 @@ class _ShopScreenState extends State<ShopScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(msg, style: TextStyle(fontFamily: 'Inter')),
-        backgroundColor: isError ? AppColors.error : AppColors.secondary,
+        backgroundColor: isError ? AppColors.error : AppColors.success,
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

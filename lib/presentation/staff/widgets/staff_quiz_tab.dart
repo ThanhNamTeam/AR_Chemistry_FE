@@ -497,7 +497,7 @@ class _LessonQuizOverviewCard extends StatelessWidget {
                     icon: const Icon(Icons.quiz_outlined, size: 18),
                     label: const Text('Xem quiz'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.secondary,
+                      backgroundColor: AppColors.success,
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),

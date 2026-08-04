@@ -125,7 +125,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           args.welcomeMessage!,
           style: const TextStyle(fontFamily: 'Inter'),
         ),
-        backgroundColor: AppColors.secondary,
+        backgroundColor: AppColors.success,
         duration: const Duration(seconds: 4),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
