@@ -17,7 +17,6 @@ class StudentQuizHistoryScreen extends StatefulWidget {
 }
 
 class _StudentQuizHistoryScreenState extends State<StudentQuizHistoryScreen> {
-  String? _quizCode;
   String? _reactionId;
   String? _quizTitle;
   bool _initialized = false;
@@ -32,7 +31,6 @@ class _StudentQuizHistoryScreenState extends State<StudentQuizHistoryScreen> {
     final args = ModalRoute.of(context)?.settings.arguments;
 
     if (args is Map) {
-      _quizCode = args['quizCode']?.toString();
       // Contract mới: lịch sử theo phản ứng — màn duyệt phản ứng truyền
       // reactionId (+ reactionName làm tiêu đề).
       _reactionId = args['reactionId']?.toString();
@@ -41,17 +39,19 @@ class _StudentQuizHistoryScreenState extends State<StudentQuizHistoryScreen> {
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      final reactionId = _reactionId;
+      if (reactionId == null || reactionId.isEmpty) return;
       context.read<StudentQuizProvider>().loadAttemptHistory(
-        quizCode: _quizCode,
-        reactionId: _reactionId,
+        reactionId: reactionId,
       );
     });
   }
 
   Future<void> _refresh() async {
+    final reactionId = _reactionId;
+    if (reactionId == null || reactionId.isEmpty) return;
     await context.read<StudentQuizProvider>().loadAttemptHistory(
-      quizCode: _quizCode,
-      reactionId: _reactionId,
+      reactionId: reactionId,
     );
   }
 
@@ -265,7 +265,7 @@ class _AttemptHistoryCard extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             Text(
-              attempt.lessonTitle,
+              attempt.reactionName,
               style: TextStyle(
                 fontSize: 13,
                 color: AppColors.subtitleAccent,

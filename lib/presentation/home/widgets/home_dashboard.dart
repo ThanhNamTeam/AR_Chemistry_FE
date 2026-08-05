@@ -145,7 +145,7 @@ class _HomeDashboardState extends State<HomeDashboard> {
           ? 1.0
           : attempt.correctCount / attempt.totalQuestions;
       if (ratio < 0.7) {
-        text = l10n.suggestReviewLesson(attempt.lessonTitle);
+        text = l10n.suggestReviewLesson(attempt.reactionName);
         cta = l10n.reviewNow;
         // Luồng quiz mới theo phản ứng: đưa về màn duyệt phản ứng (màn quiz
         // theo bài học cũ đã chết cùng endpoint của nó).
@@ -313,7 +313,7 @@ class _HomeDashboardState extends State<HomeDashboard> {
                       Text(
                         attempt.quizTitle.isNotEmpty
                             ? attempt.quizTitle
-                            : attempt.lessonTitle,
+                            : attempt.reactionName,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
