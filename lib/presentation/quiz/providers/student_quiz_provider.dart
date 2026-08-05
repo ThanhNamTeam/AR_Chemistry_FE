@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 
 import '../../../core/api/student_quiz_api.dart';
-import '../../../core/api/student_reaction_quiz_api.dart';
-import '../../../core/models/request/submit_quiz_request_model.dart';
 import '../../../core/models/response/submit_quiz_response_model.dart';
 import '../../../domain/models/student_quiz_attempt_detail_model.dart';
 import '../../../domain/models/student_quiz_attempt_history_model.dart';
@@ -15,7 +13,6 @@ import '../../../domain/models/student_reaction_model.dart';
 
 class StudentQuizProvider extends ChangeNotifier {
   final StudentQuizApi _studentQuizApi = StudentQuizApi();
-  final StudentReactionQuizApi _reactionQuizApi = StudentReactionQuizApi();
 
   // =========================
   // Reaction và quiz summary
@@ -320,9 +317,6 @@ class StudentQuizProvider extends ChangeNotifier {
     required int grade,
     required String reactionCategory,
     String? keyword,
-  Future<void> loadAttemptHistory({
-    String? quizCode,
-    String? reactionId,
     int page = 0,
     int size = 10,
   }) async {
@@ -369,23 +363,6 @@ class StudentQuizProvider extends ChangeNotifier {
       _reactionPage = result.page;
       _reactionTotalPages = result.totalPages;
       _reactionLastPage = result.last;
-      // Contract mới: lịch sử nằm theo PHẢN ỨNG. Nhánh quizCode cũ giữ lại
-      // cho tương thích nhưng endpoint của nó đã bị BE gỡ.
-      if (reactionId != null && reactionId.isNotEmpty) {
-        final result = await _reactionQuizApi.getReactionHistory(
-          reactionId,
-          page: page,
-          size: size,
-        );
-        _attemptHistory = result.items;
-      } else {
-        final result = await _studentQuizApi.getQuizAttemptHistory(
-          quizCode: quizCode,
-          page: page,
-          size: size,
-        );
-        _attemptHistory = result.items;
-      }
     } catch (e) {
       _reactionsError = e.toString();
     } finally {
