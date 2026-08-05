@@ -24,31 +24,43 @@ class KnowledgePointsBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // KP giữ MỘT màu vàng định danh ở mọi theme (P2-7): không dùng token
+    // amber vì theme Light ghi đè dải đó sang xanh. Vàng đậm trên nền sáng
+    // (4,8:1), vàng tươi trên nền tối.
+    final textColor =
+        AppColors.isLight ? AppColors.kpGold : AppColors.kpGoldBright;
+    final unitColor =
+        AppColors.isLight ? AppColors.kpGold : const Color(0xFFFDE68A);
+
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: compact ? 10 : 12,
         vertical: compact ? 5 : 6,
       ),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Color(0x33F59E0B), Color(0x33EA580C)],
-        ),
+        color: AppColors.isLight ? Colors.white : null,
+        gradient: AppColors.isLight
+            ? null
+            : const LinearGradient(
+                colors: [Color(0x33F59E0B), Color(0x33EA580C)],
+              ),
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: AppColors.amber.withOpacity(0.5), width: 1),
+        border: Border.all(
+            color: AppColors.kpGoldBorder.withOpacity(0.6), width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
             Icons.auto_awesome,
-            color: AppColors.amberLight,
+            color: textColor,
             size: compact ? 14 : 16,
           ),
           SizedBox(width: compact ? 4 : 6),
           Text(
             _displayPoints,
             style: TextStyle(
-              color: AppColors.amberLight,
+              color: textColor,
               fontWeight: FontWeight.w700,
               fontSize: compact ? 13 : 14,
             ),
@@ -57,7 +69,7 @@ class KnowledgePointsBadge extends StatelessWidget {
           Text(
             'KP',
             style: TextStyle(
-              color: Color(0xFFFDE68A),
+              color: unitColor,
               fontSize: compact ? 11 : 12,
               fontWeight: FontWeight.w500,
             ),

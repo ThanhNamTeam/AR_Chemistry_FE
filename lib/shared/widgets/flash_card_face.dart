@@ -20,6 +20,11 @@ class FlashCardFace extends StatelessWidget {
   static const _cream = Color(0xFFF4F0E6);
   static const _orange = Color(0xFFE8872B);
 
+  /// Bề rộng thiết kế chuẩn. Nội dung luôn được dựng ở cỡ này rồi FittedBox
+  /// scale xuống khung thật — font/icon cố định sẽ không bao giờ tràn khi card
+  /// bị render ở ô nhỏ (ví dụ preview 114x62 trong journey carousel).
+  static const double _refWidth = 240;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -32,13 +37,39 @@ class FlashCardFace extends StatelessWidget {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(13),
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            CustomPaint(painter: _GridPainter()),
-            ..._decorations(),
-            if (side == FlashCardSide.front) _buildFront() else _buildBack(),
-          ],
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final hasBounds = constraints.maxWidth.isFinite &&
+                constraints.maxHeight.isFinite &&
+                constraints.maxWidth > 0 &&
+                constraints.maxHeight > 0;
+
+            final content = Stack(
+              fit: StackFit.expand,
+              children: [
+                CustomPaint(painter: _GridPainter()),
+                ..._decorations(),
+                if (side == FlashCardSide.front)
+                  _buildFront()
+                else
+                  _buildBack(),
+              ],
+            );
+
+            if (!hasBounds) return content;
+
+            final refHeight =
+                _refWidth * constraints.maxHeight / constraints.maxWidth;
+
+            return FittedBox(
+              fit: BoxFit.fill,
+              child: SizedBox(
+                width: _refWidth,
+                height: refHeight,
+                child: content,
+              ),
+            );
+          },
         ),
       ),
     );
@@ -232,7 +263,7 @@ class FlashCardFace extends StatelessWidget {
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: _green, width: 2),
                       ),
                       child: Stack(

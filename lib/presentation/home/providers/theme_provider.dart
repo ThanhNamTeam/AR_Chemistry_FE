@@ -36,9 +36,13 @@ class ThemeProvider extends ChangeNotifier {
       accent: Color(0xFF3B82F6),
     ),
     AppThemeOption(
+      // Bộ màu Light theo dải xanh thiết kế:
+      // #27A4F2 #3EAEF4 #6EC2F7 #9FD7F9 #CFEBFC.
+      // Accent cũng là xanh (không dùng cam) để toàn theme một tông;
+      // các mã còn lại của dải nằm trong AppColors.applyTheme (nhánh light).
       key: AppThemeKey.light,
-      primary: Color(0xFF0EA5E9),
-      accent: Color(0xFFF59E0B),
+      primary: Color(0xFF27A4F2),
+      accent: Color(0xFF3EAEF4),
     ),
     AppThemeOption(
       key: AppThemeKey.ocean,
@@ -128,16 +132,25 @@ class ThemeProvider extends ChangeNotifier {
     final base = ThemeData(
       useMaterial3: true,
       brightness: isLight ? Brightness.light : Brightness.dark,
+      // onPrimary/onSecondary đặt tường minh = ink tối: Material mặc định suy
+      // ra TRẮNG cho các primary rực (#27A4F2/#06B6D4...) khiến MỌI
+      // ElevatedButton trong app fail WCAG AA (~2,4-2,7:1). Ink tối trên các
+      // nền này đạt 7,5-7,9:1. Đây là token trung tâm — sửa một chỗ, cả app
+      // đổi theo (xem AppColors.onGradient cho các widget vẽ gradient tay).
       colorScheme: isLight
           ? ColorScheme.light(
               primary: option.primary,
+              onPrimary: AppColors.onGradient,
               secondary: option.accent,
+              onSecondary: AppColors.onGradient,
               surface: const Color(0xFFF8FAFC),
               background: const Color(0xFFFFFFFF),
             )
           : ColorScheme.dark(
               primary: option.primary,
+              onPrimary: AppColors.onGradient,
               secondary: option.accent,
+              onSecondary: AppColors.onGradient,
               surface: const Color(0xFF0F172A),
               background: const Color(0xFF020817),
             ),

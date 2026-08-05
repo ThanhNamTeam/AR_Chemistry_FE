@@ -139,7 +139,7 @@ class _KitsManagementSection extends StatelessWidget {
       isScrollControlled: true,
       backgroundColor: AppColors.cardBg,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (_) => const _CreateKitSheet(),
     );
@@ -151,7 +151,7 @@ class _KitsManagementSection extends StatelessWidget {
       isScrollControlled: true,
       backgroundColor: AppColors.cardBg,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (_) => const _LoadingKitDetailSheet(),
     );
@@ -168,7 +168,7 @@ class _KitsManagementSection extends StatelessWidget {
         isScrollControlled: true,
         backgroundColor: AppColors.cardBg,
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
         ),
         builder: (_) => _KitDetailSheet(kit: detail),
       );
@@ -189,7 +189,7 @@ class _KitsManagementSection extends StatelessWidget {
       isScrollControlled: true,
       backgroundColor: AppColors.cardBg,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (_) => _GenerateCodesSheet(kit: kit),
     );
@@ -928,7 +928,7 @@ class _GenerateCodesSheetState extends State<_GenerateCodesSheet> {
       isScrollControlled: true,
       backgroundColor: AppColors.cardBg,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (_) => _GeneratedCodesSheet(codes: codes),
     );
@@ -1229,7 +1229,7 @@ class _KitDetailSheet extends StatelessWidget {
                             height: 44,
                             decoration: BoxDecoration(
                               color: AppColors.primary.withOpacity(0.10),
-                              borderRadius: BorderRadius.circular(14),
+                              borderRadius: BorderRadius.circular(16),
                               border: Border.all(
                                 color: AppColors.primary.withOpacity(0.25),
                               ),

@@ -603,10 +603,9 @@ packages:
   flutter_unity_widget_2:
     dependency: "direct main"
     description:
-      name: flutter_unity_widget_2
-      sha256: "9d02f84309405bf19393637e23bc8695f9902a19f10f3514ec1ec70cbb168523"
-      url: "https://pub.dev"
-    source: hosted
+      path: "packages/flutter_unity_widget_2"
+      relative: true
+    source: path
     version: "6000.1.0+1"
   flutter_web_plugins:
     dependency: transitive

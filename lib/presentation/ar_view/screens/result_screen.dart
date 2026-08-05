@@ -307,7 +307,7 @@ class _ResultScreenState extends State<ResultScreen>
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: AppColors.cardBg.withOpacity(0.5),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.primary.withOpacity(0.3), width: 1.5),
         boxShadow: [
           BoxShadow(
@@ -363,7 +363,7 @@ class _ResultScreenState extends State<ResultScreen>
           AppColors.amber.withOpacity(0.15),
           AppColors.amberDark.withOpacity(0.15),
         ]),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.amber.withOpacity(0.4)),
       ),
       child: Column(

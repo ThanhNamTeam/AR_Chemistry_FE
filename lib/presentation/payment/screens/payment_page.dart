@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/l10n/app_localizations.dart';
@@ -20,6 +21,11 @@ class PaymentPage extends StatefulWidget {
 
 class _PaymentPageState extends State<PaymentPage> {
   bool _showQRModal = false;
+  bool _paying = false;
+
+  /// Mã chuyển khoản sinh MỘT LẦN khi mở modal — không được sinh trong build()
+  /// vì mỗi rebuild sẽ đổi mã, người dùng quét mã A nhưng app lưu mã B.
+  String? _transferCode;
 
   void _toast(String msg, {bool error = false}) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -33,32 +39,51 @@ class _PaymentPageState extends State<PaymentPage> {
   }
 
   Future<void> _payWithPoints(AppState state) async {
+    if (_paying) return;
     final l10n = AppLocalizations.of(context);
     final total = state.cartTotalPrice;
     if (state.knowledgePoints < total) {
       _toast(l10n.notEnoughKnowledgePoints, error: true);
       return;
     }
-    final ok = await state.checkoutCart('points');
-    if (!mounted) return;
-    if (ok) {
-      _toast(l10n.paymentSuccessToast);
-      await Future.delayed(const Duration(seconds: 1));
-      if (mounted) {
+    setState(() => _paying = true);
+    try {
+      final ok = await state.checkoutCart('points');
+      if (!mounted) return;
+      if (ok) {
+        _toast(l10n.paymentSuccessToast);
         AppNavigation.openMyBag(context);
+      } else {
+        // Trước đây nhánh lỗi im lặng hoàn toàn — người dùng bấm lại và có
+        // nguy cơ trừ điểm hai lần.
+        _toast(l10n.paymentFailedToast, error: true);
       }
+    } finally {
+      if (mounted) setState(() => _paying = false);
     }
   }
 
-  void _payWithBank() => setState(() => _showQRModal = true);
+  void _payWithBank() {
+    setState(() {
+      _transferCode = 'CHEM_${DateTime.now().millisecondsSinceEpoch}';
+      _showQRModal = true;
+    });
+  }
 
   Future<void> _confirmBank(AppState state) async {
-    await state.checkoutCart('bank');
-    if (!mounted) return;
-    setState(() => _showQRModal = false);
-    await Future.delayed(const Duration(milliseconds: 300));
-    if (mounted) {
+    if (_paying) return;
+    setState(() => _paying = true);
+    try {
+      final ok = await state.checkoutCart('bank');
+      if (!mounted) return;
+      if (!ok) {
+        _toast(AppLocalizations.of(context).paymentFailedToast, error: true);
+        return;
+      }
+      setState(() => _showQRModal = false);
       Navigator.pushNamed(context, AppRoutes.paymentSuccess);
+    } finally {
+      if (mounted) setState(() => _paying = false);
     }
   }
 
@@ -158,7 +183,7 @@ class _PaymentPageState extends State<PaymentPage> {
                                 padding: const EdgeInsets.all(16),
                                 decoration: BoxDecoration(
                                   color: AppColors.cardBg.withOpacity(0.5),
-                                  borderRadius: BorderRadius.circular(14),
+                                  borderRadius: BorderRadius.circular(16),
                                   border: Border.all(
                                       color: AppColors.primary.withOpacity(0.2)),
                                 ),
@@ -192,7 +217,8 @@ class _PaymentPageState extends State<PaymentPage> {
                           label: l10n.payWithKnowledgePoints,
                           icon: Icons.auto_awesome,
                           gradient: AppColors.amberGradient,
-                          onTap: items.isEmpty
+                          loading: _paying,
+                          onTap: items.isEmpty || _paying
                               ? null
                               : () => _payWithPoints(state),
                         ),
@@ -201,18 +227,23 @@ class _PaymentPageState extends State<PaymentPage> {
                           label: l10n.payWithBankVnpay,
                           icon: Icons.credit_card,
                           gradient: AppColors.primaryGradient,
-                          onTap: items.isEmpty ? null : _payWithBank,
+                          loading: false,
+                          onTap: items.isEmpty || _paying ? null : _payWithBank,
                         ),
                       ],
                     ),
                   ),
                 ],
               ),
-              if (_showQRModal)
+              if (_showQRModal && _transferCode != null)
                 _QRModal(
                   price: total,
+                  transferCode: _transferCode!,
+                  busy: _paying,
                   onConfirm: () => _confirmBank(state),
-                  onCancel: () => setState(() => _showQRModal = false),
+                  onCancel: _paying
+                      ? null
+                      : () => setState(() => _showQRModal = false),
                 ),
             ],
           ),
@@ -242,7 +273,7 @@ class _CartRow extends StatelessWidget {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: AppColors.cardBg.withOpacity(0.5),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.primary.withOpacity(0.2)),
       ),
       child: Row(
@@ -276,39 +307,60 @@ class _PayButton extends StatelessWidget {
   final String label;
   final IconData icon;
   final Gradient gradient;
+  final bool loading;
   final VoidCallback? onTap;
 
   const _PayButton({
     required this.label,
     required this.icon,
     required this.gradient,
+    this.loading = false,
     this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Opacity(
-        opacity: onTap == null ? 0.5 : 1,
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          decoration: BoxDecoration(
-            gradient: gradient,
-            borderRadius: BorderRadius.circular(14),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, color: Colors.white, size: 20),
-              const SizedBox(width: 8),
-              Text(label,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'Inter')),
-            ],
+    return Semantics(
+      button: true,
+      enabled: onTap != null,
+      label: label,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(16),
+          child: Opacity(
+            opacity: onTap == null && !loading ? 0.5 : 1,
+            child: Ink(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              decoration: BoxDecoration(
+                gradient: gradient,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (loading)
+                    const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    )
+                  else
+                    Icon(icon, color: Colors.white, size: 20),
+                  const SizedBox(width: 8),
+                  Text(label,
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'Inter')),
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -318,11 +370,15 @@ class _PayButton extends StatelessWidget {
 
 class _QRModal extends StatelessWidget {
   final int price;
+  final String transferCode;
+  final bool busy;
   final VoidCallback onConfirm;
-  final VoidCallback onCancel;
+  final VoidCallback? onCancel;
 
   const _QRModal({
     required this.price,
+    required this.transferCode,
+    required this.busy,
     required this.onConfirm,
     required this.onCancel,
   });
@@ -330,9 +386,6 @@ class _QRModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-
-    final transferCode =
-        'CHEM_${DateTime.now().millisecondsSinceEpoch}';
 
     final qrUrl =
         'https://img.vietqr.io/image/'
@@ -349,9 +402,10 @@ class _QRModal extends StatelessWidget {
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(16),
           ),
-          child: Column(
+          child: SingleChildScrollView(
+            child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(l10n.vnpayPayment,
@@ -366,8 +420,39 @@ class _QRModal extends StatelessWidget {
                 child: Image.network(
                   qrUrl,
                   width: 220,
-                  height: 220,
-                  fit: BoxFit.cover,
+                  height: 260,
+                  // contain, KHÔNG cover: ảnh VietQR 540x640 bị cover sẽ crop
+                  // mất phần chân ghi số tài khoản và số tiền.
+                  fit: BoxFit.contain,
+                  loadingBuilder: (context, child, progress) {
+                    if (progress == null) return child;
+                    return const SizedBox(
+                      width: 220,
+                      height: 260,
+                      child: Center(child: CircularProgressIndicator()),
+                    );
+                  },
+                  errorBuilder: (context, error, stack) => SizedBox(
+                    width: 220,
+                    height: 260,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.qr_code_2,
+                            size: 48, color: Colors.black26),
+                        const SizedBox(height: 8),
+                        Text(
+                          l10n.qrLoadFailed,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.black54,
+                            fontFamily: 'Inter',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
@@ -403,6 +488,7 @@ class _QRModal extends StatelessWidget {
                     _InfoRow(
                       l10n.transferContent,
                       transferCode,
+                      copyable: true,
                     ),
                   ],
                 ),
@@ -411,12 +497,19 @@ class _QRModal extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: onConfirm,
-                  child: Text(l10n.confirmPayment),
+                  onPressed: busy ? null : onConfirm,
+                  child: busy
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : Text(l10n.confirmPayment),
                 ),
               ),
               TextButton(onPressed: onCancel, child: Text(l10n.cancel)),
             ],
+            ),
           ),
         ),
       ),
@@ -428,11 +521,13 @@ class _InfoRow extends StatelessWidget {
 
   final String label;
   final String value;
+  final bool copyable;
 
   const _InfoRow(
       this.label,
-      this.value,
-      );
+      this.value, {
+      this.copyable = false,
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -451,13 +546,41 @@ class _InfoRow extends StatelessWidget {
           ),
         ),
 
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: Colors.black87,
-            fontFamily: 'Inter',
+        Flexible(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(
+                child: Text(
+                  value,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
+                    fontFamily: 'Inter',
+                  ),
+                ),
+              ),
+              if (copyable)
+                IconButton(
+                  visualDensity: VisualDensity.compact,
+                  tooltip: AppLocalizations.of(context).copiedToClipboard,
+                  icon: const Icon(Icons.copy,
+                      size: 16, color: Colors.black54),
+                  onPressed: () {
+                    Clipboard.setData(ClipboardData(text: value));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          AppLocalizations.of(context).copiedToClipboard,
+                        ),
+                        duration: const Duration(seconds: 1),
+                      ),
+                    );
+                  },
+                ),
+            ],
           ),
         ),
       ],

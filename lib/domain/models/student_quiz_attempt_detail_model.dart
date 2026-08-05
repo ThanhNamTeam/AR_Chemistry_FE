@@ -53,6 +53,21 @@ class StudentQuizAttemptDetailModel {
         json['answers'] as List<dynamic>? ?? [];
 
     return StudentQuizAttemptDetailModel(
+      attemptCode: json['attemptCode'] as String? ?? '',
+      quizCode: json['quizCode'] as String? ?? '',
+      quizTitle: json['quizTitle'] as String? ?? '',
+      // Contract mới đổi lesson* -> reaction*; fallback cho cả hai payload.
+      lessonCode: json['lessonCode'] as String? ??
+          json['reactionId'] as String? ??
+          '',
+      lessonTitle: json['lessonTitle'] as String? ??
+          json['reactionName'] as String? ??
+          '',
+      score: json['score'] as int? ?? 0,
+      totalQuestions: json['totalQuestions'] as int? ?? 0,
+      correctCount: json['correctCount'] as int? ?? 0,
+      status: json['status'] as String? ?? '',
+      submittedAt: DateTime.tryParse(json['submittedAt'] as String? ?? ''),
       attemptCode:
       json['attemptCode']?.toString() ?? '',
 

@@ -86,7 +86,7 @@ class MiniGameReviewScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(
               color: difficulty.color.withOpacity(0.12),
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(16),
               border: Border.all(color: difficulty.color.withOpacity(0.3)),
             ),
             child: Text(
@@ -131,7 +131,7 @@ class MiniGameReviewScreen extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: scoreColor.withOpacity(0.3)),
       ),
       child: Row(
@@ -193,7 +193,7 @@ class MiniGameReviewScreen extends StatelessWidget {
               style: OutlinedButton.styleFrom(
                 side: BorderSide(color: AppColors.primary.withOpacity(0.5)),
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14)),
+                    borderRadius: BorderRadius.circular(16)),
                 padding: const EdgeInsets.symmetric(vertical: 14),
               ),
               child: Text(
@@ -216,7 +216,7 @@ class MiniGameReviewScreen extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14)),
+                    borderRadius: BorderRadius.circular(16)),
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 elevation: 0,
               ),
@@ -355,7 +355,7 @@ class _ReviewItemState extends State<_ReviewItem> {
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
         color: AppColors.cardBg.withOpacity(0.6),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: borderColor),
       ),
       child: Column(

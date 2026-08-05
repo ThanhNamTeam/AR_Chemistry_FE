@@ -1,0 +1,97 @@
+group 'com.xraph.plugin.flutter_unity_widget'
+version '6000.0.0-SNAPSHOT'
+
+buildscript {
+    ext.kotlin_version = '1.8.10'
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.4.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        mavenCentral()
+
+        // DO NOT MODIFY
+        // BUILD_ADD_UNITY_LIBS
+
+        // FOR DEV ONLY
+        flatDir {
+            dirs "libs"
+        }
+    }
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion 34
+
+    // backwards compatible for old gradle versions without namespace
+    if (project.android.hasProperty("namespace")) {
+        namespace 'com.xraph.plugin.flutter_unity_widget'
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+    defaultConfig {
+        minSdkVersion 23
+    }
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+	
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.toString()
+    }
+}
+
+def lifecycle_version = '2.4.1'
+def annotation_version = '1.3.0'
+
+dependencies {
+    implementation project(':unityLibrary')
+    // FORK CHANGE (duplicate-class fix):
+    // `:unityLibrary` already puts unity-classes.jar on the RUNTIME classpath of every
+    // consumer (it declares `implementation fileTree(dir: 'libs', include: ['*.jar'])`,
+    // and this project depends on it above). Declaring unity-classes as `implementation`
+    // here as well added a SECOND unity-classes.jar to :app's runtime classpath, which is
+    // what made :app:checkDebugDuplicateClasses fail.
+    //
+    // This module still needs the Unity types at COMPILE time (CustomUnityPlayer.kt,
+    // OverrideUnityActivity.kt, UnityPlayerUtils.kt import com.unity3d.player.*), and
+    // :unityLibrary exposes the jar only via `implementation` (not `api`), so it is not
+    // visible on this module's compile classpath. `compileOnly` supplies it for
+    // compilation without re-exporting it at runtime -> exactly one runtime provider.
+    //
+    // The stale unity-classes.jar that upstream shipped in android/libs/ was deleted in
+    // this fork, so this resolves through the flatDir repo declared in
+    // android/build.gradle.kts -> unityLibrary/libs/unity-classes.jar, i.e. the jar that
+    // matches the Unity version actually exported into unityLibrary.
+    compileOnly(name: 'unity-classes', ext:'jar')
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "androidx.lifecycle:lifecycle-common:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-process:$lifecycle_version"
+    implementation "androidx.annotation:annotation:$annotation_version"
+
+    compileOnly rootProject.findProject(":flutter_plugin_android_lifecycle")
+
+    // FOR DEV ONLY
+//    implementation(name: 'flutter', ext:'jar')
+}

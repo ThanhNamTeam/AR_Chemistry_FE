@@ -181,7 +181,8 @@ class _ConversationList extends StatelessWidget {
         backgroundColor: AppColors.cardBg,
         title: Text(
           l10n.deleteConversationTitle,
-          style: const TextStyle(fontFamily: 'Inter', color: Colors.white),
+          // textPrimary theo theme — Colors.white tàng hình trên theme Light.
+          style: TextStyle(fontFamily: 'Inter', color: AppColors.textPrimary),
         ),
         content: Text(
           item.title,
@@ -229,10 +230,10 @@ class _ConversationTile extends StatelessWidget {
       color: selected
           ? AppColors.primary.withOpacity(0.12)
           : Colors.transparent,
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(12),
       child: ListTile(
         onTap: onTap,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         leading: Icon(
           Icons.chat_bubble_outline,
           color: selected ? AppColors.primary : AppColors.textSecondary,

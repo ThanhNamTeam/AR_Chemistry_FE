@@ -58,7 +58,11 @@ import 'presentation/ai_chat/providers/ai_fab_visibility.dart';
 import 'presentation/ai_chat/providers/chat_provider.dart';
 import 'presentation/ai_chat/screens/ai_chat_screen.dart';
 import 'presentation/shared/widgets/user_portal_ai_overlay.dart';
+import 'presentation/shared/widgets/user_bottom_nav.dart';
+import 'core/navigation/current_route_observer.dart';
 import 'presentation/mini_game/screens/mini_game_screen.dart';
+import 'presentation/periodic_table/screens/periodic_table_screen.dart';
+import 'presentation/review/screens/flashcard_review_screen.dart';
 import 'core/storage/experiment_progress_storage.dart';
 import 'presentation/reaction_experiment/providers/reaction_experiment_session_provider.dart';
 import 'presentation/reaction_experiment/screens/grade_selection_screen.dart';
@@ -166,7 +170,7 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
             supportedLocales: AppLocalizations.supportedLocales,
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             theme: themeProvider.buildThemeData(),
-            navigatorObservers: [appRouteObserver],
+            navigatorObservers: [appRouteObserver, currentRouteObserver],
             initialRoute: AppRoutes.onboarding,
             routes: _buildRoutes(),
             onGenerateRoute: _onGenerateRoute,
@@ -175,8 +179,13 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
                 fit: StackFit.expand,
                 children: [
                   ARUnityHost(
+                    // Bong bóng AI bọc NGOÀI thanh nav để nó nổi được lên trên
+                    // thanh nav; thanh nav bọc trong nên chiếm chỗ thật ở đáy
+                    // của mọi trang thuộc cổng người dùng.
                     child: UserPortalAiOverlay(
-                      child: child ?? const SizedBox.shrink(),
+                      child: UserPortalBottomNavShell(
+                        child: child ?? const SizedBox.shrink(),
+                      ),
                     ),
                   ),
 
@@ -223,6 +232,8 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
           const ReactionExperimentHubScreen(),
       AppRoutes.reactionExperimentHistory: (_) =>
           const ReactionExperimentHistoryScreen(),
+      AppRoutes.periodicTable: (_) => const PeriodicTableScreen(),
+      AppRoutes.flashcardReview: (_) => const FlashcardReviewScreen(),
     };
   }
 

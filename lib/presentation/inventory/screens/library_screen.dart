@@ -187,16 +187,62 @@ class _LibraryScreenState extends State<LibraryScreen>
                       ),
                     ),
                     const SizedBox(width: 14),
-                    Text(
-                      l10n.myLibrary,
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary,
-                        fontFamily: 'Inter',
+                    // Expanded + ellipsis: tiêu đề co lại khi header chật,
+                    // Text cứng + Spacer từng làm Row tràn 7px khi thêm nút Ôn thẻ.
+                    Expanded(
+                      child: Text(
+                        l10n.myLibrary,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textPrimary,
+                          fontFamily: 'Inter',
+                        ),
                       ),
                     ),
-                    const Spacer(),
+                    const SizedBox(width: 8),
+                    // Lối vào chế độ Ôn thẻ (flashcard, offline được).
+                    Semantics(
+                      button: true,
+                      label: l10n.reviewTitle,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(16),
+                        onTap: () => Navigator.pushNamed(
+                          context,
+                          AppRoutes.flashcardReview,
+                        ),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            gradient: AppColors.cyanEmeraldGradient,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.style_outlined,
+                                  size: 14, color: Colors.white),
+                              const SizedBox(width: 5),
+                              Text(
+                                l10n.reviewTitle,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700,
+                                  fontFamily: 'Inter',
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 12,
@@ -204,7 +250,7 @@ class _LibraryScreenState extends State<LibraryScreen>
                       ),
                       decoration: BoxDecoration(
                         color: AppColors.primary.withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(16),
                         border: Border.all(
                           color: AppColors.primary.withOpacity(0.3),
                         ),
@@ -237,7 +283,7 @@ class _LibraryScreenState extends State<LibraryScreen>
                   controller: _tabCtrl,
                   indicator: BoxDecoration(
                     gradient: AppColors.cyanEmeraldGradient,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   dividerColor: Colors.transparent,
                   labelStyle: const TextStyle(
@@ -452,7 +498,7 @@ class _LibraryCardTile extends StatelessWidget {
           padding: const EdgeInsets.all(11),
           decoration: BoxDecoration(
             color: AppColors.cardSurface,
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: unlocked
                   ? AppColors.substanceStateBorder(card.state)
@@ -502,7 +548,7 @@ class _LibraryCardTile extends StatelessWidget {
                       color: unlocked
                           ? stateColor.withOpacity(0.14)
                           : AppColors.textSecondary.withOpacity(0.10),
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(16),
                       border: Border.all(
                         color: unlocked
                             ? stateColor.withOpacity(0.35)

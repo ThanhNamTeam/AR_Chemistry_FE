@@ -17,7 +17,16 @@ class ChatProvider extends ChangeNotifier {
   bool _loadingConversations = false;
   String? _error;
 
+  /// Tin nhắn gửi thất bại gần nhất — để nút "Thử lại" gửi lại được mà người
+  /// dùng không phải gõ lại.
+  String? _lastFailedMessage;
+
   List<ChatMessage> get messages => List.unmodifiable(_messages);
+
+  /// CHỈ dùng trong test: truy cập trực tiếp danh sách message để dựng
+  /// trạng thái mà không phải giả lập cả luồng sendMessage.
+  @visibleForTesting
+  List<ChatMessage> get messagesForTest => _messages;
   List<ConversationSummary> get conversations => List.unmodifiable(_conversations);
   String? get conversationId => _conversationId;
   bool get sending => _sending;
@@ -25,6 +34,7 @@ class ChatProvider extends ChangeNotifier {
   bool get loadingConversations => _loadingConversations;
   String? get error => _error;
   bool get hasMessages => _messages.isNotEmpty;
+  bool get canRetry => _lastFailedMessage != null;
 
   static const suggestedPrompts = [
     'Giải thích cấu trúc phân tử nước H₂O',
@@ -60,7 +70,17 @@ class ChatProvider extends ChangeNotifier {
     _messages.clear();
     notifyListeners();
     try {
-      _messages.addAll(await _api.getConversationMessages(id));
+      final history = await _api.getConversationMessages(id);
+      // Sắp xếp phòng thủ theo thời gian tăng dần: backend cũ (chưa có
+      // @OrderBy trên Conversation.messages) trả tin nhắn theo thứ tự tuỳ ý
+      // của DB, làm câu hỏi hiển thị nằm DƯỚI câu trả lời.
+      history.sort((a, b) {
+        final ta = a.createdAt;
+        final tb = b.createdAt;
+        if (ta == null || tb == null) return 0;
+        return ta.compareTo(tb);
+      });
+      _messages.addAll(history);
       _error = null;
     } on AiApiException catch (e) {
       _error = e.message;
@@ -103,6 +123,7 @@ class ChatProvider extends ChangeNotifier {
       _messages.add(
         ChatMessage(
           id: 'local-ai-${DateTime.now().millisecondsSinceEpoch}',
+          serverId: result.messageId,
           role: ChatMessageRole.assistant,
           content: result.answer,
           createdAt: result.timestamp ?? DateTime.now(),
@@ -111,14 +132,60 @@ class ChatProvider extends ChangeNotifier {
           similarityScore: result.similarityScore,
         ),
       );
+      _lastFailedMessage = null;
       await loadConversations();
     } on AiApiException catch (e) {
       _error = e.message;
+      _lastFailedMessage = trimmed;
     } catch (_) {
       _error = 'Không gửi được tin nhắn. Kiểm tra mạng hoặc backend.';
+      _lastFailedMessage = trimmed;
     } finally {
       _sending = false;
       notifyListeners();
+    }
+  }
+
+  /// Gửi lại tin nhắn thất bại gần nhất. Gỡ bubble user của lần gửi hỏng
+  /// trước đó để không hiển thị trùng câu hỏi hai lần.
+  Future<void> retryLastMessage() async {
+    final text = _lastFailedMessage;
+    if (text == null || _sending) return;
+    if (_messages.isNotEmpty &&
+        _messages.last.isUser &&
+        _messages.last.content == text) {
+      _messages.removeLast();
+    }
+    _lastFailedMessage = null;
+    _error = null;
+    await sendMessage(text);
+  }
+
+  /// Chấm câu trả lời AI. Bấm lại cùng nút = bỏ chấm.
+  /// Cập nhật optimistic — lỗi mạng thì hoàn tác về trạng thái cũ.
+  Future<void> rateMessage(ChatMessage message, int rating) async {
+    final serverId = message.serverId;
+    if (serverId == null || serverId.isEmpty) return;
+
+    final index = _messages.indexWhere((m) => m.id == message.id);
+    if (index < 0) return;
+
+    final previousRating = _messages[index].rating;
+    final newRating = previousRating == rating ? 0 : rating;
+
+    _messages[index] = _messages[index].copyWith(rating: newRating);
+    notifyListeners();
+
+    try {
+      await _api.rateMessage(serverId, newRating);
+    } catch (_) {
+      // Hoàn tác khi gửi thất bại — không hiện banner lỗi cho hành động phụ.
+      final revertIndex = _messages.indexWhere((m) => m.id == message.id);
+      if (revertIndex >= 0) {
+        _messages[revertIndex] =
+            _messages[revertIndex].copyWith(rating: previousRating);
+        notifyListeners();
+      }
     }
   }
 

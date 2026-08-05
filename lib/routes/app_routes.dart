@@ -41,4 +41,6 @@ class AppRoutes {
   static const String reactionExperimentHistory = '/reaction-experiment-history';
   static const String reactionDetail =
       '/student/reaction-detail';
+  static const String periodicTable = '/periodic-table';
+  static const String flashcardReview = '/flashcard-review';
 }

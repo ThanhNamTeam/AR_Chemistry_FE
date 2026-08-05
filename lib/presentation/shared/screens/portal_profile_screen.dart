@@ -148,7 +148,7 @@ class _PortalProfileScreenState extends State<PortalProfileScreen> {
                       AppColors.primary.withOpacity(0.15),
                       AppColors.secondary.withOpacity(0.15),
                     ]),
-                    borderRadius: BorderRadius.circular(24),
+                    borderRadius: BorderRadius.circular(16),
                     border: Border.all(
                       color: AppColors.primary.withOpacity(0.3),
                       width: 1.5,
@@ -232,7 +232,7 @@ class _PortalProfileScreenState extends State<PortalProfileScreen> {
                         ),
                         decoration: BoxDecoration(
                           color: AppColors.primary.withOpacity(0.15),
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(16),
                           border: Border.all(
                             color: AppColors.primary.withOpacity(0.4),
                           ),
@@ -288,7 +288,7 @@ class _PortalProfileScreenState extends State<PortalProfileScreen> {
                           ),
                           decoration: BoxDecoration(
                             color: AppColors.primary.withOpacity(0.12),
-                            borderRadius: BorderRadius.circular(24),
+                            borderRadius: BorderRadius.circular(16),
                             border: Border.all(
                               color: AppColors.primary.withOpacity(0.45),
                             ),
@@ -456,7 +456,7 @@ class _PortalProfileScreenState extends State<PortalProfileScreen> {
         padding: const EdgeInsets.symmetric(vertical: 14),
         decoration: BoxDecoration(
           color: color.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(16),
           border: Border.all(color: color.withOpacity(0.35)),
         ),
         child: Column(

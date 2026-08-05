@@ -26,6 +26,7 @@ import '../widgets/auth_app_logo_badge.dart';
 import '../widgets/cyber_beam_border.dart';
 import '../widgets/cyber_login_frame.dart';
 import '../../../core/l10n/app_localizations.dart';
+import '../../../core/utils/friendly_error.dart';
 import '../../../core/api/notification_token_api.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -391,7 +392,9 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(e.toString()),
+          content: Text(
+            friendlyError(AppLocalizations.of(context), e, context: 'login'),
+          ),
           backgroundColor: AppColors.error,
         ),
       );
@@ -597,6 +600,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                     prefixIcon: Icons.mail_outline,
                     keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.next,
+                    autofillHints: const [AutofillHints.username, AutofillHints.email],
                     validator: (v) => v == null || v.isEmpty
                         ? l10n.emailRequired
                         : null,
@@ -609,6 +613,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                     prefixIcon: Icons.lock_outline,
                     isPassword: true,
                     textInputAction: TextInputAction.done,
+                    autofillHints: const [AutofillHints.password],
                     onFieldSubmitted: (_) {
                       if (!_loggingIn) _login();
                     },

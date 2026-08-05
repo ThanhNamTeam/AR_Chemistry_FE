@@ -181,11 +181,12 @@ class _AiChatPanelState extends State<AiChatPanel> {
   }
 
   Widget _buildErrorBanner(ChatProvider chat) {
+    final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: Material(
         color: AppColors.error.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           child: Row(
@@ -202,9 +203,25 @@ class _AiChatPanelState extends State<AiChatPanel> {
                   ),
                 ),
               ),
-              GestureDetector(
-                onTap: chat.clearError,
-                child: Icon(Icons.close, size: 16, color: AppColors.error),
+              if (chat.canRetry)
+                TextButton(
+                  style: TextButton.styleFrom(
+                    visualDensity: VisualDensity.compact,
+                  ),
+                  onPressed: chat.retryLastMessage,
+                  child: Text(
+                    l10n.aiRetry,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.error,
+                    ),
+                  ),
+                ),
+              IconButton(
+                visualDensity: VisualDensity.compact,
+                onPressed: chat.clearError,
+                icon: Icon(Icons.close, size: 16, color: AppColors.error),
               ),
             ],
           ),
@@ -309,7 +326,6 @@ class _AiChatPanelState extends State<AiChatPanel> {
 
   Widget _buildInputBar(ChatProvider chat) {
     final l10n = AppLocalizations.of(context);
-    final canSend = !chat.sending && _inputCtrl.text.trim().isNotEmpty;
     final bottom = MediaQuery.paddingOf(context).bottom;
 
     return Container(
@@ -320,7 +336,10 @@ class _AiChatPanelState extends State<AiChatPanel> {
           top: BorderSide(color: AppColors.primary.withValues(alpha: 0.2)),
         ),
       ),
-      child: Row(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+        Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Expanded(
@@ -346,53 +365,81 @@ class _AiChatPanelState extends State<AiChatPanel> {
                   vertical: 12,
                 ),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(16),
                   borderSide: BorderSide(color: AppColors.cardBorder),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(16),
                   borderSide: BorderSide(
                     color: AppColors.cardBorder.withValues(alpha: 0.6),
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(16),
                   borderSide: BorderSide(color: AppColors.primary, width: 1.5),
                 ),
               ),
-              onChanged: (_) => setState(() {}),
               onSubmitted: chat.sending ? null : (_) => _send(chat),
             ),
           ),
           const SizedBox(width: 10),
-          GestureDetector(
-            onTap: canSend ? () => _send(chat) : null,
-            child: Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                gradient: canSend ? AppColors.cyanEmeraldGradient : null,
-                color: canSend ? null : AppColors.cardBg,
-                shape: BoxShape.circle,
-                border: canSend
-                    ? null
-                    : Border.all(color: AppColors.cardBorder),
-              ),
-              child: chat.sending
-                  ? Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: AppColors.primary,
-                      ),
-                    )
-                  : Icon(
-                      Icons.send_rounded,
-                      color: canSend ? Colors.white : AppColors.textSecondary,
-                      size: 22,
+          // ValueListenableBuilder thay vì setState trên onChanged: gõ phím
+          // chỉ rebuild mỗi nút gửi, không rebuild cả panel + ListView markdown.
+          ValueListenableBuilder<TextEditingValue>(
+            valueListenable: _inputCtrl,
+            builder: (context, value, _) {
+              final enabled = !chat.sending && value.text.trim().isNotEmpty;
+              return Semantics(
+                button: true,
+                enabled: enabled,
+                label: l10n.aiChatInputHint,
+                child: GestureDetector(
+                  onTap: enabled ? () => _send(chat) : null,
+                  child: Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      gradient:
+                          enabled ? AppColors.cyanEmeraldGradient : null,
+                      color: enabled ? null : AppColors.cardBg,
+                      shape: BoxShape.circle,
+                      border: enabled
+                          ? null
+                          : Border.all(color: AppColors.cardBorder),
                     ),
-            ),
+                    child: chat.sending
+                        ? Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: AppColors.primary,
+                            ),
+                          )
+                        : Icon(
+                            Icons.send_rounded,
+                            color: enabled
+                                ? Colors.white
+                                : AppColors.textSecondary,
+                            size: 22,
+                          ),
+                  ),
+                ),
+              );
+            },
           ),
+        ],
+        ),
+        const SizedBox(height: 6),
+        // Cảnh báo AI có thể sai — bắt buộc với gia sư cho học sinh ôn thi.
+        Text(
+          l10n.aiDisclaimer,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 10.5,
+            color: AppColors.textSecondary.withValues(alpha: 0.8),
+            fontFamily: 'Inter',
+          ),
+        ),
         ],
       ),
     );
@@ -411,12 +458,12 @@ class _SuggestionChip extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(16),
         child: Ink(
           width: double.infinity,
           decoration: BoxDecoration(
             color: AppColors.cardBg,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: AppColors.cardBorder.withValues(alpha: 0.5),
             ),

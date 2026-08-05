@@ -9,7 +9,9 @@ import 'package:flutter_unity_widget_2/flutter_unity_widget_2.dart';
 import 'package:dio/dio.dart';
 
 import '../../../core/api/reaction_check_api.dart';
+import '../../../core/api/student_reaction_quiz_api.dart';
 import '../../../core/models/response/reaction_check_response.dart';
+import '../../../core/services/active_quiz_attempt.dart';
 import '../../../core/utils/app_snackbar.dart';
 import '../../../routes/app_routes.dart';
 import '../../../shared/styles/app_colors.dart';
@@ -627,6 +629,13 @@ class ARUnitySession extends ChangeNotifier {
 
             await onReactionMatched?.call(result);
           }
+          debugPrint('[AR_KP] matched=true, reward=${result.arScanReward}');
+          await onReactionMatched?.call(result);
+          // Luồng quiz mới: nếu người dùng vào đây từ màn "chờ AR" của một
+          // attempt (holder đã arm), báo backend AR xong để mở khoá câu hỏi.
+          // Fire-and-guard: lỗi ở đây tuyệt đối không được phá luồng AR —
+          // màn quiz vẫn còn nút "Kiểm tra lại" + poll 5s làm đường lui.
+          unawaited(_completeQuizArIfArmed(qrPayloads));
         }
 
         await _sendReactionCheckResult(<String, Object?>{
@@ -653,6 +662,25 @@ class ARUnitySession extends ChangeNotifier {
     } catch (error, stackTrace) {
       _log('reactionCheckBridgeError $error');
       _log('reactionCheckBridgeStack $stackTrace');
+    }
+  }
+
+  /// Gọi complete-ar cho attempt quiz đang chờ (nếu có). Thành công thì gỡ
+  /// holder để không bắn trùng cho lần quét sau.
+  Future<void> _completeQuizArIfArmed(List<String> scannedCardCodes) async {
+    final attemptCode = ActiveQuizAttempt.attemptCode;
+    if (attemptCode == null) return;
+    try {
+      await StudentReactionQuizApi().completeAr(
+        attemptCode,
+        scannedCardCodes: scannedCardCodes,
+      );
+      ActiveQuizAttempt.disarm(attemptCode);
+      _log('quizCompleteAr ok attempt=$attemptCode');
+    } catch (e) {
+      // Ví dụ: quét phản ứng KHÁC với phản ứng của attempt -> BE từ chối.
+      // Giữ holder để lần quét đúng tiếp theo thử lại.
+      _log('quizCompleteAr failed: $e');
     }
   }
 

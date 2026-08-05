@@ -204,7 +204,7 @@ class _AdminChemicalsTabState extends State<AdminChemicalsTab> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.cardBg,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Text(
           l10n.addChemical,
           style: TextStyle(
@@ -243,7 +243,7 @@ class _AdminChemicalsTabState extends State<AdminChemicalsTab> {
       context: context,
       backgroundColor: AppColors.cardBg,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (ctx) {
         return Padding(
@@ -666,7 +666,7 @@ class _ActionRow extends StatelessWidget {
     return PortalGlassCard(
       padding: const EdgeInsets.all(14),
       child: InkWell(
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(16),
         onTap: onTap,
         child: Row(
           children: [

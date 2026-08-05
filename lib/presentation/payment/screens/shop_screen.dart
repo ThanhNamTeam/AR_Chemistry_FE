@@ -87,11 +87,12 @@ class _ShopScreenState extends State<ShopScreen> {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        backgroundColor: AppColors.backgroundDark,
+        // cardBg + textPrimary theo theme — Colors.white tàng hình trên Light.
+        backgroundColor: AppColors.cardBg,
         title: Text(
           purchase.singleCardName,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: AppColors.textPrimary,
             fontFamily: 'Inter',
             fontWeight: FontWeight.w700,
           ),
@@ -163,7 +164,47 @@ class _ShopScreenState extends State<ShopScreen> {
     );
   }
 
-  Future<void> _fakeBuySingleCard(AppState state, String singleCardId) async {
+  Future<void> _fakeBuySingleCard(
+    AppState state,
+    String singleCardId, {
+    required String cardName,
+    required int kpPrice,
+  }) async {
+    final l10nConfirm = AppLocalizations.of(context);
+    // Trừ KP là không hoàn tác được — xác nhận trước, nêu rõ giá.
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.cardBg,
+        title: Text(
+          cardName,
+          style: TextStyle(
+            color: AppColors.textPrimary,
+            fontFamily: 'Inter',
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        content: Text(
+          l10nConfirm.buyConfirmMessage(kpPrice),
+          style: TextStyle(
+            color: AppColors.textSecondary,
+            fontFamily: 'Inter',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10nConfirm.cancel),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l10nConfirm.buyConfirmAction),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+
     final purchase = await state.fakeBuySingleCard(singleCardId);
 
     if (!mounted) return;
@@ -311,29 +352,53 @@ class _ShopScreenState extends State<ShopScreen> {
                     padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
                     child: Row(
                       children: [
-                        GestureDetector(
-                          onTap: () => Navigator.pop(context),
-                          child: Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: AppColors.primary.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                  color: AppColors.primary.withOpacity(0.3)),
+                        // Không có nút quay lại: Cửa hàng là một đích của thanh
+                        // nav dưới, người dùng chuyển trang bằng thanh đó.
+                        // Back cứng của Android / vuốt mép trên iOS vẫn hoạt
+                        // động bình thường vì route này vẫn được push.
+                        Expanded(
+                          child: Text(
+                            l10n.shop,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.textPrimary,
+                              fontFamily: 'Inter',
                             ),
-                            child: Icon(Icons.arrow_back,
-                                color: AppColors.primary, size: 20),
                           ),
                         ),
-                        const SizedBox(width: 14),
-                        Expanded(
-                          child: Text(l10n.shop,
-                              style: TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.w700,
-                                  color: AppColors.textPrimary,
-                                  fontFamily: 'Inter')),
+                        const SizedBox(width: 10),
+                        // Thư viện đã được gộp vào Cửa hàng: bỏ khỏi thanh nav
+                        // dưới (nhường chỗ cho Trang chủ) nên phải có lối vào
+                        // rõ ràng ngay tại đây.
+                        Semantics(
+                          button: true,
+                          label: l10n.myLibrary,
+                          child: GestureDetector(
+                            onTap: () =>
+                                Navigator.pushNamed(context, AppRoutes.library),
+                            child: Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: AppColors.primary.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: AppColors.primary.withValues(
+                                    alpha: 0.3,
+                                  ),
+                                ),
+                              ),
+                              child: Icon(
+                                Icons.menu_book_outlined,
+                                color: AppColors.primary,
+                                size: 20,
+                              ),
+                            ),
+                          ),
                         ),
+                        const SizedBox(width: 10),
                         GestureDetector(
                           onTap: () => Navigator.pushNamed(context, AppRoutes.cart),
                           child: Stack(
@@ -399,7 +464,7 @@ class _ShopScreenState extends State<ShopScreen> {
                                     horizontal: 8, vertical: 3),
                                 decoration: BoxDecoration(
                                   color: AppColors.secondary.withOpacity(0.15),
-                                  borderRadius: BorderRadius.circular(20),
+                                  borderRadius: BorderRadius.circular(16),
                                   border: Border.all(
                                       color: AppColors.secondary.withOpacity(0.4)),
                                 ),
@@ -495,7 +560,14 @@ class _ShopScreenState extends State<ShopScreen> {
                                 return _SingleCardShopTile(
                                   card: card,
                                   owned: owned,
-                                  onBuy: owned ? null : () => _fakeBuySingleCard(state, card.id),
+                                  onBuy: owned
+                                      ? null
+                                      : () => _fakeBuySingleCard(
+                                            state,
+                                            card.id,
+                                            cardName: card.name,
+                                            kpPrice: card.kpPrice,
+                                          ),
                                 );
                               },
                             ),
@@ -554,7 +626,7 @@ class _BundleCard extends StatelessWidget {
           AppColors.cardBg,
           AppColors.cardSurface,
         ]),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.cardBorder.withOpacity(0.5), width: 1.5),
         boxShadow: [
           BoxShadow(
@@ -595,7 +667,7 @@ class _BundleCard extends StatelessWidget {
                           horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
                         gradient: AppColors.amberGradient,
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
                         '-${bundle.salePercent}%',
@@ -649,7 +721,7 @@ class _BundleCard extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       color: cardColor.withOpacity(owned ? 0.05 : 0.1),
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(12),
                       border: Border.all(
                         color: cardColor.withOpacity(owned ? 0.2 : 0.4),
                       ),
@@ -807,7 +879,7 @@ class _QRModal extends StatelessWidget {
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(16),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -997,7 +1069,7 @@ class _SingleCardShopTile extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.cardSurface,
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: borderColor, width: 1.4),
       ),
       child: Column(
@@ -1063,7 +1135,7 @@ class _SingleCardShopTile extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 11),
               decoration: BoxDecoration(
                 color: AppColors.secondary.withOpacity(0.14),
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: AppColors.secondary.withOpacity(0.35),
                 ),
@@ -1109,7 +1181,7 @@ class _SingleCardShopTile extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     decoration: BoxDecoration(
                       gradient: AppColors.primaryGradient,
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(16),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,

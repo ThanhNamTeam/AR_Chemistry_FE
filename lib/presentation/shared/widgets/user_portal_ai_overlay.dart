@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../domain/models/app_portal.dart';
 import '../../ai_chat/providers/ai_fab_visibility.dart';
-import '../../ai_chat/widgets/ai_floating_assistant.dart';
+import '../../ai_chat/widgets/floating_ai_bubble.dart';
 import '../../home/providers/app_state.dart';
 import '../../home/providers/theme_provider.dart';
 
@@ -30,7 +30,7 @@ class UserPortalAiOverlay extends StatelessWidget {
         clipBehavior: Clip.none,
         children: [
           child,
-          if (showFab) const AiFloatingAssistant(),
+          if (showFab) const FloatingAiBubble(),
         ],
       ),
     );

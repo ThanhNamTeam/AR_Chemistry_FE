@@ -31,7 +31,7 @@ class InventoryItemTile extends StatelessWidget {
             alignment: Alignment.center,
             decoration: BoxDecoration(
               gradient: AppColors.cyanEmeraldGradient,
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
                   color: AppColors.primary.withOpacity(0.2),
@@ -91,7 +91,7 @@ class InventoryItemTile extends StatelessWidget {
             ),
             decoration: BoxDecoration(
               color: AppColors.primary.withOpacity(0.15),
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(16),
               border: Border.all(
                 color: AppColors.primary.withOpacity(0.3),
               ),

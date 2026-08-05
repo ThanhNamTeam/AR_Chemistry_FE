@@ -13,7 +13,7 @@ import '../../../routes/app_routes.dart';
 import '../../home/providers/app_state.dart';
 import '../../../core/portal/portal_scope.dart';
 import '../../home/providers/theme_provider.dart';
-import '../widgets/themed_home_background.dart';
+import '../widgets/home_dashboard.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -64,11 +64,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        backgroundColor: AppColors.backgroundDark,
+        // cardBg + textPrimary theo theme — hard-code Colors.white sẽ tàng
+        // hình trên nền trắng khi người dùng chọn theme Light.
+        backgroundColor: AppColors.cardBg,
         title: Text(
           l10n.cannotScanAr,
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: AppColors.textPrimary,
             fontFamily: 'Inter',
             fontWeight: FontWeight.w700,
           ),
@@ -147,13 +149,19 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          const ThemedHomeBackground(),
+          // Gradient phẳng thay cho ảnh nền: ảnh quá rối làm chữ và các thẻ
+          // dashboard phía trên không đọc nổi (nhất là theme Sáng).
+          DecoratedBox(
+            decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
+          ),
           SafeArea(
             child: Column(
               children: [
                 _buildHeader(state),
                 Expanded(child: _buildBody()),
-                _buildBottomNav(),
+                // Thanh điều hướng dưới giờ do UserPortalBottomNavShell
+                // (trong MaterialApp.builder) dựng cho MỌI trang, nên Home
+                // không tự vẽ nữa để khỏi bị trùng hai thanh.
               ],
             ),
           ),
@@ -226,36 +234,51 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, AppRoutes.packages),
       child: Container(
-        height: 34,
+        // 40 + hit slop của GestureDetector — pill 34px cũ dưới chuẩn 48dp,
+        // đây lại là nút vào luồng mua gói.
+        height: 40,
         padding: const EdgeInsets.symmetric(horizontal: 14),
+        // P2-5 audit UX: ở theme TỐI, "Nâng cấp" hạ xuống dạng outline nhẹ
+        // (nền 12%, viền + chữ giữ màu nhấn) để không tranh sân khấu với CTA
+        // chính "Bắt đầu thí nghiệm AR". Theme sáng giữ gradient (đã cùng
+        // dải xanh nên không còn cạnh tranh).
         decoration: BoxDecoration(
-          gradient: AppColors.amberGradient,
-          borderRadius: BorderRadius.circular(999),
+          gradient: AppColors.isLight ? AppColors.amberGradient : null,
+          color: AppColors.isLight
+              ? null
+              : AppColors.amber.withOpacity(0.12),
+          borderRadius: BorderRadius.circular(AppColors.radiusPill),
           border: Border.all(
             color: AppColors.amberLight.withOpacity(0.7),
             width: 1.2,
           ),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.amberLight.withOpacity(0.3),
-              blurRadius: 12,
-              offset: const Offset(0, 3),
-            ),
-          ],
+          boxShadow: AppColors.isLight
+              ? [
+                  BoxShadow(
+                    color: AppColors.amberLight.withOpacity(0.3),
+                    blurRadius: 12,
+                    offset: const Offset(0, 3),
+                  ),
+                ]
+              : null,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
+            Icon(
               Icons.workspace_premium,
-              color: Colors.white,
+              color: AppColors.isLight
+                  ? AppColors.onGradient
+                  : AppColors.amberLight,
               size: 16,
             ),
             const SizedBox(width: 5),
             Text(
               l10n.upgrade,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: AppColors.isLight
+                    ? AppColors.onGradient
+                    : AppColors.amberLight,
                 fontSize: 12,
                 fontWeight: FontWeight.w800,
                 fontFamily: 'Inter',
@@ -279,37 +302,44 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
     final hasAvatar = isNetworkAvatar || hasLocalAvatar;
 
-    return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, AppRoutes.profile),
-      child: Container(
-        width: 44,
-        height: 44,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: hasAvatar ? null : AppColors.cyanEmeraldGradient,
-          image: hasAvatar
-              ? DecorationImage(
-            image: isNetworkAvatar
-                ? NetworkImage(avatar)
-                : FileImage(File(avatar!)) as ImageProvider,
-            fit: BoxFit.cover,
-          )
-              : null,
-          border: Border.all(
-            color: AppColors.primary.withOpacity(0.4),
-            width: 1.5,
+    final l10n = AppLocalizations.of(context);
+    // Semantics + 48dp: avatar là lối vào Hồ sơ nhưng trước đây screen reader
+    // không đọc được gì và vùng chạm 44px dưới chuẩn tối thiểu.
+    return Semantics(
+      button: true,
+      label: l10n.profile,
+      child: GestureDetector(
+        onTap: () => Navigator.pushNamed(context, AppRoutes.profile),
+        child: Container(
+          width: 48,
+          height: 48,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: hasAvatar ? null : AppColors.cyanEmeraldGradient,
+            image: hasAvatar
+                ? DecorationImage(
+              image: isNetworkAvatar
+                  ? NetworkImage(avatar)
+                  : FileImage(File(avatar!)) as ImageProvider,
+              fit: BoxFit.cover,
+            )
+                : null,
+            border: Border.all(
+              color: AppColors.primary.withOpacity(0.4),
+              width: 1.5,
+            ),
           ),
-        ),
-        child: hasAvatar
-            ? null
-            : Center(
-          child: Text(
-            state.displayName.substring(0, 1).toUpperCase(),
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
-              fontFamily: 'Inter',
+          child: hasAvatar
+              ? null
+              : Center(
+            child: Text(
+              state.displayName.substring(0, 1).toUpperCase(),
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: AppColors.onGradient,
+                fontFamily: 'Inter',
+              ),
             ),
           ),
         ),
@@ -319,9 +349,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Widget _buildBody() {
     final l10n = AppLocalizations.of(context);
-    return Column(
+    // ListView thay cho Spacer-căn-giữa: Home giờ là dashboard có nội dung
+    // thật (streak, quiz, gợi ý ôn tập) nên cần cuộn được trên màn nhỏ.
+    return ListView(
+      padding: const EdgeInsets.only(top: 8, bottom: 16),
       children: [
-        const Spacer(flex: 4),
+        const HomeDashboard(),
+        const SizedBox(height: 4),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 56),
           child: GestureDetector(
@@ -363,16 +397,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         height: 20,
                         child: CircularProgressIndicator(
                           strokeWidth: 2.2,
-                          color: Colors.white,
+                          color: AppColors.onGradient,
                         ),
                       )
                     else
-                      const Icon(Icons.view_in_ar, color: Colors.white, size: 22),
+                      const Icon(Icons.view_in_ar,
+                          color: AppColors.onGradient, size: 22),
                     const SizedBox(width: 8),
                     Text(
                       _checkingArAccess ? l10n.checkingAccess : l10n.startArExperiment,
                       style: const TextStyle(
-                        color: Colors.white,
+                        color: AppColors.onGradient,
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
                         fontFamily: 'Inter',
@@ -430,15 +465,50 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 child: Column(
+        const SizedBox(height: 14),
+        // Lối vào bảng tuần hoàn — feature tĩnh, mở được cả khi chưa có gói AR.
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 56),
+          child: Semantics(
+            button: true,
+            label: l10n.periodicTableTitle,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(999),
+              onTap: () =>
+                  Navigator.pushNamed(context, AppRoutes.periodicTable),
+              child: Container(
+                width: double.infinity,
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                // Nền đặc để nút không chìm vào background.
+                decoration: BoxDecoration(
+                  color: AppColors.cardSurface,
+                  borderRadius: BorderRadius.circular(999),
+                  border: Border.all(
+                    color: AppColors.primary.withOpacity(0.5),
+                    width: 1.2,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.shadowSoft,
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(item.$1, color: AppColors.primary, size: 24),
-                    const SizedBox(height: 4),
+                    Icon(Icons.grid_on,
+                        color: AppColors.primary, size: 20),
+                    const SizedBox(width: 8),
                     Text(
-                      item.$2,
+                      l10n.periodicTableTitle,
                       style: TextStyle(
-                        fontSize: 10,
-                        color: AppColors.textSecondary,
+                        color: AppColors.accentText,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
                         fontFamily: 'Inter',
                       ),
                       maxLines: 1,
@@ -448,9 +518,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 ),
               ),
             ),
-          );
-        }).toList(),
-      ),
+          ),
+        ),
+        const SizedBox(height: 24),
+      ],
     );
   }
 

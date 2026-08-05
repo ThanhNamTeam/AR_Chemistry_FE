@@ -443,7 +443,7 @@ class _AdminCreateReactionPageState extends State<AdminCreateReactionPage> {
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 15),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18),
+                borderRadius: BorderRadius.circular(16),
               ),
             ),
           ),
@@ -587,7 +587,7 @@ class _AdminCreateReactionPageState extends State<AdminCreateReactionPage> {
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               decoration: BoxDecoration(
                 color: AppColors.cardBg.withOpacity(0.65),
-                borderRadius: BorderRadius.circular(18),
+                borderRadius: BorderRadius.circular(16),
                 border: Border.all(color: AppColors.accent.withOpacity(0.22)),
               ),
               child: Row(

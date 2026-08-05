@@ -194,15 +194,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
 
+                // Thẻ hồ sơ NGANG: avatar trái, thông tin phải — trước đây xếp
+                // dọc (avatar → tên → email → nút → KP) chiếm gần nửa màn hình.
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 20),
-                  padding: const EdgeInsets.all(24),
+                  padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(colors: [
                       AppColors.primary.withOpacity(0.15),
                       AppColors.secondary.withOpacity(0.15),
                     ]),
-                    borderRadius: BorderRadius.circular(24),
+                    borderRadius: BorderRadius.circular(16),
                     border: Border.all(
                         color: AppColors.primary.withOpacity(0.3), width: 1.5),
                     boxShadow: [
@@ -211,224 +213,271 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           blurRadius: 20),
                     ],
                   ),
-                  child: Column(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      GestureDetector(
-                        onTap: _pickingAvatar ? null : _pickAvatar,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Container(
-                              width: 80,
-                              height: 80,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                gradient: hasAvatar
+                      // Gợi ý "chạm để đổi avatar" chuyển vào Semantics — icon
+                      // máy ảnh đè góc đã tự nói lên điều đó, khỏi tốn 1 dòng chữ.
+                      Semantics(
+                        button: true,
+                        label: l10n.tapAvatarHint,
+                        child: GestureDetector(
+                          onTap: _pickingAvatar ? null : _pickAvatar,
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Container(
+                                width: 64,
+                                height: 64,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  gradient: hasAvatar
+                                      ? null
+                                      : AppColors.cyanEmeraldGradient,
+                                  image: hasAvatar
+                                      ? DecorationImage(
+                                          image: isNetworkAvatar
+                                              ? NetworkImage(avatar)
+                                              : FileImage(File(avatar))
+                                                  as ImageProvider,
+                                          fit: BoxFit.cover,
+                                        )
+                                      : null,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color:
+                                          AppColors.primary.withOpacity(0.4),
+                                      blurRadius: 16,
+                                    ),
+                                  ],
+                                ),
+                                child: hasAvatar
                                     ? null
-                                    : AppColors.cyanEmeraldGradient,
-                                image: hasAvatar
-                                    ? DecorationImage(
-                                  image: isNetworkAvatar
-                                      ? NetworkImage(avatar)
-                                      : FileImage(File(avatar!)) as ImageProvider,
-                                  fit: BoxFit.cover,
-                                )
-                                    : null,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: AppColors.primary.withOpacity(0.4),
-                                    blurRadius: 20,
-                                  ),
-                                ],
-                              ),
-                              child: hasAvatar
-                                  ? null
-                                  : Center(
-                                      child: Text(
-                                        state.displayName
-                                            .substring(0, 1)
-                                            .toUpperCase(),
-                                        style: const TextStyle(
-                                          fontSize: 32,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.white,
-                                          fontFamily: 'Inter',
+                                    : Center(
+                                        child: Text(
+                                          state.displayName
+                                              .substring(0, 1)
+                                              .toUpperCase(),
+                                          style: const TextStyle(
+                                            fontSize: 26,
+                                            fontWeight: FontWeight.w700,
+                                            color: AppColors.onGradient,
+                                            fontFamily: 'Inter',
+                                          ),
                                         ),
                                       ),
+                              ),
+                              if (_pickingAvatar)
+                                const SizedBox(
+                                  width: 64,
+                                  height: 64,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: AppColors.onGradient,
+                                  ),
+                                )
+                              else
+                                Positioned(
+                                  right: 0,
+                                  bottom: 0,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.primary,
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: AppColors.backgroundDark,
+                                        width: 2,
+                                      ),
                                     ),
-                            ),
-                            if (_pickingAvatar)
-                              const SizedBox(
-                                width: 80,
-                                height: 80,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: Colors.white,
-                                ),
-                              )
-                            else
-                              Positioned(
-                                right: 0,
-                                bottom: 0,
-                                child: Container(
-                                  padding: const EdgeInsets.all(6),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.primary,
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      color: AppColors.backgroundDark,
-                                      width: 2,
+                                    child: const Icon(
+                                      Icons.camera_alt,
+                                      size: 12,
+                                      color: AppColors.onGradient,
                                     ),
                                   ),
-                                  child: const Icon(
-                                    Icons.camera_alt,
-                                    size: 14,
-                                    color: Colors.white,
-                                  ),
                                 ),
-                              ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        l10n.tapAvatarHint,
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: AppColors.textSecondary.withOpacity(0.9),
-                          fontFamily: 'Inter',
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        state.displayName,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.textPrimary,
-                            fontFamily: 'Inter'),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(state.userEmail ?? '',
-                          style: TextStyle(
-                              fontSize: 13,
-                              color: AppColors.textSecondary,
-                              fontFamily: 'Inter')),
-                      if (state.userPhone != null &&
-                          state.userPhone!.isNotEmpty) ...[
-                        const SizedBox(height: 4),
-                        Text(state.userPhone!,
-                            style: TextStyle(
-                                fontSize: 12,
-                                color: AppColors.subtitleAccent,
-                                fontFamily: 'Inter')),
-                      ],
-                      const SizedBox(height: 14),
-                      GestureDetector(
-                        onTap: () => ProfileUpdateSheet.show(context),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 18, vertical: 10),
-                          decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.12),
-                            borderRadius: BorderRadius.circular(24),
-                            border: Border.all(
-                              color: AppColors.primary.withOpacity(0.45),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(Icons.edit_outlined,
-                                  size: 16, color: AppColors.accentText),
-                              const SizedBox(width: 8),
-                              Text(
-                                l10n.updateProfile,
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.accentText,
-                                  fontFamily: 'Inter',
-                                ),
-                              ),
                             ],
                           ),
                         ),
                       ),
-                      const SizedBox(height: 16),
-                      KnowledgePointsBadge(points: state.knowledgePoints),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 24),
-
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          _StatCard(
-                            icon: Icons.menu_book_outlined,
-                            label: l10n.cardsUnlocked,
-                            value: _isLoadingSummary ? '...' : '$_unlockedCards/$_totalCards',
-                            color: AppColors.primary,
-                          ),
-                          const SizedBox(width: 12),
-                          _StatCard(
-                            icon: Icons.science_outlined,
-                            label: l10n.experiments,
-                            value: _isLoadingSummary ? '...' : '$_totalReactions',
-                            color: AppColors.secondary,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 14),
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: AppColors.cardSurface,
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                              color: AppColors.primary.withOpacity(0.2)),
-                        ),
+                      const SizedBox(width: 14),
+                      Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(l10n.libraryProgress,
-                                    style: TextStyle(
-                                        color: AppColors.textSecondary,
-                                        fontSize: 12,
-                                        fontFamily: 'Inter')),
-                                Text(
-                                    '${(_libraryProgress * 100).round()}%',
-                                    style: TextStyle(
-                                        color: AppColors.accentText,
-                                        fontWeight: FontWeight.w700,
-                                        fontFamily: 'Inter')),
-                              ],
+                            Text(
+                              state.displayName,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.textPrimary,
+                                  fontFamily: 'Inter'),
                             ),
-                            const SizedBox(height: 8),
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: LinearProgressIndicator(
-                                value: _libraryProgress.clamp(0.0, 1.0),
-                                minHeight: 8,
-                                backgroundColor:
-                                    AppColors.primary.withOpacity(0.15),
-                                color: AppColors.primary,
+                            const SizedBox(height: 2),
+                            Text(
+                              state.userEmail ?? '',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  color: AppColors.textSecondary,
+                                  fontFamily: 'Inter'),
+                            ),
+                            if (state.userPhone != null &&
+                                state.userPhone!.isNotEmpty) ...[
+                              const SizedBox(height: 2),
+                              Text(
+                                state.userPhone!,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    fontSize: 11,
+                                    color: AppColors.subtitleAccent,
+                                    fontFamily: 'Inter'),
                               ),
+                            ],
+                            const SizedBox(height: 8),
+                            // KP + nút sửa nằm chung một hàng; Wrap để khỏi
+                            // tràn trên màn hẹp hoặc khi chữ tiếng Anh dài.
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 6,
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              children: [
+                                KnowledgePointsBadge(
+                                  points: state.knowledgePoints,
+                                  compact: true,
+                                ),
+                                Semantics(
+                                  button: true,
+                                  label: l10n.updateProfile,
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.circular(16),
+                                    onTap: () =>
+                                        ProfileUpdateSheet.show(context),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 12, vertical: 6),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.primary
+                                            .withOpacity(0.12),
+                                        borderRadius:
+                                            BorderRadius.circular(16),
+                                        border: Border.all(
+                                          color: AppColors.primary
+                                              .withOpacity(0.45),
+                                        ),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(Icons.edit_outlined,
+                                              size: 14,
+                                              color: AppColors.accentText),
+                                          const SizedBox(width: 6),
+                                          Text(
+                                            l10n.updateProfile,
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w600,
+                                              color: AppColors.accentText,
+                                              fontFamily: 'Inter',
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
                       ),
                     ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // Một card gọn thay cho 3 khối to: 2 chỉ số nằm ngang + thanh
+                // tiến độ ngay dưới — tiết kiệm ~60% chiều cao.
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+                    decoration: BoxDecoration(
+                      color: AppColors.cardSurface,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                          color: AppColors.cardBorder.withOpacity(0.5)),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _StatCard(
+                                icon: Icons.menu_book_outlined,
+                                label: l10n.cardsUnlocked,
+                                value: _isLoadingSummary
+                                    ? '...'
+                                    : '$_unlockedCards/$_totalCards',
+                                color: AppColors.primary,
+                              ),
+                            ),
+                            Container(
+                              width: 1,
+                              height: 28,
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 12),
+                              color: AppColors.cardBorder.withOpacity(0.4),
+                            ),
+                            Expanded(
+                              child: _StatCard(
+                                icon: Icons.science_outlined,
+                                label: l10n.experiments,
+                                value: _isLoadingSummary
+                                    ? '...'
+                                    : '$_totalReactions',
+                                color: AppColors.secondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(l10n.libraryProgress,
+                                style: TextStyle(
+                                    color: AppColors.textSecondary,
+                                    fontSize: 11,
+                                    fontFamily: 'Inter')),
+                            Text('${(_libraryProgress * 100).round()}%',
+                                style: TextStyle(
+                                    color: AppColors.accentText,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
+                                    fontFamily: 'Inter')),
+                          ],
+                        ),
+                        const SizedBox(height: 6),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: LinearProgressIndicator(
+                            value: _libraryProgress.clamp(0.0, 1.0),
+                            minHeight: 6,
+                            backgroundColor:
+                                AppColors.primary.withOpacity(0.15),
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -500,6 +549,44 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       const SizedBox(height: 24),
                       GestureDetector(
                         onTap: () async {
+                          // Đăng xuất nhầm rất tốn công khôi phục (email +
+                          // mật khẩu + có thể cả OTP) — luôn hỏi trước.
+                          final confirmed = await showDialog<bool>(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              backgroundColor: AppColors.cardBg,
+                              title: Text(
+                                l10n.logoutConfirmTitle,
+                                style: TextStyle(
+                                  color: AppColors.textPrimary,
+                                  fontFamily: 'Inter',
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              content: Text(
+                                l10n.logoutConfirmMessage,
+                                style: TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontFamily: 'Inter',
+                                ),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(ctx, false),
+                                  child: Text(l10n.cancel),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.pop(ctx, true),
+                                  child: Text(
+                                    l10n.logout,
+                                    style: TextStyle(color: AppColors.error),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                          if (confirmed != true || !context.mounted) return;
+
                           await state.logout();
                           await activatePortal(context, AppPortal.auth);
                           if (context.mounted) {
@@ -563,33 +650,44 @@ class _StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.withOpacity(0.3)),
+    // Bố cục ngang gọn (icon trái, số + nhãn phải) — bản cột đứng cũ chiếm
+    // quá nhiều chiều cao trên màn Hồ sơ.
+    return Row(
+      children: [
+        Container(
+          width: 34,
+          height: 34,
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.12),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(icon, color: color, size: 18),
         ),
-        child: Column(
-          children: [
-            Icon(icon, color: color, size: 24),
-            const SizedBox(height: 8),
-            Text(value,
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    color: color,
-                    fontFamily: 'Inter')),
-            const SizedBox(height: 4),
-            Text(label,
-                style: TextStyle(
-                    fontSize: 11,
-                    color: AppColors.textSecondary,
-                    fontFamily: 'Inter')),
-          ],
+        const SizedBox(width: 10),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(value,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w800,
+                      color: color,
+                      fontFamily: 'Inter')),
+              const SizedBox(height: 1),
+              Text(label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      fontSize: 10.5,
+                      color: AppColors.textSecondary,
+                      fontFamily: 'Inter')),
+            ],
+          ),
         ),
-      ),
+      ],
     );
   }
 }

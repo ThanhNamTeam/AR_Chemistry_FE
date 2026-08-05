@@ -110,7 +110,7 @@ class _MySingleCardsScreenState extends State<MySingleCardsScreen> {
       builder: (_) => AlertDialog(
         backgroundColor: AppColors.backgroundDark,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(16),
           side: BorderSide(
             color: AppColors.primary.withOpacity(0.35),
           ),
@@ -367,7 +367,7 @@ class _MySingleCardTile extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColors.cardSurface,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: active
               ? AppColors.primary.withOpacity(0.4)
@@ -504,7 +504,7 @@ class _MySingleCardTile extends StatelessWidget {
               padding: const EdgeInsets.all(11),
               decoration: BoxDecoration(
                 color: AppColors.primary.withOpacity(0.12),
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: AppColors.primary.withOpacity(0.35),
                 ),

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:provider/provider.dart';
 
+import '../../../core/l10n/app_localizations.dart';
 import '../../../domain/models/ai_chat_models.dart';
 import '../../../shared/styles/app_colors.dart';
+import '../providers/chat_provider.dart';
 
 class ChatMessageBubble extends StatelessWidget {
   const ChatMessageBubble({
@@ -39,8 +43,8 @@ class ChatMessageBubble extends StatelessWidget {
                     gradient: isUser ? AppColors.primaryGradient : null,
                     color: isUser ? null : AppColors.cardBg,
                     borderRadius: BorderRadius.only(
-                      topLeft: const Radius.circular(18),
-                      topRight: const Radius.circular(18),
+                      topLeft: const Radius.circular(16),
+                      topRight: const Radius.circular(16),
                       bottomLeft: Radius.circular(isUser ? 18 : 4),
                       bottomRight: Radius.circular(isUser ? 4 : 18),
                     ),
@@ -62,9 +66,39 @@ class ChatMessageBubble extends StatelessWidget {
                         )
                       : _AssistantMarkdown(content: message.content),
                 ),
-                if (!isUser && message.reusedMemory) ...[
-                  const SizedBox(height: 6),
-                  _memoryBadge(message.similarityScore),
+                if (!isUser) ...[
+                  const SizedBox(height: 4),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _CopyButton(content: message.content),
+                      if (message.canRate) ...[
+                        _RateButton(
+                          message: message,
+                          rating: 1,
+                          icon: Icons.thumb_up_outlined,
+                          activeIcon: Icons.thumb_up,
+                          activeColor: AppColors.success,
+                        ),
+                        _RateButton(
+                          message: message,
+                          rating: -1,
+                          icon: Icons.thumb_down_outlined,
+                          activeIcon: Icons.thumb_down,
+                          activeColor: AppColors.error,
+                        ),
+                      ],
+                      if (message.reusedMemory) ...[
+                        const SizedBox(width: 6),
+                        Flexible(
+                          child: _memoryBadge(
+                            context,
+                            message.similarityScore,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
                 ],
               ],
             ),
@@ -89,15 +123,18 @@ class ChatMessageBubble extends StatelessWidget {
     );
   }
 
-  Widget _memoryBadge(double? score) {
+  Widget _memoryBadge(BuildContext context, double? score) {
+    final l10n = AppLocalizations.of(context);
+    // Nhãn phải nói rõ đây là CACHE (câu hỏi tương tự từng gặp) chứ không phải
+    // độ tin cậy — "(100%)" trần trụi dễ bị hiểu nhầm là "chắc chắn đúng 100%".
     final label = score != null
-        ? 'Trả lời từ bộ nhớ (${(score * 100).toStringAsFixed(0)}%)'
-        : 'Trả lời từ bộ nhớ';
+        ? l10n.aiMemoryBadge((score * 100).toStringAsFixed(0))
+        : l10n.aiMemoryBadgeNoScore;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         color: AppColors.secondary.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.secondary.withValues(alpha: 0.3)),
       ),
       child: Row(
@@ -105,16 +142,83 @@ class ChatMessageBubble extends StatelessWidget {
         children: [
           Icon(Icons.bolt, size: 14, color: AppColors.secondary),
           const SizedBox(width: 4),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 11,
-              color: AppColors.secondaryLight,
-              fontFamily: 'Inter',
+          Flexible(
+            child: Text(
+              label,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 11,
+                color: AppColors.secondaryLight,
+                fontFamily: 'Inter',
+              ),
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Nút chấm 👍/👎 cho câu trả lời AI. Bấm lại cùng nút = bỏ chấm.
+/// Câu bị 👎 sẽ bị backend loại khỏi memory reuse.
+class _RateButton extends StatelessWidget {
+  const _RateButton({
+    required this.message,
+    required this.rating,
+    required this.icon,
+    required this.activeIcon,
+    required this.activeColor,
+  });
+
+  final ChatMessage message;
+  final int rating;
+  final IconData icon;
+  final IconData activeIcon;
+  final Color activeColor;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final active = message.rating == rating;
+
+    return IconButton(
+      visualDensity: VisualDensity.compact,
+      tooltip: rating > 0 ? l10n.aiRateHelpful : l10n.aiRateUnhelpful,
+      icon: Icon(
+        active ? activeIcon : icon,
+        size: 15,
+        color: active ? activeColor : AppColors.textSecondary,
+      ),
+      onPressed: () =>
+          context.read<ChatProvider>().rateMessage(message, rating),
+    );
+  }
+}
+
+/// Nút sao chép câu trả lời AI — chọn-kéo thủ công trên màn điện thoại với
+/// câu trả lời markdown dài rất khổ sở.
+class _CopyButton extends StatelessWidget {
+  const _CopyButton({required this.content});
+
+  final String content;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return IconButton(
+      visualDensity: VisualDensity.compact,
+      tooltip: l10n.aiCopyAnswer,
+      icon: Icon(Icons.copy, size: 15, color: AppColors.textSecondary),
+      onPressed: () {
+        Clipboard.setData(ClipboardData(text: content));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.copiedToClipboard),
+            duration: const Duration(seconds: 1),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      },
     );
   }
 }
@@ -193,7 +297,7 @@ class _AssistantMarkdown extends StatelessWidget {
         ),
         codeblockDecoration: BoxDecoration(
           color: codeBg,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(color: borderColor),
         ),
         codeblockPadding: const EdgeInsets.all(12),
@@ -273,7 +377,7 @@ class _ChatTypingIndicatorState extends State<ChatTypingIndicator>
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
               color: AppColors.cardBg,
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(16),
               border: Border.all(
                 color: AppColors.cardBorder.withValues(alpha: 0.5),
               ),

@@ -403,7 +403,7 @@ class _ScannerBackButton extends StatelessWidget {
           padding: const EdgeInsets.all(12),
           child: Material(
             color: Colors.black.withValues(alpha: 0.48),
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(16),
             clipBehavior: Clip.antiAlias,
             child: IconButton(
               tooltip: l10n.back,

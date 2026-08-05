@@ -1,4 +1,3 @@
-import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart' hide ApiConfig;
 import 'package:dio/dio.dart';
 
@@ -129,6 +128,28 @@ class AiApiService {
         options: await _authOptions(),
       );
       return _parseEnvelope(response, messagesFromConversationDetail);
+    } on DioException catch (e) {
+      throw _fromDio(e);
+    }
+  }
+
+  /// Chấm câu trả lời AI: 1 = 👍, -1 = 👎, 0 = bỏ chấm.
+  Future<void> rateMessage(String messageId, int rating) async {
+    try {
+      final response = await _dio.patch(
+        ApiConstants.aiMessageRatingUrl(messageId),
+        data: {'rating': rating},
+        options: await _authOptions(),
+      );
+      final body = response.data;
+      if (body is Map<String, dynamic>) {
+        final success = body['success'] as bool? ?? true;
+        if (!success) {
+          throw AiApiException(
+            body['message'] as String? ?? 'Gửi đánh giá thất bại.',
+          );
+        }
+      }
     } on DioException catch (e) {
       throw _fromDio(e);
     }

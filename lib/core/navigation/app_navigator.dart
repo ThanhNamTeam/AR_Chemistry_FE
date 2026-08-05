@@ -25,4 +25,16 @@ class AppNavigator {
       arguments: arguments,
     );
   }
+
+  /// Push qua navigator gốc, không cần BuildContext có Navigator tổ tiên.
+  ///
+  /// Cần cho các widget gắn trong `MaterialApp.builder` (thanh nav dưới, overlay
+  /// AI): chúng nằm TRÊN Navigator trong cây widget nên `Navigator.of(context)`
+  /// sẽ ném "context does not include a Navigator".
+  static Future<T?>? pushNamed<T extends Object?>(
+    String route, {
+    Object? arguments,
+  }) {
+    return state?.pushNamed<T>(route, arguments: arguments);
+  }
 }
