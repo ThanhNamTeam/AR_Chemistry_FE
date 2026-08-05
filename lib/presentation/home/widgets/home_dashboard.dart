@@ -139,6 +139,7 @@ class _HomeDashboardState extends State<HomeDashboard> {
           ? 1.0
           : attempt.correctCount / attempt.totalQuestions;
       if (ratio < 0.7) {
+        text = l10n.suggestReviewLesson(attempt.reactionName);
         text = l10n.suggestReviewLesson(
           attempt.reactionName,
         );

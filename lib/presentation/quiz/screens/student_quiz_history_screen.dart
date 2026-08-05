@@ -45,6 +45,7 @@ class _StudentQuizHistoryScreenState extends State<StudentQuizHistoryScreen> {
         return;
       }
 
+      if (reactionId == null || reactionId.isEmpty) return;
       context.read<StudentQuizProvider>().loadAttemptHistory(
         reactionId: reactionId,
       );
@@ -53,6 +54,7 @@ class _StudentQuizHistoryScreenState extends State<StudentQuizHistoryScreen> {
 
   Future<void> _refresh() async {
     final reactionId = _reactionId;
+    if (reactionId == null || reactionId.isEmpty) return;
 
     if (reactionId == null || reactionId.isEmpty) {
       return;

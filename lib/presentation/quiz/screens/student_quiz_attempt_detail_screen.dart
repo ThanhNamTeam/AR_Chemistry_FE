@@ -7,6 +7,7 @@ import '../../../domain/models/student_quiz_attempt_answer_detail_model.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../providers/student_quiz_provider.dart';
 import '../../../domain/models/student_quiz_attempt_detail_model.dart';
+import '../../../domain/models/student_quiz_attempt_answer_detail_model.dart';
 
 class StudentQuizAttemptDetailScreen extends StatefulWidget {
   const StudentQuizAttemptDetailScreen({super.key});
@@ -225,6 +226,7 @@ class _SummaryCard extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
+            detail.reactionName,
             detail.quizTitle,
             textAlign: TextAlign.center,
             style: TextStyle(

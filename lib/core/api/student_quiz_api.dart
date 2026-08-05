@@ -296,6 +296,46 @@ class StudentQuizApi {
   }
 
   /*
+   * GET /student/quiz-attempts?quizCode=&page=&size=
+   */
+  Future<PageResponse<
+      StudentQuizAttemptHistoryModel>>
+  getQuizAttemptHistory({
+    String? quizCode,
+    int page = 0,
+    int size = 10,
+  }) async {
+    final headers = await _authHeaders();
+
+    final response = await http
+        .get(
+      Uri.parse(
+        ApiConstants.studentQuizAttemptsUrl(
+          quizCode: quizCode,
+          page: page,
+          size: size,
+        ),
+      ),
+      headers: headers,
+    )
+        .timeout(ApiConstants.timeout);
+
+    final data = _decodeDataMap(
+      response,
+      errorMessage: 'Load quiz history failed',
+    );
+
+    return PageResponse<
+        StudentQuizAttemptHistoryModel>.fromJson(
+      data,
+          (item) =>
+          StudentQuizAttemptHistoryModel.fromJson(
+            item,
+          ),
+    );
+  }
+
+  /*
    * GET /student/reactions/{reactionId}/attempt-history
    */
   Future<PageResponse<
