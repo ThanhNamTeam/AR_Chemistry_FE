@@ -814,7 +814,7 @@ class _QuizSummaryCard extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              'Version ${quiz.version ?? 1} • ${quiz.generatedBy ?? 'unknown'}',
+              'Version ${quiz.version} • ${quiz.generatedBy}',
               style: TextStyle(
                 fontSize: 12,
                 color: AppColors.subtitleAccent,
