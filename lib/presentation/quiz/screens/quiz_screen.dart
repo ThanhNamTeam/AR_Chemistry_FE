@@ -19,8 +19,8 @@ class QuizScreen extends StatefulWidget {
 }
 
 class _QuizScreenState extends State<QuizScreen> {
-  String? _lessonCode;
-  String? _lessonTitle;
+  String? _reactionId;
+  String? _reactionName;
   bool _initialized = false;
 
   @override
@@ -33,16 +33,20 @@ class _QuizScreenState extends State<QuizScreen> {
     final args = ModalRoute.of(context)?.settings.arguments;
 
     if (args is Map) {
-      _lessonCode = args['lessonCode']?.toString();
-      _lessonTitle = args['lessonTitle']?.toString();
+      _reactionId = args['reactionId']?.toString();
+      _reactionName = args['reactionName']?.toString();
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final lessonCode = _lessonCode;
+      final reactionId = _reactionId;
 
-      if (lessonCode == null || lessonCode.isEmpty) return;
+      if (reactionId == null || reactionId.isEmpty) {
+        return;
+      }
 
-      context.read<StudentQuizProvider>().loadPublishedQuizByLesson(lessonCode);
+      context
+          .read<StudentQuizProvider>()
+          .loadPublishedQuizByReaction(reactionId);
     });
   }
 
@@ -118,7 +122,7 @@ class _QuizScreenState extends State<QuizScreen> {
           child: Column(
             children: [
               _QuizHeader(
-                title: _lessonTitle ?? l10n.navQuiz,
+                title: _reactionName ?? l10n.navQuiz,
                 onBack: () => _handleBack(quizProvider),
               ),
               Expanded(
@@ -134,7 +138,7 @@ class _QuizScreenState extends State<QuizScreen> {
 
   Widget _buildBody(BuildContext context, StudentQuizProvider provider) {
     final l10n = AppLocalizations.of(context);
-    if (_lessonCode == null || _lessonCode!.isEmpty) {
+    if (_reactionId == null || _reactionId!.isEmpty) {
       return _EmptyState(
         icon: Icons.error_outline,
         title: l10n.lessonNotFound,
@@ -159,7 +163,7 @@ class _QuizScreenState extends State<QuizScreen> {
         onAction: () {
           context
               .read<StudentQuizProvider>()
-              .loadPublishedQuizByLesson(_lessonCode!);
+              .loadPublishedQuizByReaction(_reactionId!);
         },
       );
     }
@@ -318,29 +322,58 @@ class _QuizIntro extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
-                  onPressed: provider.loadingQuestions
+                  onPressed: provider.startingAttempt
                       ? null
-                      : () {
-                    context
-                        .read<StudentQuizProvider>()
-                        .loadQuizQuestions(quiz.quizCode);
+                      : () async {
+                    final reactionId = provider.reactionId;
+
+                    if (reactionId == null || reactionId.isEmpty) {
+                      return;
+                    }
+
+                    final quizProvider =
+                    context.read<StudentQuizProvider>();
+
+                    final started = await quizProvider.startQuiz(
+                      reactionId: reactionId,
+                    );
+
+                    if (!context.mounted || !started) {
+                      return;
+                    }
+
+                    if (quizProvider.waitingAr) {
+                      Navigator.pushNamed(
+                        context,
+                        AppRoutes.arAssetLoading,
+                      );
+                      return;
+                    }
+
+                    if (quizProvider.running) {
+                      await quizProvider.loadQuizContent();
+                    }
                   },
-                  icon: provider.loadingQuestions
+                  icon: provider.startingAttempt
                       ? const SizedBox(
                     width: 16,
                     height: 16,
-                    child: CircularProgressIndicator(strokeWidth: 2),
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                    ),
                   )
                       : const Icon(Icons.play_arrow_rounded),
                   label: Text(
-                    provider.loadingQuestions
+                    provider.startingAttempt
                         ? l10n.loading
                         : l10n.startQuiz,
                   ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 14,
+                    ),
                   ),
                 ),
               ),
@@ -400,13 +433,14 @@ class _QuizQuestionList extends StatelessWidget {
         ...questions.map(
               (question) => _QuestionCard(
             question: question,
-            selectedAnswer: provider.answers[question.id],
-            onSelectAnswer: (answer) {
-              context.read<StudentQuizProvider>().selectAnswer(
-                questionId: question.id,
-                answer: answer,
-              );
-            },
+                selectedAnswer:
+                provider.answers[question.questionId],
+                onSelectAnswer: (answer) {
+                  context.read<StudentQuizProvider>().selectAnswer(
+                    questionId: question.questionId,
+                    answer: answer,
+                  );
+                },
           ),
         ),
         const SizedBox(height: 16),
@@ -497,23 +531,13 @@ class _QuestionCard extends StatelessWidget {
     required this.onSelectAnswer,
   });
 
-  List<String> _parseOptions(String? optionsJson) {
-    if (optionsJson == null || optionsJson.trim().isEmpty) return [];
-
-    try {
-      final decoded = jsonDecode(optionsJson);
-      if (decoded is List) {
-        return decoded.map((item) => item.toString()).toList();
-      }
-    } catch (_) {}
-
-    return [];
-  }
-
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final options = _parseOptions(question.optionsJson);
+    final options = [...question.options]
+      ..sort(
+            (a, b) =>
+            a.optionOrder.compareTo(b.optionOrder),
+      );
 
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
@@ -530,17 +554,12 @@ class _QuestionCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              _Badge(text: 'Câu ${question.questionOrder ?? '-'}'),
+              _Badge(
+                text: 'Câu ${question.questionOrder}',
+              ),
               const SizedBox(width: 8),
-              _Badge(text: question.type),
-              const Spacer(),
-              Text(
-                question.difficulty ?? '',
-                style: TextStyle(
-                  fontSize: 11,
-                  color: AppColors.textSecondary,
-                  fontFamily: 'Inter',
-                ),
+              const _Badge(
+                text: 'Trắc nghiệm',
               ),
             ],
           ),
@@ -556,42 +575,23 @@ class _QuestionCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          if (question.type == 'true_false')
-            ...['TRUE', 'FALSE'].map(
-                  (answer) => _AnswerOption(
-                label: answer,
-                text: answer == 'TRUE' ? l10n.trueAnswer : l10n.falseAnswer,
-                selected: selectedAnswer == answer,
-                onTap: () => onSelectAnswer(answer),
+          if (options.isNotEmpty)
+            ...options.map(
+                  (option) => _AnswerOption(
+                label: option.optionKey,
+                text: option.optionText,
+                selected:
+                selectedAnswer == option.optionKey,
+                onTap: () {
+                  onSelectAnswer(option.optionKey);
+                },
               ),
-            )
-          else if (options.isNotEmpty)
-            ...options.asMap().entries.map(
-                  (entry) {
-                final label = String.fromCharCode(65 + entry.key);
-                return _AnswerOption(
-                  label: label,
-                  text: entry.value,
-                  selected: selectedAnswer == label,
-                  onTap: () => onSelectAnswer(label),
-                );
-              },
             )
           else
-            TextField(
-              onChanged: onSelectAnswer,
-              decoration: InputDecoration(
-                hintText: l10n.enterYourAnswer,
-                hintStyle: TextStyle(
-                  color: AppColors.textSecondary,
-                  fontFamily: 'Inter',
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
+            Text(
+              'Không có đáp án',
               style: TextStyle(
-                color: AppColors.textPrimary,
+                color: AppColors.textSecondary,
                 fontFamily: 'Inter',
               ),
             ),

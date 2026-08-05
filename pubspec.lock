@@ -601,7 +601,7 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_unity_widget_2:
-    dependency: "direct main"
+    dependency: "direct overridden"
     description:
       path: "packages/flutter_unity_widget_2"
       relative: true

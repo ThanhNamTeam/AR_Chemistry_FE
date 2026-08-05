@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/utils/friendly_error.dart';
+import '../../../domain/models/student_quiz_attempt_answer_detail_model.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../providers/student_quiz_provider.dart';
 import '../../../domain/models/student_quiz_attempt_detail_model.dart';
@@ -224,7 +225,7 @@ class _SummaryCard extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            detail.lessonTitle,
+            detail.quizTitle,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 12,
