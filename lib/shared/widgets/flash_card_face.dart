@@ -77,76 +77,93 @@ class FlashCardFace extends StatelessWidget {
   }
 
   Widget _buildFront() {
-    return Padding(
-      padding: const EdgeInsets.all(14),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            formula,
-            style: const TextStyle(
-              color: _green,
-              fontSize: 11,
-              fontWeight: FontWeight.w700,
-              fontFamily: 'Inter',
-            ),
-          ),
-          const Spacer(flex: 2),
-          Center(
-            child: Text(
-              formula,
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: _green,
-                fontSize: formula.length > 4 ? 34 : 46,
-                fontWeight: FontWeight.w900,
-                fontFamily: 'Inter',
-                height: 1,
-              ),
-            ),
-          ),
-          const Spacer(flex: 2),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isCompact = constraints.maxHeight < 190;
+
+        final mainFormulaSize = isCompact
+            ? (formula.length > 4 ? 24.0 : 32.0)
+            : (formula.length > 4 ? 34.0 : 46.0);
+
+        return Padding(
+          padding: EdgeInsets.all(isCompact ? 10 : 14),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 8,
-                      height: 8,
-                      decoration: const BoxDecoration(
-                        color: _orange,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      name,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: _green,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w800,
-                        fontFamily: 'Inter',
-                      ),
-                    ),
-                  ],
+              Text(
+                formula,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: _green,
+                  fontSize: isCompact ? 9 : 11,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'Inter',
                 ),
               ),
-              Icon(
-                Icons.science_outlined,
-                color: _greenLight.withValues(alpha: 0.55),
-                size: 28,
+
+              const Spacer(),
+
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  formula,
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  style: TextStyle(
+                    color: _green,
+                    fontSize: mainFormulaSize,
+                    fontWeight: FontWeight.w900,
+                    fontFamily: 'Inter',
+                    height: 1,
+                  ),
+                ),
+              ),
+
+              const Spacer(),
+
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: isCompact ? 6 : 8,
+                          height: isCompact ? 6 : 8,
+                          decoration: const BoxDecoration(
+                            color: _orange,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        SizedBox(height: isCompact ? 2 : 4),
+                        Text(
+                          name,
+                          maxLines: isCompact ? 1 : 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: _green,
+                            fontSize: isCompact ? 10 : 13,
+                            fontWeight: FontWeight.w800,
+                            fontFamily: 'Inter',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Icon(
+                    Icons.science_outlined,
+                    color: _greenLight.withValues(alpha: 0.55),
+                    size: isCompact ? 20 : 28,
+                  ),
+                ],
               ),
             ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
