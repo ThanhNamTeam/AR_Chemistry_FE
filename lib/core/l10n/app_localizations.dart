@@ -497,7 +497,6 @@ class AppLocalizations {
   String get saveQr => isVi ? 'Lưu QR' : 'Save QR';
   String get close => isVi ? 'Đóng' : 'Close';
   String get cancel => isVi ? 'Hủy' : 'Cancel';
-  String get confirm => isVi ? 'Xác nhận' : 'Confirm';
   String get qrContentLabel => isVi ? 'Nội dung QR: ' : 'QR Content: ';
   String get expiresAtLabel => isVi ? 'Hết hạn: ' : 'Expires at: ';
   String get storagePermissionDenied => isVi ? 'Quyền lưu trữ bị từ chối' : 'Storage permission denied';

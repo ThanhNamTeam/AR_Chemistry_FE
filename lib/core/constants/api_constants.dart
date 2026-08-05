@@ -297,54 +297,12 @@ class ApiConstants {
 
   // ---- Luồng quiz theo PHẢN ỨNG (contract mới, thay cho quiz theo bài học) ----
 
-  static String studentReactionsUrl({
-    required int grade,
-    required String reactionCategory,
-    String keyword = '',
-    int page = 0,
-    int size = 10,
-  }) {
-    return Uri.parse('$baseUrl$studentPath/reactions').replace(
-      queryParameters: {
-        'grade': '$grade',
-        'reactionCategory': reactionCategory,
-        if (keyword.trim().isNotEmpty) 'keyword': keyword.trim(),
-        'page': '$page',
-        'size': '$size',
-      },
-    ).toString();
-  }
 
-  static String studentStartAttemptUrl(String reactionId) =>
-      '$baseUrl$studentPath/reactions/$reactionId/attempts';
-
-  static String studentReactionHistoryUrl(
-    String reactionId, {
-    int page = 0,
-    int size = 10,
-  }) {
-    return Uri.parse(
-      '$baseUrl$studentPath/reactions/$reactionId/attempt-history',
-    ).replace(queryParameters: {'page': '$page', 'size': '$size'}).toString();
-  }
-
-  static String studentAttemptStateUrl(String attemptCode) =>
-      '$baseUrl$studentPath/quiz-attempts/$attemptCode/state';
 
   static String studentAttemptContentUrl(String attemptCode) =>
       '$baseUrl$studentPath/quiz-attempts/$attemptCode/content';
 
-  static String studentCompleteArUrl(String attemptCode) =>
-      '$baseUrl$studentPath/quiz-attempts/$attemptCode/complete-ar';
 
-  static String studentSaveAnswerUrl(String attemptCode, String questionId) =>
-      '$baseUrl$studentPath/quiz-attempts/$attemptCode/answers/$questionId';
-
-  static String studentSubmitAttemptUrl(String attemptCode) =>
-      '$baseUrl$studentPath/quiz-attempts/$attemptCode/submit';
-
-  static String studentAbandonAttemptUrl(String attemptCode) =>
-      '$baseUrl$studentPath/quiz-attempts/$attemptCode/abandon';
 
   // library
   static const String libraryPath = '/library';

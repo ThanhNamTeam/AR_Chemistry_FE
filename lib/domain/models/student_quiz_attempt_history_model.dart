@@ -44,74 +44,51 @@ class StudentQuizAttemptHistoryModel {
       Map<String, dynamic> json,
       ) {
     return StudentQuizAttemptHistoryModel(
-      attemptCode: json['attemptCode'] as String? ?? '',
-      quizCode: json['quizCode'] as String? ?? '',
-      quizTitle: json['quizTitle'] as String? ?? '',
-      // Contract mới đổi lesson* -> reaction*; fallback để model cũ dùng được
-      // với cả hai payload (reactionName kèm equation cho đủ ngữ cảnh).
-      lessonCode: json['lessonCode'] as String? ??
-          json['reactionId'] as String? ??
-          '',
-      lessonTitle: json['lessonTitle'] as String? ??
-          json['reactionName'] as String? ??
-          '',
-      score: json['score'] as int? ?? 0,
-      totalQuestions: json['totalQuestions'] as int? ?? 0,
-      correctCount: json['correctCount'] as int? ?? 0,
-      status: json['status'] as String? ?? '',
-      submittedAt: DateTime.tryParse(json['submittedAt'] as String? ?? ''),
-      attemptCode:
-      json['attemptCode']?.toString() ?? '',
+      attemptCode: json['attemptCode']?.toString() ?? '',
 
-      quizCode:
-      json['quizCode']?.toString() ?? '',
+      quizCode: json['quizCode']?.toString() ?? '',
 
       quizTitle:
       json['quizTitle']?.toString() ??
           json['title']?.toString() ??
           '',
 
+      // Contract mới dùng reaction*.
+      // Fallback lesson* để tương thích payload cũ.
       reactionId:
-      json['reactionId']?.toString() ?? '',
+      json['reactionId']?.toString() ??
+          json['lessonId']?.toString() ??
+          '',
 
       reactionCode:
-      json['reactionCode']?.toString() ?? '',
+      json['reactionCode']?.toString() ??
+          json['lessonCode']?.toString() ??
+          '',
 
       reactionName:
-      json['reactionName']?.toString() ?? '',
+      json['reactionName']?.toString() ??
+          json['lessonTitle']?.toString() ??
+          '',
 
-      equation:
-      json['equation']?.toString() ?? '',
+      equation: json['equation']?.toString() ?? '',
 
-      grade:
-      (json['grade'] as num?)?.toInt() ?? 0,
+      grade: (json['grade'] as num?)?.toInt() ?? 0,
 
-      reactionCategory:
-      json['reactionCategory']?.toString() ?? '',
+      reactionCategory: json['reactionCategory']?.toString() ?? '',
 
-      score:
-      (json['score'] as num?)?.toInt() ?? 0,
+      score: (json['score'] as num?)?.toInt() ?? 0,
 
-      totalQuestions:
-      (json['totalQuestions'] as num?)?.toInt() ?? 0,
+      totalQuestions: (json['totalQuestions'] as num?)?.toInt() ?? 0,
 
-      correctCount:
-      (json['correctCount'] as num?)?.toInt() ?? 0,
+      correctCount: (json['correctCount'] as num?)?.toInt() ?? 0,
 
-      status:
-      json['status']?.toString() ?? '',
+      status: json['status']?.toString() ?? '',
 
-      startedAt: _parseDateTime(
-        json['startedAt'],
-      ),
+      startedAt: _parseDateTime(json['startedAt']),
 
-      expiredAt: _parseDateTime(
-        json['expiredAt'],
-      ),
+      expiredAt: _parseDateTime(json['expiredAt']),
 
-      submittedAt: _parseDateTime(
-        json['submittedAt'],
-      ),
+      submittedAt: _parseDateTime(json['submittedAt']),
     );
   }
 

@@ -121,7 +121,10 @@ class StudentReactionQuizApi {
     final response = await http
         .put(
           Uri.parse(
-            ApiConstants.studentSaveAnswerUrl(attemptCode, questionId),
+              ApiConstants.studentSaveAnswerUrl(
+                attemptCode: attemptCode,
+                questionId: questionId,
+              )
           ),
           headers: await _headers(),
           // BE SaveQuizAnswerRequest chỉ có một field tên `answer`.
