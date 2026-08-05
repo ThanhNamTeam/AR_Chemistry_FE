@@ -70,6 +70,9 @@ import 'presentation/reaction_experiment/screens/reaction_category_screen.dart';
 import 'presentation/reaction_experiment/screens/reaction_list_screen.dart';
 import 'presentation/reaction_experiment/screens/reaction_experiment_hub_screen.dart';
 import 'presentation/reaction_experiment/screens/reaction_experiment_history_screen.dart';
+import 'presentation/quiz/screens/student_quiz_list_screen.dart';
+import 'presentation/quiz/screens/student_quiz_history_screen.dart';
+import 'presentation/quiz/screens/student_quiz_attempt_detail_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -234,6 +237,10 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
           const ReactionExperimentHistoryScreen(),
       AppRoutes.periodicTable: (_) => const PeriodicTableScreen(),
       AppRoutes.flashcardReview: (_) => const FlashcardReviewScreen(),
+      AppRoutes.quizList: (_) => const StudentQuizListScreen(),
+      AppRoutes.quizHistory: (_) => const StudentQuizHistoryScreen(),
+      AppRoutes.quizAttemptDetail: (_) =>
+          const StudentQuizAttemptDetailScreen(),
     };
   }
 
