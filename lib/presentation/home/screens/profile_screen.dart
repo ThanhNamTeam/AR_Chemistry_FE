@@ -40,7 +40,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   int _unlockedCards = 0;
   int _totalCards = 0;
   int _totalReactions = 0;
-  double _libraryProgress = 0;
 
   @override
   void initState() {
@@ -67,7 +66,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       setState(() {
         _unlockedCards = librarySummary.unlockedCards;
         _totalCards = librarySummary.totalCards;
-        _libraryProgress = librarySummary.libraryProgress;
         _totalReactions = reactionSummary.totalReactions;
         _isLoadingSummary = false;
       });
@@ -439,7 +437,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             Expanded(
                               child: _StatCard(
                                 icon: Icons.science_outlined,
-                                label: l10n.experiments,
+                                // "Phản ứng có thể làm" — đây là TỔNG SỐ phản
+                                // ứng trong kho, không phải số thí nghiệm user
+                                // đã làm; nhãn "Thí nghiệm" cũ gây hiểu lầm
+                                // thành tích cá nhân.
+                                label: l10n.reactionsAvailable,
                                 value: _isLoadingSummary
                                     ? '...'
                                     : '$_totalReactions',
@@ -447,34 +449,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ),
                           ],
-                        ),
-                        const SizedBox(height: 12),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(l10n.libraryProgress,
-                                style: TextStyle(
-                                    color: AppColors.textSecondary,
-                                    fontSize: 11,
-                                    fontFamily: 'Inter')),
-                            Text('${(_libraryProgress * 100).round()}%',
-                                style: TextStyle(
-                                    color: AppColors.accentText,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w700,
-                                    fontFamily: 'Inter')),
-                          ],
-                        ),
-                        const SizedBox(height: 6),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: LinearProgressIndicator(
-                            value: _libraryProgress.clamp(0.0, 1.0),
-                            minHeight: 6,
-                            backgroundColor:
-                                AppColors.primary.withOpacity(0.15),
-                            color: AppColors.primary,
-                          ),
                         ),
                       ],
                     ),

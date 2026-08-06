@@ -47,8 +47,12 @@ class AppLocalizations {
   // —— User profile ——
   String get cardsUnlocked => isVi ? 'Thẻ đã mở' : 'Cards Unlocked';
   String get experiments => isVi ? 'Thí nghiệm' : 'Experiments';
+  String get reactionsAvailable =>
+      isVi ? 'Phản ứng có thể làm' : 'Reactions available';
   String get libraryProgress =>
       isVi ? 'Tiến độ thư viện' : 'Library Progress';
+  String get cardUnlockProgress =>
+      isVi ? 'Tiến độ mở thẻ' : 'Card unlock progress';
   String get myLibrary => isVi ? 'Thẻ của tôi' : 'My Cards';
   String cardsUnlockedSubtitle(int count) => isVi
       ? '$count thẻ đã mở khóa'
