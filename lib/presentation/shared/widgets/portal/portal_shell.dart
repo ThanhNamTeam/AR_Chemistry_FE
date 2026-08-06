@@ -103,24 +103,22 @@ class _PortalHeader extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(20, 8, 12, 12),
       child: Row(
         children: [
+          // Logo app thay cho khối gradient + icon lọ hóa chất cũ (quá đậm,
+          // tranh chú ý với tiêu đề portal).
           Container(
             width: 48,
             height: 48,
+            clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(
-              gradient: AppColors.primaryGradient,
+              color: Colors.white,
               borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.primary.withOpacity(0.3),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ],
+              border: Border.all(
+                color: AppColors.cardBorder.withOpacity(0.5),
+              ),
             ),
-            child: const Icon(
-              Icons.science,
-              color: AppColors.onGradient,
-              size: 26,
+            child: Image.asset(
+              'assets/icon/app_icon.jpg',
+              fit: BoxFit.cover,
             ),
           ),
           const SizedBox(width: 14),
@@ -302,53 +300,50 @@ class _PortalBottomNavState extends State<_PortalBottomNav> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 6),
+    // Đồng bộ với UserBottomNav: thanh phẳng full-width sát đáy, kẻ viền trên,
+    // tab active đổi màu chữ + icon — bỏ thẻ nổi bo góc và pill gradient cũ
+    // (khối xanh đặc quá đậm, lệch hẳn với cổng người dùng).
+    return Material(
+      color: AppColors.isLight ? Colors.white : AppColors.backgroundMid,
+      child: DecoratedBox(
         decoration: BoxDecoration(
-          color: AppColors.navBarBg,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: AppColors.primary.withOpacity(
-              AppColors.isLight ? 0.22 : 0.2,
+          border: Border(
+            top: BorderSide(
+              color: AppColors.primary.withOpacity(0.2),
+              width: 1,
             ),
           ),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.shadowSoft,
-              blurRadius: 20,
-              offset: const Offset(0, -4),
-            ),
-          ],
         ),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final fits =
-                constraints.maxWidth >= widget.items.length * _minItemWidth;
+        child: SafeArea(
+          top: false,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final fits =
+                  constraints.maxWidth >= widget.items.length * _minItemWidth;
 
-            // Ít tab (staff): dàn đều kín thanh như trước.
-            if (fits) {
-              return Row(
-                children: List.generate(
-                  widget.items.length,
-                  (i) => Expanded(child: _buildItem(i, compactWidth: null)),
+              // Ít tab (staff): dàn đều kín thanh như trước.
+              if (fits) {
+                return Row(
+                  children: List.generate(
+                    widget.items.length,
+                    (i) => Expanded(child: _buildItem(i, compactWidth: null)),
+                  ),
+                );
+              }
+
+              // Nhiều tab (admin 7 tab): cuộn ngang, mỗi tab đủ rộng cho nhãn.
+              return SingleChildScrollView(
+                controller: _scroll,
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: List.generate(
+                    widget.items.length,
+                    (i) => _buildItem(i, compactWidth: _minItemWidth + 8),
+                  ),
                 ),
               );
-            }
-
-            // Nhiều tab (admin 7 tab): cuộn ngang, mỗi tab đủ rộng cho nhãn.
-            return SingleChildScrollView(
-              controller: _scroll,
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: List.generate(
-                  widget.items.length,
-                  (i) => _buildItem(i, compactWidth: _minItemWidth + 8),
-                ),
-              ),
-            );
-          },
+            },
+          ),
         ),
       ),
     );
@@ -357,6 +352,7 @@ class _PortalBottomNavState extends State<_PortalBottomNav> {
   Widget _buildItem(int i, {required double? compactWidth}) {
     final item = widget.items[i];
     final selected = widget.selectedIndex == i;
+    final color = selected ? AppColors.primary : AppColors.navMuted;
 
     return KeyedSubtree(
       key: _itemKeys[i],
@@ -364,25 +360,20 @@ class _PortalBottomNavState extends State<_PortalBottomNav> {
         button: true,
         selected: selected,
         label: item.label,
-        child: GestureDetector(
+        child: InkWell(
+          // InkWell thay GestureDetector để có phản hồi chạm (ripple),
+          // giống hệt UserBottomNav.
           onTap: () => widget.onSelected(i),
-          behavior: HitTestBehavior.opaque,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 220),
-            curve: Curves.easeOutCubic,
+          child: Container(
             width: compactWidth,
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
-            decoration: BoxDecoration(
-              gradient: selected ? AppColors.primaryGradient : null,
-              borderRadius: BorderRadius.circular(16),
-            ),
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 6),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(
                   selected ? item.activeIcon : item.icon,
-                  size: 22,
-                  color: selected ? AppColors.onGradient : AppColors.navMuted,
+                  size: 24,
+                  color: color,
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -390,10 +381,11 @@ class _PortalBottomNavState extends State<_PortalBottomNav> {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    fontSize: 10,
+                    fontSize: 11,
                     fontWeight: selected ? FontWeight.w700 : FontWeight.w600,
-                    color: selected ? AppColors.onGradient : AppColors.navMuted,
+                    color: color,
                     fontFamily: 'Inter',
+                    decoration: TextDecoration.none,
                   ),
                 ),
               ],

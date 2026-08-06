@@ -259,6 +259,7 @@ class AppLocalizations {
   String get userMgmtSelfWarning => isVi
       ? 'Không thể tự thao tác trên tài khoản của chính mình'
       : 'You cannot modify your own account';
+  String get userMgmtSelfTag => isVi ? '(bạn)' : '(you)';
   String userStatusLabel(String status) {
     switch (status) {
       case 'ACTIVE':
