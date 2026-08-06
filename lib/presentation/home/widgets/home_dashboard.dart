@@ -124,7 +124,7 @@ class _HomeDashboardState extends State<HomeDashboard> {
     if (_loadingAttempt) return const SizedBox.shrink();
 
     final attempt = _latestAttempt;
-    final String text;
+    String text;
     final String cta;
     final Object? routeArgs;
     final String route;

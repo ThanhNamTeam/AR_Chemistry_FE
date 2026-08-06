@@ -43,15 +43,6 @@ dependencies:
   firebase_messaging: ^16.4.1
   flutter_local_notifications: ^22.0.1
   flutter_markdown: ^0.7.7+1
-
-# Local fork of flutter_unity_widget_2.
-# Upstream declares unity-classes.jar as an `implementation` dependency while it also
-# depends on :unityLibrary, which already provides that jar at runtime. That put two
-# unity-classes.jar artifacts on :app's runtime classpath and broke
-# :app:checkDebugDuplicateClasses. The fork changes it to `compileOnly` and drops the
-# stale unity-classes.jar upstream shipped in android/libs/.
-# See packages/flutter_unity_widget_2/android/build.gradle for the full rationale.
-dependency_overrides:
   flutter_unity_widget_2:
     path: ./packages/flutter_unity_widget_2
 

@@ -227,7 +227,6 @@ class _SummaryCard extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             detail.reactionName,
-            detail.quizTitle,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 12,
