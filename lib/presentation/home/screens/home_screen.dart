@@ -436,6 +436,61 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             ),
           ),
         ),
+        const SizedBox(height: 14),
+        // Lối vào bảng tuần hoàn — feature tĩnh, mở được cả khi chưa có gói AR.
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 56),
+          child: Semantics(
+            button: true,
+            label: l10n.periodicTableTitle,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(999),
+              onTap: () =>
+                  Navigator.pushNamed(context, AppRoutes.periodicTable),
+              child: Container(
+                width: double.infinity,
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                // Nền đặc để nút không chìm vào background.
+                decoration: BoxDecoration(
+                  color: AppColors.cardSurface,
+                  borderRadius: BorderRadius.circular(999),
+                  border: Border.all(
+                    color: AppColors.primary.withOpacity(0.5),
+                    width: 1.2,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.shadowSoft,
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.grid_on,
+                        color: AppColors.primary, size: 20),
+                    const SizedBox(width: 8),
+                    Text(
+                      l10n.periodicTableTitle,
+                      style: TextStyle(
+                        color: AppColors.accentText,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        fontFamily: 'Inter',
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
         const SizedBox(height: 24),
       ],
     );
