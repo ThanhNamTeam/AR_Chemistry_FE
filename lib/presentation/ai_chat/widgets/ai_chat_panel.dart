@@ -276,14 +276,7 @@ class _AiChatPanelState extends State<AiChatPanel> {
       child: Column(
         children: [
           const SizedBox(height: 8),
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: AppColors.primaryGradient,
-            ),
-            child: const Icon(Icons.biotech, size: 48, color: Colors.white),
-          ),
+          const AiChatIcon(size: 96),
           const SizedBox(height: 20),
           Text(
             l10n.aiWelcomeTitle,
@@ -428,17 +421,6 @@ class _AiChatPanelState extends State<AiChatPanel> {
             },
           ),
         ],
-        ),
-        const SizedBox(height: 6),
-        // Cảnh báo AI có thể sai — bắt buộc với gia sư cho học sinh ôn thi.
-        Text(
-          l10n.aiDisclaimer,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 10.5,
-            color: AppColors.textSecondary.withValues(alpha: 0.8),
-            fontFamily: 'Inter',
-          ),
         ),
         ],
       ),

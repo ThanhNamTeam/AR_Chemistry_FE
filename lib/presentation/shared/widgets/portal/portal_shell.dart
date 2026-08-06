@@ -103,24 +103,22 @@ class _PortalHeader extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(20, 8, 12, 12),
       child: Row(
         children: [
+          // Logo app thay cho khối gradient + icon lọ hóa chất cũ (quá đậm,
+          // tranh chú ý với tiêu đề portal).
           Container(
             width: 48,
             height: 48,
+            clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(
-              gradient: AppColors.primaryGradient,
+              color: Colors.white,
               borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.primary.withOpacity(0.3),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                ),
-              ],
+              border: Border.all(
+                color: AppColors.cardBorder.withOpacity(0.5),
+              ),
             ),
-            child: const Icon(
-              Icons.science,
-              color: AppColors.onGradient,
-              size: 26,
+            child: Image.asset(
+              'assets/icon/app_icon.jpg',
+              fit: BoxFit.cover,
             ),
           ),
           const SizedBox(width: 14),

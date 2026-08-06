@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -34,10 +36,9 @@ class _AdminUsersTabState extends State<AdminUsersTab> {
   int _page = 0;
   String _query = '';
 
-  static const _statusOptions = ['ACTIVE', 'INACTIVE', 'BLOCKED'];
+  static const _statusOptions = ['ACTIVE', 'BLOCKED'];
   static const _roleOptions = [
     'ROLE_STUDENT',
-    'ROLE_TEACHER',
     'ROLE_STAFF',
     'ROLE_ADMIN',
   ];
@@ -51,6 +52,8 @@ class _AdminUsersTabState extends State<AdminUsersTab> {
   @override
   void dispose() {
     _searchCtrl.dispose();
+    _toastTimer?.cancel();
+    _toastEntry?.remove();
     super.dispose();
   }
 
@@ -98,15 +101,93 @@ class _AdminUsersTabState extends State<AdminUsersTab> {
     }
   }
 
+  OverlayEntry? _toastEntry;
+  Timer? _toastTimer;
+
+  /// Banner trượt xuống từ MÉP TRÊN màn hình (dạng thông báo push).
+  ///
+  /// Không dùng SnackBar: nó luôn nằm đáy, đè lên bottom nav / các nút hành
+  /// động trong sheet — vị trí đó vừa che UI vừa dễ bấm nhầm.
   void _toast(String msg, {bool isError = false}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(msg, style: const TextStyle(fontFamily: 'Inter')),
-        backgroundColor: isError ? AppColors.error : AppColors.secondary,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      ),
+    _toastTimer?.cancel();
+    _toastEntry?.remove();
+
+    final entry = OverlayEntry(
+      builder: (context) {
+        final topInset = MediaQuery.of(context).padding.top;
+        return Positioned(
+          top: topInset + 8,
+          left: 16,
+          right: 16,
+          child: IgnorePointer(
+            child: TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0, end: 1),
+              duration: const Duration(milliseconds: 220),
+              curve: Curves.easeOutCubic,
+              builder: (_, t, child) => Opacity(
+                opacity: t,
+                child: Transform.translate(
+                  offset: Offset(0, -16 * (1 - t)),
+                  child: child,
+                ),
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 14, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: isError ? AppColors.error : AppColors.secondary,
+                    borderRadius: BorderRadius.circular(14),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 12,
+                        offset: Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        isError
+                            ? Icons.error_outline
+                            : Icons.check_circle_outline,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          msg,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'Inter',
+                            fontSize: 13.5,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
+
+    // Overlay gốc để banner nổi trên cả bottom sheet đang mở.
+    Overlay.of(context, rootOverlay: true).insert(entry);
+    _toastEntry = entry;
+
+    _toastTimer = Timer(const Duration(milliseconds: 2600), () {
+      entry.remove();
+      if (_toastEntry == entry) _toastEntry = null;
+    });
   }
 
   /// Thay user trong danh sách bằng bản mới sau khi BE cập nhật thành công.
@@ -236,11 +317,9 @@ class _AdminUsersTabState extends State<AdminUsersTab> {
   }
 
   Future<void> _openDetail(AdminUserModel user) async {
-    final l10n = AppLocalizations.of(context);
-    if (_isSelf(user)) {
-      _toast(l10n.userMgmtSelfWarning, isError: true);
-      return;
-    }
+    // Thẻ của chính mình đã bị vô hiệu hoá từ UI (không tap được) — guard này
+    // chỉ là chốt chặn cuối, không cần toast.
+    if (_isSelf(user)) return;
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -302,7 +381,9 @@ class _UserCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
-          onTap: onTap,
+          // Tài khoản của chính mình không thao tác được — vô hiệu hoá tap
+          // thay vì để bấm vào rồi báo lỗi.
+          onTap: isSelf ? null : onTap,
           child: Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
@@ -319,7 +400,8 @@ class _UserCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        user.displayName + (isSelf ? ' (you)' : ''),
+                        user.displayName +
+                            (isSelf ? ' ${l10n.userMgmtSelfTag}' : ''),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -360,8 +442,9 @@ class _UserCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                Icon(Icons.chevron_right,
-                    color: AppColors.textSecondary, size: 20),
+                if (!isSelf)
+                  Icon(Icons.chevron_right,
+                      color: AppColors.textSecondary, size: 20),
               ],
             ),
           ),
@@ -422,11 +505,10 @@ class _UserDetailSheetState extends State<_UserDetailSheet> {
       });
 
   Future<void> _toggleRole(String role) => _run(() async {
-        final roles = List<String>.from(_user.roles);
-        roles.contains(role) ? roles.remove(role) : roles.add(role);
-        // Không cho bỏ trống vai trò — BE yêu cầu ít nhất một.
-        if (roles.isEmpty) return;
-        final updated = await widget.api.assignRoles(_user.cognitoSub, roles);
+        // Mỗi user chỉ giữ đúng 1 vai trò — chọn role mới thay thế role cũ.
+        if (_user.roles.length == 1 && _user.roles.contains(role)) return;
+        final updated =
+            await widget.api.assignRoles(_user.cognitoSub, [role]);
         if (!mounted) return;
         setState(() => _user = updated);
         widget.onUpdated(updated);
@@ -586,10 +668,11 @@ class _UserDetailSheetState extends State<_UserDetailSheet> {
             spacing: 8,
             children: widget.roleOptions.map((r) {
               final selected = _user.roles.contains(r);
-              return FilterChip(
+              return ChoiceChip(
                 label: Text(l10n.roleLabel(r)),
                 selected: selected,
-                onSelected: _busy ? null : (_) => _toggleRole(r),
+                onSelected:
+                    _busy || selected ? null : (_) => _toggleRole(r),
               );
             }).toList(),
           ),

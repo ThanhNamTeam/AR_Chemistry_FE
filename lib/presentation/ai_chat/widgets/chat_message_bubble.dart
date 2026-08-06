@@ -1,12 +1,17 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/l10n/app_localizations.dart';
+import '../../../core/storage/avatar_storage_service.dart';
 import '../../../domain/models/ai_chat_models.dart';
 import '../../../shared/styles/app_colors.dart';
+import '../../home/providers/app_state.dart';
 import '../providers/chat_provider.dart';
+import 'ai_chat_icon.dart';
 
 class ChatMessageBubble extends StatelessWidget {
   const ChatMessageBubble({
@@ -26,7 +31,7 @@ class ChatMessageBubble extends StatelessWidget {
             isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          if (!isUser) _avatar(Icons.science_outlined, AppColors.primary),
+          if (!isUser) const AiChatIcon(size: 32),
           if (!isUser) const SizedBox(width: 8),
           Flexible(
             child: Column(
@@ -88,15 +93,8 @@ class ChatMessageBubble extends StatelessWidget {
                           activeColor: AppColors.error,
                         ),
                       ],
-                      if (message.reusedMemory) ...[
-                        const SizedBox(width: 6),
-                        Flexible(
-                          child: _memoryBadge(
-                            context,
-                            message.similarityScore,
-                          ),
-                        ),
-                      ],
+                      // Badge "câu hỏi tương tự đã gặp" đã ẩn theo yêu cầu UX
+                      // (message.reusedMemory vẫn có sẵn nếu cần bật lại).
                     ],
                   ),
                 ],
@@ -104,57 +102,55 @@ class ChatMessageBubble extends StatelessWidget {
             ),
           ),
           if (isUser) const SizedBox(width: 8),
-          if (isUser) _avatar(Icons.person_outline, AppColors.accent),
+          if (isUser) _userAvatar(context),
         ],
       ),
     );
   }
 
-  Widget _avatar(IconData icon, Color color) {
+  /// Avatar người dùng: dùng đúng ảnh hồ sơ (Google/tự tải) như trên Home;
+  /// chưa có ảnh thì rơi về chữ cái đầu tên trên nền gradient.
+  Widget _userAvatar(BuildContext context) {
+    final state = context.watch<AppState>();
+    final avatar = state.userAvatar;
+
+    final isNetworkAvatar = avatar != null &&
+        (avatar.startsWith('http://') || avatar.startsWith('https://'));
+    final hasLocalAvatar = avatar != null &&
+        !isNetworkAvatar &&
+        AvatarStorageService.avatarFileExists(avatar);
+    final hasAvatar = isNetworkAvatar || hasLocalAvatar;
+
+    final initial =
+        (state.userName ?? state.userEmail ?? '?').trim();
+
     return Container(
       width: 32,
       height: 32,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: color.withValues(alpha: 0.15),
-        border: Border.all(color: color.withValues(alpha: 0.35)),
+        gradient: hasAvatar ? null : AppColors.cyanEmeraldGradient,
+        image: hasAvatar
+            ? DecorationImage(
+                image: isNetworkAvatar
+                    ? NetworkImage(avatar)
+                    : FileImage(File(avatar)) as ImageProvider,
+                fit: BoxFit.cover,
+              )
+            : null,
       ),
-      child: Icon(icon, size: 18, color: color),
-    );
-  }
-
-  Widget _memoryBadge(BuildContext context, double? score) {
-    final l10n = AppLocalizations.of(context);
-    // Nhãn phải nói rõ đây là CACHE (câu hỏi tương tự từng gặp) chứ không phải
-    // độ tin cậy — "(100%)" trần trụi dễ bị hiểu nhầm là "chắc chắn đúng 100%".
-    final label = score != null
-        ? l10n.aiMemoryBadge((score * 100).toStringAsFixed(0))
-        : l10n.aiMemoryBadgeNoScore;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: AppColors.secondary.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.secondary.withValues(alpha: 0.3)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.bolt, size: 14, color: AppColors.secondary),
-          const SizedBox(width: 4),
-          Flexible(
-            child: Text(
-              label,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 11,
-                color: AppColors.secondaryLight,
+      alignment: Alignment.center,
+      child: hasAvatar
+          ? null
+          : Text(
+              initial.isEmpty ? '?' : initial[0].toUpperCase(),
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w800,
+                color: AppColors.onGradient,
                 fontFamily: 'Inter',
               ),
             ),
-          ),
-        ],
-      ),
     );
   }
 }
