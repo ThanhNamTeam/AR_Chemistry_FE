@@ -136,7 +136,7 @@ class AppLocalizations {
   String get navUsers => isVi ? 'Người dùng' : 'Users';
   String get navLogs => isVi ? 'Logs' : 'Logs';
 
-  // —— Admin: system logs (ELK) ——
+  // —— Admin: system logs (bảng system_logs trong DB) ——
   String get systemLogsTitle => isVi ? 'Log hệ thống' : 'System logs';
   String get searchLogsHint => isVi
       ? 'Tìm trong message, class, method...'
@@ -147,10 +147,6 @@ class AppLocalizations {
   String get loadMoreLogs => isVi ? 'Tải thêm' : 'Load more';
   String logCountLabel(int shown, int total) =>
       isVi ? 'Hiển thị $shown / $total log' : 'Showing $shown / $total logs';
-  String cannotOpenKibana(String url) => isVi
-      ? 'Không mở được Kibana ($url). Kiểm tra KIBANA_URL trong .env.'
-      : 'Cannot open Kibana ($url). Check KIBANA_URL in .env.';
-
   // —— Thông báo lỗi thân thiện (friendly_error.dart) ——
   String get errNetwork => isVi
       ? 'Không có kết nối mạng. Kiểm tra Wi-Fi/4G rồi thử lại.'
