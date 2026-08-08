@@ -1,0 +1,35 @@
+ManifestFileVersion: 0
+UnityVersion: 6000.4.7f1
+CRC: 1820905420
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: fb9fd323ca4b4632740faf4afcdb1d0a
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 95fcc49bea9561007c79bdf2ad78e2e1
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: 76967a612ae8adc19008c17cc44fba21
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Generated/MarkerVisualPrefabs/Na2SO4_MarkerVisual.prefab
+Dependencies: []

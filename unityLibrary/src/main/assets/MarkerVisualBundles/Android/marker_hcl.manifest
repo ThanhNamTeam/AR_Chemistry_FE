@@ -1,0 +1,37 @@
+ManifestFileVersion: 0
+UnityVersion: 6000.4.7f1
+CRC: 3644065315
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 5288d9beca362f6911c58b51cc74606f
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 52e907f62d29966f0171d9ed564648d5
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: ba74af71bda964e4878e5ce0b39e5391
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 64
+  Script: {instanceID: 0}
+- Class: 136
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Generated/MarkerVisualPrefabs/HCl_MarkerVisual.prefab
+Dependencies: []
