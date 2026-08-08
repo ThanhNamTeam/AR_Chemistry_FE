@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../../shared/styles/app_colors.dart';
 
 class GlassCard extends StatelessWidget {
@@ -25,12 +25,12 @@ class GlassCard extends StatelessWidget {
         color: backgroundColor ?? const Color(0x1A06B6D4),
         borderRadius: BorderRadius.circular(borderRadius),
         border: Border.all(
-          color: borderColor ?? AppColors.primary.withOpacity(0.3),
+          color: borderColor ?? AppColors.primary.withValues(alpha: 0.3),
           width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.1),
+            color: AppColors.primary.withValues(alpha: 0.1),
             blurRadius: 20,
             spreadRadius: 0,
           ),

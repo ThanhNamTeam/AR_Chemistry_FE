@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
@@ -79,10 +79,9 @@ class _VerifyOtpScreenState
 
   Future<void> _verify() async {
 
-    final email =
-    ModalRoute.of(context)!
-        .settings
-        .arguments as String;
+    final args = ModalRoute.of(context)?.settings.arguments;
+    if (args is! String) return;
+    final email = args;
 
     if (_otpCtrl.text.trim().isEmpty) {
       return;
@@ -111,11 +110,11 @@ class _VerifyOtpScreenState
         ),
       );
 
-      Navigator.pushNamedAndRemoveUntil(
+      unawaited(Navigator.pushNamedAndRemoveUntil(
         context,
         AppRoutes.login,
             (_) => false,
-      );
+      ));
 
     } on AuthException catch (e) {
 
@@ -139,10 +138,9 @@ class _VerifyOtpScreenState
   Future<void> _resendCode() async {
     if (_resendRemaining > 0) return;
 
-    final email =
-    ModalRoute.of(context)!
-        .settings
-        .arguments as String;
+    final args = ModalRoute.of(context)?.settings.arguments;
+    if (args is! String) return;
+    final email = args;
 
     _startResendCooldown();
 
@@ -221,16 +219,16 @@ class _VerifyOtpScreenState
                         shape: BoxShape.circle,
                         border: Border.all(
                           color: AppColors.primary
-                              .withOpacity(0.5),
+                              .withValues(alpha: 0.5),
                           width: 1.5,
                         ),
                         gradient:
                         LinearGradient(
                           colors: [
                             AppColors.primary
-                                .withOpacity(0.2),
+                                .withValues(alpha: 0.2),
                             AppColors.accent
-                                .withOpacity(0.2),
+                                .withValues(alpha: 0.2),
                           ],
                         ),
                       ),
@@ -290,14 +288,14 @@ class _VerifyOtpScreenState
 
                       decoration: BoxDecoration(
                         color: AppColors.cardBg
-                            .withOpacity(0.5),
+                            .withValues(alpha: 0.5),
 
                         borderRadius:
                         BorderRadius.circular(16),
 
                         border: Border.all(
                           color: AppColors.primary
-                              .withOpacity(0.3),
+                              .withValues(alpha: 0.3),
                           width: 1.5,
                         ),
 
@@ -305,7 +303,7 @@ class _VerifyOtpScreenState
                           BoxShadow(
                             color:
                             AppColors.primary
-                                .withOpacity(
+                                .withValues(alpha: 
                                 0.1),
                             blurRadius: 30,
                           ),
@@ -375,7 +373,7 @@ class _VerifyOtpScreenState
                                     color:
                                     AppColors
                                         .primary
-                                        .withOpacity(
+                                        .withValues(alpha: 
                                         0.35),
 
                                     blurRadius:
@@ -465,7 +463,7 @@ class _VerifyOtpScreenState
       child: AnimatedBuilder(
         animation: _bgPulse,
 
-        builder: (_, __) => Stack(
+        builder: (_, _) => Stack(
           children: [
 
             Positioned(
@@ -483,7 +481,7 @@ class _VerifyOtpScreenState
                     shape: BoxShape.circle,
 
                     color: AppColors.primary
-                        .withOpacity(0.05),
+                        .withValues(alpha: 0.05),
                   ),
                 ),
               ),
@@ -507,7 +505,7 @@ class _VerifyOtpScreenState
                     shape: BoxShape.circle,
 
                     color: AppColors.accent
-                        .withOpacity(0.05),
+                        .withValues(alpha: 0.05),
                   ),
                 ),
               ),

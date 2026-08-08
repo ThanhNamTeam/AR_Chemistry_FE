@@ -127,7 +127,7 @@ class _StudentQuizListScreenState extends State<StudentQuizListScreen> {
         ),
       ),
     );
-    if (mounted) _reload(); // trạng thái phản ứng đổi sau khi làm bài
+    if (mounted) unawaited(_reload()); // trạng thái phản ứng đổi sau khi làm bài
   }
 
   Future<void> _start(StudentReactionModel r) async {

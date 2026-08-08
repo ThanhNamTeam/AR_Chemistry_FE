@@ -61,7 +61,7 @@ class AdminProvider extends ChangeNotifier {
   AdminProvider();
 
   int _substancesPage = 0;
-  int _substancesSize = 20;
+  final int _substancesSize = 20;
   bool _hasMoreSubstances = true;
   bool _isLoadingMoreSubstances = false;
 

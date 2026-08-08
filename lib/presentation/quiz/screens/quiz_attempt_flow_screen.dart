@@ -153,7 +153,7 @@ class _QuizAttemptFlowScreenState extends State<QuizAttemptFlowScreen> {
   Future<void> _openArScanner() async {
     ActiveQuizAttempt.arm(widget.attemptCode);
     await Navigator.pushNamed(context, AppRoutes.arAssetLoading);
-    if (mounted) _refreshState();
+    if (mounted) unawaited(_refreshState());
   }
 
   Future<void> _select(String questionId, String optionKey) async {
@@ -281,7 +281,10 @@ class _QuizAttemptFlowScreenState extends State<QuizAttemptFlowScreen> {
       canPop: false,
       onPopInvokedWithResult: (didPop, _) async {
         if (didPop) return;
-        if (await _confirmLeave() && mounted) Navigator.pop(context);
+        final shouldLeave = await _confirmLeave();
+        if (!shouldLeave || !mounted) return;
+        // ignore: use_build_context_synchronously
+        Navigator.pop(context);
       },
       child: Scaffold(
         backgroundColor: AppColors.backgroundDark,

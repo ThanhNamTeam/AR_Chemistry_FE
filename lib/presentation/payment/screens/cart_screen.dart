@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../../../domain/models/cart_item_model.dart';
@@ -33,10 +33,10 @@ class CartScreen extends StatelessWidget {
                       child: Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.1),
+                          color: AppColors.primary.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                              color: AppColors.primary.withOpacity(0.3)),
+                              color: AppColors.primary.withValues(alpha: 0.3)),
                         ),
                         child: Icon(Icons.arrow_back,
                             color: AppColors.primary, size: 20),
@@ -97,8 +97,8 @@ class CartScreen extends StatelessWidget {
             height: 80,
             decoration: BoxDecoration(
               gradient: LinearGradient(colors: [
-                AppColors.primary.withOpacity(0.2),
-                AppColors.secondary.withOpacity(0.2),
+                AppColors.primary.withValues(alpha: 0.2),
+                AppColors.secondary.withValues(alpha: 0.2),
               ]),
               borderRadius: BorderRadius.circular(16),
             ),
@@ -152,7 +152,7 @@ class CartScreen extends StatelessWidget {
           child: ListView.separated(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
             itemCount: items.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 12),
+            separatorBuilder: (_, _) => const SizedBox(height: 12),
             itemBuilder: (ctx, i) {
               final item = items[i];
               if (item.type == CartItemType.card) {
@@ -187,10 +187,10 @@ class CartScreen extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: AppColors.backgroundDark.withOpacity(0.8),
+            color: AppColors.backgroundDark.withValues(alpha: 0.8),
             border: Border(
               top: BorderSide(
-                  color: AppColors.primary.withOpacity(0.2), width: 1),
+                  color: AppColors.primary.withValues(alpha: 0.2), width: 1),
             ),
           ),
           child: Column(
@@ -263,9 +263,9 @@ class _CartCardRow extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.cardBg.withOpacity(0.5),
+        color: AppColors.cardBg.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.primary.withOpacity(0.2)),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
       ),
       child: Row(
         children: [
@@ -274,11 +274,11 @@ class _CartCardRow extends StatelessWidget {
             height: 64,
             decoration: BoxDecoration(
               gradient: LinearGradient(colors: [
-                color.withOpacity(0.2),
+                color.withValues(alpha: 0.2),
                 AppColors.cardBg,
               ]),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: color.withOpacity(0.5), width: 1.5),
+              border: Border.all(color: color.withValues(alpha: 0.5), width: 1.5),
             ),
             child: Center(
               child: Text(symbol,

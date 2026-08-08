@@ -1,4 +1,4 @@
-import 'package:fl_chart/fl_chart.dart';
+﻿import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../shared/styles/app_colors.dart';
@@ -24,7 +24,7 @@ class PortalGlassCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: (accentBorder ?? AppColors.primary)
-              .withOpacity(AppColors.isLight ? 0.28 : 0.22),
+              .withValues(alpha: AppColors.isLight ? 0.28 : 0.22),
         ),
         boxShadow: [
           BoxShadow(
@@ -68,7 +68,7 @@ class PortalStatCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.15),
+                  color: color.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(icon, color: color, size: 18),
@@ -178,9 +178,9 @@ class PortalBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
+        color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withOpacity(0.35)),
+        border: Border.all(color: color.withValues(alpha: 0.35)),
       ),
       child: Text(
         text,
@@ -215,7 +215,7 @@ class PortalEmptyState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 48, color: AppColors.textSecondary.withOpacity(0.5)),
+            Icon(icon, size: 48, color: AppColors.textSecondary.withValues(alpha: 0.5)),
             const SizedBox(height: 16),
             Text(
               title,
@@ -275,7 +275,7 @@ class PortalPeriodChips extends StatelessWidget {
                 border: Border.all(
                   color: selected
                       ? Colors.transparent
-                      : AppColors.primary.withOpacity(0.25),
+                      : AppColors.primary.withValues(alpha: 0.25),
                 ),
               ),
               child: Text(
@@ -335,7 +335,7 @@ class PortalBarChartCard extends StatelessWidget {
                   show: true,
                   drawVerticalLine: false,
                   getDrawingHorizontalLine: (_) => FlLine(
-                    color: AppColors.primary.withOpacity(0.08),
+                    color: AppColors.primary.withValues(alpha: 0.08),
                     strokeWidth: 1,
                   ),
                 ),
@@ -424,7 +424,7 @@ class PortalPrimaryButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: AppColors.primary.withOpacity(0.25),
+                color: AppColors.primary.withValues(alpha: 0.25),
                 blurRadius: 16,
                 offset: const Offset(0, 6),
               ),

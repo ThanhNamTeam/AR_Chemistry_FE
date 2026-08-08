@@ -144,6 +144,7 @@ class ThemeProvider extends ChangeNotifier {
               secondary: option.accent,
               onSecondary: AppColors.onGradient,
               surface: const Color(0xFFF8FAFC),
+              // ignore: deprecated_member_use
               background: const Color(0xFFFFFFFF),
             )
           : ColorScheme.dark(
@@ -152,6 +153,7 @@ class ThemeProvider extends ChangeNotifier {
               secondary: option.accent,
               onSecondary: AppColors.onGradient,
               surface: const Color(0xFF0F172A),
+              // ignore: deprecated_member_use
               background: const Color(0xFF020817),
             ),
       scaffoldBackgroundColor:

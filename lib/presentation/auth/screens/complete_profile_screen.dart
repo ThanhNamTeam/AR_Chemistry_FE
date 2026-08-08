@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -58,13 +60,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       setState(() => _loading = false);
 
       if (result.isSignUpComplete) {
-        Navigator.pushReplacementNamed(context, AppRoutes.login);
+        unawaited(Navigator.pushReplacementNamed(context, AppRoutes.login));
       } else {
-        Navigator.pushReplacementNamed(
+        unawaited(Navigator.pushReplacementNamed(
           context,
           AppRoutes.verifyOtp,
           arguments: email,
-        );
+        ));
       }
     } on AuthException catch (e) {
       if (!mounted) return;

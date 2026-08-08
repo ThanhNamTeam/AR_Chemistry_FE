@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -20,8 +20,9 @@ class _AdminCardsTabState extends State<AdminCardsTab> {
   void initState() {
     super.initState();
 
+    final adminProvider = context.read<AdminProvider>();
     Future.microtask(() {
-      context.read<AdminProvider>().loadChemicalCards();
+      adminProvider.loadChemicalCards();
     });
   }
 
@@ -78,7 +79,7 @@ class _AdminCardsTabState extends State<AdminCardsTab> {
                 final frontBytes = await frontFile!.readAsBytes();
                 final backBytes = await backFile!.readAsBytes();
 
-                await context.read<AdminProvider>().uploadChemicalCardImages(
+                await context.read<AdminProvider>().uploadChemicalCardImages( // ignore: use_build_context_synchronously
                   cardId: card.id,
                   frontBytes: frontBytes,
                   frontSize: frontBytes.length,
@@ -473,7 +474,7 @@ class _CardPreview extends StatelessWidget {
         color: AppColors.cardBg,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppColors.cardBorder.withOpacity(0.55),
+          color: AppColors.cardBorder.withValues(alpha: 0.55),
         ),
       ),
       clipBehavior: Clip.antiAlias,
@@ -492,7 +493,7 @@ class _CardPreview extends StatelessWidget {
           : Image.network(
         imageUrl!,
         fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) {
+        errorBuilder: (_, _, _) {
           return Center(
             child: Icon(
               Icons.broken_image_outlined,
@@ -603,9 +604,9 @@ class _MiniBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
+        color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: color.withOpacity(0.35)),
+        border: Border.all(color: color.withValues(alpha: 0.35)),
       ),
       child: Text(
         text,

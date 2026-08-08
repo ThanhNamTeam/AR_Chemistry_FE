@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/app_portal.dart';
@@ -104,14 +104,14 @@ class _RoundedBeamBorderPainter extends CustomPainter {
     final beamLen = total * beamFraction;
 
     final outerGlow = Paint()
-      ..color = accentColor.withOpacity(showGlow ? 0.55 : 0.35)
+      ..color = accentColor.withValues(alpha: showGlow ? 0.55 : 0.35)
       ..strokeWidth = showGlow ? 6.0 : 4.5
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke
       ..maskFilter = MaskFilter.blur(BlurStyle.normal, showGlow ? 8 : 5);
 
     final innerBeam = Paint()
-      ..color = Colors.white.withOpacity(showGlow ? 0.92 : 0.78)
+      ..color = Colors.white.withValues(alpha: showGlow ? 0.92 : 0.78)
       ..strokeWidth = 2.2
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;

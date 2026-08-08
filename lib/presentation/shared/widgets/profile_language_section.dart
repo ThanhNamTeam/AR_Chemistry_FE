@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/l10n/app_localizations.dart';
@@ -94,7 +94,7 @@ class _LanguageChip extends StatelessWidget {
           border: Border.all(
             color: selected
                 ? Colors.transparent
-                : AppColors.primary.withOpacity(0.3),
+                : AppColors.primary.withValues(alpha: 0.3),
           ),
         ),
         child: Row(
@@ -107,12 +107,12 @@ class _LanguageChip extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: selected
-                    ? Colors.white.withOpacity(0.22)
-                    : AppColors.primary.withOpacity(0.12),
+                    ? Colors.white.withValues(alpha: 0.22)
+                    : AppColors.primary.withValues(alpha: 0.12),
                 border: Border.all(
                   color: selected
-                      ? Colors.white.withOpacity(0.35)
-                      : AppColors.primary.withOpacity(0.25),
+                      ? Colors.white.withValues(alpha: 0.35)
+                      : AppColors.primary.withValues(alpha: 0.25),
                 ),
               ),
               child: Text(

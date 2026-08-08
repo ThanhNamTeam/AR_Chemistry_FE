@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/l10n/app_localizations.dart';
@@ -256,7 +256,7 @@ class _ReactionListScreenState
                       BorderRadius.circular(14),
                       borderSide: BorderSide(
                         color: AppColors.primary
-                            .withOpacity(0.2),
+                            .withValues(alpha: 0.2),
                       ),
                     ),
                     enabledBorder:
@@ -265,7 +265,7 @@ class _ReactionListScreenState
                       BorderRadius.circular(14),
                       borderSide: BorderSide(
                         color: AppColors.primary
-                            .withOpacity(0.2),
+                            .withValues(alpha: 0.2),
                       ),
                     ),
                   ),
@@ -426,7 +426,7 @@ class _ReactionListTile
         BorderRadius.circular(16),
         border: Border.all(
           color: AppColors.primary
-              .withOpacity(0.2),
+              .withValues(alpha: 0.2),
         ),
       ),
       child: Column(
@@ -455,10 +455,10 @@ class _ReactionListTile
                     vertical: 5,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.success.withOpacity(0.14),
+                    color: AppColors.success.withValues(alpha: 0.14),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: AppColors.success.withOpacity(0.4),
+                      color: AppColors.success.withValues(alpha: 0.4),
                     ),
                   ),
                   child: Row(
@@ -560,7 +560,7 @@ class _ReactionListTile
                     AppColors.primary,
                     side: BorderSide(
                       color: AppColors.primary
-                          .withOpacity(0.4),
+                          .withValues(alpha: 0.4),
                     ),
                   ),
                 ),
@@ -658,7 +658,7 @@ class _ErrorCard extends StatelessWidget {
         BorderRadius.circular(16),
         border: Border.all(
           color:
-          AppColors.error.withOpacity(0.4),
+          AppColors.error.withValues(alpha: 0.4),
         ),
       ),
       child: Column(

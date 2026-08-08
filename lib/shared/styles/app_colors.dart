@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 /// Theme-aware palette. Call [applyTheme] when the user changes theme.
 class AppColors {
@@ -180,15 +180,15 @@ class AppColors {
   }
 
   static Color _tintBackground(Color c) {
-    return Color.alphaBlend(c.withOpacity(0.12), const Color(0xFF020817));
+    return Color.alphaBlend(c.withValues(alpha: 0.12), const Color(0xFF020817));
   }
 
   /// Solid card surface — avoids dark glass on light backgrounds.
   static Color get cardSurface =>
-      isLight ? const Color(0xFFFFFFFF) : cardBg.withOpacity(0.55);
+      isLight ? const Color(0xFFFFFFFF) : cardBg.withValues(alpha: 0.55);
 
   static Color get cardSurfaceMuted =>
-      isLight ? const Color(0xFFF1F5F9) : cardBg.withOpacity(0.45);
+      isLight ? const Color(0xFFF1F5F9) : cardBg.withValues(alpha: 0.45);
 
   /// Links, badges, action labels on light UI.
   static Color get accentText => isLight ? primaryDark : primaryLight;
@@ -203,15 +203,15 @@ class AppColors {
   static Color get navMuted => isLight ? const Color(0xFF64748B) : textSecondary;
 
   static Color get navBarBg =>
-      isLight ? const Color(0xFFFFFFFF) : cardBg.withOpacity(0.92);
+      isLight ? const Color(0xFFFFFFFF) : cardBg.withValues(alpha: 0.92);
 
   static Color get shadowSoft => isLight
-      ? Colors.black.withOpacity(0.08)
-      : Colors.black.withOpacity(0.25);
+      ? Colors.black.withValues(alpha: 0.08)
+      : Colors.black.withValues(alpha: 0.25);
 
   static Color get shadowCard => isLight
-      ? Colors.black.withOpacity(0.06)
-      : AppColors.primary.withOpacity(0.06);
+      ? Colors.black.withValues(alpha: 0.06)
+      : AppColors.primary.withValues(alpha: 0.06);
 
   static Color substanceStateColor(String? state) {
     switch (state?.toUpperCase()) {
@@ -244,13 +244,13 @@ class AppColors {
   static Color substanceStateSurface(String? state) {
     final color = substanceStateColor(state);
 
-    return color.withOpacity(isLight ? 0.12 : 0.16);
+    return color.withValues(alpha: isLight ? 0.12 : 0.16);
   }
 
   static Color substanceStateBorder(String? state) {
     final color = substanceStateColor(state);
 
-    return color.withOpacity(isLight ? 0.35 : 0.45);
+    return color.withValues(alpha: isLight ? 0.35 : 0.45);
   }
 }
 

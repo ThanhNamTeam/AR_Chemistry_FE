@@ -77,10 +77,11 @@ import 'presentation/quiz/screens/student_quiz_attempt_detail_screen.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Load .env before Firebase so API keys are available.
+  await EnvConfig.load();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   await NotificationService.instance.init();
-  await EnvConfig.load();
   await _configureAmplify();
 
   AppColors.applyTheme(
@@ -89,7 +90,7 @@ Future<void> main() async {
     light: false,
   );
 
-  SystemChrome.setPreferredOrientations([
+  await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
@@ -253,11 +254,12 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
     }
 
     if (settings.name == AppRoutes.substanceDetail) {
-      final substanceId = settings.arguments as String;
+      final args = settings.arguments;
+      if (args is! String) return null;
 
       return MaterialPageRoute(
         settings: settings,
-        builder: (_) => SubstanceDetailScreen(substanceId: substanceId),
+        builder: (_) => SubstanceDetailScreen(substanceId: args),
       );
     }
 

@@ -1,4 +1,4 @@
-// AR Screen - placeholder for actual AR implementation
+﻿// AR Screen - placeholder for actual AR implementation
 // This file is ready for integration with ARCore/ARKit
 import 'package:flutter/material.dart';
 import '../../../core/l10n/app_localizations.dart';
@@ -31,10 +31,10 @@ class ARScreen extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.15),
+                    color: AppColors.primary.withValues(alpha: 0.15),
                     shape: BoxShape.circle,
                     border: Border.all(
-                        color: AppColors.primary.withOpacity(0.5), width: 2),
+                        color: AppColors.primary.withValues(alpha: 0.5), width: 2),
                   ),
                   child: Icon(Icons.view_in_ar,
                       color: AppColors.primary, size: 56),
@@ -64,10 +64,10 @@ class ARScreen extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.5),
+                    color: Colors.black.withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                        color: AppColors.primary.withOpacity(0.4)),
+                        color: AppColors.primary.withValues(alpha: 0.4)),
                   ),
                   child: Icon(Icons.arrow_back,
                       color: AppColors.primary, size: 20),

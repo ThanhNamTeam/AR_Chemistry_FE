@@ -1,3 +1,5 @@
+﻿import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -70,10 +72,10 @@ class _GradeSelectionScreenState extends State<GradeSelectionScreen> {
                           onTap: () async {
                             await session.selectGrade(grade);
                             if (!context.mounted) return;
-                            Navigator.pushNamed(
+                            unawaited(Navigator.pushNamed(
                               context,
                               AppRoutes.reactionCategory,
-                            );
+                            ));
                           },
                         ),
                       ),
@@ -113,7 +115,7 @@ class _GradeTile extends StatelessWidget {
           border: Border.all(
             color: selected
                 ? Colors.transparent
-                : AppColors.primary.withOpacity(0.25),
+                : AppColors.primary.withValues(alpha: 0.25),
           ),
         ),
         child: Row(

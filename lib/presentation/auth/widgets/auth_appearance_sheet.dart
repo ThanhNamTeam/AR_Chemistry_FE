@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import '../../../core/l10n/app_localizations.dart';
 import '../../../domain/models/app_portal.dart';
@@ -22,7 +22,7 @@ class AuthAppearanceSheet {
           decoration: BoxDecoration(
             color: AppColors.cardSurface,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-            border: Border.all(color: AppColors.primary.withOpacity(0.2)),
+            border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
           ),
           child: ListView(
             controller: scrollCtrl,
@@ -33,7 +33,7 @@ class AuthAppearanceSheet {
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: AppColors.textSecondary.withOpacity(0.35),
+                    color: AppColors.textSecondary.withValues(alpha: 0.35),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -74,9 +74,9 @@ class AuthSettingsButton extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: AppColors.primary.withOpacity(0.1),
+            color: AppColors.primary.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.primary.withOpacity(0.28)),
+            border: Border.all(color: AppColors.primary.withValues(alpha: 0.28)),
           ),
           child: Icon(
             Icons.tune_rounded,

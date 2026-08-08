@@ -64,7 +64,7 @@ class StaffFeedbackItem {
 class StaffProvider extends ChangeNotifier {
 
   List<StaffFeedbackItem> _feedbacks = [];
-  List<QuizDraftModel> _quizDrafts = [];
+  final List<QuizDraftModel> _quizDrafts = [];
   bool _loading = false;
 
   final FeedbackApiService _feedbackApi = FeedbackApiService();
@@ -342,7 +342,7 @@ class StaffProvider extends ChangeNotifier {
       await _uploadApi.uploadFileToS3(
         uploadUrl: presigned.uploadUrl,
         bytes: bytes,
-        contentType: presigned.contentType ?? contentType,
+        contentType: presigned.contentType,
       );
 
       await _staffQuizManagementApi.startQuizImport(

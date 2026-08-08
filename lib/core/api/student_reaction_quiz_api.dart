@@ -96,7 +96,8 @@ class StudentReactionQuizApi {
           body: jsonEncode({
             'scannedCardCodes': scannedCardCodes,
             'reactionSuccessful': true,
-            if (arSessionCode != null) 'arSessionCode': arSessionCode,
+            // ignore: use_null_aware_elements
+          if (arSessionCode != null) 'arSessionCode': arSessionCode,
           }),
         )
         .timeout(ApiConstants.timeout);

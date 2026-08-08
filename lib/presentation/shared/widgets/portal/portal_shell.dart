@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/l10n/app_localizations.dart';
@@ -113,7 +113,7 @@ class _PortalHeader extends StatelessWidget {
               color: Colors.white,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: AppColors.cardBorder.withOpacity(0.5),
+                color: AppColors.cardBorder.withValues(alpha: 0.5),
               ),
             ),
             child: Image.asset(
@@ -147,10 +147,10 @@ class _PortalHeader extends StatelessWidget {
                         vertical: 3,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.15),
+                        color: AppColors.primary.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: AppColors.primary.withOpacity(0.35),
+                          color: AppColors.primary.withValues(alpha: 0.35),
                         ),
                       ),
                       child: Text(
@@ -225,9 +225,9 @@ class _HeaderIconButton extends StatelessWidget {
             margin: const EdgeInsets.only(left: 4),
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: c.withOpacity(0.1),
+              color: c.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: c.withOpacity(0.25)),
+              border: Border.all(color: c.withValues(alpha: 0.25)),
             ),
             child: Icon(icon, color: c, size: 22),
           ),
@@ -309,7 +309,7 @@ class _PortalBottomNavState extends State<_PortalBottomNav> {
         decoration: BoxDecoration(
           border: Border(
             top: BorderSide(
-              color: AppColors.primary.withOpacity(0.2),
+              color: AppColors.primary.withValues(alpha: 0.2),
               width: 1,
             ),
           ),

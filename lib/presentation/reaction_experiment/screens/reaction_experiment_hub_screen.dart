@@ -1,11 +1,9 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/api/ar_access_api.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/l10n/locale_provider.dart';
-import '../../../domain/models/reaction_experiment/experiment_attempt_record.dart';
-import '../../../domain/models/reaction_experiment/experiment_quiz_question.dart';
 import '../../../domain/models/student_quiz_attempt_detail_model.dart';
 import '../../../domain/models/student_quiz_question_model.dart';
 import '../../ar_view/models/scan_launch_args.dart';
@@ -532,7 +530,7 @@ class _ArSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.cardSurface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.primary.withOpacity(0.25)),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.25)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -557,7 +555,7 @@ class _ArSection extends StatelessWidget {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.success.withOpacity(0.15),
+                    color: AppColors.success.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Row(
@@ -590,10 +588,10 @@ class _ArSection extends StatelessWidget {
                 vertical: 12,
               ),
               decoration: BoxDecoration(
-                color: AppColors.backgroundDark.withOpacity(0.45),
+                color: AppColors.backgroundDark.withValues(alpha: 0.45),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: AppColors.subtitleAccent.withOpacity(0.35),
+                  color: AppColors.subtitleAccent.withValues(alpha: 0.35),
                 ),
               ),
               child: Column(
@@ -642,7 +640,7 @@ class _ArSection extends StatelessWidget {
               label: Text(l10n.openArScan),
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppColors.primary,
-                side: BorderSide(color: AppColors.primary.withOpacity(0.45)),
+                side: BorderSide(color: AppColors.primary.withValues(alpha: 0.45)),
                 padding: const EdgeInsets.symmetric(vertical: 12),
               ),
             ),
@@ -671,7 +669,7 @@ class _ScriptSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.cardSurface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.primary.withOpacity(0.2)),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -811,7 +809,7 @@ class _QuestionCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
           color:
-          AppColors.primary.withOpacity(0.15),
+          AppColors.primary.withValues(alpha: 0.15),
         ),
       ),
       child: Column(
@@ -886,10 +884,10 @@ class _QuestionCard extends StatelessWidget {
                     selectedOptionKey ==
                         option.optionKey
                         ? AppColors.primary
-                        .withOpacity(0.15)
+                        .withValues(alpha: 0.15)
                         : AppColors
                         .backgroundDark
-                        .withOpacity(0.35),
+                        .withValues(alpha: 0.35),
                     borderRadius:
                     BorderRadius.circular(10),
                     border: Border.all(
@@ -897,10 +895,10 @@ class _QuestionCard extends StatelessWidget {
                       selectedOptionKey ==
                           option.optionKey
                           ? AppColors.primary
-                          .withOpacity(0.5)
+                          .withValues(alpha: 0.5)
                           : AppColors
                           .cardBorder
-                          .withOpacity(0.3),
+                          .withValues(alpha: 0.3),
                     ),
                   ),
                   child: Row(
@@ -922,7 +920,7 @@ class _QuestionCard extends StatelessWidget {
                               .primary
                               : AppColors
                               .backgroundDark
-                              .withOpacity(
+                              .withValues(alpha: 
                             0.45,
                           ),
                         ),
@@ -1056,7 +1054,7 @@ class _ResultPanel extends StatelessWidget {
                 BorderRadius.circular(14),
                 border: Border.all(
                   color:
-                  answerColor.withOpacity(0.35),
+                  answerColor.withValues(alpha: 0.35),
                 ),
               ),
               child: Column(
@@ -1170,7 +1168,7 @@ class _ResultPanel extends StatelessWidget {
               AppColors.primary,
               side: BorderSide(
                 color: AppColors.primary
-                    .withOpacity(0.4),
+                    .withValues(alpha: 0.4),
               ),
               padding:
               const EdgeInsets.symmetric(
@@ -1210,10 +1208,10 @@ class _ResultBadge extends StatelessWidget {
         vertical: 6,
       ),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
+        color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: color.withOpacity(0.3),
+          color: color.withValues(alpha: 0.3),
         ),
       ),
       child: Row(
@@ -1255,11 +1253,11 @@ class _StatusBadge extends StatelessWidget {
         vertical: 6,
       ),
       decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.12),
+        color: AppColors.primary.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color:
-          AppColors.primary.withOpacity(0.3),
+          AppColors.primary.withValues(alpha: 0.3),
         ),
       ),
       child: Text(
@@ -1287,10 +1285,10 @@ class _InlineErrorCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.error.withOpacity(0.1),
+        color: AppColors.error.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: AppColors.error.withOpacity(0.35),
+          color: AppColors.error.withValues(alpha: 0.35),
         ),
       ),
       child: Row(
@@ -1336,7 +1334,7 @@ class _LoadQuizErrorCard extends StatelessWidget {
         color: AppColors.cardSurface,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: AppColors.error.withOpacity(0.4),
+          color: AppColors.error.withValues(alpha: 0.4),
         ),
       ),
       child: Column(

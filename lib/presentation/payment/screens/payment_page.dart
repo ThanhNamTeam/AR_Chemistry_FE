@@ -1,3 +1,5 @@
+﻿import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -81,7 +83,7 @@ class _PaymentPageState extends State<PaymentPage> {
         return;
       }
       setState(() => _showQRModal = false);
-      Navigator.pushNamed(context, AppRoutes.paymentSuccess);
+      unawaited(Navigator.pushNamed(context, AppRoutes.paymentSuccess));
     } finally {
       if (mounted) setState(() => _paying = false);
     }
@@ -112,10 +114,10 @@ class _PaymentPageState extends State<PaymentPage> {
                           child: Container(
                             padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
-                              color: AppColors.primary.withOpacity(0.1),
+                              color: AppColors.primary.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                  color: AppColors.primary.withOpacity(0.3)),
+                                  color: AppColors.primary.withValues(alpha: 0.3)),
                             ),
                             child: Icon(Icons.arrow_back,
                                 color: AppColors.primary, size: 20),
@@ -182,10 +184,10 @@ class _PaymentPageState extends State<PaymentPage> {
                               Container(
                                 padding: const EdgeInsets.all(16),
                                 decoration: BoxDecoration(
-                                  color: AppColors.cardBg.withOpacity(0.5),
+                                  color: AppColors.cardBg.withValues(alpha: 0.5),
                                   borderRadius: BorderRadius.circular(16),
                                   border: Border.all(
-                                      color: AppColors.primary.withOpacity(0.2)),
+                                      color: AppColors.primary.withValues(alpha: 0.2)),
                                 ),
                                 child: Row(
                                   mainAxisAlignment:
@@ -272,9 +274,9 @@ class _CartRow extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AppColors.cardBg.withOpacity(0.5),
+        color: AppColors.cardBg.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.primary.withOpacity(0.2)),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
       ),
       child: Row(
         children: [
@@ -395,7 +397,7 @@ class _QRModal extends StatelessWidget {
         '&accountName=NGUYEN%20HOAI%20AN';
 
     return Container(
-      color: Colors.black.withOpacity(0.8),
+      color: Colors.black.withValues(alpha: 0.8),
       child: Center(
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 24),

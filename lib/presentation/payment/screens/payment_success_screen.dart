@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../../routes/app_navigation.dart';
@@ -60,14 +60,14 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       gradient: LinearGradient(colors: [
-                        AppColors.success.withOpacity(0.2),
-                        AppColors.secondary.withOpacity(0.2),
+                        AppColors.success.withValues(alpha: 0.2),
+                        AppColors.secondary.withValues(alpha: 0.2),
                       ]),
                       border: Border.all(
-                          color: AppColors.success.withOpacity(0.6), width: 2),
+                          color: AppColors.success.withValues(alpha: 0.6), width: 2),
                       boxShadow: [
                         BoxShadow(
-                            color: AppColors.success.withOpacity(0.3),
+                            color: AppColors.success.withValues(alpha: 0.3),
                             blurRadius: 30)
                       ],
                     ),
@@ -108,7 +108,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
                             borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
-                                  color: AppColors.primary.withOpacity(0.4),
+                                  color: AppColors.primary.withValues(alpha: 0.4),
                                   blurRadius: 20,
                                   offset: const Offset(0, 6))
                             ],
@@ -139,7 +139,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
                             color: AppColors.cardBg,
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(
-                                color: AppColors.primary.withOpacity(0.3)),
+                                color: AppColors.primary.withValues(alpha: 0.3)),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,

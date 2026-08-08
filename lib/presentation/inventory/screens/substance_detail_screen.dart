@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import '../../../core/api/inventory_api.dart';
 import '../../../core/l10n/app_localizations.dart';
@@ -76,10 +76,10 @@ class _SubstanceDetailScreenState extends State<SubstanceDetailScreen> {
                       child: Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.1),
+                          color: AppColors.primary.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: AppColors.primary.withOpacity(0.3),
+                            color: AppColors.primary.withValues(alpha: 0.3),
                           ),
                         ),
                         child: Icon(
@@ -240,7 +240,7 @@ class _HeroCard extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: stateColor.withOpacity(0.10),
+            color: stateColor.withValues(alpha: 0.10),
             blurRadius: 20,
           ),
         ],
@@ -256,7 +256,7 @@ class _HeroCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: stateColor.withOpacity(0.28),
+                  color: stateColor.withValues(alpha: 0.28),
                   blurRadius: 24,
                 ),
               ],
@@ -427,7 +427,7 @@ class _InfoSection extends StatelessWidget {
         color: AppColors.cardSurface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppColors.primary.withOpacity(0.2),
+          color: AppColors.primary.withValues(alpha: 0.2),
         ),
       ),
       child: Column(

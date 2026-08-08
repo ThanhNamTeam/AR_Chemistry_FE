@@ -1,3 +1,4 @@
+﻿import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -172,10 +173,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.1),
+                            color: AppColors.primary.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                                color: AppColors.primary.withOpacity(0.3)),
+                                color: AppColors.primary.withValues(alpha: 0.3)),
                           ),
                           child: Icon(Icons.arrow_back,
                               color: AppColors.primary, size: 20),
@@ -199,15 +200,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(colors: [
-                      AppColors.primary.withOpacity(0.15),
-                      AppColors.secondary.withOpacity(0.15),
+                      AppColors.primary.withValues(alpha: 0.15),
+                      AppColors.secondary.withValues(alpha: 0.15),
                     ]),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                        color: AppColors.primary.withOpacity(0.3), width: 1.5),
+                        color: AppColors.primary.withValues(alpha: 0.3), width: 1.5),
                     boxShadow: [
                       BoxShadow(
-                          color: AppColors.primary.withOpacity(0.1),
+                          color: AppColors.primary.withValues(alpha: 0.1),
                           blurRadius: 20),
                     ],
                   ),
@@ -244,7 +245,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   boxShadow: [
                                     BoxShadow(
                                       color:
-                                          AppColors.primary.withOpacity(0.4),
+                                          AppColors.primary.withValues(alpha: 0.4),
                                       blurRadius: 16,
                                     ),
                                   ],
@@ -361,12 +362,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           horizontal: 12, vertical: 6),
                                       decoration: BoxDecoration(
                                         color: AppColors.primary
-                                            .withOpacity(0.12),
+                                            .withValues(alpha: 0.12),
                                         borderRadius:
                                             BorderRadius.circular(16),
                                         border: Border.all(
                                           color: AppColors.primary
-                                              .withOpacity(0.45),
+                                              .withValues(alpha: 0.45),
                                         ),
                                       ),
                                       child: Row(
@@ -410,7 +411,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       color: AppColors.cardSurface,
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
-                          color: AppColors.cardBorder.withOpacity(0.5)),
+                          color: AppColors.cardBorder.withValues(alpha: 0.5)),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -432,7 +433,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               height: 28,
                               margin:
                                   const EdgeInsets.symmetric(horizontal: 12),
-                              color: AppColors.cardBorder.withOpacity(0.4),
+                              color: AppColors.cardBorder.withValues(alpha: 0.4),
                             ),
                             Expanded(
                               child: _StatCard(
@@ -562,23 +563,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           if (confirmed != true || !context.mounted) return;
 
                           await state.logout();
+                          if (!context.mounted) return;
                           await activatePortal(context, AppPortal.auth);
                           if (context.mounted) {
-                            Navigator.pushNamedAndRemoveUntil(
+                            unawaited(Navigator.pushNamedAndRemoveUntil(
                               context,
                               AppRoutes.login,
                                   (r) => false,
-                            );
+                            ));
                           }
                         },
                         child: Container(
                           width: double.infinity,
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           decoration: BoxDecoration(
-                            color: AppColors.error.withOpacity(0.1),
+                            color: AppColors.error.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(
-                                color: AppColors.error.withOpacity(0.4)),
+                                color: AppColors.error.withValues(alpha: 0.4)),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -632,7 +634,7 @@ class _StatCard extends StatelessWidget {
           width: 34,
           height: 34,
           decoration: BoxDecoration(
-            color: color.withOpacity(0.12),
+            color: color.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(icon, color: color, size: 18),
@@ -690,7 +692,7 @@ class _MenuItem extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.cardSurface,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.cardBorder.withOpacity(0.4)),
+          border: Border.all(color: AppColors.cardBorder.withValues(alpha: 0.4)),
         ),
         child: Row(
           children: [
@@ -698,7 +700,7 @@ class _MenuItem extends StatelessWidget {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: color.withOpacity(0.15),
+                color: color.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(icon, color: color, size: 22),
@@ -765,7 +767,7 @@ class _ChatSettingsSection extends StatelessWidget {
             decoration: BoxDecoration(
               color: AppColors.cardSurface,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.cardBorder.withOpacity(0.4)),
+              border: Border.all(color: AppColors.cardBorder.withValues(alpha: 0.4)),
             ),
             child: Row(
               children: [
@@ -773,7 +775,7 @@ class _ChatSettingsSection extends StatelessWidget {
                   width: 44,
                   height: 44,
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.15),
+                    color: AppColors.primary.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
@@ -804,7 +806,7 @@ class _ChatSettingsSection extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 12,
                           color: enabled
-                              ? AppColors.primary.withOpacity(0.85)
+                              ? AppColors.primary.withValues(alpha: 0.85)
                               : AppColors.textSecondary,
                           fontFamily: 'Inter',
                         ),
@@ -815,10 +817,10 @@ class _ChatSettingsSection extends StatelessWidget {
                 Switch(
                   value: enabled,
                   onChanged: (value) => fabVisibility.setUserEnabled(value),
-                  activeColor: AppColors.primary,
-                  activeTrackColor: AppColors.primary.withOpacity(0.3),
+                  activeThumbColor: AppColors.primary,
+                  activeTrackColor: AppColors.primary.withValues(alpha: 0.3),
                   inactiveThumbColor: AppColors.textSecondary,
-                  inactiveTrackColor: AppColors.textSecondary.withOpacity(0.2),
+                  inactiveTrackColor: AppColors.textSecondary.withValues(alpha: 0.2),
                 ),
               ],
             ),

@@ -1,3 +1,4 @@
+﻿import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -40,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       if (!mounted) return;
 
       if (access.canScanAR) {
-        Navigator.pushNamed(context, AppRoutes.arAssetLoading);
+        unawaited(Navigator.pushNamed(context, AppRoutes.arAssetLoading));
       } else {
         _showArAccessDialog(access.message);
       }
@@ -369,12 +370,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 ? DecorationImage(
               image: isNetworkAvatar
                   ? NetworkImage(avatar)
-                  : FileImage(File(avatar!)) as ImageProvider,
+                  : FileImage(File(avatar)) as ImageProvider,
               fit: BoxFit.cover,
             )
                 : null,
             border: Border.all(
-              color: AppColors.primary.withOpacity(0.4),
+              color: AppColors.primary.withValues(alpha: 0.4),
               width: 1.5,
             ),
           ),
@@ -416,7 +417,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   borderRadius: BorderRadius.circular(999),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.primary.withOpacity(
+                      color: AppColors.primary.withValues(alpha: 
                         0.3 + 0.2 * _pulse1.value,
                       ),
                       blurRadius: 16 + 8 * _pulse1.value,
@@ -432,7 +433,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   gradient: AppColors.cyanEmeraldGradient,
                   borderRadius: BorderRadius.circular(999),
                   border: Border.all(
-                    color: AppColors.primary.withOpacity(0.5),
+                    color: AppColors.primary.withValues(alpha: 0.5),
                     width: 1.2,
                   ),
                 ),
@@ -505,7 +506,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   color: AppColors.cardSurface,
                   borderRadius: BorderRadius.circular(999),
                   border: Border.all(
-                    color: AppColors.primary.withOpacity(0.5),
+                    color: AppColors.primary.withValues(alpha: 0.5),
                     width: 1.2,
                   ),
                   boxShadow: [

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/l10n/app_localizations.dart';
@@ -87,7 +87,7 @@ class StaffDashboardTab extends StatelessWidget {
                 onTap: onOpenFeedback,
               ),
               Divider(
-                color: AppColors.primary.withOpacity(0.12),
+                color: AppColors.primary.withValues(alpha: 0.12),
                 height: 20,
               ),
               _QuickActionTile(
@@ -99,7 +99,7 @@ class StaffDashboardTab extends StatelessWidget {
                 onTap: onOpenQuiz,
               ),
               Divider(
-                color: AppColors.primary.withOpacity(0.12),
+                color: AppColors.primary.withValues(alpha: 0.12),
                 height: 20,
               ),
               _QuickActionTile(
@@ -135,7 +135,7 @@ class StaffDashboardTab extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: AppColors.amber.withOpacity(0.12),
+                        color: AppColors.amber.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Icon(
@@ -219,7 +219,7 @@ class _QuickActionTile extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.12),
+                  color: color.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(icon, color: color, size: 22),

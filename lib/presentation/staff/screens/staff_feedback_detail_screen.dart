@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/api/feedback_api_service.dart';
@@ -190,6 +190,7 @@ class _StaffFeedbackDetailScreenState extends State<StaffFeedbackDetailScreen> {
             ],
             const SizedBox(height: 16),
             DropdownButtonFormField<String>(
+              // ignore: deprecated_member_use
               value: _priority,
               dropdownColor: AppColors.cardSurface,
               decoration: InputDecoration(
@@ -213,6 +214,7 @@ class _StaffFeedbackDetailScreenState extends State<StaffFeedbackDetailScreen> {
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<String>(
+              // ignore: deprecated_member_use
               value: _status,
               dropdownColor: AppColors.cardSurface,
               decoration: InputDecoration(
@@ -291,10 +293,10 @@ class _InfoCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AppColors.cardBg.withOpacity(0.45),
+        color: AppColors.cardBg.withValues(alpha: 0.45),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppColors.cardBorder.withOpacity(0.35),
+          color: AppColors.cardBorder.withValues(alpha: 0.35),
         ),
       ),
       child: Column(

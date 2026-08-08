@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
@@ -56,7 +58,7 @@ void main() {
 
   testWidgets('đang ở đúng trang đó thì không push trùng', (tester) async {
     await _pumpNav(tester);
-    AppNavigator.pushNamed(AppRoutes.shop);
+    unawaited(AppNavigator.pushNamed(AppRoutes.shop));
     await tester.pumpAndSettle();
 
     final before = AppNavigator.state!.canPop();
@@ -108,9 +110,9 @@ void main() {
     await _pumpNav(tester);
 
     // Đi lòng vòng vài trang cho stack sâu lên.
-    AppNavigator.pushNamed(AppRoutes.shop);
+    unawaited(AppNavigator.pushNamed(AppRoutes.shop));
     await tester.pumpAndSettle();
-    AppNavigator.pushNamed(AppRoutes.quizList);
+    unawaited(AppNavigator.pushNamed(AppRoutes.quizList));
     await tester.pumpAndSettle();
     expect(AppNavigator.state!.canPop(), isTrue);
 

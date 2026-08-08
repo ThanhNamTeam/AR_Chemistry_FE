@@ -42,6 +42,16 @@ class EnvConfig {
     return _fallbackUrl;
   }
 
+  /// Đọc biến môi trường: ưu tiên `--dart-define`, sau đó `.env`.
+  static String value(String key, {String fromDefine = ''}) {
+    if (fromDefine.isNotEmpty) return fromDefine;
+    final fromEnv = dotenv.env[key]?.trim();
+    if (fromEnv != null && fromEnv.isNotEmpty) return fromEnv;
+    throw StateError(
+      'Thiếu cấu hình "$key". Thêm vào .env hoặc truyền --dart-define=$key=...',
+    );
+  }
+
   static String _normalize(String url) {
     return url.endsWith('/') ? url.substring(0, url.length - 1) : url;
   }

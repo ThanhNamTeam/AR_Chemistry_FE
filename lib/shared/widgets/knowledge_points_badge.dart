@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../../shared/styles/app_colors.dart';
 
 class KnowledgePointsBadge extends StatelessWidget {
@@ -46,7 +46,7 @@ class KnowledgePointsBadge extends StatelessWidget {
               ),
         borderRadius: BorderRadius.circular(999),
         border: Border.all(
-            color: AppColors.kpGoldBorder.withOpacity(0.6), width: 1),
+            color: AppColors.kpGoldBorder.withValues(alpha: 0.6), width: 1),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

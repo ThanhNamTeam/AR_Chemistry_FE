@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import '../../../core/api/payment_api.dart';
 import '../../../core/models/response/payment_response.dart';
@@ -104,7 +104,7 @@ class _StaffPaymentTabState extends State<StaffPaymentTab> {
       child: ListView.separated(
         padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
         itemCount: _payments.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 10),
+        separatorBuilder: (_, _) => const SizedBox(height: 10),
         itemBuilder: (context, index) {
           final payment = _payments[index];
 
@@ -118,7 +118,7 @@ class _StaffPaymentTabState extends State<StaffPaymentTab> {
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.12),
+                        color: AppColors.primary.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Icon(
@@ -166,10 +166,10 @@ class _StaffPaymentTabState extends State<StaffPaymentTab> {
                       height: 160,
                       width: double.infinity,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Container(
+                      errorBuilder: (_, _, _) => Container(
                         height: 120,
                         alignment: Alignment.center,
-                        color: AppColors.primary.withOpacity(0.08),
+                        color: AppColors.primary.withValues(alpha: 0.08),
                         child: const Text('Không tải được ảnh minh chứng'),
                       ),
                     ),
@@ -255,8 +255,8 @@ class _StatusBadge extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
         color: isApproved
-            ? AppColors.success.withOpacity(0.12)
-            : AppColors.amber.withOpacity(0.12),
+            ? AppColors.success.withValues(alpha: 0.12)
+            : AppColors.amber.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(

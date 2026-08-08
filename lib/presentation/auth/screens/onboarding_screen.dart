@@ -1,3 +1,5 @@
+﻿import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -45,7 +47,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     if (!mounted) return;
     final done = await _storage.isOnboardingCompleted();
     if (done && mounted) {
-      Navigator.pushReplacementNamed(context, AppRoutes.login);
+      unawaited(Navigator.pushReplacementNamed(context, AppRoutes.login));
     }
   }
 
@@ -59,7 +61,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   Future<void> _finish() async {
     await _storage.setOnboardingCompleted(true);
     if (!mounted) return;
-    Navigator.pushReplacementNamed(context, AppRoutes.login);
+    unawaited(Navigator.pushReplacementNamed(context, AppRoutes.login));
   }
 
   void _next(AppLocalizations l10n) {
@@ -116,14 +118,14 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                 left: -30,
                 child: AnimatedBuilder(
                   animation: _pulseCtrl,
-                  builder: (_, __) => Transform.scale(
+                  builder: (_, _) => Transform.scale(
                     scale: _pulse.value,
                     child: Container(
                       width: 220,
                       height: 220,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: AppColors.primary.withOpacity(0.07),
+                        color: AppColors.primary.withValues(alpha: 0.07),
                       ),
                     ),
                   ),
@@ -134,14 +136,14 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                 right: -40,
                 child: AnimatedBuilder(
                   animation: _pulseCtrl,
-                  builder: (_, __) => Transform.scale(
+                  builder: (_, _) => Transform.scale(
                     scale: _pulse.value,
                     child: Container(
                       width: 260,
                       height: 260,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: AppColors.secondary.withOpacity(0.07),
+                        color: AppColors.secondary.withValues(alpha: 0.07),
                       ),
                     ),
                   ),
@@ -189,18 +191,18 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                                   decoration: BoxDecoration(
                                     gradient: LinearGradient(
                                       colors: [
-                                        s.color.withOpacity(0.2),
-                                        s.color.withOpacity(0.05),
+                                        s.color.withValues(alpha: 0.2),
+                                        s.color.withValues(alpha: 0.05),
                                       ],
                                     ),
                                     borderRadius: BorderRadius.circular(16),
                                     border: Border.all(
-                                      color: s.color.withOpacity(0.4),
+                                      color: s.color.withValues(alpha: 0.4),
                                       width: 1.5,
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: s.color.withOpacity(0.25),
+                                        color: s.color.withValues(alpha: 0.25),
                                         blurRadius: 30,
                                       ),
                                     ],
@@ -262,7 +264,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                                       : null,
                                   color: i != _current
                                       ? AppColors.textSecondary
-                                          .withOpacity(0.35)
+                                          .withValues(alpha: 0.35)
                                       : null,
                                   borderRadius: BorderRadius.circular(4),
                                 ),
@@ -281,7 +283,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                               borderRadius: BorderRadius.circular(16),
                               boxShadow: [
                                 BoxShadow(
-                                  color: AppColors.primary.withOpacity(0.4),
+                                  color: AppColors.primary.withValues(alpha: 0.4),
                                   blurRadius: 20,
                                   offset: const Offset(0, 6),
                                 ),

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -38,9 +40,10 @@ class _StaffHomeScreenState extends State<StaffHomeScreen> {
     final session = await Amplify.Auth.fetchAuthSession();
 
     debugPrint(session.isSignedIn.toString());
+    if (!mounted) return;
     await activatePortal(context, AppPortal.auth);
     if (!mounted) return;
-    Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (_) => false);
+    unawaited(Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (_) => false));
   }
 
   @override

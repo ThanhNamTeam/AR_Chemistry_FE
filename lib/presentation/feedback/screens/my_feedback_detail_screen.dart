@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import '../../../core/api/feedback_api_service.dart';
 import '../../../core/l10n/app_localizations.dart';
@@ -122,7 +122,7 @@ class _MyFeedbackDetailScreenState extends State<MyFeedbackDetailScreen> {
                 color: AppColors.cardSurface,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: AppColors.cardBorder.withOpacity(0.4),
+                  color: AppColors.cardBorder.withValues(alpha: 0.4),
                 ),
               ),
               child: Column(
@@ -171,10 +171,10 @@ class _InfoCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AppColors.cardBg.withOpacity(0.45),
+        color: AppColors.cardBg.withValues(alpha: 0.45),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppColors.cardBorder.withOpacity(0.35),
+          color: AppColors.cardBorder.withValues(alpha: 0.35),
         ),
       ),
       child: Column(
