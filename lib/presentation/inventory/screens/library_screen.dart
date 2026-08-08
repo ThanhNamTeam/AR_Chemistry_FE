@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/api/inventory_api.dart';
@@ -173,10 +173,10 @@ class _LibraryScreenState extends State<LibraryScreen>
                       child: Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.1),
+                          color: AppColors.primary.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: AppColors.primary.withOpacity(0.3),
+                            color: AppColors.primary.withValues(alpha: 0.3),
                           ),
                         ),
                         child: Icon(
@@ -249,10 +249,10 @@ class _LibraryScreenState extends State<LibraryScreen>
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.15),
+                        color: AppColors.primary.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
-                          color: AppColors.primary.withOpacity(0.3),
+                          color: AppColors.primary.withValues(alpha: 0.3),
                         ),
                       ),
                       child: Text(
@@ -276,7 +276,7 @@ class _LibraryScreenState extends State<LibraryScreen>
                   color: AppColors.cardSurface,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: AppColors.primary.withOpacity(0.2),
+                    color: AppColors.primary.withValues(alpha: 0.2),
                   ),
                 ),
                 child: TabBar(
@@ -502,7 +502,7 @@ class _LibraryCardTile extends StatelessWidget {
             border: Border.all(
               color: unlocked
                   ? AppColors.substanceStateBorder(card.state)
-                  : AppColors.cardBorder.withOpacity(0.35),
+                  : AppColors.cardBorder.withValues(alpha: 0.35),
               width: 1.2,
             ),
           ),
@@ -546,13 +546,13 @@ class _LibraryCardTile extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       color: unlocked
-                          ? stateColor.withOpacity(0.14)
-                          : AppColors.textSecondary.withOpacity(0.10),
+                          ? stateColor.withValues(alpha: 0.14)
+                          : AppColors.textSecondary.withValues(alpha: 0.10),
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
                         color: unlocked
-                            ? stateColor.withOpacity(0.35)
-                            : AppColors.textSecondary.withOpacity(0.22),
+                            ? stateColor.withValues(alpha: 0.35)
+                            : AppColors.textSecondary.withValues(alpha: 0.22),
                       ),
                     ),
                     child: Text(

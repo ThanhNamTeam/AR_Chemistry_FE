@@ -1,3 +1,4 @@
+﻿import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -80,9 +81,10 @@ class _PortalProfileScreenState extends State<PortalProfileScreen> {
 
   Future<void> _logout() async {
     await context.read<RoleSessionProvider>().logout();
+    if (!mounted) return;
     await activatePortal(context, AppPortal.auth);
     if (!mounted) return;
-    Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (_) => false);
+    unawaited(Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (_) => false));
   }
 
   @override
@@ -114,10 +116,10 @@ class _PortalProfileScreenState extends State<PortalProfileScreen> {
                         child: Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.1),
+                            color: AppColors.primary.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: AppColors.primary.withOpacity(0.3),
+                              color: AppColors.primary.withValues(alpha: 0.3),
                             ),
                           ),
                           child: Icon(
@@ -145,12 +147,12 @@ class _PortalProfileScreenState extends State<PortalProfileScreen> {
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(colors: [
-                      AppColors.primary.withOpacity(0.15),
-                      AppColors.secondary.withOpacity(0.15),
+                      AppColors.primary.withValues(alpha: 0.15),
+                      AppColors.secondary.withValues(alpha: 0.15),
                     ]),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: AppColors.primary.withOpacity(0.3),
+                      color: AppColors.primary.withValues(alpha: 0.3),
                       width: 1.5,
                     ),
                   ),
@@ -231,10 +233,10 @@ class _PortalProfileScreenState extends State<PortalProfileScreen> {
                           vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.15),
+                          color: AppColors.primary.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
-                            color: AppColors.primary.withOpacity(0.4),
+                            color: AppColors.primary.withValues(alpha: 0.4),
                           ),
                         ),
                         child: Text(
@@ -287,10 +289,10 @@ class _PortalProfileScreenState extends State<PortalProfileScreen> {
                             vertical: 10,
                           ),
                           decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.12),
+                            color: AppColors.primary.withValues(alpha: 0.12),
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(
-                              color: AppColors.primary.withOpacity(0.45),
+                              color: AppColors.primary.withValues(alpha: 0.45),
                             ),
                           ),
                           child: Row(
@@ -372,10 +374,10 @@ class _PortalProfileScreenState extends State<PortalProfileScreen> {
                           width: double.infinity,
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           decoration: BoxDecoration(
-                            color: AppColors.error.withOpacity(0.1),
+                            color: AppColors.error.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(
-                              color: AppColors.error.withOpacity(0.4),
+                              color: AppColors.error.withValues(alpha: 0.4),
                             ),
                           ),
                           child: Row(
@@ -455,9 +457,9 @@ class _PortalProfileScreenState extends State<PortalProfileScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 14),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
+          color: color.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.withOpacity(0.35)),
+          border: Border.all(color: color.withValues(alpha: 0.35)),
         ),
         child: Column(
           children: [
@@ -509,7 +511,7 @@ class _PortalMenuItem extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.cardSurface,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.cardBorder.withOpacity(0.4)),
+          border: Border.all(color: AppColors.cardBorder.withValues(alpha: 0.4)),
         ),
         child: Row(
           children: [
@@ -517,7 +519,7 @@ class _PortalMenuItem extends StatelessWidget {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: color.withOpacity(0.15),
+                color: color.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(icon, color: color, size: 22),

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 /// Theme-aware palette. Call [applyTheme] when the user changes theme.
 class AppColors {
@@ -39,13 +39,10 @@ class AppColors {
 
   /// Màu chữ/icon đặt TRÊN các nền rực (primary/cyanEmerald/amber gradient).
   ///
-  /// Chữ TRẮNG trên các nền này fail WCAG AA nặng: trắng/#06B6D4 ≈ 2,4:1,
-  /// trắng/#27A4F2 ≈ 2,7:1, trắng/#10B981 ≈ 2,5:1 (chuẩn cần 4,5:1).
-  /// Thay vì làm xỉn màu thương hiệu, dùng ink tối trên nền rực:
-  /// #0F172A/#06B6D4 ≈ 7,9:1 · /#27A4F2 ≈ 7,7:1 · /#10B981 ≈ 7,5:1
-  /// · /#F59E0B ≈ 9:1 — vượt cả mức AAA, giữ nguyên chất neon.
-  /// Giá trị cố định cho mọi theme vì các gradient đều đủ sáng.
-  static const Color onGradient = Color(0xFF0F172A);
+  /// Dùng TRẮNG theo yêu cầu design (ink tối #0F172A bị chê đậm/nặng).
+  /// Đánh đổi: trắng trên các gradient này chỉ đạt ~2,4-2,7:1 contrast
+  /// (dưới chuẩn WCAG AA 4,5:1) — chấp nhận vì ưu tiên cảm quan thương hiệu.
+  static const Color onGradient = Color(0xFFFFFFFF);
 
   /// Màu ĐỊNH DANH của Knowledge Point — cố định vàng/gold ở MỌI theme
   /// (P2-7 audit UX). Không dùng dải `amber` vì theme Light ghi đè dải đó
@@ -183,15 +180,15 @@ class AppColors {
   }
 
   static Color _tintBackground(Color c) {
-    return Color.alphaBlend(c.withOpacity(0.12), const Color(0xFF020817));
+    return Color.alphaBlend(c.withValues(alpha: 0.12), const Color(0xFF020817));
   }
 
   /// Solid card surface — avoids dark glass on light backgrounds.
   static Color get cardSurface =>
-      isLight ? const Color(0xFFFFFFFF) : cardBg.withOpacity(0.55);
+      isLight ? const Color(0xFFFFFFFF) : cardBg.withValues(alpha: 0.55);
 
   static Color get cardSurfaceMuted =>
-      isLight ? const Color(0xFFF1F5F9) : cardBg.withOpacity(0.45);
+      isLight ? const Color(0xFFF1F5F9) : cardBg.withValues(alpha: 0.45);
 
   /// Links, badges, action labels on light UI.
   static Color get accentText => isLight ? primaryDark : primaryLight;
@@ -211,15 +208,15 @@ class AppColors {
   static Color get navMuted => isLight ? const Color(0xFF64748B) : textSecondary;
 
   static Color get navBarBg =>
-      isLight ? const Color(0xFFFFFFFF) : cardBg.withOpacity(0.92);
+      isLight ? const Color(0xFFFFFFFF) : cardBg.withValues(alpha: 0.92);
 
   static Color get shadowSoft => isLight
-      ? Colors.black.withOpacity(0.08)
-      : Colors.black.withOpacity(0.25);
+      ? Colors.black.withValues(alpha: 0.08)
+      : Colors.black.withValues(alpha: 0.25);
 
   static Color get shadowCard => isLight
-      ? Colors.black.withOpacity(0.06)
-      : AppColors.primary.withOpacity(0.06);
+      ? Colors.black.withValues(alpha: 0.06)
+      : AppColors.primary.withValues(alpha: 0.06);
 
   static Color substanceStateColor(String? state) {
     switch (state?.toUpperCase()) {
@@ -252,13 +249,13 @@ class AppColors {
   static Color substanceStateSurface(String? state) {
     final color = substanceStateColor(state);
 
-    return color.withOpacity(isLight ? 0.12 : 0.16);
+    return color.withValues(alpha: isLight ? 0.12 : 0.16);
   }
 
   static Color substanceStateBorder(String? state) {
     final color = substanceStateColor(state);
 
-    return color.withOpacity(isLight ? 0.35 : 0.45);
+    return color.withValues(alpha: isLight ? 0.35 : 0.45);
   }
 }
 

@@ -77,7 +77,7 @@ class AppState extends ChangeNotifier {
 
   bool get mySingleCardsLast => _mySingleCardsLast;
   bool _initialized = false;
-  bool _isLoading = false;
+  final bool _isLoading = false;
 
   // Auth state
   String? _userName;

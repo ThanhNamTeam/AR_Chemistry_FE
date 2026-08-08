@@ -1,3 +1,4 @@
+﻿import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -40,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       if (!mounted) return;
 
       if (access.canScanAR) {
-        Navigator.pushNamed(context, AppRoutes.arAssetLoading);
+        unawaited(Navigator.pushNamed(context, AppRoutes.arAssetLoading));
       } else {
         _showArAccessDialog(access.message);
       }
@@ -172,59 +173,122 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Widget _buildHeader(AppState state) {
     final l10n = AppLocalizations.of(context);
+    // Header dạng card: avatar bên trái theo kiểu dashboard, lời chào + tên
+    // cạnh đó; hàng dưới KP và Nâng cấp chia đều hai đầu cho cân, không còn
+    // hai chip dồn cục bên trái với khoảng trống lớn bên phải.
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l10n.welcomeBack,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: AppColors.textSecondary,
-                        fontFamily: 'Inter',
-                      ),
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: AppColors.cardSurface,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: AppColors.cardBorder.withValues(alpha: 0.5),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.shadowSoft,
+              blurRadius: 10,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Layout kiểu Messenger: logo LABEDU bên trái, lời chào ở giữa,
+            // avatar người đăng nhập bên phải.
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  clipBehavior: Clip.antiAlias,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(
+                      color: AppColors.cardBorder.withValues(alpha: 0.5),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      state.displayName,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary,
-                        fontFamily: 'Inter',
-                      ),
-                    ),
-                  ],
+                  ),
+                  child: Image.asset(
+                    'assets/icon/app_icon.jpg',
+                    fit: BoxFit.cover,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              _buildProfileAvatar(state),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              KnowledgePointsBadge(
-                points: state.knowledgePoints,
-                compact: true,
-              ),
-              const SizedBox(width: 8),
-              _buildUpgradeButton(),
-            ],
-          ),
-        ],
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Tên app hai tông màu theo đúng logo: LAB navy, EDU xanh.
+                      Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(
+                              text: 'LAB',
+                              style: TextStyle(
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
+                            TextSpan(
+                              text: 'EDU',
+                              style: TextStyle(
+                                color: AppColors.primary,
+                              ),
+                            ),
+                          ],
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w900,
+                          fontFamily: 'Inter',
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        '${l10n.welcomeBack} ${state.displayName}',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textSecondary,
+                          fontFamily: 'Inter',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 12),
+                _buildProfileAvatar(state),
+              ],
+            ),
+            const SizedBox(height: 12),
+            // Kẻ phân tách để hàng KP/Nâng cấp đọc thành "footer" của card,
+            // không còn là hai pill trôi nổi lệch tông.
+            Container(
+              height: 1,
+              color: AppColors.cardBorder.withValues(alpha: 0.4),
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                KnowledgePointsBadge(
+                  points: state.knowledgePoints,
+                  compact: true,
+                ),
+                const Spacer(),
+                _buildUpgradeButton(),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -233,58 +297,44 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     final l10n = AppLocalizations.of(context);
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, AppRoutes.packages),
-      child: Container(
-        // 40 + hit slop của GestureDetector — pill 34px cũ dưới chuẩn 48dp,
-        // đây lại là nút vào luồng mua gói.
-        height: 40,
-        padding: const EdgeInsets.symmetric(horizontal: 14),
-        // P2-5 audit UX: ở theme TỐI, "Nâng cấp" hạ xuống dạng outline nhẹ
-        // (nền 12%, viền + chữ giữ màu nhấn) để không tranh sân khấu với CTA
-        // chính "Bắt đầu thí nghiệm AR". Theme sáng giữ gradient (đã cùng
-        // dải xanh nên không còn cạnh tranh).
-        decoration: BoxDecoration(
-          gradient: AppColors.isLight ? AppColors.amberGradient : null,
-          color: AppColors.isLight
-              ? null
-              : AppColors.amber.withOpacity(0.12),
-          borderRadius: BorderRadius.circular(AppColors.radiusPill),
-          border: Border.all(
-            color: AppColors.amberLight.withOpacity(0.7),
-            width: 1.2,
+      // GestureDetector opaque + padding dọc: pill nhìn 30px cho cân với badge
+      // KP nhưng vùng chạm thật vẫn ~46px (chuẩn 48dp cho nút vào luồng mua).
+      behavior: HitTestBehavior.opaque,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Container(
+          height: 30,
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          alignment: Alignment.center,
+          // Tông nhẹ (tint + viền) cùng ngôn ngữ với badge KP — không còn khối
+          // xanh đặc tranh sân khấu với CTA "Bắt đầu thí nghiệm AR".
+          decoration: BoxDecoration(
+            color: AppColors.primary.withValues(alpha: 0.10),
+            borderRadius: BorderRadius.circular(AppColors.radiusPill),
+            border: Border.all(
+              color: AppColors.primary.withValues(alpha: 0.4),
+            ),
           ),
-          boxShadow: AppColors.isLight
-              ? [
-                  BoxShadow(
-                    color: AppColors.amberLight.withOpacity(0.3),
-                    blurRadius: 12,
-                    offset: const Offset(0, 3),
-                  ),
-                ]
-              : null,
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.workspace_premium,
-              color: AppColors.isLight
-                  ? AppColors.onGradient
-                  : AppColors.amberLight,
-              size: 16,
-            ),
-            const SizedBox(width: 5),
-            Text(
-              l10n.upgrade,
-              style: TextStyle(
-                color: AppColors.isLight
-                    ? AppColors.onGradient
-                    : AppColors.amberLight,
-                fontSize: 12,
-                fontWeight: FontWeight.w800,
-                fontFamily: 'Inter',
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.workspace_premium,
+                color: AppColors.accentText,
+                size: 15,
               ),
-            ),
-          ],
+              const SizedBox(width: 5),
+              Text(
+                l10n.upgrade,
+                style: TextStyle(
+                  color: AppColors.accentText,
+                  fontSize: 12.5,
+                  fontWeight: FontWeight.w800,
+                  fontFamily: 'Inter',
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -320,12 +370,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 ? DecorationImage(
               image: isNetworkAvatar
                   ? NetworkImage(avatar)
-                  : FileImage(File(avatar!)) as ImageProvider,
+                  : FileImage(File(avatar)) as ImageProvider,
               fit: BoxFit.cover,
             )
                 : null,
             border: Border.all(
-              color: AppColors.primary.withOpacity(0.4),
+              color: AppColors.primary.withValues(alpha: 0.4),
               width: 1.5,
             ),
           ),
@@ -367,7 +417,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   borderRadius: BorderRadius.circular(999),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.primary.withOpacity(
+                      color: AppColors.primary.withValues(alpha: 
                         0.3 + 0.2 * _pulse1.value,
                       ),
                       blurRadius: 16 + 8 * _pulse1.value,
@@ -383,7 +433,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   gradient: AppColors.cyanEmeraldGradient,
                   borderRadius: BorderRadius.circular(999),
                   border: Border.all(
-                    color: AppColors.primary.withOpacity(0.5),
+                    color: AppColors.primary.withValues(alpha: 0.5),
                     width: 1.2,
                   ),
                 ),
@@ -456,7 +506,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   color: AppColors.cardSurface,
                   borderRadius: BorderRadius.circular(999),
                   border: Border.all(
-                    color: AppColors.primary.withOpacity(0.5),
+                    color: AppColors.primary.withValues(alpha: 0.5),
                     width: 1.2,
                   ),
                   boxShadow: [
@@ -482,6 +532,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         fontWeight: FontWeight.w700,
                         fontFamily: 'Inter',
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
@@ -493,5 +545,4 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       ],
     );
   }
-
 }

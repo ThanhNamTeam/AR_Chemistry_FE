@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import '../constants/api_constants.dart';
 import '../services/auth_token_service.dart';
 
-/// Một dòng log đọc từ ELK qua backend proxy.
+/// Một dòng log hệ thống/audit đọc từ backend (bảng system_logs).
 class AdminLogEntry {
   final DateTime? timestamp;
   final String level;

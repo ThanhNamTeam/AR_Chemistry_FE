@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/l10n/app_localizations.dart';
@@ -17,7 +17,6 @@ class StudentQuizHistoryScreen extends StatefulWidget {
 }
 
 class _StudentQuizHistoryScreenState extends State<StudentQuizHistoryScreen> {
-  String? _quizCode;
   String? _reactionId;
   String? _quizTitle;
   bool _initialized = false;
@@ -32,7 +31,6 @@ class _StudentQuizHistoryScreenState extends State<StudentQuizHistoryScreen> {
     final args = ModalRoute.of(context)?.settings.arguments;
 
     if (args is Map) {
-      _quizCode = args['quizCode']?.toString();
       // Contract mới: lịch sử theo phản ứng — màn duyệt phản ứng truyền
       // reactionId (+ reactionName làm tiêu đề).
       _reactionId = args['reactionId']?.toString();
@@ -41,17 +39,23 @@ class _StudentQuizHistoryScreenState extends State<StudentQuizHistoryScreen> {
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      final reactionId = _reactionId;
+
+      if (reactionId == null || reactionId.isEmpty) {
+        return;
+      }
       context.read<StudentQuizProvider>().loadAttemptHistory(
-        quizCode: _quizCode,
-        reactionId: _reactionId,
+        reactionId: reactionId,
       );
     });
   }
 
   Future<void> _refresh() async {
+    final reactionId = _reactionId;
+    if (reactionId == null || reactionId.isEmpty) return;
+
     await context.read<StudentQuizProvider>().loadAttemptHistory(
-      quizCode: _quizCode,
-      reactionId: _reactionId,
+      reactionId: reactionId,
     );
   }
 
@@ -166,10 +170,10 @@ class _Header extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
+                color: AppColors.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: AppColors.primary.withOpacity(0.3),
+                  color: AppColors.primary.withValues(alpha: 0.3),
                 ),
               ),
               child: Icon(
@@ -224,7 +228,7 @@ class _AttemptHistoryCard extends StatelessWidget {
         color: AppColors.cardSurface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppColors.cardBorder.withOpacity(0.55),
+          color: AppColors.cardBorder.withValues(alpha: 0.55),
         ),
         boxShadow: [
           BoxShadow(
@@ -265,7 +269,7 @@ class _AttemptHistoryCard extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             Text(
-              attempt.lessonTitle,
+              attempt.quizTitle,
               style: TextStyle(
                 fontSize: 13,
                 color: AppColors.subtitleAccent,
@@ -325,10 +329,10 @@ class _ScoreBox extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
         decoration: BoxDecoration(
-          color: AppColors.primary.withOpacity(0.08),
+          color: AppColors.primary.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: AppColors.primary.withOpacity(0.16),
+            color: AppColors.primary.withValues(alpha: 0.16),
           ),
         ),
         child: Column(
@@ -370,10 +374,10 @@ class _Badge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
       decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.12),
+        color: AppColors.primary.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(999),
         border: Border.all(
-          color: AppColors.primary.withOpacity(0.22),
+          color: AppColors.primary.withValues(alpha: 0.22),
         ),
       ),
       child: Text(
@@ -407,7 +411,7 @@ class _ErrorCard extends StatelessWidget {
         color: AppColors.cardSurface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppColors.error.withOpacity(0.45),
+          color: AppColors.error.withValues(alpha: 0.45),
         ),
       ),
       child: Column(
@@ -458,7 +462,7 @@ class _EmptyCard extends StatelessWidget {
         color: AppColors.cardSurface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppColors.cardBorder.withOpacity(0.45),
+          color: AppColors.cardBorder.withValues(alpha: 0.45),
         ),
       ),
       child: Column(

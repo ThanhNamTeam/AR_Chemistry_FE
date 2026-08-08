@@ -2,11 +2,16 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/l10n/app_localizations.dart';
+import '../../../core/l10n/locale_provider.dart';
 import '../../../core/services/orientation_lock_service.dart';
 import '../../../routes/app_routes.dart';
 import '../../../shared/styles/app_colors.dart';
+import '../../home/providers/theme_provider.dart';
+import '../../reaction_experiment/providers/reaction_experiment_session_provider.dart';
+import '../models/scan_launch_args.dart';
 import '../widgets/ar_camera_view.dart';
 
 class ScanScreen extends StatefulWidget {
@@ -28,6 +33,8 @@ class _ScanScreenState extends State<ScanScreen>
   bool _unityReadyForLandscape = false;
   bool _scannerActive = false;
   int _uiModeToken = 0;
+  ScanLaunchArgs? _scanArgs;
+  bool _scanArgsLoaded = false;
 
   @override
   void initState() {
@@ -55,6 +62,13 @@ class _ScanScreenState extends State<ScanScreen>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    if (!_scanArgsLoaded) {
+      _scanArgsLoaded = true;
+      final args = ModalRoute.of(context)?.settings.arguments;
+      if (args is ScanLaunchArgs) {
+        _scanArgs = args;
+      }
+    }
     final route = ModalRoute.of(context);
     if (route != null && route != _route) {
       if (_route != null) {
@@ -94,6 +108,7 @@ class _ScanScreenState extends State<ScanScreen>
   @override
   void dispose() {
     debugPrint('[AR_UNITY_TIMING] ScanScreen dispose');
+    _session.experimentScanHandler = null;
     WidgetsBinding.instance.removeObserver(this);
     _session.removeListener(_onUnitySessionChanged);
     appRouteObserver.unsubscribe(this);
@@ -142,7 +157,24 @@ class _ScanScreenState extends State<ScanScreen>
   Future<void> _handleBackPressed() async {
     await _restoreAppUiMode();
     if (!mounted) return;
-    Navigator.maybePop(context);
+    unawaited(Navigator.maybePop(context));
+  }
+
+  Future<void> _startExperimentReaction() async {
+    final session =
+    context.read<ReactionExperimentSessionProvider>();
+
+    if (!session.canStartReaction) {
+      return;
+    }
+
+    await _restoreAppUiMode();
+
+    if (!mounted) {
+      return;
+    }
+
+    Navigator.pop(context);
   }
 
   void _ensureArCameraView() {
@@ -273,6 +305,10 @@ class _ScanScreenState extends State<ScanScreen>
                   else if (_shouldShowLoading(session, mediaQuery))
                     _UnityScannerLoadingView(animation: _pulseCtrl),
                   _ScannerBackButton(onPressed: _handleBackPressed),
+                  if (_scanArgs?.isExperiment == true)
+                    _ExperimentScanOverlay(
+                      onStartReaction: _startExperimentReaction,
+                    ),
                 ],
               );
             },
@@ -374,6 +410,101 @@ class _ScannerBackButton extends StatelessWidget {
               onPressed: onPressed,
               icon: const Icon(Icons.arrow_back, color: Colors.white),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ExperimentScanOverlay extends StatelessWidget {
+  const _ExperimentScanOverlay({required this.onStartReaction});
+
+  final VoidCallback onStartReaction;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    context.watch<LocaleProvider>();
+    context.watch<ThemeProvider>();
+    final session = context.watch<ReactionExperimentSessionProvider>();
+
+    return SafeArea(
+      child: Align(
+        alignment: Alignment.bottomCenter,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (session.isTimerRunning)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.65),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.timer, color: Colors.amber, size: 18),
+                        const SizedBox(width: 8),
+                        Text(
+                          session.formatRemaining(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                            fontFamily: 'Inter',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              if (session.canStartReaction)
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: onStartReaction,
+                    icon: const Icon(Icons.play_arrow_rounded),
+                    label: Text(l10n.reactionButton),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                    ),
+                  ),
+                )
+              else if (session.arCompleted)
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  decoration: BoxDecoration(
+                    color: AppColors.success.withValues(alpha: 0.85),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.check_circle, color: Colors.white),
+                      const SizedBox(width: 8),
+                      Text(
+                        l10n.arStepCompleted,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                          fontFamily: 'Inter',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
           ),
         ),
       ),

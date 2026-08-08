@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/api/admin_log_api.dart';
-import '../../../core/config/env_config.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../../../shared/styles/app_colors.dart';
 
-/// Tab xem log hệ thống từ bộ ELK ngay trong Admin Portal.
+/// Tab xem log hệ thống/audit ngay trong Admin Portal.
 ///
-/// Log đọc qua backend proxy `/admin/logs` (ROLE_ADMIN) — Elasticsearch không
-/// mở ra ngoài. Nút "Kibana" mở dashboard đầy đủ trên trình duyệt cho các
-/// truy vấn sâu hơn.
+/// Log đọc qua backend `/admin/logs` (ROLE_ADMIN) — nguồn dữ liệu là bảng
+/// system_logs trong Postgres (ELK đã gỡ khỏi dự án để tiết kiệm chi phí).
 class AdminLogsTab extends StatefulWidget {
   const AdminLogsTab({super.key});
 
@@ -96,20 +93,6 @@ class _AdminLogsTabState extends State<AdminLogsTab> {
     }
   }
 
-  Future<void> _openKibana() async {
-    final l10n = AppLocalizations.of(context);
-    final uri = Uri.parse(EnvConfig.kibanaUrl);
-    final ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
-    if (!ok && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.cannotOpenKibana(EnvConfig.kibanaUrl)),
-          backgroundColor: AppColors.error,
-        ),
-      );
-    }
-  }
-
   Color _levelColor(String level) => switch (level) {
         'ERROR' => AppColors.error,
         'WARN' => AppColors.warning,
@@ -137,17 +120,6 @@ class _AdminLogsTabState extends State<AdminLogsTab> {
                     color: AppColors.textPrimary,
                     fontFamily: 'Inter',
                   ),
-                ),
-              ),
-              OutlinedButton.icon(
-                onPressed: _openKibana,
-                icon: const Icon(Icons.open_in_new, size: 15),
-                label: const Text('Kibana'),
-                style: OutlinedButton.styleFrom(
-                  visualDensity: VisualDensity.compact,
-                  foregroundColor: AppColors.primary,
-                  side: BorderSide(
-                      color: AppColors.primary.withValues(alpha: 0.5)),
                 ),
               ),
             ],

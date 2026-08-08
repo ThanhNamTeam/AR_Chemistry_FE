@@ -1,17 +1,17 @@
 class StartQuizImportRequest {
-  final String lessonCode;
+  final String reactionCode;
   final String s3Key;
   final String originalFilename;
 
   const StartQuizImportRequest({
-    required this.lessonCode,
+    required this.reactionCode,
     required this.s3Key,
     required this.originalFilename,
   });
 
   Map<String, dynamic> toJson() {
     return {
-      'lessonCode': lessonCode,
+      'reactionCode': reactionCode,
       's3Key': s3Key,
       'originalFilename': originalFilename,
     };

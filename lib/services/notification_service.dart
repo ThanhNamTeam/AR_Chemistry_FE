@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/widgets.dart';
 
 import '../core/navigation/app_navigator.dart';
-import '../routes/app_navigation.dart';
 import '../routes/app_routes.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';

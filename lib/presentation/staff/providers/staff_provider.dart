@@ -5,7 +5,6 @@ import '../../../core/api/staff_quiz_management_api.dart';
 import '../../../core/api/upload_api.dart';
 import '../../../core/models/request/generate_upload_url_request.dart';
 import '../../../core/models/request/start_quiz_import_request.dart';
-import '../../../core/storage/feedback_storage_service.dart';
 import '../../../domain/models/staff_lesson_content_model.dart';
 import '../../../domain/models/staff_quiz_attempt_detail_model.dart';
 import '../../../domain/models/staff_quiz_attempt_model.dart';
@@ -14,6 +13,8 @@ import '../../../domain/models/staff_quiz_summary_model.dart';
 import '../../../domain/models/feedback_model.dart';
 import '../../../domain/models/quiz_draft_model.dart';
 import '../../../domain/models/staff_lesson_quiz_overview_model.dart';
+import '../../../domain/models/staff_reaction_quiz_overview_model.dart';
+import '../../../domain/models/staff_reaction_quiz_prompt_model.dart';
 
 class StaffFeedbackItem {
   final String id;
@@ -63,7 +64,7 @@ class StaffFeedbackItem {
 class StaffProvider extends ChangeNotifier {
 
   List<StaffFeedbackItem> _feedbacks = [];
-  List<QuizDraftModel> _quizDrafts = [];
+  final List<QuizDraftModel> _quizDrafts = [];
   bool _loading = false;
 
   final FeedbackApiService _feedbackApi = FeedbackApiService();
@@ -118,6 +119,46 @@ class StaffProvider extends ChangeNotifier {
   bool get importingQuizCsv => _importingQuizCsv;
 
   String? get quizImportError => _quizImportError;
+
+  List<StaffReactionQuizOverviewModel> _reactionQuizOverviews = [];
+  bool _loadingReactionQuizOverviews = false;
+  String? _reactionQuizOverviewError;
+
+  String? _selectedReactionCode;
+  List<StaffQuizSummaryModel> _selectedReactionQuizzes = [];
+  bool _loadingSelectedReactionQuizzes = false;
+  String? _selectedReactionQuizError;
+
+  StaffReactionQuizPromptModel? _selectedReactionPrompt;
+  bool _loadingReactionPrompt = false;
+  String? _reactionPromptError;
+
+  List<StaffReactionQuizOverviewModel> get reactionQuizOverviews =>
+      List.unmodifiable(_reactionQuizOverviews);
+
+  bool get loadingReactionQuizOverviews =>
+      _loadingReactionQuizOverviews;
+
+  String? get reactionQuizOverviewError =>
+      _reactionQuizOverviewError;
+
+  String? get selectedReactionCode => _selectedReactionCode;
+
+  List<StaffQuizSummaryModel> get selectedReactionQuizzes =>
+      List.unmodifiable(_selectedReactionQuizzes);
+
+  bool get loadingSelectedReactionQuizzes =>
+      _loadingSelectedReactionQuizzes;
+
+  String? get selectedReactionQuizError =>
+      _selectedReactionQuizError;
+
+  StaffReactionQuizPromptModel? get selectedReactionPrompt =>
+      _selectedReactionPrompt;
+
+  bool get loadingReactionPrompt => _loadingReactionPrompt;
+
+  String? get reactionPromptError => _reactionPromptError;
 
   List<StaffLessonQuizOverviewModel> _lessonQuizOverviews = [];
   bool _loadingLessonQuizOverviews = false;
@@ -203,7 +244,7 @@ class StaffProvider extends ChangeNotifier {
     notifyListeners();
 
     await _loadFeedbacks();
-    await loadLessonQuizOverviews();
+    await loadReactionQuizOverviews();
 
     _loading = false;
     notifyListeners();
@@ -263,11 +304,11 @@ class StaffProvider extends ChangeNotifier {
 
       await loadQuizDetail(quizCode);
 
-      if (_selectedLessonCode != null) {
-        await loadQuizzesByLesson(_selectedLessonCode!);
+      if (_selectedReactionCode != null) {
+        await loadQuizzesByReaction(_selectedReactionCode!);
       }
 
-      await loadLessonQuizOverviews();
+      await loadReactionQuizOverviews();
     } catch (e) {
       _publishQuizError = e.toString();
       rethrow;
@@ -276,9 +317,8 @@ class StaffProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
-
   Future<void> importQuizCsv({
-    required String lessonCode,
+    required String reactionCode,
     required String fileName,
     required Uint8List bytes,
     required int fileSize,
@@ -302,21 +342,21 @@ class StaffProvider extends ChangeNotifier {
       await _uploadApi.uploadFileToS3(
         uploadUrl: presigned.uploadUrl,
         bytes: bytes,
-        contentType: presigned.contentType ?? contentType,
+        contentType: presigned.contentType,
       );
 
       await _staffQuizManagementApi.startQuizImport(
         StartQuizImportRequest(
-          lessonCode: lessonCode,
+          reactionCode: reactionCode,
           s3Key: presigned.storageKey,
           originalFilename: fileName,
         ),
       );
 
-      await loadLessonQuizOverviews();
+      await loadReactionQuizOverviews();
 
-      if (_selectedLessonCode == lessonCode) {
-        await loadQuizzesByLesson(lessonCode);
+      if (_selectedReactionCode == reactionCode) {
+        await loadQuizzesByReaction(reactionCode);
       }
     } catch (e) {
       _quizImportError = e.toString();
@@ -396,6 +436,97 @@ class StaffProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> loadReactionQuizOverviews({
+    int page = 0,
+    int size = 10,
+  }) async {
+    _loadingReactionQuizOverviews = true;
+    _reactionQuizOverviewError = null;
+    notifyListeners();
+
+    try {
+      final result =
+      await _staffQuizManagementApi.getReactionQuizOverview(
+        page: page,
+        size: size,
+      );
+
+      _reactionQuizOverviews = result.items;
+    } catch (e) {
+      _reactionQuizOverviewError = e.toString();
+    } finally {
+      _loadingReactionQuizOverviews = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> loadQuizzesByReaction(
+      String reactionCode, {
+        int page = 0,
+        int size = 10,
+      }) async {
+    _selectedReactionCode = reactionCode;
+    _loadingSelectedReactionQuizzes = true;
+    _selectedReactionQuizError = null;
+    _selectedReactionQuizzes = [];
+    notifyListeners();
+
+    try {
+      final result =
+      await _staffQuizManagementApi.getQuizzesByReaction(
+        reactionCode: reactionCode,
+        page: page,
+        size: size,
+      );
+
+      _selectedReactionQuizzes = result.items;
+    } catch (e) {
+      _selectedReactionQuizError = e.toString();
+    } finally {
+      _loadingSelectedReactionQuizzes = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> loadReactionQuizPrompt(
+      String reactionCode,
+      ) async {
+    _loadingReactionPrompt = true;
+    _reactionPromptError = null;
+    _selectedReactionPrompt = null;
+    notifyListeners();
+
+    try {
+      _selectedReactionPrompt =
+      await _staffQuizManagementApi.getReactionQuizPrompt(
+        reactionCode: reactionCode,
+      );
+    } catch (e) {
+      _reactionPromptError = e.toString();
+    } finally {
+      _loadingReactionPrompt = false;
+      notifyListeners();
+    }
+  }
+
+
+  void clearSelectedReaction() {
+    _selectedReactionCode = null;
+
+    _selectedReactionQuizzes = [];
+    _selectedReactionQuizError = null;
+    _loadingSelectedReactionQuizzes = false;
+
+    _selectedReactionPrompt = null;
+    _reactionPromptError = null;
+    _loadingReactionPrompt = false;
+
+    _selectedQuizDetail = null;
+    _quizDetailError = null;
+    _loadingQuizDetail = false;
+
+    notifyListeners();
+  }
   Future<void> loadLessonQuizOverviews({int page = 0, int size = 20}) async {
     _loadingLessonQuizOverviews = true;
     _lessonQuizOverviewError = null;

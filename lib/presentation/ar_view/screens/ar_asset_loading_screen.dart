@@ -1,4 +1,6 @@
-﻿import 'package:flutter/material.dart';
+﻿import 'dart:async';
+
+import 'package:flutter/material.dart';
 
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/services/ar_asset_downloader.dart';
@@ -52,7 +54,12 @@ class _ArAssetLoadingScreenState extends State<ArAssetLoadingScreen> {
       );
 
       if (!mounted) return;
-      Navigator.pushReplacementNamed(context, AppRoutes.scan);
+      final args = ModalRoute.of(context)?.settings.arguments;
+      unawaited(Navigator.pushReplacementNamed(
+        context,
+        AppRoutes.scan,
+        arguments: args,
+      ));
     } catch (e) {
       // Không hiển thị e.toString() cho người dùng — chuỗi exception Dart/Dio
       // vô nghĩa với học sinh. Log để debug, màn hình hiện thông báo thân thiện

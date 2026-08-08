@@ -1,3 +1,5 @@
+﻿import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -146,7 +148,7 @@ class _KitsManagementSection extends StatelessWidget {
   }
 
   Future<void> _showKitDetailSheet(BuildContext context, KitModel kit) async {
-    showModalBottomSheet(
+    unawaited(showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: AppColors.cardBg,
@@ -154,7 +156,7 @@ class _KitsManagementSection extends StatelessWidget {
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (_) => const _LoadingKitDetailSheet(),
-    );
+    ));
 
     try {
       final detail = await context.read<AdminProvider>().getKitByCode(kit.code);
@@ -163,7 +165,7 @@ class _KitsManagementSection extends StatelessWidget {
 
       Navigator.pop(context);
 
-      showModalBottomSheet(
+      unawaited(showModalBottomSheet(
         context: context,
         isScrollControlled: true,
         backgroundColor: AppColors.cardBg,
@@ -171,7 +173,7 @@ class _KitsManagementSection extends StatelessWidget {
           borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
         ),
         builder: (_) => _KitDetailSheet(kit: detail),
-      );
+      ));
     } catch (e) {
       if (!context.mounted) return;
 
@@ -218,7 +220,7 @@ class _KitSectionSwitcher extends StatelessWidget {
             side: BorderSide(
               color: selected == 'KITS'
                   ? AppColors.primary
-                  : AppColors.cardBorder.withOpacity(0.4),
+                  : AppColors.cardBorder.withValues(alpha: 0.4),
             ),
             labelStyle: TextStyle(
               color: selected == 'KITS'
@@ -240,7 +242,7 @@ class _KitSectionSwitcher extends StatelessWidget {
             side: BorderSide(
               color: selected == 'CODES'
                   ? AppColors.primary
-                  : AppColors.cardBorder.withOpacity(0.4),
+                  : AppColors.cardBorder.withValues(alpha: 0.4),
             ),
             labelStyle: TextStyle(
               color: selected == 'CODES'
@@ -366,7 +368,7 @@ class _CreateKitSheetState extends State<_CreateKitSheet> {
                     _active = value;
                   });
                 },
-                activeColor: AppColors.primary,
+                activeThumbColor: AppColors.primary,
                 contentPadding: EdgeInsets.zero,
                 title: Text(
                   'Active',
@@ -529,10 +531,10 @@ class _KitTile extends StatelessWidget {
                   width: 52,
                   height: 52,
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.12),
+                    color: AppColors.primary.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: AppColors.primary.withOpacity(0.35),
+                      color: AppColors.primary.withValues(alpha: 0.35),
                     ),
                   ),
                   child: Icon(
@@ -651,9 +653,9 @@ class _StatusBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
+        color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: color.withOpacity(0.35)),
+        border: Border.all(color: color.withValues(alpha: 0.35)),
       ),
       child: Text(
         active ? 'Active' : 'Inactive',
@@ -685,7 +687,7 @@ class _InfoBadge extends StatelessWidget {
         color: AppColors.cardBg,
         borderRadius: BorderRadius.circular(999),
         border: Border.all(
-          color: AppColors.cardBorder.withOpacity(0.35),
+          color: AppColors.cardBorder.withValues(alpha: 0.35),
         ),
       ),
       child: Row(
@@ -1096,10 +1098,10 @@ class _KitDetailSheet extends StatelessWidget {
                     width: 52,
                     height: 52,
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.12),
+                      color: AppColors.primary.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
-                        color: AppColors.primary.withOpacity(0.35),
+                        color: AppColors.primary.withValues(alpha: 0.35),
                       ),
                     ),
                     child: Icon(
@@ -1228,10 +1230,10 @@ class _KitDetailSheet extends StatelessWidget {
                             width: 44,
                             height: 44,
                             decoration: BoxDecoration(
-                              color: AppColors.primary.withOpacity(0.10),
+                              color: AppColors.primary.withValues(alpha: 0.10),
                               borderRadius: BorderRadius.circular(16),
                               border: Border.all(
-                                color: AppColors.primary.withOpacity(0.25),
+                                color: AppColors.primary.withValues(alpha: 0.25),
                               ),
                             ),
                             child: Center(

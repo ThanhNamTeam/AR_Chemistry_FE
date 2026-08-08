@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../../../shared/styles/app_colors.dart';
@@ -123,7 +123,7 @@ class _ResultScreenState extends State<ResultScreen>
                 width: 200, height: 200,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.secondary.withOpacity(0.06),
+                  color: AppColors.secondary.withValues(alpha: 0.06),
                 ),
               ),
             ),
@@ -133,7 +133,7 @@ class _ResultScreenState extends State<ResultScreen>
                 width: 240, height: 240,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.primary.withOpacity(0.06),
+                  color: AppColors.primary.withValues(alpha: 0.06),
                 ),
               ),
             ),
@@ -217,7 +217,7 @@ class _ResultScreenState extends State<ResultScreen>
                                       color: AppColors.cardBg,
                                       borderRadius: BorderRadius.circular(16),
                                       border: Border.all(
-                                          color: AppColors.primary.withOpacity(0.3)),
+                                          color: AppColors.primary.withValues(alpha: 0.3)),
                                     ),
                                     child: Row(
                                       mainAxisAlignment:
@@ -277,14 +277,14 @@ class _ResultScreenState extends State<ResultScreen>
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             gradient: LinearGradient(colors: [
-              AppColors.secondary.withOpacity(0.2),
-              AppColors.primary.withOpacity(0.2),
+              AppColors.secondary.withValues(alpha: 0.2),
+              AppColors.primary.withValues(alpha: 0.2),
             ]),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.secondary.withOpacity(0.5), width: 2),
+            border: Border.all(color: AppColors.secondary.withValues(alpha: 0.5), width: 2),
             boxShadow: [
               BoxShadow(
-                  color: AppColors.secondary.withOpacity(0.25), blurRadius: 16)
+                  color: AppColors.secondary.withValues(alpha: 0.25), blurRadius: 16)
             ],
           ),
           child: Text(
@@ -306,12 +306,12 @@ class _ResultScreenState extends State<ResultScreen>
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.cardBg.withOpacity(0.5),
+        color: AppColors.cardBg.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.primary.withOpacity(0.3), width: 1.5),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.3), width: 1.5),
         boxShadow: [
           BoxShadow(
-              color: AppColors.primary.withOpacity(0.08), blurRadius: 20),
+              color: AppColors.primary.withValues(alpha: 0.08), blurRadius: 20),
         ],
       ),
       child: Column(
@@ -329,9 +329,9 @@ class _ResultScreenState extends State<ResultScreen>
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
             decoration: BoxDecoration(
-              color: AppColors.secondary.withOpacity(0.08),
+              color: AppColors.secondary.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.secondary.withOpacity(0.3)),
+              border: Border.all(color: AppColors.secondary.withValues(alpha: 0.3)),
             ),
             child: Text(reaction.equation,
                 textAlign: TextAlign.center,
@@ -360,11 +360,11 @@ class _ResultScreenState extends State<ResultScreen>
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
       decoration: BoxDecoration(
         gradient: LinearGradient(colors: [
-          AppColors.amber.withOpacity(0.15),
-          AppColors.amberDark.withOpacity(0.15),
+          AppColors.amber.withValues(alpha: 0.15),
+          AppColors.amberDark.withValues(alpha: 0.15),
         ]),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.amber.withOpacity(0.4)),
+        border: Border.all(color: AppColors.amber.withValues(alpha: 0.4)),
       ),
       child: Column(
         children: [
@@ -409,13 +409,13 @@ class _CardChip extends StatelessWidget {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         gradient: LinearGradient(colors: [
-          card.color.withOpacity(0.15),
+          card.color.withValues(alpha: 0.15),
           AppColors.cardBg,
         ]),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: card.color.withOpacity(0.6), width: 2),
+        border: Border.all(color: card.color.withValues(alpha: 0.6), width: 2),
         boxShadow: [
-          BoxShadow(color: card.color.withOpacity(0.25), blurRadius: 12)
+          BoxShadow(color: card.color.withValues(alpha: 0.25), blurRadius: 12)
         ],
       ),
       child: Text(card.symbol,
@@ -444,7 +444,7 @@ class _PrimaryButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-                color: AppColors.primary.withOpacity(0.35), blurRadius: 16)
+                color: AppColors.primary.withValues(alpha: 0.35), blurRadius: 16)
           ],
         ),
         child: Text(label,

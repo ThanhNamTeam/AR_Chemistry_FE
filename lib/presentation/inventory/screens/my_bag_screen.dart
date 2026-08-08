@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import '../../../core/l10n/app_localizations.dart';
 import '../../../shared/styles/app_colors.dart';
@@ -144,10 +144,10 @@ class _MyBagScreenState extends State<MyBagScreen> {
                       child: Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.1),
+                          color: AppColors.primary.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: AppColors.primary.withOpacity(0.3),
+                            color: AppColors.primary.withValues(alpha: 0.3),
                           ),
                         ),
                         child: Icon(
@@ -188,10 +188,10 @@ class _MyBagScreenState extends State<MyBagScreen> {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.secondary.withOpacity(0.15),
+                        color: AppColors.secondary.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
-                          color: AppColors.secondary.withOpacity(0.4),
+                          color: AppColors.secondary.withValues(alpha: 0.4),
                         ),
                       ),
                       child: Text(
@@ -217,7 +217,7 @@ class _MyBagScreenState extends State<MyBagScreen> {
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primary.withOpacity(0.18),
+                              color: AppColors.primary.withValues(alpha: 0.18),
                               blurRadius: 12,
                               offset: const Offset(0, 6),
                             ),
@@ -332,7 +332,7 @@ class _MyBagScreenState extends State<MyBagScreen> {
       physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
       itemCount: _items.length + (_isLoadingMore ? 1 : 0),
-      separatorBuilder: (_, __) => const SizedBox(height: 12),
+      separatorBuilder: (_, _) => const SizedBox(height: 12),
       itemBuilder: (ctx, i) {
         if (i >= _items.length) {
           return const Padding(
@@ -369,8 +369,8 @@ class _MyBagScreenState extends State<MyBagScreen> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  AppColors.primary.withOpacity(0.2),
-                  AppColors.secondary.withOpacity(0.2),
+                  AppColors.primary.withValues(alpha: 0.2),
+                  AppColors.secondary.withValues(alpha: 0.2),
                 ],
               ),
               borderRadius: BorderRadius.circular(16),
@@ -476,13 +476,13 @@ class _InventoryItemCard extends StatelessWidget {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    stateColor.withOpacity(0.28),
+                    stateColor.withValues(alpha: 0.28),
                     AppColors.cardBg,
                   ],
                 ),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: stateColor.withOpacity(0.55),
+                  color: stateColor.withValues(alpha: 0.55),
                 ),
               ),
               child: Center(
@@ -535,13 +535,13 @@ class _InventoryItemCard extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       color: item.active
-                          ? stateColor.withOpacity(0.15)
-                          : AppColors.amber.withOpacity(0.15),
+                          ? stateColor.withValues(alpha: 0.15)
+                          : AppColors.amber.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
                         color: item.active
-                            ? stateColor.withOpacity(0.4)
-                            : AppColors.amber.withOpacity(0.4),
+                            ? stateColor.withValues(alpha: 0.4)
+                            : AppColors.amber.withValues(alpha: 0.4),
                       ),
                     ),
                     child: Text(
@@ -674,11 +674,11 @@ class _ActivateKitSheetState extends State<_ActivateKitSheet> {
             top: Radius.circular(16),
           ),
           border: Border.all(
-            color: AppColors.primary.withOpacity(0.22),
+            color: AppColors.primary.withValues(alpha: 0.22),
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.25),
+              color: Colors.black.withValues(alpha: 0.25),
               blurRadius: 24,
               offset: const Offset(0, -8),
             ),
@@ -693,7 +693,7 @@ class _ActivateKitSheetState extends State<_ActivateKitSheet> {
                 width: 44,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: AppColors.textSecondary.withOpacity(0.35),
+                  color: AppColors.textSecondary.withValues(alpha: 0.35),
                   borderRadius: BorderRadius.circular(16),
                 ),
               ),
@@ -765,19 +765,19 @@ class _ActivateKitSheetState extends State<_ActivateKitSheet> {
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
                     borderSide: BorderSide(
-                      color: AppColors.cardBorder.withOpacity(0.4),
+                      color: AppColors.cardBorder.withValues(alpha: 0.4),
                     ),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
                     borderSide: BorderSide(
-                      color: AppColors.cardBorder.withOpacity(0.4),
+                      color: AppColors.cardBorder.withValues(alpha: 0.4),
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
                     borderSide: BorderSide(
-                      color: AppColors.primary.withOpacity(0.8),
+                      color: AppColors.primary.withValues(alpha: 0.8),
                       width: 1.4,
                     ),
                   ),
@@ -789,10 +789,10 @@ class _ActivateKitSheetState extends State<_ActivateKitSheet> {
                   width: double.infinity,
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: AppColors.error.withOpacity(0.12),
+                    color: AppColors.error.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: AppColors.error.withOpacity(0.35),
+                      color: AppColors.error.withValues(alpha: 0.35),
                     ),
                   ),
                   child: Text(
@@ -817,7 +817,7 @@ class _ActivateKitSheetState extends State<_ActivateKitSheet> {
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.primary.withOpacity(0.2),
+                        color: AppColors.primary.withValues(alpha: 0.2),
                         blurRadius: 16,
                         offset: const Offset(0, 8),
                       ),

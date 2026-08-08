@@ -1,28 +1,41 @@
+import 'package:labedu/domain/models/student_quiz_option_model.dart';
+
 class StudentQuizQuestionModel {
-  final String id;
-  final int? questionOrder;
-  final String type;
+  final String questionId;
+  final int questionOrder;
   final String questionText;
-  final String? optionsJson;
-  final String? difficulty;
+  final List<StudentQuizOptionModel> options;
+  final String? selectedAnswer;
 
   const StudentQuizQuestionModel({
-    required this.id,
-    this.questionOrder,
-    required this.type,
+    required this.questionId,
+    required this.questionOrder,
     required this.questionText,
-    this.optionsJson,
-    this.difficulty,
+    required this.options,
+    this.selectedAnswer,
   });
 
-  factory StudentQuizQuestionModel.fromJson(Map<String, dynamic> json) {
+  factory StudentQuizQuestionModel.fromJson(
+      Map<String, dynamic> json,
+      ) {
+    final rawOptions =
+        json['options'] as List<dynamic>? ?? [];
+
     return StudentQuizQuestionModel(
-      id: json['id']?.toString() ?? '',
-      questionOrder: json['questionOrder'] as int?,
-      type: json['type'] as String? ?? '',
-      questionText: json['questionText'] as String? ?? '',
-      optionsJson: json['optionsJson'] as String?,
-      difficulty: json['difficulty'] as String?,
+      questionId:
+      json['questionId']?.toString() ??
+          json['id']?.toString() ??
+          '',
+      questionOrder:
+      (json['questionOrder'] as num?)?.toInt() ?? 0,
+      questionText:
+      json['questionText']?.toString() ?? '',
+      options: rawOptions
+          .whereType<Map<String, dynamic>>()
+          .map(StudentQuizOptionModel.fromJson)
+          .toList(),
+      selectedAnswer:
+      json['selectedAnswer']?.toString(),
     );
   }
 }

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../styles/app_colors.dart';
 
 class LoadingOverlay extends StatelessWidget {
@@ -20,7 +20,7 @@ class LoadingOverlay extends StatelessWidget {
         child,
         if (isLoading)
           Container(
-            color: Colors.black.withOpacity(0.6),
+            color: Colors.black.withValues(alpha: 0.6),
             child: Center(
               child: Container(
                 padding: const EdgeInsets.all(24),
@@ -28,7 +28,7 @@ class LoadingOverlay extends StatelessWidget {
                   color: AppColors.cardBg,
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: AppColors.primary.withOpacity(0.3),
+                    color: AppColors.primary.withValues(alpha: 0.3),
                   ),
                 ),
                 child: Column(

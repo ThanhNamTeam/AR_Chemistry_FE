@@ -47,8 +47,12 @@ class AppLocalizations {
   // —— User profile ——
   String get cardsUnlocked => isVi ? 'Thẻ đã mở' : 'Cards Unlocked';
   String get experiments => isVi ? 'Thí nghiệm' : 'Experiments';
+  String get reactionsAvailable =>
+      isVi ? 'Phản ứng có thể làm' : 'Reactions available';
   String get libraryProgress =>
       isVi ? 'Tiến độ thư viện' : 'Library Progress';
+  String get cardUnlockProgress =>
+      isVi ? 'Tiến độ mở thẻ' : 'Card unlock progress';
   String get myLibrary => isVi ? 'Thẻ của tôi' : 'My Cards';
   String cardsUnlockedSubtitle(int count) => isVi
       ? '$count thẻ đã mở khóa'
@@ -132,7 +136,7 @@ class AppLocalizations {
   String get navUsers => isVi ? 'Người dùng' : 'Users';
   String get navLogs => isVi ? 'Logs' : 'Logs';
 
-  // —— Admin: system logs (ELK) ——
+  // —— Admin: system logs (bảng system_logs trong DB) ——
   String get systemLogsTitle => isVi ? 'Log hệ thống' : 'System logs';
   String get searchLogsHint => isVi
       ? 'Tìm trong message, class, method...'
@@ -143,10 +147,6 @@ class AppLocalizations {
   String get loadMoreLogs => isVi ? 'Tải thêm' : 'Load more';
   String logCountLabel(int shown, int total) =>
       isVi ? 'Hiển thị $shown / $total log' : 'Showing $shown / $total logs';
-  String cannotOpenKibana(String url) => isVi
-      ? 'Không mở được Kibana ($url). Kiểm tra KIBANA_URL trong .env.'
-      : 'Cannot open Kibana ($url). Check KIBANA_URL in .env.';
-
   // —— Thông báo lỗi thân thiện (friendly_error.dart) ——
   String get errNetwork => isVi
       ? 'Không có kết nối mạng. Kiểm tra Wi-Fi/4G rồi thử lại.'
@@ -259,6 +259,7 @@ class AppLocalizations {
   String get userMgmtSelfWarning => isVi
       ? 'Không thể tự thao tác trên tài khoản của chính mình'
       : 'You cannot modify your own account';
+  String get userMgmtSelfTag => isVi ? '(bạn)' : '(you)';
   String userStatusLabel(String status) {
     switch (status) {
       case 'ACTIVE':
@@ -497,7 +498,6 @@ class AppLocalizations {
   String get saveQr => isVi ? 'Lưu QR' : 'Save QR';
   String get close => isVi ? 'Đóng' : 'Close';
   String get cancel => isVi ? 'Hủy' : 'Cancel';
-  String get confirm => isVi ? 'Xác nhận' : 'Confirm';
   String get qrContentLabel => isVi ? 'Nội dung QR: ' : 'QR Content: ';
   String get expiresAtLabel => isVi ? 'Hết hạn: ' : 'Expires at: ';
   String get storagePermissionDenied => isVi ? 'Quyền lưu trữ bị từ chối' : 'Storage permission denied';
@@ -667,6 +667,67 @@ class AppLocalizations {
   String answeredProgress(int answered, int total) => isVi
       ? 'Đã trả lời $answered/$total'
       : 'Answered $answered/$total';
+
+  // —— Reaction experiment quiz flow ——
+  String get selectYourGrade => isVi
+      ? 'Chọn lớp bạn đang học để bắt đầu thí nghiệm AR + quiz.'
+      : 'Select your grade to start AR experiment + quiz.';
+  String gradeLabel(int grade) => isVi ? 'Lớp $grade' : 'Grade $grade';
+  String get reactionCategoriesTitle => isVi
+      ? 'Chọn nhóm phản ứng'
+      : 'Choose reaction category';
+  String get reactionCategoryMetal => isVi
+      ? 'Phản ứng với kim loại'
+      : 'Reactions with metals';
+  String get reactionCategoryAcid => isVi
+      ? 'Phản ứng với axit'
+      : 'Reactions with acids';
+  String get reactionCategoryBase => isVi
+      ? 'Phản ứng với bazơ'
+      : 'Reactions with bases';
+  String get reactionCategorySalt => isVi
+      ? 'Phản ứng với muối'
+      : 'Reactions with salts';
+  String get searchReactionsHint => isVi
+      ? 'Tìm tên phản ứng...'
+      : 'Search reaction name...';
+  String get startExperiment => isVi ? 'Bắt đầu' : 'Start';
+  String get retryExperiment => isVi ? 'Làm lại' : 'Retry';
+  String get viewAttemptHistory => isVi ? 'Xem lịch sử' : 'View history';
+  String get virtualExperimentAr => isVi
+      ? 'Thí nghiệm ảo (AR flash card)'
+      : 'Virtual experiment (AR flash card)';
+  String get scanTwoCardsHint => isVi
+      ? 'Quét đúng chất của phản ứng. Thời gian 7 phút chỉ bắt đầu sau khi bấm Quét AR.'
+      : 'Scan the 2 correct substance cards. The 7-minute timer starts only after a successful Reaction.';
+  String get openArScan => isVi ? 'Quét AR' : 'Scan AR';
+  String get reactionButton => isVi ? 'Phản ứng' : 'Reaction';
+  String get reactionScript => isVi ? 'Mô tả phản ứng' : 'Reaction script';
+  String get experimentQuizSection => isVi ? 'Quiz (5 câu)' : 'Quiz (5 questions)';
+  String get confirmSubmitTitle => isVi ? 'Nộp bài?' : 'Submit quiz?';
+  String get confirmSubmitMessage => isVi
+      ? 'Bạn có chắc chắn muốn nộp bài không?'
+      : 'Are you sure you want to submit?';
+  String get confirm => isVi ? 'Xác nhận' : 'Confirm';
+  String get backToReactionList => isVi
+      ? 'Danh sách phản ứng'
+      : 'Reaction list';
+  String get backToCategories => isVi
+      ? 'Chọn nhóm phản ứng'
+      : 'Reaction categories';
+  String get experimentScoreTitle => isVi ? 'Kết quả làm bài' : 'Your score';
+  String scoreOutOf(int score, int total) =>
+      isVi ? '$score / $total điểm' : '$score / $total points';
+  String get explanationLabel => isVi ? 'Giải thích' : 'Explanation';
+  String get cardsReadyForReaction => isVi
+      ? 'Đã quét đủ 2 thẻ — bấm Phản ứng để bắt đầu'
+      : '2 cards scanned — tap Reaction to start';
+  String get arStepCompleted => isVi ? 'Đã hoàn thành AR' : 'AR completed';
+  String get noReactionsFound => isVi
+      ? 'Không tìm thấy phản ứng'
+      : 'No reactions found';
+  String reactantsLabel(String labels) =>
+      isVi ? 'Chất cần quét: $labels' : 'Scan: $labels';
 
   // —— Feedback screen ——
   String get feedbackSubmitSuccess => isVi
@@ -963,7 +1024,6 @@ class AppLocalizations {
   String get backToMenu => isVi ? 'Về menu' : 'Back to menu';
   String get playAgain => isVi ? 'Chơi lại' : 'Play again';
   String get poemLabel => isVi ? 'Bài thơ:' : 'Poem:';
-  String get explanationLabel => isVi ? 'Giải thích:' : 'Explanation:';
   String get skippedAnswer => isVi ? 'Bỏ qua' : 'Skipped';
   String get learnPoemTitle => isVi ? 'Học Bài Thơ' : 'Learn Poems';
   String get atomicMassTab => isVi ? 'Khối lượng' : 'Atomic mass';

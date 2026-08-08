@@ -1,3 +1,5 @@
+﻿import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -21,8 +23,9 @@ class _AdminReactionsTabState extends State<AdminReactionsTab> {
   void initState() {
     super.initState();
 
+    final adminProvider = context.read<AdminProvider>();
     Future.microtask(() {
-      context.read<AdminProvider>().loadReactionsForAdmin(
+      adminProvider.loadReactionsForAdmin(
           active: _activeFilter);
     });
   }
@@ -48,10 +51,10 @@ class _AdminReactionsTabState extends State<AdminReactionsTab> {
               );
 
               if (created == true && context.mounted) {
-                context.read<AdminProvider>().loadReactionsForAdmin(
+                unawaited(context.read<AdminProvider>().loadReactionsForAdmin(
                   active: _activeFilter,
                   force: true,
-                );
+                ));
               }
             },
             icon: const Icon(Icons.add, size: 18),
@@ -125,7 +128,7 @@ class _AdminReactionsTabState extends State<AdminReactionsTab> {
                         Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: AppColors.accent.withOpacity(0.12),
+                            color: AppColors.accent.withValues(alpha: 0.12),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Icon(
@@ -163,7 +166,7 @@ class _AdminReactionsTabState extends State<AdminReactionsTab> {
                                   r.reactionType!,
                                   style: TextStyle(
                                     fontSize: 11,
-                                    color: AppColors.subtitleAccent.withOpacity(
+                                    color: AppColors.subtitleAccent.withValues(alpha: 
                                         0.8),
                                     fontFamily: 'Inter',
                                   ),
@@ -198,7 +201,7 @@ class _AdminReactionsTabState extends State<AdminReactionsTab> {
                             )
                                 : Switch(
                               value: active,
-                              activeColor: AppColors.primary,
+                              activeThumbColor: AppColors.primary,
                               onChanged: (value) async {
                                 try {
                                   await context.read<AdminProvider>().updateReactionActive(
@@ -275,13 +278,13 @@ class _FilterChip extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
         decoration: BoxDecoration(
           color: selected
-              ? AppColors.primary.withOpacity(0.22)
-              : AppColors.cardBg.withOpacity(0.4),
+              ? AppColors.primary.withValues(alpha: 0.22)
+              : AppColors.cardBg.withValues(alpha: 0.4),
           borderRadius: BorderRadius.circular(999),
           border: Border.all(
             color: selected
                 ? AppColors.primary
-                : AppColors.accent.withOpacity(0.25),
+                : AppColors.accent.withValues(alpha: 0.25),
           ),
         ),
         child: Text(

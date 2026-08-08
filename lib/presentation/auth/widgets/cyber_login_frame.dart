@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../domain/models/app_portal.dart';
@@ -25,8 +25,8 @@ class CyberLoginFrame extends StatelessWidget {
     return CustomPaint(
       painter: _CyberFramePainter(
         borderColor: isLight
-            ? primary.withOpacity(0.55)
-            : primary.withOpacity(0.9),
+            ? primary.withValues(alpha: 0.55)
+            : primary.withValues(alpha: 0.9),
         accentColor: isLight ? primary : primaryLight,
         fillColor: _frameFillColor(option),
         showGlow: !isLight,
@@ -42,14 +42,14 @@ class CyberLoginFrame extends StatelessWidget {
     final primary = option.primary;
     if (option.key == AppThemeKey.light) {
       return Color.alphaBlend(
-        primary.withOpacity(0.08),
+        primary.withValues(alpha: 0.08),
         const Color(0xFFFFFFFF),
-      ).withOpacity(0.92);
+      ).withValues(alpha: 0.92);
     }
     return Color.alphaBlend(
-      primary.withOpacity(0.22),
+      primary.withValues(alpha: 0.22),
       const Color(0xFF0F172A),
-    ).withOpacity(0.86);
+    ).withValues(alpha: 0.86);
   }
 }
 
@@ -102,7 +102,7 @@ class _CyberFramePainter extends CustomPainter {
       ..style = PaintingStyle.stroke;
 
     final glowPaint = Paint()
-      ..color = accentColor.withOpacity(0.45)
+      ..color = accentColor.withValues(alpha: 0.45)
       ..strokeWidth = 3.5
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke
@@ -184,7 +184,7 @@ class _CyberFramePainter extends CustomPainter {
     );
 
     final notchPaint = Paint()
-      ..color = accentColor.withOpacity(0.75)
+      ..color = accentColor.withValues(alpha: 0.75)
       ..strokeWidth = 1.2
       ..style = PaintingStyle.stroke;
 
@@ -230,7 +230,7 @@ class _CyberFramePainter extends CustomPainter {
     const cornerLen = _CyberFrameGeometry.cornerLen;
 
     final glow = Paint()
-      ..color = accentColor.withOpacity(0.5)
+      ..color = accentColor.withValues(alpha: 0.5)
       ..strokeWidth = 3.2
       ..strokeCap = StrokeCap.square
       ..style = PaintingStyle.stroke

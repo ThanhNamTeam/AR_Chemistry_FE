@@ -42,18 +42,14 @@ class EnvConfig {
     return _fallbackUrl;
   }
 
-  /// URL Kibana cho nút "Mở Kibana" trong Admin Portal.
-  /// Cấu hình KIBANA_URL trong `.env` (ví dụ http://192.168.1.10:5601 khi
-  /// chạy trên máy thật cùng WiFi); mặc định localhost cho desktop/web.
-  static String get kibanaUrl {
-    const fromDefine = String.fromEnvironment('KIBANA_URL');
-    if (fromDefine.isNotEmpty) return _normalize(fromDefine);
-
-    final fromEnv = dotenv.env['KIBANA_URL'];
-    if (fromEnv != null && fromEnv.trim().isNotEmpty) {
-      return _normalize(fromEnv.trim());
-    }
-    return 'http://localhost:5601';
+  /// Đọc biến môi trường: ưu tiên `--dart-define`, sau đó `.env`.
+  static String value(String key, {String fromDefine = ''}) {
+    if (fromDefine.isNotEmpty) return fromDefine;
+    final fromEnv = dotenv.env[key]?.trim();
+    if (fromEnv != null && fromEnv.isNotEmpty) return fromEnv;
+    throw StateError(
+      'Thiếu cấu hình "$key". Thêm vào .env hoặc truyền --dart-define=$key=...',
+    );
   }
 
   static String _normalize(String url) {

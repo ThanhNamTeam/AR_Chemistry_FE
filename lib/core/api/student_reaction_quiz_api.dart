@@ -96,7 +96,8 @@ class StudentReactionQuizApi {
           body: jsonEncode({
             'scannedCardCodes': scannedCardCodes,
             'reactionSuccessful': true,
-            if (arSessionCode != null) 'arSessionCode': arSessionCode,
+            // ignore: use_null_aware_elements
+          if (arSessionCode != null) 'arSessionCode': arSessionCode,
           }),
         )
         .timeout(ApiConstants.timeout);
@@ -121,7 +122,10 @@ class StudentReactionQuizApi {
     final response = await http
         .put(
           Uri.parse(
-            ApiConstants.studentSaveAnswerUrl(attemptCode, questionId),
+              ApiConstants.studentSaveAnswerUrl(
+                attemptCode: attemptCode,
+                questionId: questionId,
+              )
           ),
           headers: await _headers(),
           // BE SaveQuizAnswerRequest chỉ có một field tên `answer`.

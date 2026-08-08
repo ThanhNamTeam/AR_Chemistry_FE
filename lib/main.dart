@@ -6,9 +6,6 @@ import 'package:labedu/presentation/feedback/screens/my_feedbacks_screen.dart';
 import 'package:labedu/presentation/home/screens/my_single_cards_screen.dart';
 import 'package:labedu/presentation/inventory/screens/substance_detail_screen.dart';
 import 'package:labedu/presentation/quiz/providers/student_quiz_provider.dart';
-import 'package:labedu/presentation/quiz/screens/student_quiz_attempt_detail_screen.dart';
-import 'package:labedu/presentation/quiz/screens/student_quiz_history_screen.dart';
-import 'package:labedu/presentation/quiz/screens/student_quiz_list_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -56,7 +53,6 @@ import 'presentation/payment/screens/shop_screen.dart';
 import 'presentation/payment/screens/cart_screen.dart';
 import 'presentation/payment/screens/payment_page.dart';
 import 'presentation/payment/screens/payment_success_screen.dart';
-import 'presentation/quiz/screens/quiz_screen.dart';
 import 'presentation/feedback/screens/feedback_screen.dart';
 import 'presentation/ai_chat/providers/ai_fab_visibility.dart';
 import 'presentation/ai_chat/providers/chat_provider.dart';
@@ -67,15 +63,25 @@ import 'core/navigation/current_route_observer.dart';
 import 'presentation/mini_game/screens/mini_game_screen.dart';
 import 'presentation/periodic_table/screens/periodic_table_screen.dart';
 import 'presentation/review/screens/flashcard_review_screen.dart';
+import 'core/storage/experiment_progress_storage.dart';
+import 'presentation/reaction_experiment/providers/reaction_experiment_session_provider.dart';
+import 'presentation/reaction_experiment/screens/grade_selection_screen.dart';
+import 'presentation/reaction_experiment/screens/reaction_category_screen.dart';
+import 'presentation/reaction_experiment/screens/reaction_list_screen.dart';
+import 'presentation/reaction_experiment/screens/reaction_experiment_hub_screen.dart';
+import 'presentation/reaction_experiment/screens/reaction_experiment_history_screen.dart';
+import 'presentation/quiz/screens/student_quiz_list_screen.dart';
+import 'presentation/quiz/screens/student_quiz_history_screen.dart';
+import 'presentation/quiz/screens/student_quiz_attempt_detail_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Load .env before Firebase so API keys are available.
+  await EnvConfig.load();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   await NotificationService.instance.init();
-  await EnvConfig.load();
-  debugPrint('API_BASE_URL = ${EnvConfig.apiBaseUrl}');
   await _configureAmplify();
 
   AppColors.applyTheme(
@@ -84,7 +90,7 @@ Future<void> main() async {
     light: false,
   );
 
-  SystemChrome.setPreferredOrientations([
+  await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
@@ -105,7 +111,6 @@ Future<void> _configureAmplify() async {
 
     await Amplify.configure(amplifyconfig);
 
-    debugPrint('Amplify configured');
   } catch (e) {
     debugPrint('Amplify configure failed: $e');
   }
@@ -135,6 +140,28 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
         ChangeNotifierProvider(create: (_) => ChatProvider()),
         ChangeNotifierProvider(create: (_) => AiFabVisibility()),
         ChangeNotifierProvider(create: (_) => StudentQuizProvider()),
+        ChangeNotifierProvider(
+          create: (_) => StudentQuizProvider(),
+        ),
+        ChangeNotifierProxyProvider<
+            StudentQuizProvider,
+            ReactionExperimentSessionProvider>(
+          create: (context) => ReactionExperimentSessionProvider(
+            ExperimentProgressStorage(),
+            context.read<StudentQuizProvider>(),
+          )..loadProgress(),
+          update: (
+              context,
+              studentQuizProvider,
+              previous,
+              ) {
+            return previous ??
+                ReactionExperimentSessionProvider(
+                  ExperimentProgressStorage(),
+                  studentQuizProvider,
+                )..loadProgress();
+          },
+        ),
       ],
       child: Consumer2<ThemeProvider, LocaleProvider>(
         builder: (context, themeProvider, localeProvider, _) {
@@ -188,7 +215,6 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
       AppRoutes.feedback: (_) => const FeedbackScreen(),
       AppRoutes.aiChat: (_) => const AiChatScreen(),
       AppRoutes.library: (_) => const LibraryScreen(),
-      AppRoutes.quiz: (_) => const QuizScreen(),
       AppRoutes.myBag: (_) => const MyBagScreen(),
       AppRoutes.scan: (_) => const ScanScreen(),
       AppRoutes.shop: (_) => const ShopScreen(),
@@ -199,15 +225,23 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
       AppRoutes.staffHome: (_) => const StaffHomeScreen(),
       AppRoutes.adminHome: (_) => const AdminHomeScreen(),
       AppRoutes.portalProfile: (_) => const PortalProfileScreen(),
-      AppRoutes.quizList: (_) => const StudentQuizListScreen(),
-      AppRoutes.quizHistory: (_) => const StudentQuizHistoryScreen(),
-      AppRoutes.quizAttemptDetail: (_) => const StudentQuizAttemptDetailScreen(),
       AppRoutes.miniGame: (_) => const MiniGameScreen(),
       AppRoutes.mySingleCards: (_) => const MySingleCardsScreen(),
       AppRoutes.myFeedbacks: (_) => const MyFeedbacksScreen(),
       AppRoutes.arAssetLoading: (_) => const ArAssetLoadingScreen(),
+      AppRoutes.gradeSelection: (_) => const GradeSelectionScreen(),
+      AppRoutes.reactionCategory: (_) => const ReactionCategoryScreen(),
+      AppRoutes.reactionList: (_) => const ReactionListScreen(),
+      AppRoutes.reactionExperimentHub: (_) =>
+          const ReactionExperimentHubScreen(),
+      AppRoutes.reactionExperimentHistory: (_) =>
+          const ReactionExperimentHistoryScreen(),
       AppRoutes.periodicTable: (_) => const PeriodicTableScreen(),
       AppRoutes.flashcardReview: (_) => const FlashcardReviewScreen(),
+      AppRoutes.quizList: (_) => const StudentQuizListScreen(),
+      AppRoutes.quizHistory: (_) => const StudentQuizHistoryScreen(),
+      AppRoutes.quizAttemptDetail: (_) =>
+          const StudentQuizAttemptDetailScreen(),
     };
   }
 
@@ -220,11 +254,12 @@ class _ARChemistryAppState extends State<ARChemistryApp> {
     }
 
     if (settings.name == AppRoutes.substanceDetail) {
-      final substanceId = settings.arguments as String;
+      final args = settings.arguments;
+      if (args is! String) return null;
 
       return MaterialPageRoute(
         settings: settings,
-        builder: (_) => SubstanceDetailScreen(substanceId: substanceId),
+        builder: (_) => SubstanceDetailScreen(substanceId: args),
       );
     }
 

@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/utils/friendly_error.dart';
+import '../../../domain/models/student_quiz_attempt_answer_detail_model.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../providers/student_quiz_provider.dart';
 import '../../../domain/models/student_quiz_attempt_detail_model.dart';
@@ -130,10 +131,10 @@ class _Header extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
+                color: AppColors.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: AppColors.primary.withOpacity(0.3),
+                  color: AppColors.primary.withValues(alpha: 0.3),
                 ),
               ),
               child: Icon(
@@ -179,7 +180,7 @@ class _SummaryCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.22),
+            color: AppColors.primary.withValues(alpha: 0.22),
             blurRadius: 18,
             offset: const Offset(0, 8),
           ),
@@ -224,11 +225,11 @@ class _SummaryCard extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            detail.lessonTitle,
+            detail.reactionName,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 12,
-              color: Colors.white.withOpacity(0.9),
+              color: Colors.white.withValues(alpha: 0.9),
               fontFamily: 'Inter',
             ),
           ),
@@ -256,7 +257,7 @@ class _AnswerDetailCard extends StatelessWidget {
         color: AppColors.cardSurface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: color.withOpacity(0.5),
+          color: color.withValues(alpha: 0.5),
         ),
         boxShadow: [
           BoxShadow(
@@ -272,7 +273,7 @@ class _AnswerDetailCard extends StatelessWidget {
           Row(
             children: [
               _Badge(
-                text: l10n.questionNumber(answer.questionOrder ?? 0),
+                text: l10n.questionNumber(answer.questionOrder),
                 color: AppColors.primary,
               ),
               const SizedBox(width: 8),
@@ -382,10 +383,10 @@ class _Badge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
+        color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(999),
         border: Border.all(
-          color: color.withOpacity(0.28),
+          color: color.withValues(alpha: 0.28),
         ),
       ),
       child: Text(
@@ -419,7 +420,7 @@ class _ErrorCard extends StatelessWidget {
         color: AppColors.cardSurface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppColors.error.withOpacity(0.45),
+          color: AppColors.error.withValues(alpha: 0.45),
         ),
       ),
       child: Column(
@@ -474,7 +475,7 @@ class _EmptyCard extends StatelessWidget {
         color: AppColors.cardSurface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppColors.cardBorder.withOpacity(0.45),
+          color: AppColors.cardBorder.withValues(alpha: 0.45),
         ),
       ),
       child: Column(

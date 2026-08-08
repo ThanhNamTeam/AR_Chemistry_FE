@@ -138,6 +138,7 @@ class _FloatingAiBubbleState extends State<FloatingAiBubble> {
     _labelTimer = Timer(const Duration(milliseconds: 1600), () {
       if (mounted) setState(() => _showLabel = false);
     });
+    _armIdleTuck(); // có tương tác → tính lại 5s
   }
 
   @override

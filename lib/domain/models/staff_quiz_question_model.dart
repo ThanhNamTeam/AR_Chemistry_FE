@@ -1,37 +1,45 @@
+import 'staff_quiz_option_model.dart';
+
 class StaffQuizQuestionModel {
   final String id;
-  final int? questionOrder;
-  final String type;
+  final int questionOrder;
   final String questionText;
-  final String? optionsJson;
-  final String? correctAnswer;
+  final List<StaffQuizOptionModel> options;
+  final String correctAnswer;
   final String? explanation;
-  final String? difficulty;
-  final String? status;
+  final String status;
 
   const StaffQuizQuestionModel({
     required this.id,
-    this.questionOrder,
-    required this.type,
+    required this.questionOrder,
     required this.questionText,
-    this.optionsJson,
-    this.correctAnswer,
+    required this.options,
+    required this.correctAnswer,
     this.explanation,
-    this.difficulty,
-    this.status,
+    required this.status,
   });
 
-  factory StaffQuizQuestionModel.fromJson(Map<String, dynamic> json) {
+  factory StaffQuizQuestionModel.fromJson(
+      Map<String, dynamic> json,
+      ) {
+    final rawOptions =
+        json['options'] as List<dynamic>? ?? [];
+
     return StaffQuizQuestionModel(
       id: json['id']?.toString() ?? '',
-      questionOrder: json['questionOrder'] as int?,
-      type: json['type'] as String? ?? '',
-      questionText: json['questionText'] as String? ?? '',
-      optionsJson: json['optionsJson'] as String?,
-      correctAnswer: json['correctAnswer'] as String?,
-      explanation: json['explanation'] as String?,
-      difficulty: json['difficulty'] as String?,
-      status: json['status'] as String?,
+      questionOrder:
+      (json['questionOrder'] as num?)?.toInt() ?? 0,
+      questionText:
+      json['questionText']?.toString() ?? '',
+      options: rawOptions
+          .whereType<Map<String, dynamic>>()
+          .map(StaffQuizOptionModel.fromJson)
+          .toList(),
+      correctAnswer:
+      json['correctAnswer']?.toString() ?? '',
+      explanation:
+      json['explanation']?.toString(),
+      status: json['status']?.toString() ?? '',
     );
   }
 }

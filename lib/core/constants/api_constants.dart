@@ -11,7 +11,7 @@ class ApiConstants {
   static const String chemicalCardsShopPath = '/chemical-cards';
   static const String cardBundlesShopPath = '/card-bundles';
 
-  // admin logs (ELK)
+  // admin logs (bảng system_logs trong DB, qua backend /admin/logs)
   static String adminLogsUrl({
     String? level,
     String? q,
@@ -33,9 +33,77 @@ class ApiConstants {
   // staff quiz management
   static const String staffQuizManagementPath = '/staff/quiz-management';
   static const String staffQuizImportPath = '/staff/quiz-import';
+  static const String staffReactionsPath = '/staff/reactions';
+
+  static String staffReactionQuizOverviewUrl({
+    int page = 0,
+    int size = 10,
+  }) {
+    final uri = Uri.parse(
+      '$baseUrl$staffQuizManagementPath/reactions',
+    ).replace(
+      queryParameters: {
+        'page': page.toString(),
+        'size': size.toString(),
+      },
+    );
+
+    return uri.toString();
+  }
+
+  static String staffReactionQuizzesUrl({
+    required String reactionCode,
+    int page = 0,
+    int size = 10,
+  }) {
+    final uri = Uri.parse(
+      '$baseUrl$staffQuizManagementPath/reactions/$reactionCode/quizzes',
+    ).replace(
+      queryParameters: {
+        'page': page.toString(),
+        'size': size.toString(),
+      },
+    );
+
+    return uri.toString();
+  }
+
+  static String staffQuizDetailUrl({
+    required String quizCode,
+    int page = 0,
+    int size = 10,
+  }) {
+    final uri = Uri.parse(
+      '$baseUrl$staffQuizManagementPath/quizzes/$quizCode',
+    ).replace(
+      queryParameters: {
+        'page': page.toString(),
+        'size': size.toString(),
+      },
+    );
+
+    return uri.toString();
+  }
+
+  static String staffReactionQuizPromptUrl(String reactionCode) {
+    return '$baseUrl$staffReactionsPath/$reactionCode/quiz-prompt';
+  }
+
+  static String get staffQuizImportUploadUrl {
+    return '$baseUrl$staffQuizImportPath/upload-url';
+  }
+
+  static String get staffQuizImportStartUrl {
+    return '$baseUrl$staffQuizImportPath/start';
+  }
+
+  static String staffQuizPublishUrl(String quizCode) {
+    return '$baseUrl$staffQuizManagementPath/quizzes/$quizCode/publish';
+  }
 
   //staff quiz attempt
   static const String staffQuizAttemptsPath = '/staff/quiz-attempts';
+
 
   static String staffQuizAttemptsUrl({
     int page = 0,
@@ -55,24 +123,90 @@ class ApiConstants {
     return '$baseUrl$staffQuizAttemptsPath/$attemptCode';
   }
 
-  //student
   static const String studentPath = '/student';
 
-  static String studentPublishedQuizByLessonUrl(String lessonCode) {
-    return '$baseUrl$studentPath/lessons/$lessonCode/quiz';
+  static String studentReactionsUrl({
+    required int grade,
+    required String reactionCategory,
+    String? keyword,
+    int page = 0,
+    int size = 10,
+  }) {
+    final uri = Uri.parse('$baseUrl$studentPath/reactions').replace(
+      queryParameters: {
+        'grade': grade.toString(),
+        'reactionCategory': reactionCategory,
+        if (keyword != null && keyword.trim().isNotEmpty)
+          'keyword': keyword.trim(),
+        'page': page.toString(),
+        'size': size.toString(),
+      },
+    );
+
+    return uri.toString();
   }
 
-  static String studentQuizQuestionsUrl(String quizCode) {
-    return '$baseUrl$studentPath/quizzes/$quizCode/questions';
+  static String studentReactionDetailUrl(String reactionId) {
+    return '$baseUrl$studentPath/reactions/$reactionId';
   }
 
-  static String studentSubmitQuizUrl(String quizCode) {
-    return '$baseUrl$studentPath/quizzes/$quizCode/submit';
+  static String studentPublishedQuizByReactionUrl(String reactionId) {
+    return '$baseUrl$studentPath/reactions/$reactionId/quiz';
   }
 
-  static String get studentPublishedQuizzesUrl {
-    return '$baseUrl$studentPath/quizzes/published';
+  static String studentStartAttemptUrl(String reactionId) {
+    return '$baseUrl$studentPath/reactions/$reactionId/attempts';
   }
+
+  static String studentCompleteArUrl(String attemptCode) {
+    return '$baseUrl$studentPath/quiz-attempts/$attemptCode/complete-ar';
+  }
+
+  static String studentAttemptStateUrl(String attemptCode) {
+    return '$baseUrl$studentPath/quiz-attempts/$attemptCode/state';
+  }
+
+  static String studentQuizContentUrl(String attemptCode) {
+    return '$baseUrl$studentPath/quiz-attempts/$attemptCode/content';
+  }
+
+  static String studentSaveAnswerUrl({
+    required String attemptCode,
+    required String questionId,
+  }) {
+    return '$baseUrl$studentPath/quiz-attempts/'
+        '$attemptCode/answers/$questionId';
+  }
+
+  static String studentSubmitAttemptUrl(String attemptCode) {
+    return '$baseUrl$studentPath/quiz-attempts/$attemptCode/submit';
+  }
+
+  static String studentAttemptResultUrl(String attemptCode) {
+    return '$baseUrl$studentPath/quiz-attempts/$attemptCode/result';
+  }
+
+  static String studentReactionHistoryUrl(
+      String reactionId, {
+        int page = 0,
+        int size = 10,
+      }) {
+    final uri = Uri.parse(
+      '$baseUrl$studentPath/reactions/$reactionId/attempt-history',
+    ).replace(
+      queryParameters: {
+        'page': page.toString(),
+        'size': size.toString(),
+      },
+    );
+
+    return uri.toString();
+  }
+
+  static String studentAbandonAttemptUrl(String attemptCode) {
+    return '$baseUrl$studentPath/quiz-attempts/$attemptCode/abandon';
+  }
+
 
   // ar assets
   static const String arAssetsPath = '/ar-assets';
@@ -163,54 +297,12 @@ class ApiConstants {
 
   // ---- Luồng quiz theo PHẢN ỨNG (contract mới, thay cho quiz theo bài học) ----
 
-  static String studentReactionsUrl({
-    required int grade,
-    required String reactionCategory,
-    String keyword = '',
-    int page = 0,
-    int size = 10,
-  }) {
-    return Uri.parse('$baseUrl$studentPath/reactions').replace(
-      queryParameters: {
-        'grade': '$grade',
-        'reactionCategory': reactionCategory,
-        if (keyword.trim().isNotEmpty) 'keyword': keyword.trim(),
-        'page': '$page',
-        'size': '$size',
-      },
-    ).toString();
-  }
 
-  static String studentStartAttemptUrl(String reactionId) =>
-      '$baseUrl$studentPath/reactions/$reactionId/attempts';
-
-  static String studentReactionHistoryUrl(
-    String reactionId, {
-    int page = 0,
-    int size = 10,
-  }) {
-    return Uri.parse(
-      '$baseUrl$studentPath/reactions/$reactionId/attempt-history',
-    ).replace(queryParameters: {'page': '$page', 'size': '$size'}).toString();
-  }
-
-  static String studentAttemptStateUrl(String attemptCode) =>
-      '$baseUrl$studentPath/quiz-attempts/$attemptCode/state';
 
   static String studentAttemptContentUrl(String attemptCode) =>
       '$baseUrl$studentPath/quiz-attempts/$attemptCode/content';
 
-  static String studentCompleteArUrl(String attemptCode) =>
-      '$baseUrl$studentPath/quiz-attempts/$attemptCode/complete-ar';
 
-  static String studentSaveAnswerUrl(String attemptCode, String questionId) =>
-      '$baseUrl$studentPath/quiz-attempts/$attemptCode/answers/$questionId';
-
-  static String studentSubmitAttemptUrl(String attemptCode) =>
-      '$baseUrl$studentPath/quiz-attempts/$attemptCode/submit';
-
-  static String studentAbandonAttemptUrl(String attemptCode) =>
-      '$baseUrl$studentPath/quiz-attempts/$attemptCode/abandon';
 
   // library
   static const String libraryPath = '/library';
@@ -316,18 +408,11 @@ class ApiConstants {
     return '$baseUrl$staffQuizManagementPath/quizzes/$quizCode/questions';
   }
 
-  // quiz import
-  static String get staffQuizImportStartUrl {
-    return '$baseUrl$staffQuizImportPath/start';
-  }
 
   static String staffLessonContentUrl(String lessonCode) {
     return '$baseUrl$staffQuizManagementPath/content/$lessonCode';
   }
 
-  static String staffQuizPublishUrl(String quizCode) {
-    return '$baseUrl$staffQuizManagementPath/quizzes/$quizCode/publish';
-  }
 
   // single-cards
   static final String singleCardsUrl = '$baseUrl/single-cards';

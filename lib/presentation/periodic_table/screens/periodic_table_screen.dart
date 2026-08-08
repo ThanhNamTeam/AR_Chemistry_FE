@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -105,10 +107,10 @@ class _PeriodicTableScreenState extends State<PeriodicTableScreen> {
 
       if (access.canScanAR) {
         Navigator.pop(context); // đóng bottom sheet
-        Navigator.pushNamed(context, AppRoutes.arAssetLoading);
+        unawaited(Navigator.pushNamed(context, AppRoutes.arAssetLoading));
       } else {
         Navigator.pop(context);
-        Navigator.pushNamed(context, AppRoutes.packages);
+        unawaited(Navigator.pushNamed(context, AppRoutes.packages));
       }
     } catch (_) {
       if (!mounted) return;

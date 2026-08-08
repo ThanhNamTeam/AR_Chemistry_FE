@@ -46,7 +46,6 @@ class _ARCameraViewState extends State<ARCameraView>
       await context.read<AppState>().refreshKnowledgePoints();
 
       if (reward == null) {
-        debugPrint('[AR_KP] arScanReward is null');
         return;
       }
 
@@ -349,6 +348,7 @@ class ARUnitySession extends ChangeNotifier {
 
   static final ARUnitySession instance = ARUnitySession._();
   Future<void> Function(ReactionCheckResponse result)? onReactionMatched;
+  Future<void> Function(ReactionCheckResponse result)? experimentScanHandler;
   static const _permissionsChannel = MethodChannel(
     'labedu/permissions',
   );
@@ -563,16 +563,27 @@ class ARUnitySession extends ChangeNotifier {
   }
 
   void onUnityMessage(dynamic message) {
+
     _log('unityMessage ${_formatUnityMessage(message)}');
     unawaited(_handleReactionCheckMessage(message));
   }
 
   Future<void> _handleReactionCheckMessage(dynamic rawMessage) async {
+
+
     try {
       final decoded = rawMessage is String
           ? jsonDecode(rawMessage)
           : rawMessage;
-      if (decoded is! Map || decoded['type'] != 'reaction_check_requested') {
+
+
+      if (decoded is! Map) {
+
+        return;
+      }
+
+      if (decoded['type'] != 'reaction_check_requested') {
+
         return;
       }
 
@@ -597,15 +608,27 @@ class ARUnitySession extends ChangeNotifier {
       _latestTrackingGeneration = generation;
       _latestTrackingSignature = signature;
 
+
+
       try {
+
         final result = await _reactionCheckApi.check(
           qrPayloads: qrPayloads,
           cancelToken: cancelToken,
         );
 
+
         if (!_isLatestReactionRequest(requestId, generation, signature)) return;
 
         if (result.matched == true) {
+          if (experimentScanHandler != null) {
+
+
+            await experimentScanHandler!(result);
+          } else {
+
+            await onReactionMatched?.call(result);
+          }
           debugPrint('[AR_KP] matched=true, reward=${result.arScanReward}');
           await onReactionMatched?.call(result);
           // Luồng quiz mới: nếu người dùng vào đây từ màn "chờ AR" của một
@@ -1091,10 +1114,10 @@ class ARUnitySession extends ChangeNotifier {
   }
 
   void _log(String event) {
+    // ignore: unused_local_variable
     final elapsed = _routeStopwatch.isRunning
         ? _routeStopwatch.elapsedMilliseconds
         : 0;
-    debugPrint('[AR_UNITY_TIMING] ${elapsed}ms $event');
   }
 
   String _formatUnityMessage(dynamic message) {
@@ -1131,7 +1154,6 @@ class ARUnitySession extends ChangeNotifier {
 
   Future<bool> _requestCameraPermission() async {
     try {
-      debugPrint('[AR_UNITY_TIMING] cameraPermission requestStart');
       final granted = await _permissionsChannel.invokeMethod<bool>(
         'requestCameraPermission',
       );
@@ -1139,8 +1161,7 @@ class ARUnitySession extends ChangeNotifier {
       logPermissionResult(permissionGranted == true);
       notifyListeners();
       return permissionGranted == true;
-    } on MissingPluginException catch (error) {
-      debugPrint('[AR_UNITY_TIMING] cameraPermissionChannelMissing $error');
+    } on MissingPluginException catch (_) {
       permissionGranted = false;
       notifyListeners();
       return false;
@@ -1153,7 +1174,6 @@ class ARUnitySession extends ChangeNotifier {
       notifyListeners();
       return false;
     } catch (error, stackTrace) {
-      debugPrint('[AR_UNITY_TIMING] cameraPermissionUnexpectedError $error');
       debugPrint(
         '[AR_UNITY_TIMING] cameraPermissionUnexpectedStack $stackTrace',
       );

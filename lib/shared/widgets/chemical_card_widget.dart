@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../../shared/styles/app_colors.dart';
 import '../../domain/models/chemical_card_model.dart';
 
@@ -36,21 +36,21 @@ class ChemicalCardWidget extends StatelessWidget {
             gradient: LinearGradient(
               colors: [
                 AppColors.cardBg,
-                AppColors.cardBg.withOpacity(0.6),
+                AppColors.cardBg.withValues(alpha: 0.6),
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             border: Border.all(
               color: card.isUnlocked || isOwned
-                  ? card.color.withOpacity(isOwned ? 0.25 : 0.5)
-                  : AppColors.cardBorder.withOpacity(0.3),
+                  ? card.color.withValues(alpha: isOwned ? 0.25 : 0.5)
+                  : AppColors.cardBorder.withValues(alpha: 0.3),
               width: 1.5,
             ),
             boxShadow: card.isUnlocked && !isOwned
                 ? [
                     BoxShadow(
-                      color: card.color.withOpacity(0.2),
+                      color: card.color.withValues(alpha: 0.2),
                       blurRadius: 16,
                     )
                   ]
@@ -68,7 +68,7 @@ class ChemicalCardWidget extends StatelessWidget {
                             borderRadius: BorderRadius.circular(16),
                             gradient: RadialGradient(
                               colors: [
-                                card.color.withOpacity(0.1),
+                                card.color.withValues(alpha: 0.1),
                                 Colors.transparent,
                               ],
                             ),
@@ -80,7 +80,7 @@ class ChemicalCardWidget extends StatelessWidget {
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(16),
-                            color: Colors.black.withOpacity(0.4),
+                            color: Colors.black.withValues(alpha: 0.4),
                           ),
                           child: Center(
                             child: Icon(
@@ -96,7 +96,7 @@ class ChemicalCardWidget extends StatelessWidget {
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(16),
-                            color: Colors.black.withOpacity(0.55),
+                            color: Colors.black.withValues(alpha: 0.55),
                           ),
                           child: Center(
                             child: Icon(
@@ -121,7 +121,7 @@ class ChemicalCardWidget extends StatelessWidget {
                                   fontSize: 11,
                                   color: isOwned
                                       ? Colors.white24
-                                      : card.color.withOpacity(0.8),
+                                      : card.color.withValues(alpha: 0.8),
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -163,7 +163,7 @@ class ChemicalCardWidget extends StatelessWidget {
               if (showBuyButtons && !isOwned) ...[
                 Divider(
                   height: 1,
-                  color: AppColors.cardBorder.withOpacity(0.3),
+                  color: AppColors.cardBorder.withValues(alpha: 0.3),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8),
@@ -206,10 +206,10 @@ class ChemicalCardWidget extends StatelessWidget {
                           width: double.infinity,
                           padding: const EdgeInsets.symmetric(vertical: 6),
                           decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.15),
+                            color: AppColors.primary.withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(6),
                             border: Border.all(
-                                color: AppColors.primary.withOpacity(0.4)),
+                                color: AppColors.primary.withValues(alpha: 0.4)),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -240,7 +240,7 @@ class ChemicalCardWidget extends StatelessWidget {
                     'Owned',
                     style: TextStyle(
                       fontSize: 11,
-                      color: AppColors.textSecondary.withOpacity(0.8),
+                      color: AppColors.textSecondary.withValues(alpha: 0.8),
                       fontFamily: 'Inter',
                     ),
                   ),
@@ -264,7 +264,7 @@ class ChemicalCardWidget extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 5),
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [color, color.withOpacity(0.7)],
+            colors: [color, color.withValues(alpha: 0.7)],
           ),
           borderRadius: BorderRadius.circular(6),
         ),

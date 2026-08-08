@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -117,11 +119,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       );
       if (!mounted) return;
 
-      Navigator.of(context).pushNamedAndRemoveUntil(
+      unawaited(Navigator.of(context).pushNamedAndRemoveUntil(
         AppRoutes.login,
         (route) => false,
         arguments: const LoginRouteArgs(passwordResetSuccess: true),
-      );
+      ));
     } on AuthException catch (e) {
       if (!mounted) return;
       setState(() => _loading = false);
