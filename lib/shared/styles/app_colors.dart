@@ -197,7 +197,12 @@ class AppColors {
   static Color get subtitleAccent => isLight ? textCyan : textCyan;
 
   /// Positive highlights (revenue, success values).
-  static Color get emphasisPositive => isLight ? secondaryDark : secondaryLight;
+  ///
+  /// Neo vào token `success` chứ KHÔNG đi qua `secondary`: secondary giờ theo
+  /// accent của theme (đồng bộ dải màu), còn "tích cực/thành công" là màu
+  /// NGỮ NGHĨA — phải luôn xanh lá ở mọi theme.
+  static Color get emphasisPositive =>
+      isLight ? const Color(0xFF15803D) : const Color(0xFF4ADE80);
 
   /// Bottom nav & chips — unselected label/icon.
   static Color get navMuted => isLight ? const Color(0xFF64748B) : textSecondary;

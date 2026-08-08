@@ -132,6 +132,7 @@ class _FloatingAiBubbleState extends State<FloatingAiBubble> {
   /// Nhấn giữ → hiện nhãn ~1.6s rồi tự ẩn.
   void _flashLabel() {
     _labelTimer?.cancel();
+    _armIdleTuck(); // có tương tác → tính lại 5s
     setState(() => _showLabel = true);
     HapticFeedback.selectionClick();
     _labelTimer = Timer(const Duration(milliseconds: 1600), () {

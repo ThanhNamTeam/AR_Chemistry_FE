@@ -504,7 +504,7 @@ class _ReactionQuizOverviewCard extends StatelessWidget {
                     ),
                     label: const Text('Xem quiz'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.secondary,
+                      backgroundColor: AppColors.success,
                       foregroundColor: Colors.white,
                     ),
                   ),
