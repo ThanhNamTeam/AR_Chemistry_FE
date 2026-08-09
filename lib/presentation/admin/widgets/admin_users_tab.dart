@@ -178,13 +178,6 @@ class _AdminUsersTabState extends State<AdminUsersTab> {
           ),
         );
       },
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(msg, style: const TextStyle(fontFamily: 'Inter')),
-        backgroundColor: isError ? AppColors.error : AppColors.success,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      ),
     );
 
     // Overlay gốc để banner nổi trên cả bottom sheet đang mở.

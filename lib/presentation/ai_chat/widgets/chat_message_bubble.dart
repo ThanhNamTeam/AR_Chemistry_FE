@@ -10,7 +10,6 @@ import '../../../core/storage/avatar_storage_service.dart';
 import '../../../domain/models/ai_chat_models.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../home/providers/app_state.dart';
-import 'ai_chat_icon.dart';
 import '../providers/chat_provider.dart';
 import 'ai_chat_icon.dart';
 
