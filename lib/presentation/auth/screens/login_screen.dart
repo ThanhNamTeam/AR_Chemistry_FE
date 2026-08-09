@@ -453,8 +453,20 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
       // Sync user từ Cognito -> Backend
       try {
         await AuthApi().syncUser(idToken);
-      } catch (e) {
-        debugPrint('SYNC USER FAILED, CONTINUE LOGIN: $e');
+        debugPrint('SYNC USER SUCCESS');
+      } catch (e, stackTrace) {
+        debugPrint('SYNC USER FAILED: $e');
+        debugPrintStack(stackTrace: stackTrace);
+
+        if (!mounted) return;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Đồng bộ tài khoản thất bại: $e'),
+          ),
+        );
+
+        return; // Quan trọng: không được navigate vào app
       }
 
       if (!mounted) return;

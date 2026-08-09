@@ -170,6 +170,7 @@ class _StudentQuizListScreenState extends State<StudentQuizListScreen> {
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
+      key: const Key('quiz_list_screen'),
       backgroundColor: AppColors.backgroundDark,
       body: Container(
         decoration: BoxDecoration(gradient: AppColors.backgroundGradient),

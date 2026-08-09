@@ -33,13 +33,35 @@ class UserBottomNav extends StatelessWidget {
     // Hồ sơ) để nhường chỗ cho Trang chủ — trước đây không có đường quay về
     // Home từ thanh nav.
     // (icon outline, icon filled khi active, nhãn, route)
-    final items = <(IconData, IconData, String, String)>[
-      (Icons.home_outlined, Icons.home_rounded, l10n.home, AppRoutes.home),
-      (Icons.store_outlined, Icons.store_rounded, l10n.shop, AppRoutes.shop),
-      (Icons.quiz_outlined, Icons.quiz_rounded, l10n.navQuiz,
-          AppRoutes.quizList),
-      (Icons.extension_outlined, Icons.extension_rounded, l10n.navMiniGame,
-          AppRoutes.miniGame),
+    final items = <(IconData, IconData, String, String, String)>[
+      (
+      Icons.home_outlined,
+      Icons.home_rounded,
+      l10n.home,
+      AppRoutes.home,
+      'nav_home',
+      ),
+      (
+      Icons.store_outlined,
+      Icons.store_rounded,
+      l10n.shop,
+      AppRoutes.shop,
+      'nav_shop',
+      ),
+      (
+      Icons.quiz_outlined,
+      Icons.quiz_rounded,
+      l10n.navQuiz,
+      AppRoutes.quizList,
+      'nav_quiz',
+      ),
+      (
+      Icons.extension_outlined,
+      Icons.extension_rounded,
+      l10n.navMiniGame,
+      AppRoutes.miniGame,
+      'nav_minigame',
+      ),
     ];
 
     // Tab đang active theo route hiện tại — trước đây 4 tab cùng một màu,
@@ -75,6 +97,7 @@ class UserBottomNav extends StatelessWidget {
                   selected: selected,
                   label: item.$3,
                   child: InkWell(
+                    key: ValueKey(item.$5),
                     // InkWell thay GestureDetector để có phản hồi chạm (ripple).
                     onTap: () => _go(item.$4),
                     child: Padding(

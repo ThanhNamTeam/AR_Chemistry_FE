@@ -91,6 +91,7 @@ class _MiniGamePlayScreenState extends State<MiniGamePlayScreen>
     final progress = (_current + 1) / total;
 
     return Scaffold(
+      key: const Key('mini_game_play_screen'),
       body: Container(
         decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
         child: SafeArea(
@@ -129,6 +130,7 @@ class _MiniGamePlayScreenState extends State<MiniGamePlayScreen>
           Row(
             children: [
               GestureDetector(
+                key: const Key('minigame_exit_button'),
                 onTap: () => _showExitDialog(),
                 child: Container(
                   width: 36,
@@ -335,6 +337,7 @@ class _MiniGamePlayScreenState extends State<MiniGamePlayScreen>
 
         return Expanded(
           child: GestureDetector(
+            key: ValueKey('minigame_choice_${question.choices.indexOf(c)}'),
             onTap: () => _selectAnswer(c),
             child: Container(
               margin: EdgeInsets.only(
@@ -399,6 +402,7 @@ class _MiniGamePlayScreenState extends State<MiniGamePlayScreen>
         }
 
         return GestureDetector(
+          key: ValueKey('minigame_choice_${question.choices.indexOf(c)}'),
           onTap: () => _selectAnswer(c),
           child: Container(
             width: double.infinity,
@@ -438,6 +442,7 @@ class _MiniGamePlayScreenState extends State<MiniGamePlayScreen>
     final title = correct ? l10n.exactAnswer : l10n.wrongAnswer;
 
     return FadeTransition(
+      key: const Key('minigame_feedback'),
       opacity: _feedbackAnim,
       child: Container(
         width: double.infinity,
@@ -505,6 +510,7 @@ class _MiniGamePlayScreenState extends State<MiniGamePlayScreen>
         width: double.infinity,
         height: 50,
         child: ElevatedButton(
+          key: const Key('minigame_next_button'),
           onPressed: _answered ? _nextQuestion : null,
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.primary,

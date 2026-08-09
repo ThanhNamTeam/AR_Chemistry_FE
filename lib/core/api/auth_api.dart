@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
 import '../constants/api_constants.dart';
@@ -10,12 +11,20 @@ class AuthApi {
     final response = await http
         .get(
       uri,
-      headers: {'Authorization': 'Bearer $idToken'},
+      headers: {
+        'Authorization': 'Bearer $idToken',
+        'Accept': 'application/json',
+      },
     )
         .timeout(ApiConstants.timeout);
 
-    if (response.statusCode >= 400) {
-      throw Exception('Sync user failed: ${response.statusCode}');
+    debugPrint('SYNC USER STATUS: ${response.statusCode}');
+    debugPrint('SYNC USER BODY: ${response.body}');
+
+    if (response.statusCode < 200 || response.statusCode >= 300) {
+      throw Exception(
+        'Sync user failed: ${response.statusCode} - ${response.body}',
+      );
     }
   }
 

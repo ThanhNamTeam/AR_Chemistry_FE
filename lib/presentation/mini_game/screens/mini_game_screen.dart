@@ -14,6 +14,7 @@ class MiniGameScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
+      key: const Key('mini_game_screen'),
       body: Container(
         decoration: BoxDecoration(gradient: AppColors.backgroundGradient),
         child: SafeArea(
@@ -72,8 +73,11 @@ class MiniGameScreen extends StatelessWidget {
               gradient: AppColors.primaryGradient,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(Icons.science_outlined,
-                color: AppColors.onGradient, size: 20),
+            child: const Icon(
+              Icons.science_outlined,
+              color: AppColors.onGradient,
+              size: 20,
+            ),
           ),
         ],
       ),
@@ -176,8 +180,11 @@ class MiniGameScreen extends StatelessWidget {
                 gradient: AppColors.primaryGradient,
                 borderRadius: BorderRadius.circular(16),
               ),
-              child: const Icon(Icons.play_circle_outline,
-                  color: AppColors.onGradient, size: 28),
+              child: const Icon(
+                Icons.play_circle_outline,
+                color: AppColors.onGradient,
+                size: 28,
+              ),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -243,8 +250,11 @@ class MiniGameScreen extends StatelessWidget {
                 gradient: AppColors.cyanEmeraldGradient,
                 borderRadius: BorderRadius.circular(16),
               ),
-              child: const Icon(Icons.menu_book_outlined,
-                  color: Colors.white, size: 28),
+              child: const Icon(
+                Icons.menu_book_outlined,
+                color: Colors.white,
+                size: 28,
+              ),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -314,8 +324,9 @@ class MiniGameScreen extends StatelessWidget {
       builder: (_) => _DifficultySheet(
         onSelected: (difficulty) {
           Navigator.pop(context);
-          final questions =
-              QuestionGenerator.getQuestionsForDifficulty(difficulty);
+          final questions = QuestionGenerator.getQuestionsForDifficulty(
+            difficulty,
+          );
           Navigator.push(
             context,
             MaterialPageRoute(
