@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 
 import 'package:flutter/material.dart';
@@ -26,9 +26,10 @@ class _PackageScreenState extends State<PackageScreen> {
   bool _ownsAr30Days = false;
 
   int _ar30DaysRemainingDays = 0;
+  // ignore: unused_field
   String? _ar30DaysExpiredAt;
 
-
+  // ignore: unused_field
   ProductDetails? _googlePlayProduct;
   String _googlePlayPriceText = 'Đang tải giá...';
 
@@ -63,10 +64,11 @@ class _PackageScreenState extends State<PackageScreen> {
       },
     );
 
+    final appState = context.read<AppState>();
     Future.microtask(() async {
       setState(() => _isLoading = true);
 
-      await context.read<AppState>().loadPackages();
+      await appState.loadPackages();
       await _loadAr30DaysOwnership();
       await _loadGooglePlayProduct();
       await _recoverOldPurchases();
@@ -136,10 +138,12 @@ class _PackageScreenState extends State<PackageScreen> {
   Future<void> _buyPackageWithGooglePlay(String productId) async {
     if (_isPurchasing) return;
 
+    final l10n = AppLocalizations.of(context);
+
     if (productId.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(AppLocalizations.of(context).googleProductIdEmpty),
+          content: Text(l10n.googleProductIdEmpty),
         ),
       );
       return;
@@ -151,14 +155,14 @@ class _PackageScreenState extends State<PackageScreen> {
       final available = await _inAppPurchase.isAvailable();
 
       if (!available) {
-        throw Exception(AppLocalizations.of(context).googlePlayBillingUnavailable);
+        throw Exception(l10n.googlePlayBillingUnavailable);
       }
 
       final response = await _inAppPurchase.queryProductDetails({productId});
 
       if (response.notFoundIDs.isNotEmpty || response.productDetails.isEmpty) {
         throw Exception(
-          AppLocalizations.of(context).productNotFoundOnGooglePlay(productId),
+          l10n.productNotFoundOnGooglePlay(productId),
         );
       }
 
@@ -251,7 +255,7 @@ class _PackageScreenState extends State<PackageScreen> {
           );
 
           if (access.canScanAR) {
-            Navigator.pushNamed(context, AppRoutes.arAssetLoading);
+            unawaited(Navigator.pushNamed(context, AppRoutes.arAssetLoading));
           }
         } catch (e) {
           if (!mounted) return;
@@ -343,10 +347,10 @@ class _PackageScreenState extends State<PackageScreen> {
                           child: Container(
                             padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
-                              color: AppColors.primary.withOpacity(0.1),
+                              color: AppColors.primary.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                color: AppColors.primary.withOpacity(0.3),
+                                color: AppColors.primary.withValues(alpha: 0.3),
                               ),
                             ),
                             child: Icon(
@@ -465,12 +469,12 @@ class _PackageCard extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppColors.cardBorder.withOpacity(0.5),
+          color: AppColors.cardBorder.withValues(alpha: 0.5),
           width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.08),
+            color: AppColors.primary.withValues(alpha: 0.08),
             blurRadius: 20,
           ),
         ],

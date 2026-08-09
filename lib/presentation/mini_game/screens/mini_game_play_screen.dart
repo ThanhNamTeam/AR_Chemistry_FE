@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import '../../../core/l10n/app_localizations.dart';
 import '../../../shared/styles/app_colors.dart';
@@ -136,7 +136,7 @@ class _MiniGamePlayScreenState extends State<MiniGamePlayScreen>
                   width: 36,
                   height: 36,
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.12),
+                    color: AppColors.primary.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(Icons.close,
@@ -149,7 +149,7 @@ class _MiniGamePlayScreenState extends State<MiniGamePlayScreen>
                   borderRadius: BorderRadius.circular(6),
                   child: LinearProgressIndicator(
                     value: progress,
-                    backgroundColor: AppColors.primary.withOpacity(0.15),
+                    backgroundColor: AppColors.primary.withValues(alpha: 0.15),
                     valueColor:
                         AlwaysStoppedAnimation<Color>(AppColors.primary),
                     minHeight: 8,
@@ -187,12 +187,12 @@ class _MiniGamePlayScreenState extends State<MiniGamePlayScreen>
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.cardBg.withOpacity(0.7),
+        color: AppColors.cardBg.withValues(alpha: 0.7),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: _isPoemFill
-              ? AppColors.accent.withOpacity(0.35)
-              : AppColors.primary.withOpacity(0.2),
+              ? AppColors.accent.withValues(alpha: 0.35)
+              : AppColors.primary.withValues(alpha: 0.2),
         ),
       ),
       child: Column(
@@ -216,10 +216,10 @@ class _MiniGamePlayScreenState extends State<MiniGamePlayScreen>
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
-                    color: AppColors.amber.withOpacity(0.12),
+                    color: AppColors.amber.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                        color: AppColors.amber.withOpacity(0.3)),
+                        color: AppColors.amber.withValues(alpha: 0.3)),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -250,10 +250,10 @@ class _MiniGamePlayScreenState extends State<MiniGamePlayScreen>
               width: double.infinity,
               padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
               decoration: BoxDecoration(
-                color: AppColors.accent.withOpacity(0.06),
+                color: AppColors.accent.withValues(alpha: 0.06),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                    color: AppColors.accent.withOpacity(0.25)),
+                    color: AppColors.accent.withValues(alpha: 0.25)),
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -312,26 +312,26 @@ class _MiniGamePlayScreenState extends State<MiniGamePlayScreen>
       children: question.choices.map((c) {
         final isSelected = _selected == c;
         final isCorrect = c == question.correctAnswer;
-        Color borderColor = AppColors.primary.withOpacity(0.2);
-        Color bgColor = AppColors.cardBg.withOpacity(0.5);
+        Color borderColor = AppColors.primary.withValues(alpha: 0.2);
+        Color bgColor = AppColors.cardBg.withValues(alpha: 0.5);
         Color textColor = AppColors.textPrimary;
         IconData? trailingIcon;
 
         if (_answered) {
           if (isCorrect) {
             borderColor = AppColors.success;
-            bgColor = AppColors.success.withOpacity(0.12);
+            bgColor = AppColors.success.withValues(alpha: 0.12);
             textColor = AppColors.success;
             trailingIcon = Icons.check_circle_outline;
           } else if (isSelected && !isCorrect) {
             borderColor = AppColors.error;
-            bgColor = AppColors.error.withOpacity(0.12);
+            bgColor = AppColors.error.withValues(alpha: 0.12);
             textColor = AppColors.error;
             trailingIcon = Icons.cancel_outlined;
           }
         } else if (isSelected) {
           borderColor = AppColors.primary;
-          bgColor = AppColors.primary.withOpacity(0.15);
+          bgColor = AppColors.primary.withValues(alpha: 0.15);
           textColor = AppColors.primary;
         }
 
@@ -377,26 +377,26 @@ class _MiniGamePlayScreenState extends State<MiniGamePlayScreen>
       children: question.choices.map((c) {
         final isSelected = _selected == c;
         final isCorrect = c == question.correctAnswer;
-        Color borderColor = AppColors.primary.withOpacity(0.15);
-        Color bgColor = AppColors.cardBg.withOpacity(0.5);
+        Color borderColor = AppColors.primary.withValues(alpha: 0.15);
+        Color bgColor = AppColors.cardBg.withValues(alpha: 0.5);
         Color textColor = AppColors.textPrimary;
         IconData? icon;
 
         if (_answered) {
           if (isCorrect) {
             borderColor = AppColors.success;
-            bgColor = AppColors.success.withOpacity(0.1);
+            bgColor = AppColors.success.withValues(alpha: 0.1);
             textColor = AppColors.success;
             icon = Icons.check_circle_outline;
           } else if (isSelected) {
             borderColor = AppColors.error;
-            bgColor = AppColors.error.withOpacity(0.1);
+            bgColor = AppColors.error.withValues(alpha: 0.1);
             textColor = AppColors.error;
             icon = Icons.cancel_outlined;
           }
         } else if (isSelected) {
           borderColor = AppColors.primary;
-          bgColor = AppColors.primary.withOpacity(0.12);
+          bgColor = AppColors.primary.withValues(alpha: 0.12);
           textColor = AppColors.primary;
           icon = Icons.radio_button_checked;
         }
@@ -448,9 +448,9 @@ class _MiniGamePlayScreenState extends State<MiniGamePlayScreen>
         width: double.infinity,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
+          color: color.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.withOpacity(0.4)),
+          border: Border.all(color: color.withValues(alpha: 0.4)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -503,7 +503,7 @@ class _MiniGamePlayScreenState extends State<MiniGamePlayScreen>
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
       decoration: BoxDecoration(
         border: Border(
-          top: BorderSide(color: AppColors.primary.withOpacity(0.15)),
+          top: BorderSide(color: AppColors.primary.withValues(alpha: 0.15)),
         ),
       ),
       child: SizedBox(
@@ -514,7 +514,7 @@ class _MiniGamePlayScreenState extends State<MiniGamePlayScreen>
           onPressed: _answered ? _nextQuestion : null,
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.primary,
-            disabledBackgroundColor: AppColors.primary.withOpacity(0.3),
+            disabledBackgroundColor: AppColors.primary.withValues(alpha: 0.3),
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             elevation: 0,
@@ -621,10 +621,10 @@ class _HighlightedPoemText extends StatelessWidget {
             margin: const EdgeInsets.symmetric(horizontal: 4),
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
             decoration: BoxDecoration(
-              color: AppColors.amber.withOpacity(0.15),
+              color: AppColors.amber.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(6),
               border: Border.all(
-                color: AppColors.amber.withOpacity(0.5),
+                color: AppColors.amber.withValues(alpha: 0.5),
                 width: 1.5,
               ),
             ),
@@ -661,9 +661,9 @@ class _QuestionTypeBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: AppColors.accent.withOpacity(0.12),
+        color: AppColors.accent.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.accent.withOpacity(0.3)),
+        border: Border.all(color: AppColors.accent.withValues(alpha: 0.3)),
       ),
       child: Text(
         label,

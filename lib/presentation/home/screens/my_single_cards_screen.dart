@@ -1,4 +1,4 @@
-import 'dart:io';
+﻿import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +39,7 @@ class _MySingleCardsScreenState extends State<MySingleCardsScreen> {
           message,
           style: const TextStyle(fontFamily: 'Inter'),
         ),
-        backgroundColor: isError ? AppColors.error : AppColors.secondary,
+        backgroundColor: isError ? AppColors.error : AppColors.success,
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
@@ -112,7 +112,7 @@ class _MySingleCardsScreenState extends State<MySingleCardsScreen> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
           side: BorderSide(
-            color: AppColors.primary.withOpacity(0.35),
+            color: AppColors.primary.withValues(alpha: 0.35),
           ),
         ),
         title: Text(
@@ -134,7 +134,7 @@ class _MySingleCardsScreenState extends State<MySingleCardsScreen> {
                   width: 230,
                   height: 230,
                   fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => _QrFallbackBox(
+                  errorBuilder: (_, _, _) => _QrFallbackBox(
                     text: l10n.cannotLoadQrImage,
                   ),
                 ),
@@ -223,10 +223,10 @@ class _MySingleCardsScreenState extends State<MySingleCardsScreen> {
             child: Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
+                color: AppColors.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: AppColors.primary.withOpacity(0.3),
+                  color: AppColors.primary.withValues(alpha: 0.3),
                 ),
               ),
               child: Icon(
@@ -251,10 +251,10 @@ class _MySingleCardsScreenState extends State<MySingleCardsScreen> {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: AppColors.secondary.withOpacity(0.12),
+              color: AppColors.secondary.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: AppColors.secondary.withOpacity(0.35),
+                color: AppColors.secondary.withValues(alpha: 0.35),
               ),
             ),
             child: Icon(
@@ -286,7 +286,7 @@ class _MySingleCardsScreenState extends State<MySingleCardsScreen> {
         children: [
           Icon(
             Icons.inventory_2_outlined,
-            color: AppColors.primary.withOpacity(0.8),
+            color: AppColors.primary.withValues(alpha: 0.8),
             size: 64,
           ),
           const SizedBox(height: 18),
@@ -319,7 +319,7 @@ class _MySingleCardsScreenState extends State<MySingleCardsScreen> {
       physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
       itemCount: cards.length + (state.mySingleCardsLast ? 0 : 1),
-      separatorBuilder: (_, __) => const SizedBox(height: 12),
+      separatorBuilder: (_, _) => const SizedBox(height: 12),
       itemBuilder: (context, index) {
         if (index >= cards.length) {
           return _LoadMoreButton(
@@ -370,15 +370,15 @@ class _MySingleCardTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: active
-              ? AppColors.primary.withOpacity(0.4)
-              : AppColors.error.withOpacity(0.35),
+              ? AppColors.primary.withValues(alpha: 0.4)
+              : AppColors.error.withValues(alpha: 0.35),
           width: 1.2,
         ),
         boxShadow: [
           BoxShadow(
             color: active
-                ? AppColors.primary.withOpacity(0.08)
-                : AppColors.error.withOpacity(0.06),
+                ? AppColors.primary.withValues(alpha: 0.08)
+                : AppColors.error.withValues(alpha: 0.06),
             blurRadius: 18,
             offset: const Offset(0, 8),
           ),
@@ -394,8 +394,8 @@ class _MySingleCardTile extends StatelessWidget {
                   ? AppColors.cyanEmeraldGradient
                   : LinearGradient(
                 colors: [
-                  AppColors.textSecondary.withOpacity(0.35),
-                  AppColors.textSecondary.withOpacity(0.18),
+                  AppColors.textSecondary.withValues(alpha: 0.35),
+                  AppColors.textSecondary.withValues(alpha: 0.18),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -404,8 +404,8 @@ class _MySingleCardTile extends StatelessWidget {
               boxShadow: [
                 BoxShadow(
                   color: active
-                      ? AppColors.primary.withOpacity(0.25)
-                      : Colors.black.withOpacity(0.08),
+                      ? AppColors.primary.withValues(alpha: 0.25)
+                      : Colors.black.withValues(alpha: 0.08),
                   blurRadius: 14,
                 ),
               ],
@@ -460,13 +460,13 @@ class _MySingleCardTile extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         color: active
-                            ? AppColors.secondary.withOpacity(0.14)
-                            : AppColors.error.withOpacity(0.12),
+                            ? AppColors.secondary.withValues(alpha: 0.14)
+                            : AppColors.error.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(999),
                         border: Border.all(
                           color: active
-                              ? AppColors.secondary.withOpacity(0.35)
-                              : AppColors.error.withOpacity(0.35),
+                              ? AppColors.secondary.withValues(alpha: 0.35)
+                              : AppColors.error.withValues(alpha: 0.35),
                         ),
                       ),
                       child: Text(
@@ -503,10 +503,10 @@ class _MySingleCardTile extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(11),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.12),
+                color: AppColors.primary.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: AppColors.primary.withOpacity(0.35),
+                  color: AppColors.primary.withValues(alpha: 0.35),
                 ),
               ),
               child: Icon(
@@ -538,7 +538,7 @@ class _QrFallbackBox extends StatelessWidget {
         color: AppColors.cardSurfaceMuted,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppColors.cardBorder.withOpacity(0.4),
+          color: AppColors.cardBorder.withValues(alpha: 0.4),
         ),
       ),
       child: Center(
@@ -573,10 +573,10 @@ class _LoadMoreButton extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 14),
         decoration: BoxDecoration(
-          color: AppColors.primary.withOpacity(0.12),
+          color: AppColors.primary.withValues(alpha: 0.12),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: AppColors.primary.withOpacity(0.35),
+            color: AppColors.primary.withValues(alpha: 0.35),
           ),
         ),
         child: Center(

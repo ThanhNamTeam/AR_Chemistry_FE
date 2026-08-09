@@ -1,4 +1,4 @@
-import 'dart:async';
+﻿import 'dart:async';
 import 'dart:convert';
 
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
@@ -99,21 +99,24 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     }
 
     if (roleSession.isStaff) {
+      if (!mounted) return;
       await activatePortal(context, AppPortal.staff);
       if (!mounted) return;
 
-      Navigator.pushReplacementNamed(context, AppRoutes.staffHome);
+      unawaited(Navigator.pushReplacementNamed(context, AppRoutes.staffHome));
       return;
     }
 
     if (roleSession.isAdmin) {
+      if (!mounted) return;
       await activatePortal(context, AppPortal.admin);
       if (!mounted) return;
 
-      Navigator.pushReplacementNamed(context, AppRoutes.adminHome);
+      unawaited(Navigator.pushReplacementNamed(context, AppRoutes.adminHome));
       return;
     }
 
+    if (!mounted) return;
     final state = context.read<AppState>();
 
     if (!state.initialized) {
@@ -124,7 +127,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
       await activatePortal(context, AppPortal.user);
       if (!mounted) return;
 
-      Navigator.pushReplacementNamed(context, AppRoutes.home);
+      unawaited(Navigator.pushReplacementNamed(context, AppRoutes.home));
 
       // Đợi Home dựng xong rồi mới xử lý notification pending
       Future.delayed(const Duration(milliseconds: 500), () {
@@ -196,6 +199,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
 
     if (role == UserRole.admin) {
       await roleSession.saveSession(role: role, email: email);
+      if (!mounted) return;
       await activatePortal(context, AppPortal.admin);
       await AppNavigator.pushNamedAndRemoveAll(AppRoutes.adminHome);
       return;
@@ -203,6 +207,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
 
     if (role == UserRole.staff) {
       await roleSession.saveSession(role: role, email: email);
+      if (!mounted) return;
       await activatePortal(context, AppPortal.staff);
       await AppNavigator.pushNamedAndRemoveAll(AppRoutes.staffHome);
       return;
@@ -218,7 +223,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
       idToken: idToken,
     );
 
-
+    if (!mounted) return;
     await activatePortal(context, AppPortal.user);
 
     final welcome = result.isFirstLogin
@@ -278,6 +283,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     final idToken = session.userPoolTokensResult.value.idToken.raw;
     final claims = _decodeJwtClaims(idToken);
 
+    // ignore: unused_local_variable
     final groups = (claims['cognito:groups'] as List?)
             ?.map((e) => e.toString())
             .toList() ??
@@ -380,6 +386,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
         }
       }
 
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(e.message),
@@ -536,7 +543,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
     return IgnorePointer(
       child: AnimatedBuilder(
         animation: _bgPulse,
-        builder: (_, __) => Stack(
+        builder: (_, _) => Stack(
           children: [
             Positioned(
               top: 60,
@@ -548,7 +555,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                   height: 250,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColors.primary.withOpacity(0.05),
+                    color: AppColors.primary.withValues(alpha: 0.05),
                   ),
                 ),
               ),
@@ -563,7 +570,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                   height: 300,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColors.accent.withOpacity(0.05),
+                    color: AppColors.accent.withValues(alpha: 0.05),
                   ),
                 ),
               ),
@@ -665,7 +672,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
           Row(children: [
             Expanded(
                 child: Divider(
-                    color: AppColors.textSecondary.withOpacity(0.3))),
+                    color: AppColors.textSecondary.withValues(alpha: 0.3))),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 12),
               child: Text(l10n.orContinueWith,
@@ -676,7 +683,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
             ),
             Expanded(
                 child: Divider(
-                    color: AppColors.textSecondary.withOpacity(0.3))),
+                    color: AppColors.textSecondary.withValues(alpha: 0.3))),
           ]),
           const SizedBox(height: 16),
           CyberBeamBorder(

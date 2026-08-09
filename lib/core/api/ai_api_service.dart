@@ -1,4 +1,3 @@
-import 'package:amplify_flutter/amplify_flutter.dart' hide ApiConfig;
 import 'package:dio/dio.dart';
 
 import '../../domain/models/ai_chat_models.dart';

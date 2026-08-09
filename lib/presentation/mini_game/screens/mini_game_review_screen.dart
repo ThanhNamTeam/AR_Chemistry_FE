@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import '../../../core/l10n/app_localizations.dart';
 import '../../../shared/styles/app_colors.dart';
@@ -64,7 +64,7 @@ class MiniGameReviewScreen extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.12),
+                color: AppColors.primary.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(Icons.home_outlined,
@@ -85,9 +85,9 @@ class MiniGameReviewScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(
-              color: difficulty.color.withOpacity(0.12),
+              color: difficulty.color.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: difficulty.color.withOpacity(0.3)),
+              border: Border.all(color: difficulty.color.withValues(alpha: 0.3)),
             ),
             child: Text(
               difficulty.label,
@@ -125,14 +125,14 @@ class MiniGameReviewScreen extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            scoreColor.withOpacity(0.15),
-            scoreColor.withOpacity(0.08),
+            scoreColor.withValues(alpha: 0.15),
+            scoreColor.withValues(alpha: 0.08),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: scoreColor.withOpacity(0.3)),
+        border: Border.all(color: scoreColor.withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [
@@ -178,7 +178,7 @@ class MiniGameReviewScreen extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
       decoration: BoxDecoration(
         border: Border(
-          top: BorderSide(color: AppColors.primary.withOpacity(0.15)),
+          top: BorderSide(color: AppColors.primary.withValues(alpha: 0.15)),
         ),
       ),
       child: Row(
@@ -191,7 +191,7 @@ class MiniGameReviewScreen extends StatelessWidget {
                 (r) => r.settings.name != null,
               ),
               style: OutlinedButton.styleFrom(
-                side: BorderSide(color: AppColors.primary.withOpacity(0.5)),
+                side: BorderSide(color: AppColors.primary.withValues(alpha: 0.5)),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16)),
                 padding: const EdgeInsets.symmetric(vertical: 14),
@@ -257,7 +257,7 @@ class _CircleScore extends StatelessWidget {
           CircularProgressIndicator(
             value: correct / total,
             strokeWidth: 6,
-            backgroundColor: color.withOpacity(0.2),
+            backgroundColor: color.withValues(alpha: 0.2),
             valueColor: AlwaysStoppedAnimation<Color>(color),
           ),
           Column(
@@ -347,14 +347,14 @@ class _ReviewItemState extends State<_ReviewItem> {
     final a = widget.answer;
     final correct = a.isCorrect;
     final borderColor = correct
-        ? AppColors.success.withOpacity(0.3)
-        : AppColors.error.withOpacity(0.3);
+        ? AppColors.success.withValues(alpha: 0.3)
+        : AppColors.error.withValues(alpha: 0.3);
     final iconColor = correct ? AppColors.success : AppColors.error;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
-        color: AppColors.cardBg.withOpacity(0.6),
+        color: AppColors.cardBg.withValues(alpha: 0.6),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: borderColor),
       ),
@@ -371,7 +371,7 @@ class _ReviewItemState extends State<_ReviewItem> {
                     width: 28,
                     height: 28,
                     decoration: BoxDecoration(
-                      color: iconColor.withOpacity(0.12),
+                      color: iconColor.withValues(alpha: 0.12),
                       shape: BoxShape.circle,
                     ),
                     child: Center(
@@ -457,7 +457,7 @@ class _ReviewItemState extends State<_ReviewItem> {
           if (_expanded) ...[
             Divider(
                 height: 1,
-                color: AppColors.primary.withOpacity(0.1)),
+                color: AppColors.primary.withValues(alpha: 0.1)),
             Padding(
               padding: const EdgeInsets.fromLTRB(14, 10, 14, 14),
               child: Column(

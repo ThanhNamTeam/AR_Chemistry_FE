@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../shared/styles/app_colors.dart';
@@ -97,7 +97,7 @@ class _PortalProfileUpdateSheetState extends State<PortalProfileUpdateSheet> {
         decoration: BoxDecoration(
           color: AppColors.cardBg,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-          border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+          border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
         ),
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
@@ -112,7 +112,7 @@ class _PortalProfileUpdateSheetState extends State<PortalProfileUpdateSheet> {
                     width: 40,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: AppColors.textSecondary.withOpacity(0.4),
+                      color: AppColors.textSecondary.withValues(alpha: 0.4),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -152,10 +152,10 @@ class _PortalProfileUpdateSheetState extends State<PortalProfileUpdateSheet> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
                   decoration: BoxDecoration(
-                    color: AppColors.backgroundDark.withOpacity(0.5),
+                    color: AppColors.backgroundDark.withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: AppColors.cardBorder.withOpacity(0.5),
+                      color: AppColors.cardBorder.withValues(alpha: 0.5),
                     ),
                   ),
                   child: Text(

@@ -1,4 +1,4 @@
-import 'dart:io';
+﻿import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -11,7 +11,6 @@ import '../../../core/services/app_device_info_service.dart';
 import '../../../domain/models/feedback_model.dart';
 import '../../../shared/styles/app_colors.dart';
 import '../../../shared/widgets/custom_text_field.dart';
-import '../../home/providers/app_state.dart';
 import '../../home/providers/theme_provider.dart';
 
 class FeedbackScreen extends StatefulWidget {
@@ -136,10 +135,10 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                       child: Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.1),
+                          color: AppColors.primary.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: AppColors.primary.withOpacity(0.3),
+                            color: AppColors.primary.withValues(alpha: 0.3),
                           ),
                         ),
                         child: Icon(
@@ -205,7 +204,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                                   border: Border.all(
                                     color: selected
                                         ? Colors.transparent
-                                        : AppColors.primary.withOpacity(0.3),
+                                        : AppColors.primary.withValues(alpha: 0.3),
                                   ),
                                 ),
                                 child: Text(
@@ -261,10 +260,10 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                           child: Container(
                             height: _imagePath != null ? 160 : 100,
                             decoration: BoxDecoration(
-                              color: AppColors.cardBg.withOpacity(0.5),
+                              color: AppColors.cardBg.withValues(alpha: 0.5),
                               borderRadius: BorderRadius.circular(16),
                               border: Border.all(
-                                color: AppColors.primary.withOpacity(0.3),
+                                color: AppColors.primary.withValues(alpha: 0.3),
                               ),
                             ),
                             child: _imagePath != null
@@ -325,10 +324,10 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                         Container(
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: AppColors.cardBg.withOpacity(0.5),
+                            color: AppColors.cardBg.withValues(alpha: 0.5),
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(
-                              color: AppColors.primary.withOpacity(0.2),
+                              color: AppColors.primary.withValues(alpha: 0.2),
                             ),
                           ),
                           child: Row(
@@ -364,7 +363,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                                 value: _anonymous,
                                 onChanged: (v) =>
                                     setState(() => _anonymous = v),
-                                activeColor: AppColors.primary,
+                                activeThumbColor: AppColors.primary,
                               ),
                             ],
                           ),

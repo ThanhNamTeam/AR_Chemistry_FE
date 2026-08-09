@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/l10n/app_localizations.dart';
@@ -228,7 +228,7 @@ class _ConversationTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: selected
-          ? AppColors.primary.withOpacity(0.12)
+          ? AppColors.primary.withValues(alpha: 0.12)
           : Colors.transparent,
       borderRadius: BorderRadius.circular(12),
       child: ListTile(

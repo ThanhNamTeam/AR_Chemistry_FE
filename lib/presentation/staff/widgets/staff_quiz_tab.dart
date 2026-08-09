@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:file_picker/file_picker.dart';
@@ -52,6 +52,7 @@ class _StaffQuizTabState extends State<StaffQuizTab> {
   }
 
   Future<void> _pickAndImportCsv(String reactionCode) async {
+    final staffProvider = context.read<StaffProvider>();
     final result = await FilePicker.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['csv'],
@@ -74,7 +75,7 @@ class _StaffQuizTabState extends State<StaffQuizTab> {
     }
 
     try {
-      await context.read<StaffProvider>().importQuizCsv(
+      await staffProvider.importQuizCsv(
         reactionCode: reactionCode,
         fileName: file.name,
         bytes: bytes,
@@ -503,7 +504,7 @@ class _ReactionQuizOverviewCard extends StatelessWidget {
                     ),
                     label: const Text('Xem quiz'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.secondary,
+                      backgroundColor: AppColors.success,
                       foregroundColor: Colors.white,
                     ),
                   ),
@@ -838,7 +839,7 @@ class _QuizSummaryCard extends StatelessWidget {
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppColors.subtitleAccent,
                   side: BorderSide(
-                    color: AppColors.subtitleAccent.withOpacity(0.45),
+                    color: AppColors.subtitleAccent.withValues(alpha: 0.45),
                   ),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 14,
@@ -916,11 +917,11 @@ class _QuestionCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
                         color: isCorrect
-                            ? AppColors.success.withOpacity(0.7)
-                            : AppColors.subtitleAccent.withOpacity(0.25),
+                            ? AppColors.success.withValues(alpha: 0.7)
+                            : AppColors.subtitleAccent.withValues(alpha: 0.25),
                       ),
                       color: isCorrect
-                          ? AppColors.success.withOpacity(0.10)
+                          ? AppColors.success.withValues(alpha: 0.10)
                           : Colors.transparent,
                     ),
                     child: Row(

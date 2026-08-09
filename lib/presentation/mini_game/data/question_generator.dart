@@ -33,7 +33,7 @@ class QuestionGenerator {
       q.add(ChemQuestion(
         id: nextId(),
         type: QuestionType.a,
-        questionText: '${name} số ___ ${_poemSuffix(poem)}',
+        questionText: '$name số ___ ${_poemSuffix(poem)}',
         choices: _shuffle4(mass, _distractors(allMassStrs, mass, 3)),
         correctAnswer: mass,
         elementSymbol: sym,

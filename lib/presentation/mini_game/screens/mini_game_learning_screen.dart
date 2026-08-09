@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import '../../../core/l10n/app_localizations.dart';
 import '../../../shared/styles/app_colors.dart';
@@ -67,7 +67,7 @@ class _MiniGameLearningScreenState extends State<MiniGameLearningScreen>
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.12),
+                color: AppColors.primary.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(Icons.arrow_back_ios_new,
@@ -98,7 +98,7 @@ class _MiniGameLearningScreenState extends State<MiniGameLearningScreen>
         decoration: BoxDecoration(
           color: AppColors.backgroundMid,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.primary.withOpacity(0.15)),
+          border: Border.all(color: AppColors.primary.withValues(alpha: 0.15)),
         ),
         child: Row(
           children: [
@@ -143,7 +143,7 @@ class _SegmentTab extends StatelessWidget {
                 boxShadow: selected
                     ? [
                         BoxShadow(
-                          color: AppColors.primary.withOpacity(0.25),
+                          color: AppColors.primary.withValues(alpha: 0.25),
                           blurRadius: 8,
                           offset: const Offset(0, 2),
                         ),
@@ -222,9 +222,9 @@ class _AtomicMassTable extends StatelessWidget {
           margin: const EdgeInsets.only(bottom: 6),
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           decoration: BoxDecoration(
-            color: AppColors.cardBg.withOpacity(0.6),
+            color: AppColors.cardBg.withValues(alpha: 0.6),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.primary.withOpacity(0.12)),
+            border: Border.all(color: AppColors.primary.withValues(alpha: 0.12)),
           ),
           child: Row(
             children: [
@@ -232,7 +232,7 @@ class _AtomicMassTable extends StatelessWidget {
                 width: 38,
                 height: 38,
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.12),
+                  color: AppColors.primary.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Center(
@@ -262,9 +262,9 @@ class _AtomicMassTable extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: AppColors.accent.withOpacity(0.1),
+                  color: AppColors.accent.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.accent.withOpacity(0.2)),
+                  border: Border.all(color: AppColors.accent.withValues(alpha: 0.2)),
                 ),
                 child: Text(
                   el.atomicMassStr,
@@ -336,9 +336,9 @@ class _ValenceTable extends StatelessWidget {
           margin: const EdgeInsets.only(bottom: 6),
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           decoration: BoxDecoration(
-            color: AppColors.cardBg.withOpacity(0.6),
+            color: AppColors.cardBg.withValues(alpha: 0.6),
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.secondary.withOpacity(0.12)),
+            border: Border.all(color: AppColors.secondary.withValues(alpha: 0.12)),
           ),
           child: Row(
             children: [
@@ -346,7 +346,7 @@ class _ValenceTable extends StatelessWidget {
                 width: 38,
                 height: 38,
                 decoration: BoxDecoration(
-                  color: AppColors.secondary.withOpacity(0.12),
+                  color: AppColors.secondary.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Center(
@@ -377,13 +377,13 @@ class _ValenceTable extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: el.hasMultipleValences
-                      ? AppColors.amber.withOpacity(0.1)
-                      : AppColors.secondary.withOpacity(0.1),
+                      ? AppColors.amber.withValues(alpha: 0.1)
+                      : AppColors.secondary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: el.hasMultipleValences
-                        ? AppColors.amber.withOpacity(0.3)
-                        : AppColors.secondary.withOpacity(0.2),
+                        ? AppColors.amber.withValues(alpha: 0.3)
+                        : AppColors.secondary.withValues(alpha: 0.2),
                   ),
                 ),
                 child: Text(
@@ -440,7 +440,7 @@ class _ElementExplorerTabState extends State<_ElementExplorerTab> {
             decoration: BoxDecoration(
               color: AppColors.backgroundMid,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.primary.withOpacity(0.2)),
+              border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
             ),
             child: TextField(
               controller: _search,
@@ -512,9 +512,9 @@ class _ElementTile extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: accent.withOpacity(0.08),
+          color: accent.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: accent.withOpacity(0.3)),
+          border: Border.all(color: accent.withValues(alpha: 0.3)),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -571,7 +571,7 @@ class _ElementDetailSheet extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.backgroundMid,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-        border: Border.all(color: AppColors.primary.withOpacity(0.15)),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.15)),
       ),
       padding: const EdgeInsets.fromLTRB(24, 16, 24, 40),
       child: Column(
@@ -581,7 +581,7 @@ class _ElementDetailSheet extends StatelessWidget {
             width: 40,
             height: 4,
             decoration: BoxDecoration(
-              color: AppColors.textSecondary.withOpacity(0.4),
+              color: AppColors.textSecondary.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -595,7 +595,7 @@ class _ElementDetailSheet extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primary.withOpacity(0.3),
+                  color: AppColors.primary.withValues(alpha: 0.3),
                   blurRadius: 16,
                   offset: const Offset(0, 4),
                 ),
@@ -695,10 +695,10 @@ class _ElementDetailSheet extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: AppColors.backgroundDark.withOpacity(0.5),
+              color: AppColors.backgroundDark.withValues(alpha: 0.5),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                  color: AppColors.primary.withOpacity(0.1)),
+                  color: AppColors.primary.withValues(alpha: 0.1)),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -744,9 +744,9 @@ class _InfoCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.08),
+        color: color.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.25)),
+        border: Border.all(color: color.withValues(alpha: 0.25)),
       ),
       child: Row(
         children: [
@@ -796,9 +796,9 @@ class _PoemLineCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.06),
+        color: color.withValues(alpha: 0.06),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.2)),
+        border: Border.all(color: color.withValues(alpha: 0.2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -851,7 +851,7 @@ class _PoemTitle extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.12),
+            color: color.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Icon(icon, color: color, size: 22),
@@ -896,9 +896,9 @@ class _PoemCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.06),
+        color: color.withValues(alpha: 0.06),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withOpacity(0.2)),
+        border: Border.all(color: color.withValues(alpha: 0.2)),
       ),
       child: Text(
         poem,

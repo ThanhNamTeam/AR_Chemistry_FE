@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/l10n/app_localizations.dart';
@@ -262,7 +262,7 @@ class _AdminCreateSubstanceScreenState
                       SwitchListTile(
                         value: _active,
                         contentPadding: EdgeInsets.zero,
-                        activeColor: AppColors.primary,
+                        activeThumbColor: AppColors.primary,
                         title: Text(
                           'Active',
                           style: TextStyle(
@@ -291,7 +291,7 @@ class _AdminCreateSubstanceScreenState
                       SwitchListTile(
                         value: _includedInFullKit,
                         contentPadding: EdgeInsets.zero,
-                        activeColor: AppColors.primary,
+                        activeThumbColor: AppColors.primary,
                         title: Text(
                           l10n.isVi
                               ? 'Có trong Full Kit'
@@ -427,14 +427,14 @@ class _TextInput extends StatelessWidget {
           fontFamily: 'Inter',
         ),
         hintStyle: TextStyle(
-          color: AppColors.textSecondary.withOpacity(0.7),
+          color: AppColors.textSecondary.withValues(alpha: 0.7),
           fontFamily: 'Inter',
         ),
         filled: true,
-        fillColor: AppColors.cardBg.withOpacity(0.45),
+        fillColor: AppColors.cardBg.withValues(alpha: 0.45),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: AppColors.cardBorder.withOpacity(0.45)),
+          borderSide: BorderSide(color: AppColors.cardBorder.withValues(alpha: 0.45)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
@@ -469,6 +469,7 @@ class _DropdownInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<String>(
+      // ignore: deprecated_member_use
       value: value,
       dropdownColor: AppColors.cardBg,
       style: TextStyle(color: AppColors.textPrimary, fontFamily: 'Inter'),
@@ -479,10 +480,10 @@ class _DropdownInput extends StatelessWidget {
           fontFamily: 'Inter',
         ),
         filled: true,
-        fillColor: AppColors.cardBg.withOpacity(0.45),
+        fillColor: AppColors.cardBg.withValues(alpha: 0.45),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: AppColors.cardBorder.withOpacity(0.45)),
+          borderSide: BorderSide(color: AppColors.cardBorder.withValues(alpha: 0.45)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),

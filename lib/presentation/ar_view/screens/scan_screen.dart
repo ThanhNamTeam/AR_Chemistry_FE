@@ -157,7 +157,7 @@ class _ScanScreenState extends State<ScanScreen>
   Future<void> _handleBackPressed() async {
     await _restoreAppUiMode();
     if (!mounted) return;
-    Navigator.maybePop(context);
+    unawaited(Navigator.maybePop(context));
   }
 
   Future<void> _startExperimentReaction() async {

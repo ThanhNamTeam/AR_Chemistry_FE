@@ -202,11 +202,9 @@ class ArAssetDownloader {
 
     var maxShownBytes = 0;
 
-    if (downloadId != null) {
-      final oldInfo = await NativeDownloadManager.queryDownload(downloadId);
-      if (oldInfo.exists && oldInfo.bytesDownloaded > 0) {
-        maxShownBytes = oldInfo.bytesDownloaded;
-      }
+    final oldInfo = await NativeDownloadManager.queryDownload(downloadId);
+    if (oldInfo.exists && oldInfo.bytesDownloaded > 0) {
+      maxShownBytes = oldInfo.bytesDownloaded;
     }
 
     while (true) {
@@ -316,7 +314,7 @@ class ArAssetDownloader {
       }
     } finally {
       _isExtracting = false;
-      inputStream.close();
+      await inputStream.close();
     }
 
     if (await targetDir.exists()) {

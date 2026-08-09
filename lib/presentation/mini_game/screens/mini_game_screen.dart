@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
 import '../../../core/l10n/app_localizations.dart';
 import '../../../shared/styles/app_colors.dart';
@@ -91,14 +91,14 @@ class MiniGameScreen extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            AppColors.primary.withOpacity(0.2),
-            AppColors.accent.withOpacity(0.15),
+            AppColors.primary.withValues(alpha: 0.2),
+            AppColors.accent.withValues(alpha: 0.15),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [
@@ -162,14 +162,14 @@ class MiniGameScreen extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              AppColors.primary.withOpacity(0.25),
-              AppColors.accent.withOpacity(0.2),
+              AppColors.primary.withValues(alpha: 0.25),
+              AppColors.accent.withValues(alpha: 0.2),
             ],
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
           ),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.primary.withOpacity(0.4)),
+          border: Border.all(color: AppColors.primary.withValues(alpha: 0.4)),
         ),
         child: Row(
           children: [
@@ -232,14 +232,14 @@ class MiniGameScreen extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              AppColors.secondary.withOpacity(0.2),
-              AppColors.accent.withOpacity(0.15),
+              AppColors.secondary.withValues(alpha: 0.2),
+              AppColors.accent.withValues(alpha: 0.15),
             ],
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
           ),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.secondary.withOpacity(0.35)),
+          border: Border.all(color: AppColors.secondary.withValues(alpha: 0.35)),
         ),
         child: Row(
           children: [
@@ -363,9 +363,9 @@ class _StatTile extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.08),
+          color: color.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.withOpacity(0.2)),
+          border: Border.all(color: color.withValues(alpha: 0.2)),
         ),
         child: Column(
           children: [
@@ -408,7 +408,7 @@ class _DifficultySheet extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.backgroundMid,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-        border: Border.all(color: AppColors.primary.withOpacity(0.15)),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.15)),
       ),
       padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
       child: Column(
@@ -418,7 +418,7 @@ class _DifficultySheet extends StatelessWidget {
             width: 40,
             height: 4,
             decoration: BoxDecoration(
-              color: AppColors.textSecondary.withOpacity(0.4),
+              color: AppColors.textSecondary.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -458,9 +458,9 @@ class _DifficultyTile extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         decoration: BoxDecoration(
-          color: c.withOpacity(0.08),
+          color: c.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: c.withOpacity(0.35)),
+          border: Border.all(color: c.withValues(alpha: 0.35)),
         ),
         child: Row(
           children: [
@@ -468,7 +468,7 @@ class _DifficultyTile extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: c.withOpacity(0.15),
+                color: c.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(_diffIcon(difficulty), color: c, size: 22),
@@ -568,7 +568,7 @@ class _AtomAnimationState extends State<_AtomAnimation>
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: _rotate,
-      builder: (_, __) => Transform.rotate(
+      builder: (_, _) => Transform.rotate(
         angle: _rotate.value * 2 * 3.14159,
         child: Container(
           width: 70,
@@ -576,7 +576,7 @@ class _AtomAnimationState extends State<_AtomAnimation>
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(
-              color: AppColors.primary.withOpacity(0.6),
+              color: AppColors.primary.withValues(alpha: 0.6),
               width: 2,
             ),
           ),

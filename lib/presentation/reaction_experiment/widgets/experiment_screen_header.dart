@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/l10n/locale_provider.dart';
@@ -31,9 +31,9 @@ class ExperimentScreenHeader extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
+                color: AppColors.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+                border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
               ),
               child: Icon(Icons.arrow_back, color: AppColors.primary, size: 20),
             ),
@@ -51,7 +51,7 @@ class ExperimentScreenHeader extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          if (trailing != null) trailing!,
+          ?trailing,
         ],
       ),
     );
@@ -76,13 +76,13 @@ class ExperimentTimerBadge extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
         color: active
-            ? AppColors.amber.withOpacity(0.18)
-            : AppColors.primary.withOpacity(0.12),
+            ? AppColors.amber.withValues(alpha: 0.18)
+            : AppColors.primary.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: active
-              ? AppColors.amber.withOpacity(0.45)
-              : AppColors.primary.withOpacity(0.25),
+              ? AppColors.amber.withValues(alpha: 0.45)
+              : AppColors.primary.withValues(alpha: 0.25),
         ),
       ),
       child: Row(

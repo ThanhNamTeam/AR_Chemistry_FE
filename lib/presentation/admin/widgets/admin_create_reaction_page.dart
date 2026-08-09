@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/l10n/app_localizations.dart';
@@ -24,11 +24,13 @@ class _AdminCreateReactionPageState extends State<AdminCreateReactionPage> {
   final _descriptionCtrl = TextEditingController();
   final _scriptCtrl = TextEditingController();
 
+  // ignore: prefer_final_fields
   String? _selectedReactionCategory = 'SALT';
 
   String? _selectedArSceneKey = 'COMBUSTION_GAS';
   String? _selectedReactionType = 'COMBUSTION';
 
+  // ignore: unused_field
   final List<String> _reactionCategories = const [
     'METAL',
     'ACID',
@@ -113,15 +115,15 @@ class _AdminCreateReactionPageState extends State<AdminCreateReactionPage> {
       hintText: hint,
       prefixIcon: icon == null ? null : Icon(icon, size: 20),
       filled: true,
-      fillColor: AppColors.cardBg.withOpacity(0.65),
+      fillColor: AppColors.cardBg.withValues(alpha: 0.65),
       contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: BorderSide(color: AppColors.accent.withOpacity(0.25)),
+        borderSide: BorderSide(color: AppColors.accent.withValues(alpha: 0.25)),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: BorderSide(color: AppColors.accent.withOpacity(0.25)),
+        borderSide: BorderSide(color: AppColors.accent.withValues(alpha: 0.25)),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
@@ -136,7 +138,7 @@ class _AdminCreateReactionPageState extends State<AdminCreateReactionPage> {
         fontFamily: 'Inter',
       ),
       hintStyle: TextStyle(
-        color: AppColors.subtitleAccent.withOpacity(0.55),
+        color: AppColors.subtitleAccent.withValues(alpha: 0.55),
         fontFamily: 'Inter',
       ),
     );
@@ -192,6 +194,7 @@ class _AdminCreateReactionPageState extends State<AdminCreateReactionPage> {
     IconData? icon,
   }) {
     return DropdownButtonFormField<String>(
+      // ignore: deprecated_member_use
       value: value,
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -290,7 +293,7 @@ class _AdminCreateReactionPageState extends State<AdminCreateReactionPage> {
                   icon: Icon(
                     Icons.delete_outline,
                     color: items.length == 1
-                        ? AppColors.subtitleAccent.withOpacity(0.35)
+                        ? AppColors.subtitleAccent.withValues(alpha: 0.35)
                         : Colors.redAccent,
                   ),
                 ),
@@ -423,9 +426,9 @@ class _AdminCreateReactionPageState extends State<AdminCreateReactionPage> {
         child: Container(
           padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
           decoration: BoxDecoration(
-            color: AppColors.backgroundDark.withOpacity(0.96),
+            color: AppColors.backgroundDark.withValues(alpha: 0.96),
             border: Border(
-              top: BorderSide(color: AppColors.accent.withOpacity(0.2)),
+              top: BorderSide(color: AppColors.accent.withValues(alpha: 0.2)),
             ),
           ),
           child: FilledButton.icon(
@@ -497,7 +500,7 @@ class _AdminCreateReactionPageState extends State<AdminCreateReactionPage> {
             Text(
               'Nếu phương trình sai, hãy chỉnh lại công thức hoặc hệ số ở phần chất tham gia/sản phẩm.',
               style: TextStyle(
-                color: AppColors.subtitleAccent.withOpacity(0.75),
+                color: AppColors.subtitleAccent.withValues(alpha: 0.75),
                 fontSize: 11,
                 fontFamily: 'Inter',
               ),
@@ -586,9 +589,9 @@ class _AdminCreateReactionPageState extends State<AdminCreateReactionPage> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               decoration: BoxDecoration(
-                color: AppColors.cardBg.withOpacity(0.65),
+                color: AppColors.cardBg.withValues(alpha: 0.65),
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.accent.withOpacity(0.22)),
+                border: Border.all(color: AppColors.accent.withValues(alpha: 0.22)),
               ),
               child: Row(
                 children: [
@@ -609,7 +612,7 @@ class _AdminCreateReactionPageState extends State<AdminCreateReactionPage> {
                   ),
                   Switch(
                     value: _active,
-                    activeColor: AppColors.primary,
+                    activeThumbColor: AppColors.primary,
                     onChanged: (value) {
                       setState(() {
                         _active = value;

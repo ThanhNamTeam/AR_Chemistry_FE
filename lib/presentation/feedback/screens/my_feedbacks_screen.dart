@@ -1,3 +1,5 @@
+﻿import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../../../core/api/feedback_api_service.dart';
@@ -110,7 +112,7 @@ class _MyFeedbacksScreenState extends State<MyFeedbacksScreen> {
                     ),
                   );
 
-                  if (mounted) _loadFeedbacks();
+                  if (mounted) unawaited(_loadFeedbacks());
                 },
                 child: Container(
                   padding: const EdgeInsets.all(16),
@@ -118,7 +120,7 @@ class _MyFeedbacksScreenState extends State<MyFeedbacksScreen> {
                     color: AppColors.cardSurface,
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: AppColors.cardBorder.withOpacity(0.4),
+                      color: AppColors.cardBorder.withValues(alpha: 0.4),
                     ),
                   ),
                   child: Column(
@@ -182,9 +184,9 @@ class _Badge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.16),
+        color: color.withValues(alpha: 0.16),
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: color.withOpacity(0.45)),
+        border: Border.all(color: color.withValues(alpha: 0.45)),
       ),
       child: Text(
         text,

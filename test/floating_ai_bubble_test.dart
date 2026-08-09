@@ -36,6 +36,51 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('không tương tác 5s → tự thu gọn vào mép', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final fab = AiFabVisibility();
+    await _pumpBubble(tester, fab: fab);
+
+    expect(fab.isExpanded, isTrue, reason: 'mới mở phải đang bung');
+
+    // Chưa đủ 5 giây: vẫn bung.
+    await tester.pump(const Duration(seconds: 4));
+    expect(fab.isExpanded, isTrue);
+
+    // Qua mốc 5 giây: tự thu gọn.
+    await tester.pump(const Duration(seconds: 2));
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(fab.isMinimized, isTrue,
+        reason: 'sau 5s không tương tác phải tự khép vào mép');
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('chạm bong bóng đang thu gọn → bung ra, rồi 5s sau khép lại', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final fab = AiFabVisibility();
+    await _pumpBubble(tester, fab: fab);
+
+    // Để tự thu gọn trước.
+    await tester.pump(const Duration(seconds: 6));
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(fab.isMinimized, isTrue);
+
+    // Chạm vào PHẦN ĐANG LÓ của bong bóng (nửa kia nằm ngoài màn hình nên
+    // tap vào tâm icon sẽ trượt ra ngoài) → bung ra.
+    final screen = tester.view.physicalSize / tester.view.devicePixelRatio;
+    final iconCenter = tester.getCenter(find.byType(AiChatIcon));
+    await tester.tapAt(Offset(screen.width - 8, iconCenter.dy));
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(fab.isExpanded, isTrue);
+
+    // Không dùng tiếp → 5s sau lại tự khép.
+    await tester.pump(const Duration(seconds: 6));
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(fab.isMinimized, isTrue);
+  });
+
   testWidgets('kéo xuống giữa đáy → hiện nút X, thả vào đó thì ẩn', (
     tester,
   ) async {

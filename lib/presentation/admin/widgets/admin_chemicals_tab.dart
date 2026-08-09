@@ -1,3 +1,5 @@
+﻿import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -76,7 +78,7 @@ class _AdminChemicalsTabState extends State<AdminChemicalsTab> {
                   );
 
                   if (created == true && context.mounted) {
-                    context.read<AdminProvider>().loadSubstances(force: true);
+                    unawaited(context.read<AdminProvider>().loadSubstances(force: true));
                   }
                 },
                 icon: const Icon(Icons.add, size: 18),
@@ -199,6 +201,7 @@ class _AdminChemicalsTabState extends State<AdminChemicalsTab> {
     }).toList();
   }
 
+  // ignore: unused_element
   void _showAddDialog(BuildContext context, AppLocalizations l10n) {
     showDialog(
       context: context,
@@ -459,7 +462,7 @@ class _FilterBar extends StatelessWidget {
               side: BorderSide(
                 color: isSelected
                     ? AppColors.primary
-                    : AppColors.cardBorder.withOpacity(0.4),
+                    : AppColors.cardBorder.withValues(alpha: 0.4),
               ),
               onSelected: (_) => onChanged(item.$1),
             ),
@@ -631,9 +634,9 @@ class _MiniBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
+        color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: color.withOpacity(0.35)),
+        border: Border.all(color: color.withValues(alpha: 0.35)),
       ),
       child: Text(
         text,

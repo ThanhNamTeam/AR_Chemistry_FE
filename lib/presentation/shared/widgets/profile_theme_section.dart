@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/l10n/app_localizations.dart';
@@ -59,7 +59,7 @@ class ProfileThemeSection extends StatelessWidget {
                     border: Border.all(
                       color: selected
                           ? Colors.transparent
-                          : AppColors.primary.withOpacity(0.3),
+                          : AppColors.primary.withValues(alpha: 0.3),
                     ),
                   ),
                   child: Text(

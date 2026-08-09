@@ -1114,6 +1114,7 @@ class ARUnitySession extends ChangeNotifier {
   }
 
   void _log(String event) {
+    // ignore: unused_local_variable
     final elapsed = _routeStopwatch.isRunning
         ? _routeStopwatch.elapsedMilliseconds
         : 0;
@@ -1160,7 +1161,7 @@ class ARUnitySession extends ChangeNotifier {
       logPermissionResult(permissionGranted == true);
       notifyListeners();
       return permissionGranted == true;
-    } on MissingPluginException catch (error) {
+    } on MissingPluginException catch (_) {
       permissionGranted = false;
       notifyListeners();
       return false;

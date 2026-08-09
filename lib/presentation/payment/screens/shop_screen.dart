@@ -1,4 +1,5 @@
-import 'dart:typed_data';
+﻿import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:gal/gal.dart';
@@ -156,7 +157,7 @@ class _ShopScreenState extends State<ShopScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(msg, style: TextStyle(fontFamily: 'Inter')),
-        backgroundColor: isError ? AppColors.error : AppColors.secondary,
+        backgroundColor: isError ? AppColors.error : AppColors.success,
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -325,7 +326,7 @@ class _ShopScreenState extends State<ShopScreen> {
 
     _showToast(l10n.paymentSubmittedWaitApproval);
 
-    Navigator.pushNamed(context, AppRoutes.paymentSuccess);
+    unawaited(Navigator.pushNamed(context, AppRoutes.paymentSuccess));
   }
 
   @override
@@ -407,10 +408,10 @@ class _ShopScreenState extends State<ShopScreen> {
                               Container(
                                 padding: const EdgeInsets.all(10),
                                 decoration: BoxDecoration(
-                                  color: AppColors.primary.withOpacity(0.1),
+                                  color: AppColors.primary.withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(12),
                                   border: Border.all(
-                                      color: AppColors.primary.withOpacity(0.3)),
+                                      color: AppColors.primary.withValues(alpha: 0.3)),
                                 ),
                                 child: Icon(Icons.shopping_cart_outlined,
                                     color: AppColors.primary, size: 20),
@@ -464,10 +465,10 @@ class _ShopScreenState extends State<ShopScreen> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 8, vertical: 3),
                                 decoration: BoxDecoration(
-                                  color: AppColors.secondary.withOpacity(0.15),
+                                  color: AppColors.secondary.withValues(alpha: 0.15),
                                   borderRadius: BorderRadius.circular(16),
                                   border: Border.all(
-                                      color: AppColors.secondary.withOpacity(0.4)),
+                                      color: AppColors.secondary.withValues(alpha: 0.4)),
                                 ),
                                 child: Text(l10n.upTo20PercentOff,
                                     style: TextStyle(
@@ -628,10 +629,10 @@ class _BundleCard extends StatelessWidget {
           AppColors.cardSurface,
         ]),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.cardBorder.withOpacity(0.5), width: 1.5),
+        border: Border.all(color: AppColors.cardBorder.withValues(alpha: 0.5), width: 1.5),
         boxShadow: [
           BoxShadow(
-              color: AppColors.primary.withOpacity(0.08), blurRadius: 20),
+              color: AppColors.primary.withValues(alpha: 0.08), blurRadius: 20),
         ],
       ),
       child: Column(
@@ -685,7 +686,7 @@ class _BundleCard extends StatelessWidget {
                       '${bundle.originalPrice} KP',
                       style: TextStyle(
                         fontSize: 12,
-                        color: AppColors.textSecondary.withOpacity(0.6),
+                        color: AppColors.textSecondary.withValues(alpha: 0.6),
                         decoration: TextDecoration.lineThrough,
                         fontFamily: 'Inter',
                       ),
@@ -721,10 +722,10 @@ class _BundleCard extends StatelessWidget {
                       vertical: 8,
                     ),
                     decoration: BoxDecoration(
-                      color: cardColor.withOpacity(owned ? 0.05 : 0.1),
+                      color: cardColor.withValues(alpha: owned ? 0.05 : 0.1),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: cardColor.withOpacity(owned ? 0.2 : 0.4),
+                        color: cardColor.withValues(alpha: owned ? 0.2 : 0.4),
                       ),
                     ),
                     child: Column(
@@ -818,9 +819,9 @@ class _BundleCard extends StatelessWidget {
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.12),
+                  color: AppColors.primary.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.primary.withOpacity(0.35)),
+                  border: Border.all(color: AppColors.primary.withValues(alpha: 0.35)),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -873,7 +874,7 @@ class _QRModal extends StatelessWidget {
         '&addInfo=$transferCode'
         '&accountName=NGUYEN%20HOAI%20AN';
     return Container(
-      color: Colors.black.withOpacity(0.8),
+      color: Colors.black.withValues(alpha: 0.8),
       child: Center(
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 24),
@@ -1059,8 +1060,8 @@ class _SingleCardShopTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final borderColor = owned
-        ? AppColors.secondary.withOpacity(0.55)
-        : AppColors.primary.withOpacity(0.35);
+        ? AppColors.secondary.withValues(alpha: 0.55)
+        : AppColors.primary.withValues(alpha: 0.35);
 
     final displayName = (card.substanceVietnameseName != null &&
         card.substanceVietnameseName!.isNotEmpty)
@@ -1127,7 +1128,7 @@ class _SingleCardShopTile extends StatelessWidget {
             decoration: BoxDecoration(
               border: Border(
                 top: BorderSide(
-                  color: AppColors.cardBorder.withOpacity(0.35),
+                  color: AppColors.cardBorder.withValues(alpha: 0.35),
                 ),
               ),
             ),
@@ -1135,10 +1136,10 @@ class _SingleCardShopTile extends StatelessWidget {
                 ? Container(
               padding: const EdgeInsets.symmetric(vertical: 11),
               decoration: BoxDecoration(
-                color: AppColors.secondary.withOpacity(0.14),
+                color: AppColors.secondary.withValues(alpha: 0.14),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: AppColors.secondary.withOpacity(0.35),
+                  color: AppColors.secondary.withValues(alpha: 0.35),
                 ),
               ),
               child: Row(

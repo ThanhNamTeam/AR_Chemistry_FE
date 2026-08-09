@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import '../styles/app_colors.dart';
 
 class PortalScaffold extends StatelessWidget {
@@ -42,10 +42,10 @@ class PortalScaffold extends StatelessWidget {
                         child: Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.1),
+                            color: AppColors.primary.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: AppColors.primary.withOpacity(0.3),
+                              color: AppColors.primary.withValues(alpha: 0.3),
                             ),
                           ),
                           child: Icon(
@@ -87,7 +87,7 @@ class PortalScaffold extends StatelessWidget {
                   ],
                 ),
               ),
-              if (bottom != null) bottom!,
+              ?bottom,
               Expanded(child: body),
             ],
           ),

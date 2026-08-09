@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/l10n/app_localizations.dart';
@@ -39,7 +39,7 @@ class AdminTopSalesTab extends StatelessWidget {
                   ? AppColors.textSecondary
                   : rank == 3
                       ? AppColors.amberDark
-                      : AppColors.primary.withOpacity(0.5);
+                      : AppColors.primary.withValues(alpha: 0.5);
 
           return Padding(
             padding: const EdgeInsets.only(bottom: 8),
@@ -51,9 +51,9 @@ class AdminTopSalesTab extends StatelessWidget {
                     width: 36,
                     height: 36,
                     decoration: BoxDecoration(
-                      color: medalColor.withOpacity(0.15),
+                      color: medalColor.withValues(alpha: 0.15),
                       shape: BoxShape.circle,
-                      border: Border.all(color: medalColor.withOpacity(0.4)),
+                      border: Border.all(color: medalColor.withValues(alpha: 0.4)),
                     ),
                     child: Center(
                       child: Text(

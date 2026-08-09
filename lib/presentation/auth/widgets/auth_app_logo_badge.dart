@@ -1,4 +1,4 @@
-import 'dart:math' as math;
+﻿import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -79,13 +79,13 @@ class _AuthAppLogoBadgeState extends State<AuthAppLogoBadge>
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(
-              color: primary.withOpacity(0.5),
+              color: primary.withValues(alpha: 0.5),
               width: 1.5,
             ),
             gradient: LinearGradient(
               colors: [
-                primary.withOpacity(0.2),
-                accent.withOpacity(0.2),
+                primary.withValues(alpha: 0.2),
+                accent.withValues(alpha: 0.2),
               ],
             ),
           ),
@@ -164,19 +164,19 @@ class _FireworkPainter extends CustomPainter {
           );
 
       final glow = Paint()
-        ..color = p.color.withOpacity(0.45 * fade)
+        ..color = p.color.withValues(alpha: 0.45 * fade)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);
 
       canvas.drawCircle(pos, p.size * 2.2, glow);
       canvas.drawCircle(
         pos,
         p.size * (0.6 + fade * 0.4),
-        Paint()..color = p.color.withOpacity(fade),
+        Paint()..color = p.color.withValues(alpha: fade),
       );
     }
 
     final burst = Paint()
-      ..color = accentColor.withOpacity(0.35 * fade)
+      ..color = accentColor.withValues(alpha: 0.35 * fade)
       ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 14);
 
     canvas.drawCircle(center, 10 + progress * 18, burst);

@@ -102,8 +102,12 @@ class ThemeProvider extends ChangeNotifier {
       primaryColor: o.primary,
       accentColor: o.accent,
       light: o.key == AppThemeKey.light,
-      useAccentAsSecondary:
-          o.key == AppThemeKey.forest || o.key == AppThemeKey.ocean,
+      // MỌI theme đều lấy secondary theo accent của chính nó — trước đây chỉ
+      // forest/ocean được vậy, các theme còn lại dính secondary xanh lá
+      // #10B981 hardcode nên Tối Cyber bị trộn cyan/dương với xanh lá
+      // (gradient CTA, avatar, badge...). Màu "thành công" ngữ nghĩa đã có
+      // token AppColors.success riêng, không đi qua secondary nữa.
+      useAccentAsSecondary: true,
     );
   }
 
@@ -144,6 +148,7 @@ class ThemeProvider extends ChangeNotifier {
               secondary: option.accent,
               onSecondary: AppColors.onGradient,
               surface: const Color(0xFFF8FAFC),
+              // ignore: deprecated_member_use
               background: const Color(0xFFFFFFFF),
             )
           : ColorScheme.dark(
@@ -152,6 +157,7 @@ class ThemeProvider extends ChangeNotifier {
               secondary: option.accent,
               onSecondary: AppColors.onGradient,
               surface: const Color(0xFF0F172A),
+              // ignore: deprecated_member_use
               background: const Color(0xFF020817),
             ),
       scaffoldBackgroundColor:
