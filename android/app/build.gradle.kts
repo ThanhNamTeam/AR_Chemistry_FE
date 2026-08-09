@@ -33,6 +33,21 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+
+        testInstrumentationRunner = "pl.leancode.patrol.PatrolJUnitRunner"
+
+        ndk {
+            abiFilters += listOf(
+                "arm64-v8a",
+                "armeabi-v7a"
+            )
+        }
+
+        packaging {
+            jniLibs {
+                excludes += setOf("**/x86_64/*.so")
+            }
+        }
     }
 
     signingConfigs {

@@ -340,6 +340,7 @@ class _ShopScreenState extends State<ShopScreen> {
 
 
     return Scaffold(
+      key: const Key('shop_screen'),
       backgroundColor: AppColors.backgroundDark,
       body: Container(
         decoration: BoxDecoration(gradient: AppColors.backgroundGradient),

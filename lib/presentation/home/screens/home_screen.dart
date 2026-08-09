@@ -146,6 +146,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     final state = context.watch<AppState>();
 
     return Scaffold(
+      key: const Key('student_home_screen'),
       backgroundColor: AppColors.backgroundDark,
       body: Stack(
         fit: StackFit.expand,
