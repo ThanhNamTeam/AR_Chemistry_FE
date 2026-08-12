@@ -1,0 +1,71 @@
+ManifestFileVersion: 0
+UnityVersion: 6000.4.7f1
+CRC: 2384375145
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 6df57a7c19eb5643d62480d8933450aa
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 5142cdbf971cde34a19ba03e085f7e1e
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: e9e170ebe31e2397da8fa922b35705ab
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 33
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 64
+  Script: {instanceID: 0}
+- Class: 82
+  Script: {instanceID: 0}
+- Class: 83
+  Script: {instanceID: 0}
+- Class: 89
+  Script: {instanceID: 0}
+- Class: 104
+  Script: {instanceID: 0}
+- Class: 108
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: b886860719205084d9eca5a78e6363f3, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 3d0a400e5add6dc43868e8b49f353f9e, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: d1c8dfd52c18777409b4852100879245, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 77d592ee5b3c565478f1f2b992aa4c20, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: b11cbfce03a10dc419d0a58cf0e147c2, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+- Class: 136
+  Script: {instanceID: 0}
+- Class: 157
+  Script: {instanceID: 0}
+- Class: 196
+  Script: {instanceID: 0}
+- Class: 198
+  Script: {instanceID: 0}
+- Class: 199
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Scenes/Reaction_FeS_TestTube.unity
+Dependencies: []
