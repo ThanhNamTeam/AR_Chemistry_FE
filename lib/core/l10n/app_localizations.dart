@@ -146,8 +146,8 @@ class AppLocalizations {
   String get revenueReceiptMissing =>
       isVi ? 'Không tìm thấy ảnh biên lai' : 'Receipt image not found';
   String get revenueChartHint => isVi
-      ? 'Biểu đồ từ bill chuyển khoản (mock)'
-      : 'Chart from transfer bills (mock)';
+      ? 'Biểu đồ từ bill chuyển khoản'
+      : 'Chart from transfer bills';
   String get revenueColTxnId => isVi ? 'Mã giao dịch' : 'Txn ID';
   String get revenueColTime => isVi ? 'Thời gian' : 'Time';
   String get revenueColRecipient => isVi ? 'Người nhận' : 'Recipient';

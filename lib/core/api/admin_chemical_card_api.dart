@@ -49,6 +49,38 @@ class AdminChemicalCardApi {
     );
   }
 
+  Future<void> updateCardActive({
+    required String id,
+    required bool active,
+  }) async {
+    final token = await AuthTokenService.getValidAccessToken();
+
+    if (token == null || token.isEmpty) {
+      throw Exception('User is not signed in');
+    }
+
+    final response = await http.patch(
+      Uri.parse(
+        '${ApiConstants.baseUrl}${ApiConstants.chemicalCardsShopPath}/$id/active',
+      ),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({
+        'active': active,
+      }),
+    ).timeout(ApiConstants.timeout);
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return;
+    }
+
+    throw Exception(
+      'Update card active failed: ${response.statusCode} - ${response.body}',
+    );
+  }
+
   Future<Map<String, dynamic>> generateCardImageUploadUrl({
     required String id,
     required String frontContentType,

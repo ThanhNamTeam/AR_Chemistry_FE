@@ -268,6 +268,7 @@ class AdminProvider extends ChangeNotifier {
     await loadSubstances();
   }
 
+
   Future<KitModel> getKitByCode(String code) async {
     _isLoadingKitDetail = true;
     notifyListeners();
@@ -277,6 +278,24 @@ class AdminProvider extends ChangeNotifier {
     } finally {
       _isLoadingKitDetail = false;
       notifyListeners();
+    }
+  }
+
+  Future<void> updateChemicalCardActive(
+      String id,
+      bool active,
+      ) async {
+    try {
+      await _chemicalCardApi.updateCardActive(
+        id: id,
+        active: active,
+      );
+
+      await loadChemicalCards(force: true);
+    } catch (e) {
+      _chemicalCardsError = e.toString();
+      debugPrint('UPDATE_CHEMICAL_CARD_ACTIVE_ERROR: $e');
+      rethrow;
     }
   }
 
