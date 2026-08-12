@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:patrol/patrol.dart';
@@ -7,7 +9,7 @@ void main() {
   patrolTest(
     'Student login successfully',
         ($) async {
-      app.main();
+      unawaited(app.main());
 
       await $.pump(const Duration(seconds: 5));
 

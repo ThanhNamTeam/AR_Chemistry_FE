@@ -74,6 +74,7 @@ flutter:
     - assets/images/ai_chat_fab_icon.png
     - assets/icon/app_icon.jpg
     - assets/images/ar_30_days.png
+    - doanhthuAR/
 
 patrol:
   app_name: LabEdu
