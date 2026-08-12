@@ -132,9 +132,37 @@ class AppLocalizations {
   String get navActivationCode => isVi ? 'Mã kích hoạt' : 'Activation Code';
   String get navReactions => isVi ? 'PTHH' : 'Reactions';
   String get navTopSales => isVi ? 'Top bán' : 'Top sales';
+  String get navRevenue => isVi ? 'Doanh thu' : 'Revenue';
   String get navCardsAr => isVi ? 'Thẻ AR' : 'AR Cards';
   String get navUsers => isVi ? 'Người dùng' : 'Users';
   String get navLogs => isVi ? 'Logs' : 'Logs';
+
+  // —— Admin: doanh thu chuyển khoản (mock doanhthuAR) ——
+  String get revenueTotal => isVi ? 'Tổng thu' : 'Total';
+  String get revenueBillCount => isVi ? 'Số giao dịch' : 'Transactions';
+  String get revenueEmpty =>
+      isVi ? 'Chưa có giao dịch' : 'No transactions yet';
+  String get revenueViewReceipt => isVi ? 'Xem biên lai' : 'View receipt';
+  String get revenueReceiptMissing =>
+      isVi ? 'Không tìm thấy ảnh biên lai' : 'Receipt image not found';
+  String get revenueChartHint => isVi
+      ? 'Biểu đồ từ bill chuyển khoản (mock)'
+      : 'Chart from transfer bills (mock)';
+  String get revenueColTxnId => isVi ? 'Mã giao dịch' : 'Txn ID';
+  String get revenueColTime => isVi ? 'Thời gian' : 'Time';
+  String get revenueColRecipient => isVi ? 'Người nhận' : 'Recipient';
+  String get revenueColAccount => isVi ? 'Số TK' : 'Account';
+  String get revenueColBank => isVi ? 'Ngân hàng' : 'Bank';
+  String get revenueColMessage => isVi ? 'Nội dung' : 'Message';
+  String get revenueNotShown => isVi ? 'Không hiển thị' : 'Not shown';
+  String get periodYear => isVi ? 'Năm' : 'Year';
+  String revenuePageLabel(int from, int to, int total) => isVi
+      ? 'Hiển thị $from–$to / $total giao dịch'
+      : 'Showing $from–$to of $total';
+  /// Nhãn trục biểu đồ theo tháng (tránh hardcode "T8").
+  String revenueMonthAxisLabel(int month, int year) => isVi
+      ? 'T$month/${year % 100}'
+      : '${month.toString().padLeft(2, '0')}/${year % 100}';
 
   // —— Admin: system logs (bảng system_logs trong DB) ——
   String get systemLogsTitle => isVi ? 'Log hệ thống' : 'System logs';

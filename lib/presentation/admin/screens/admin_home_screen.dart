@@ -17,6 +17,7 @@ import '../widgets/admin_dashboard_tab.dart';
 import '../widgets/admin_kits_tab.dart';
 import '../widgets/admin_logs_tab.dart';
 import '../widgets/admin_reactions_tab.dart';
+import '../widgets/admin_revenue_tab.dart';
 import '../widgets/admin_top_sales_tab.dart';
 import '../widgets/admin_users_tab.dart';
 
@@ -71,7 +72,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
           context.read<AdminProvider>().loadKits();
         }
 
-        if (i == 5) {
+        if (i == 6) {
           context.read<AdminProvider>().loadChemicalCards();
         }
       },
@@ -105,6 +106,11 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
           label: l10n.navTopSales,
         ),
         PortalNavItem(
+          icon: Icons.payments_outlined,
+          activeIcon: Icons.payments_rounded,
+          label: l10n.navRevenue,
+        ),
+        PortalNavItem(
           icon: Icons.style_outlined,
           activeIcon: Icons.style_rounded,
           label: l10n.navCardsAr,
@@ -126,6 +132,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
         AdminKitsTab(),
         AdminReactionsTab(),
         AdminTopSalesTab(),
+        AdminRevenueTab(),
         AdminCardsTab(),
         AdminUsersTab(),
         AdminLogsTab(),
