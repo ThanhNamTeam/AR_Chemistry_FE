@@ -36,8 +36,8 @@ static const int32_t s_InvokerIndices[7] =
 	16211,
 	15148,
 	15451,
-	24109,
-	24109,
+	24108,
+	24108,
 };
 IL2CPP_EXTERN_C const Il2CppCodeGenModule g_Unity_UnifiedRayTracing_Runtime_CodeGenModule;
 const Il2CppCodeGenModule g_Unity_UnifiedRayTracing_Runtime_CodeGenModule = 
