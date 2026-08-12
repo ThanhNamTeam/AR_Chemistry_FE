@@ -255,7 +255,7 @@ You will likely need to do this **only once**. These changes remain on future Un
     // mac
     ndk.dir=/Applications/Unity/Hub/Editor/2020.3.19f1/PlaybackEngines/AndroidPlayer/NDK
     // windows
-    ndk.dir=C:\\Program Files\\Unity\\Hub\\Editor\\2021.3.13f1\\Editor\\Data\\PlaybackEngines\\AndroidPlayer\\NDK
+    ndk.dir=D:\Unity\Editors\6000.4.7f1\Editor\Data\PlaybackEngines\AndroidPlayer\NDK
 ```
 
 

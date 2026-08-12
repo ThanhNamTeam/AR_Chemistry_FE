@@ -327,13 +327,41 @@ class _AdminCardsTabState extends State<AdminCardsTab> {
 
               _ActionRow(
                 icon: Icons.power_settings_new,
-                title: card.active == true ? 'Tắt thẻ này' : 'Bật thẻ này',
+                title: card.active == true ? 'Tắt thẻ này' : 'Thẻ đã bị tắt',
                 subtitle: card.active == true
                     ? 'Thẻ sẽ không hiển thị trong hệ thống.'
-                    : 'Thẻ sẽ được bật lại.',
-                onTap: () {
+                    : 'Thẻ hiện đang ở trạng thái Inactive.',
+                onTap: () async {
                   Navigator.pop(ctx);
-                  // TODO: gọi API update active
+
+                  final newActive = card.active != true;
+
+                  try {
+                    await context.read<AdminProvider>().updateChemicalCardActive(
+                      card.id.toString(),
+                      newActive,
+                    );
+
+                    if (!context.mounted) return;
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          newActive
+                              ? 'Đã bật thẻ thành công.'
+                              : 'Đã tắt thẻ thành công.',
+                        ),
+                      ),
+                    );
+                  } catch (e) {
+                    if (!context.mounted) return;
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Cập nhật trạng thái thẻ thất bại: $e'),
+                      ),
+                    );
+                  }
                 },
               ),
             ],

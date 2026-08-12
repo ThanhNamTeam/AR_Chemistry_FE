@@ -40,6 +40,7 @@ class ChemicalCardApi {
       queryParameters: {
         'page': page,
         'size': size,
+        'active': true,
       },
       options: await _authOptions(),
     );
@@ -87,5 +88,12 @@ class ChemicalCardApi {
     }
 
     throw Exception('Invalid shop card bundles response');
+  }
+
+  Future<void> deleteCardBundle(String id) async {
+    await _dio.delete(
+      '${ApiConstants.cardBundlesShopPath}/$id',
+      options: await _authOptions(),
+    );
   }
 }
